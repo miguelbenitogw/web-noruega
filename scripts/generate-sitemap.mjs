@@ -1,0 +1,88 @@
+import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises'
+import path from 'node:path'
+
+const SITE_URL = process.env.SITE_URL || 'https://globalworking.no'
+const NEWS_DIR = path.resolve('src/content/news')
+const SITEMAP_PATH = path.resolve('public/sitemap.xml')
+const TODAY = new Date().toISOString().slice(0, 10)
+
+const parseFrontmatter = (raw) => {
+  const match = raw.match(/^---\n([\s\S]*?)\n---\n?/)
+  if (!match) return {}
+
+  const frontmatter = match[1]
+  const data = {}
+
+  for (const line of frontmatter.split('\n')) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const idx = trimmed.indexOf(':')
+    if (idx < 1) continue
+    const key = trimmed.slice(0, idx).trim()
+    const value = trimmed.slice(idx + 1).trim().replace(/^["']|["']$/g, '')
+    data[key] = value
+  }
+
+  return data
+}
+
+const buildUrlNode = ({ loc, lastmod, changefreq, priority }) => `  <url>
+    <loc>${loc}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`
+
+const run = async () => {
+  const files = await readdir(NEWS_DIR)
+  const markdownFiles = files.filter(file => file.endsWith('.md') && !file.startsWith('_'))
+
+  const articles = []
+  for (const file of markdownFiles) {
+    const fullPath = path.join(NEWS_DIR, file)
+    const raw = await readFile(fullPath, 'utf8')
+    const meta = parseFrontmatter(raw)
+    if ((meta.status || 'published') !== 'published') continue
+    if (!meta.slug) continue
+
+    articles.push({
+      slug: meta.slug,
+      date: meta.date || TODAY,
+    })
+  }
+
+  articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+  const nodes = [
+    buildUrlNode({
+      loc: `${SITE_URL}/`,
+      lastmod: TODAY,
+      changefreq: 'weekly',
+      priority: '1.0',
+    }),
+    ...articles.map(article =>
+      buildUrlNode({
+        loc: `${SITE_URL}/nyheter/${article.slug}`,
+        lastmod: article.date,
+        changefreq: 'monthly',
+        priority: '0.8',
+      }),
+    ),
+  ]
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${nodes.join('\n')}
+</urlset>
+`
+
+  await mkdir(path.dirname(SITEMAP_PATH), { recursive: true })
+  await writeFile(SITEMAP_PATH, xml, 'utf8')
+  console.log(`Sitemap generated with ${articles.length} news URLs.`)
+}
+
+run().catch((error) => {
+  console.error('Failed to generate sitemap:', error)
+  process.exit(1)
+})
+

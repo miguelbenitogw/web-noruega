@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "WebFetch(domain:polygon-rust-txen.squarespace.com)",
+      "Read(//c/Users/PC/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/cli/assets/**)",
+      "Bash(python scripts/search.py \"hero background image corporate overlay\" --domain ux -n 5)",
+      "Bash(python scripts/search.py \"image section professional corporate\" --domain landing -n 5)",
+      "WebFetch(domain:globalworking.net)"
+    ]
+  }
+}
