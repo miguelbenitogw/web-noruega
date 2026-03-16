@@ -18,6 +18,9 @@ dist-ssr
 .env.*
 !.env.example
 
+# Local assistant/tooling config
+.claude/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
