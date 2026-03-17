@@ -2,7 +2,7 @@
 
 Date: 2026-03-16  
 Project: `prueba-web-noruega`  
-Measurement ID: `G-0X2BDYKVSP`
+Measurement ID: `G-G47NL2MT8Z`
 
 ## 1. Objectives
 
@@ -119,7 +119,7 @@ Rules:
 ## 8.1 Technical Validation
 
 1. Browser Network check:
-   - `googletagmanager.com/gtag/js?id=G-0X2BDYKVSP` returns 200.
+   - `googletagmanager.com/gtag/js?id=G-G47NL2MT8Z` returns 200.
    - `google-analytics.com/g/collect` returns 204.
 2. Realtime view:
    - active user visible within 10-60 seconds.
@@ -183,7 +183,7 @@ Phase 3 (1 day):
 
 ## 12. Acceptance Criteria
 
-1. GA script loads on production with `G-0X2BDYKVSP`.
+1. GA script loads on production with `G-G47NL2MT8Z`.
 2. `contact_submit` appears in GA4 and is marked as conversion.
 3. Realtime and standard reports show stable data for at least 7 days.
 4. Weekly analytics review process is defined and running.
@@ -201,4 +201,3 @@ Weekly:
 2. Review `contact_error` trend.
 3. Validate conversion rate trend.
 4. Log actions for SEO/CRO improvements.
-

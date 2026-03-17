@@ -18,9 +18,11 @@ import LegalSections from './components/LegalSections'
 import Footer from './components/Footer'
 import BackToTop from './components/BackToTop'
 import CookieConsent from './components/CookieConsent'
-import { initAnalyticsWithConsent } from './lib/analytics'
+import { initAnalyticsWithConsent, trackPageView } from './lib/analytics'
 import NewsArticlePage from './pages/NewsArticlePage'
 import { setDefaultSEO } from './lib/seo'
+
+const getCurrentPath = () => `${window.location.pathname}${window.location.search}`
 
 const getNewsSlugFromPath = (pathname) => {
   const match = pathname.match(/^\/nyheter\/([^/]+)\/?$/)
@@ -28,17 +30,20 @@ const getNewsSlugFromPath = (pathname) => {
 }
 
 export default function App() {
-  const [currentPath, setCurrentPath] = useState(() => window.location.pathname)
-  const newsSlug = getNewsSlugFromPath(currentPath)
+  const [currentPath, setCurrentPath] = useState(getCurrentPath)
+  const currentPathname = currentPath.split('?')[0]
+  const newsSlug = getNewsSlugFromPath(currentPathname)
 
   useEffect(() => {
     if (localStorage.getItem('gw-cookies') === 'accepted') {
-      initAnalyticsWithConsent()
+      if (initAnalyticsWithConsent()) {
+        trackPageView(currentPath)
+      }
     }
-  }, [])
+  }, [currentPath])
 
   useEffect(() => {
-    const onPopState = () => setCurrentPath(window.location.pathname)
+    const onPopState = () => setCurrentPath(getCurrentPath())
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
   }, [])

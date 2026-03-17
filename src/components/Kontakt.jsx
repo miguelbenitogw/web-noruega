@@ -104,6 +104,10 @@ export default function Kontakt() {
       )
       setStatus('sent')
       trackEvent('contact_submit', { contact_type: form.type })
+      trackEvent('generate_lead', {
+        lead_type: form.type,
+        method: 'contact_form',
+      })
     } catch (err) {
       console.error('EmailJS error:', err)
       setStatus('error')

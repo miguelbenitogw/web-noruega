@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { initAnalyticsWithConsent, trackEvent } from '../lib/analytics'
+import { initAnalyticsWithConsent, trackEvent, trackPageView } from '../lib/analytics'
 
 export default function CookieConsent() {
   const [show, setShow] = useState(false)
@@ -14,7 +14,9 @@ export default function CookieConsent() {
 
   const accept = () => {
     localStorage.setItem('gw-cookies', 'accepted')
-    initAnalyticsWithConsent()
+    if (initAnalyticsWithConsent()) {
+      trackPageView(`${window.location.pathname}${window.location.search}`)
+    }
     trackEvent('cookie_consent_accept')
     setShow(false)
   }
