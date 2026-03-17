@@ -49,7 +49,7 @@ const sectors = ['Helsesektor', 'Industri', 'Bygg & anlegg', 'Utdanning']
 
 export default function Rekruttering() {
   return (
-    <section id="rekruttering" className="py-24 lg:py-32 bg-white" aria-labelledby="rekruttering-heading">
+    <section id="rekruttering" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="rekruttering-heading">
       <div className="container-xl">
 
         {/* Top: header + image real */}

@@ -77,7 +77,7 @@ export default function FAQ() {
                 Finn svar på de vanligste spørsmålene om rekruttering og samarbeid med Global Working.
               </p>
               <a
-                href="#kontakt"
+                href="/#kontakt"
                 className="inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
               >
                 Fant du ikke svaret? Kontakt oss

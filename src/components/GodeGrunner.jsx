@@ -94,7 +94,7 @@ export default function GodeGrunner() {
 
             <AnimateIn delay={500}>
               <a
-                href="#om-oss"
+                href="/#om-oss"
                 className="inline-flex items-center gap-2 mt-10 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
               >
                 Les mer om oss

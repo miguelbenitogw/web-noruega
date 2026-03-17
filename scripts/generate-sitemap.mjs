@@ -52,11 +52,12 @@ const run = async () => {
   }
 
   articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  const homeLastmod = articles[0]?.date || TODAY
 
   const nodes = [
     buildUrlNode({
       loc: `${SITE_URL}/`,
-      lastmod: TODAY,
+      lastmod: homeLastmod,
       changefreq: 'weekly',
       priority: '1.0',
     }),
@@ -85,4 +86,3 @@ run().catch((error) => {
   console.error('Failed to generate sitemap:', error)
   process.exit(1)
 })
-

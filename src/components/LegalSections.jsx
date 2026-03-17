@@ -21,11 +21,11 @@ export default function LegalSections() {
         </article>
 
         <article id="cookies-policy" className="scroll-mt-28">
-          <h2 className="font-heading text-2xl font-bold text-ink mb-4">Cookies</h2>
+          <h2 className="font-heading text-2xl font-bold text-ink mb-4">Informasjonskapsler</h2>
           <p className="text-gray-600 leading-relaxed">
-            Vi bruker nødvendige cookies for grunnleggende funksjonalitet og valgfrie analyse-cookies for å måle
+            Vi bruker nødvendige informasjonskapsler for grunnleggende funksjonalitet og valgfrie analyseinformasjonskapsler for å måle
             bruk av nettsiden. Analyse aktiveres kun etter samtykke. Du kan endre samtykke ved å slette
-            lagrede cookie-valg i nettleseren og laste siden på nytt.
+            lagrede valg i nettleseren og laste siden på nytt.
           </p>
         </article>
       </div>

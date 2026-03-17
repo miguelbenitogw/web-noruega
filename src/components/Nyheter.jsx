@@ -19,7 +19,7 @@ export default function Nyheter() {
   const featured = news[0]
 
   return (
-    <section id="nyheter" className="py-24 lg:py-32 bg-white" aria-labelledby="nyheter-heading">
+    <section id="nyheter" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="nyheter-heading">
       <div className="container-xl">
         <AnimateIn>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
@@ -32,7 +32,7 @@ export default function Nyheter() {
               </h2>
             </div>
             <a
-              href="#nyheter-arkiv"
+              href="/#nyheter-arkiv"
               onClick={() => trackEvent('cta_click', { location: 'nyheter', cta: 'se_alle_nyheter' })}
               className="shrink-0 inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
             >
@@ -107,7 +107,7 @@ export default function Nyheter() {
           </div>
         </div>
 
-        <div id="nyheter-arkiv" className="mt-16 space-y-6">
+        <div id="nyheter-arkiv" className="scroll-mt-28 mt-16 space-y-6">
           {news.map(article => (
             <article id={`nyhet-${article.slug}`} key={article.slug} className="scroll-mt-28 border border-gray-100 rounded-2xl p-6 bg-white">
               <div className="flex items-center gap-3 mb-2 text-sm text-gray-500">
@@ -132,4 +132,3 @@ export default function Nyheter() {
     </section>
   )
 }
-

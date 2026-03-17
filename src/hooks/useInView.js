@@ -8,6 +8,9 @@ import { useEffect, useRef, useState } from 'react'
 export default function useInView(options = {}) {
   const ref = useRef(null)
   const [isInView, setIsInView] = useState(false)
+  const threshold = options.threshold ?? 0.15
+  const rootMargin = options.rootMargin ?? '0px 0px -60px 0px'
+  const root = options.root ?? null
 
   useEffect(() => {
     const el = ref.current
@@ -20,12 +23,12 @@ export default function useInView(options = {}) {
           observer.unobserve(el)
         }
       },
-      { threshold: 0.15, rootMargin: '0px 0px -60px 0px', ...options }
+      { threshold, rootMargin, root }
     )
 
     observer.observe(el)
     return () => observer.disconnect()
-  }, [options])
+  }, [threshold, rootMargin, root])
 
   return [ref, isInView]
 }

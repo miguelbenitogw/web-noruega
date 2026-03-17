@@ -1,15 +1,15 @@
-﻿const footerLinks = {
+const footerLinks = {
   Tjenester: [
-    { label: 'Rekruttering', href: '#rekruttering' },
-    { label: 'Norskopplæring', href: '#hvagjor' },
-    { label: 'Helsesektor', href: '#helsesektor' },
-    { label: 'Talentportalen', href: '#talentportalen' },
+    { label: 'Rekruttering', href: '/#rekruttering' },
+    { label: 'Norskopplæring', href: '/#hvagjor' },
+    { label: 'Helsesektor', href: '/#helsesektor' },
+    { label: 'Talentportalen', href: '/#talentportalen' },
   ],
   Selskapet: [
-    { label: 'Om oss', href: '#om-oss' },
-    { label: 'Nyheter', href: '#nyheter' },
-    { label: 'Kontakt', href: '#kontakt' },
-    { label: 'Personvern', href: '#personvern' },
+    { label: 'Om oss', href: '/#om-oss' },
+    { label: 'Nyheter', href: '/#nyheter' },
+    { label: 'Kontakt', href: '/#kontakt' },
+    { label: 'Personvern', href: '/#personvern' },
   ],
   Kontakt: [
     { label: '+47 22 00 00 00', href: 'tel:+4722000000' },
@@ -90,12 +90,13 @@ export default function Footer() {
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-blue-300 text-sm">
           <p>© {new Date().getFullYear()} Global Working Norge AS. Alle rettigheter forbeholdt.</p>
           <div className="flex gap-6">
-            <a href="#personvern" className="hover:text-white transition-colors">Personvern</a>
-            <a href="#vilkar" className="hover:text-white transition-colors">Vilkår</a>
-            <a href="#cookies-policy" className="hover:text-white transition-colors">Cookies</a>
+            <a href="/#personvern" className="hover:text-white transition-colors">Personvern</a>
+            <a href="/#vilkar" className="hover:text-white transition-colors">Vilkår</a>
+            <a href="/#cookies-policy" className="hover:text-white transition-colors">Informasjonskapsler</a>
           </div>
         </div>
       </div>
     </footer>
   )
 }
+

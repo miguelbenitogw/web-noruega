@@ -1,4 +1,4 @@
-﻿import { trackEvent } from '../lib/analytics'
+import { trackEvent } from '../lib/analytics'
 
 const benefits = [
   {
@@ -8,7 +8,7 @@ const benefits = [
       </svg>
     ),
     title: 'Digitalt søknadssystem',
-    desc: 'Søk på stillinger, last opp dokumenter og følg statusen på søknaden din – alt på ett sted.',
+    desc: 'Søk på stillinger, last opp dokumenter og følg statusen på søknaden din - alt på ett sted.',
   },
   {
     icon: (
@@ -41,7 +41,7 @@ const benefits = [
 
 export default function Talentportalen() {
   return (
-    <section id="talentportalen" className="py-24 lg:py-32 bg-surface" aria-labelledby="talentportalen-heading">
+    <section id="talentportalen" className="scroll-mt-28 py-24 lg:py-32 bg-surface" aria-labelledby="talentportalen-heading">
       <div className="container-xl">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="relative order-2 lg:order-1">
@@ -53,7 +53,7 @@ export default function Talentportalen() {
                   <div className="w-3 h-3 rounded-full bg-green-400" aria-hidden="true"/>
                 </div>
                 <div className="flex-1 bg-white rounded-md px-3 py-1.5 text-gray-400 text-xs border border-gray-200">
-                  talentportalen.globalworking.no
+                  globalworking-talentportal.lovable.app
                 </div>
               </div>
 
@@ -70,7 +70,7 @@ export default function Talentportalen() {
 
                 <div className="bg-primary-50 rounded-2xl p-4 mb-4">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-ink text-xs font-semibold">Norsk fremgang – B1</span>
+                    <span className="text-ink text-xs font-semibold">Norsk fremgang - B1</span>
                     <span className="text-primary-600 text-xs font-bold">68%</span>
                   </div>
                   <div className="w-full bg-primary-100 rounded-full h-2">
@@ -103,7 +103,7 @@ export default function Talentportalen() {
               Din personlige portal for karriere i Norge
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-10">
-              Talentportalen følger kandidater fra første norsktime til oppstart i jobb. Arbeidsgivere kan søke og matche kandidater i sanntid.
+              Talentportalen følger kandidater fra første norsktime til oppstart i jobb. Arbeidsgivere kan søke og matche kandidater i sanntid. Når du logger inn, åpnes den nye talentportalen direkte.
             </p>
 
             <ul className="space-y-5" role="list">
@@ -122,7 +122,7 @@ export default function Talentportalen() {
 
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
               <a
-                href="https://talentportalen.globalworking.no"
+                href="https://globalworking-talentportal.lovable.app"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('cta_click', { location: 'talentportalen', cta: 'logg_inn' })}
@@ -131,7 +131,7 @@ export default function Talentportalen() {
                 Logg inn på portalen
               </a>
               <a
-                href="#kontakt"
+                href="/#kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'talentportalen', cta: 'registrer_bedrift' })}
                 className="inline-flex items-center justify-center px-7 py-4 border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors duration-200 cursor-pointer"
               >

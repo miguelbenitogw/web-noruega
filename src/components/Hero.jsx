@@ -1,4 +1,4 @@
-﻿import { IMAGES, img } from '../assets/images'
+import { IMAGES, img } from '../assets/images'
 import teamHero from '../assets/team-hero.jpg'
 import useInView from '../hooks/useInView'
 import useCounter from '../hooks/useCounter'
@@ -36,7 +36,7 @@ export default function Hero() {
   return (
     <section
       className="relative min-h-screen flex items-center overflow-hidden"
-      aria-label="Hero – Global Working Norge"
+      aria-label="Hovedseksjon – Global Working Norge"
     >
       <div className="absolute inset-0" aria-hidden="true">
         <img
@@ -72,7 +72,7 @@ export default function Hero() {
 
             <div className="flex flex-col sm:flex-row gap-4 animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
               <a
-                href="#hvagjor"
+                href="/#hvagjor"
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'slik_jobber_vi' })}
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-cta text-white font-semibold rounded-xl hover:bg-cta-600 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
               >
@@ -82,7 +82,7 @@ export default function Hero() {
                 </svg>
               </a>
               <a
-                href="#kontakt"
+                href="/#kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'kontakt_oss' })}
                 className="inline-flex items-center justify-center px-7 py-4 bg-white/10 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-200 backdrop-blur-sm cursor-pointer"
               >
@@ -132,3 +132,4 @@ export default function Hero() {
     </section>
   )
 }
+

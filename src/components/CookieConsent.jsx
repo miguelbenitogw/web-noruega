@@ -38,7 +38,7 @@ export default function CookieConsent() {
           <div className="flex-1">
             <p className="font-heading font-semibold text-ink text-sm mb-1">Vi bruker informasjonskapsler</p>
             <p className="text-gray-500 text-xs leading-relaxed">
-              Vi bruker cookies for å forbedre din opplevelse på nettsiden vår. Ved å godta samtykker du til bruk av informasjonskapsler i samsvar med vår personvernpolicy.
+              Vi bruker informasjonskapsler for å forbedre opplevelsen på nettsiden vår. Ved å godta samtykker du til bruk av informasjonskapsler i samsvar med vår personvernerklæring.
             </p>
           </div>
           <div className="flex gap-2 shrink-0">

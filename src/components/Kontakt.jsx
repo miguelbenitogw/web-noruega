@@ -118,7 +118,7 @@ export default function Kontakt() {
   }
 
   return (
-    <section id="kontakt" className="py-24 lg:py-32 bg-surface overflow-hidden" aria-labelledby="kontakt-heading">
+    <section id="kontakt" className="scroll-mt-28 py-24 lg:py-32 bg-surface overflow-hidden" aria-labelledby="kontakt-heading">
       <div className="container-xl">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           <AnimateIn variant="fadeRight">
@@ -162,7 +162,7 @@ export default function Kontakt() {
               <div className="group relative rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
                 <img
                   src={img(IMAGES.alicanteOffice, 1200)}
-                  alt="Global Working Office Alicante"
+                  alt="Global Working-kontoret i Alicante"
                   className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent flex flex-col justify-end p-8">

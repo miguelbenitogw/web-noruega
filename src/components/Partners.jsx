@@ -12,12 +12,11 @@ export default function Partners() {
         </div>
 
         <div className="space-y-12 max-w-5xl mx-auto">
-          {/* Fila 1: Partneres de Salud y Selección */}
           <div className="flex flex-col items-center">
             <div className="w-full flex justify-center transition-all duration-700">
               <img
                 src={img(IMAGES.partnersRow1, 1400)}
-                alt="Health and Recruitment Partners"
+                alt="Partnere innen helse og rekruttering"
                 className="w-full h-auto object-contain max-h-[120px] sm:max-h-[160px]"
                 loading="lazy"
               />
@@ -26,12 +25,11 @@ export default function Partners() {
 
           <div className="w-1/2 h-px bg-gradient-to-r from-transparent via-gray-100 to-transparent mx-auto" />
 
-          {/* Fila 2: Municipios Noruegos (Kommuner) */}
           <div className="flex flex-col items-center">
             <div className="w-full flex justify-center transition-all duration-700">
               <img
                 src={img(IMAGES.partnersRow2, 1400)}
-                alt="Norwegian Municipalities Partners"
+                alt="Norske kommune- og helsepartnere"
                 className="w-full h-auto object-contain max-h-[100px] sm:max-h-[140px]"
                 loading="lazy"
               />

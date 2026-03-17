@@ -23,7 +23,7 @@ const features = [
 
 export default function Helsesektor() {
   return (
-    <section id="helsesektor" className="py-24 lg:py-32 bg-surface" aria-labelledby="helsesektor-heading">
+    <section id="helsesektor" className="scroll-mt-28 py-24 lg:py-32 bg-surface" aria-labelledby="helsesektor-heading">
       <div className="container-xl">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <AnimateIn variant="fadeRight">
@@ -56,7 +56,7 @@ export default function Helsesektor() {
               </ul>
 
               <a
-                href="#kontakt"
+                href="/#kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'helsesektor', cta: 'finn_sykepleiere' })}
                 className="inline-flex items-center gap-2 px-7 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
               >

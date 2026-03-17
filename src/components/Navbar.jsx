@@ -3,12 +3,12 @@ import { IMAGES } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 
 const navLinks = [
-  { label: 'Rekruttering', href: '#rekruttering' },
-  { label: 'Helsesektor', href: '#helsesektor' },
-  { label: 'Nyheter', href: '#nyheter' },
-  { label: 'Talentportalen', href: '#talentportalen' },
-  { label: 'Om oss', href: '#om-oss' },
-  { label: 'Kontakt', href: '#kontakt' },
+  { label: 'Rekruttering', href: '/#rekruttering' },
+  { label: 'Helsesektor', href: '/#helsesektor' },
+  { label: 'Nyheter', href: '/#nyheter' },
+  { label: 'Talentportalen', href: '/#talentportalen' },
+  { label: 'Om oss', href: '/#om-oss' },
+  { label: 'Kontakt', href: '/#kontakt' },
 ]
 
 export default function Navbar() {
@@ -55,7 +55,7 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="#kontakt"
+              href="/#kontakt"
               onClick={() => trackEvent('cta_click', { location: 'navbar', cta: 'kom_i_gang' })}
               className="ml-3 px-5 py-2.5 bg-cta text-white rounded-lg text-sm font-semibold hover:bg-cta-600 transition-colors duration-200 shadow-sm cursor-pointer"
             >
@@ -93,7 +93,7 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="#kontakt"
+              href="/#kontakt"
               onClick={() => {
                 trackEvent('cta_click', { location: 'mobile_nav', cta: 'kom_i_gang' })
                 setMenuOpen(false)

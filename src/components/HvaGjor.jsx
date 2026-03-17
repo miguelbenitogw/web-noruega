@@ -40,7 +40,7 @@ const services = [
 
 export default function HvaGjor() {
   return (
-    <section id="hvagjor" className="py-24 lg:py-32 bg-white relative overflow-hidden" aria-labelledby="hvagjor-heading">
+    <section id="hvagjor" className="scroll-mt-28 py-24 lg:py-32 bg-white relative overflow-hidden" aria-labelledby="hvagjor-heading">
       {/* Decorative Background Element */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-primary-50/30 rounded-full blur-3xl opacity-50 pointer-events-none" />
       <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-[600px] h-[600px] bg-blue-50/30 rounded-full blur-3xl opacity-50 pointer-events-none" />
@@ -91,7 +91,7 @@ export default function HvaGjor() {
         <AnimateIn className="text-center">
           <div className="inline-flex flex-col sm:flex-row items-center gap-6">
             <a
-              href="#kontakt"
+              href="/#kontakt"
               className="group inline-flex items-center gap-3 px-10 py-5 bg-primary-600 text-white font-bold rounded-2xl hover:bg-navy transition-all duration-300 shadow-xl shadow-primary-100 hover:shadow-navy/20 cursor-pointer active:scale-95"
             >
               Book et møte

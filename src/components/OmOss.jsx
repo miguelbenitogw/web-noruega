@@ -8,10 +8,9 @@ const values = [
 
 export default function OmOss() {
   return (
-    <section id="om-oss" className="py-24 lg:py-32 bg-white" aria-labelledby="om-oss-heading">
+    <section id="om-oss" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="om-oss-heading">
       <div className="container-xl">
 
-        {/* Header split layout con imagenes reales */}
         <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
           <div>
             <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
@@ -24,7 +23,7 @@ export default function OmOss() {
               Siden 2014 har Global Working tilrettelagt for profesjonell mobilitet i det europeiske arbeidsmarkedet. Vi kombinerer språkopplæring, rekruttering og personlig oppfølging for å skape livsendrende muligheter.
             </p>
             <p className="text-gray-600 leading-relaxed mb-8">
-              Vårt team består av over 50 dedikerte fagfolk, hvorav 25% er psykologer fokusert på utvelgelse og støtte, og 55% er språklærere spesialisert på yrkesrettet norskopplæring. Vi er verdens største språkskole som underviser i norsk utenfor Skandinavia.
+              Vårt team består av over 50 dedikerte fagfolk, hvorav 25 % er psykologer med fokus på utvelgelse og støtte, og 55 % er språklærere spesialisert på yrkesrettet norskopplæring. Vi er verdens største språkskole som underviser i norsk utenfor Skandinavia.
             </p>
             <div className="flex flex-wrap gap-8">
               <div>
@@ -44,12 +43,11 @@ export default function OmOss() {
             </div>
           </div>
 
-          {/* Collage de imágenes reales */}
           <div className="grid grid-cols-2 gap-4">
             <div className="rounded-2xl overflow-hidden shadow-lg row-span-2 relative group uppercase">
               <img
                 src={img(IMAGES.teamGroup, 1200)}
-                alt="Global Working team"
+                alt="Global Working-teamet"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 loading="lazy"
               />
@@ -58,7 +56,7 @@ export default function OmOss() {
             <div className="rounded-2xl overflow-hidden shadow-lg relative group">
               <img
                 src={img(IMAGES.oficina, 800)}
-                alt="Global Working kontor"
+                alt="Global Working-kontor"
                 className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                 loading="lazy"
               />
@@ -73,7 +71,6 @@ export default function OmOss() {
           </div>
         </div>
 
-        {/* Values */}
         <div className="grid sm:grid-cols-3 gap-6">
           {values.map(v => (
             <div key={v.title} className="bg-surface rounded-2xl p-7 border border-gray-100 hover:shadow-md hover:border-primary-100 transition-all duration-300">
