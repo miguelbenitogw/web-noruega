@@ -2,24 +2,21 @@ import { useEffect, useState } from 'react'
 import './index.css'
 import Navbar from './components/Navbar'
 import ScrollProgress from './components/ScrollProgress'
-import Hero from './components/Hero'
-import HvaGjor from './components/HvaGjor'
-import Rekruttering from './components/Rekruttering'
-import Helsesektor from './components/Helsesektor'
-import GodeGrunner from './components/GodeGrunner'
-import Nyheter from './components/Nyheter'
-import CTABanner from './components/CTABanner'
-import Talentportalen from './components/Talentportalen'
-import OmOss from './components/OmOss'
-import FAQ from './components/FAQ'
-import Kontakt from './components/Kontakt'
-import LegalSections from './components/LegalSections'
 import Footer from './components/Footer'
 import BackToTop from './components/BackToTop'
 import CookieConsent from './components/CookieConsent'
 import { initAnalyticsWithConsent, trackPageView } from './lib/analytics'
-import NewsArticlePage from './pages/NewsArticlePage'
 import { setDefaultSEO } from './lib/seo'
+
+// Pages
+import HomePage from './pages/HomePage'
+import RekrutteringPage from './pages/RekrutteringPage'
+import HelsePage from './pages/HelsePage'
+import NyheterPage from './pages/NyheterPage'
+import TalentportalenPage from './pages/TalentportalenPage'
+import OmOssPage from './pages/OmOssPage'
+import KontaktPage from './pages/KontaktPage'
+import NewsArticlePage from './pages/NewsArticlePage'
 
 const getCurrentPath = () => `${window.location.pathname}${window.location.search}`
 
@@ -80,81 +77,24 @@ export default function App() {
     if (!newsSlug) setDefaultSEO()
   }, [newsSlug, sectionRoute])
 
-  const renderSectionRoute = () => {
+  const renderPage = () => {
+    if (newsSlug) return <NewsArticlePage slug={newsSlug} />
+
     switch (sectionRoute) {
       case 'home':
-        return (
-          <>
-            <Hero />
-            <HvaGjor />
-            <Rekruttering />
-            <Helsesektor />
-            <GodeGrunner />
-            <Nyheter />
-            <CTABanner />
-            <Talentportalen />
-            <OmOss />
-            <FAQ />
-            <Kontakt />
-            <LegalSections />
-          </>
-        )
+        return <HomePage />
       case 'rekruttering':
-        return (
-          <>
-            <HvaGjor />
-            <Rekruttering />
-            <GodeGrunner />
-            <CTABanner />
-            <Kontakt />
-            <LegalSections />
-          </>
-        )
+        return <RekrutteringPage />
       case 'helse':
-        return (
-          <>
-            <Helsesektor />
-            <GodeGrunner />
-            <Nyheter />
-            <CTABanner />
-            <Kontakt />
-            <LegalSections />
-          </>
-        )
+        return <HelsePage />
       case 'nyheter':
-        return (
-          <>
-            <Nyheter />
-            <CTABanner />
-            <Kontakt />
-            <LegalSections />
-          </>
-        )
+        return <NyheterPage />
       case 'talentportalen':
-        return (
-          <>
-            <Talentportalen />
-            <CTABanner />
-            <Kontakt />
-            <LegalSections />
-          </>
-        )
+        return <TalentportalenPage />
       case 'om-oss':
-        return (
-          <>
-            <OmOss />
-            <FAQ />
-            <Kontakt />
-            <LegalSections />
-          </>
-        )
+        return <OmOssPage />
       case 'kontakt':
-        return (
-          <>
-            <Kontakt />
-            <LegalSections />
-          </>
-        )
+        return <KontaktPage />
       default:
         return (
           <section className="py-24 bg-white">
@@ -181,11 +121,7 @@ export default function App() {
       <ScrollProgress />
       <Navbar />
       <main id="main-content">
-        {newsSlug ? (
-          <NewsArticlePage slug={newsSlug} />
-        ) : (
-          renderSectionRoute()
-        )}
+        {renderPage()}
       </main>
       <Footer />
       <BackToTop />
