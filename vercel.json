@@ -15,7 +15,7 @@
   ],
   "rewrites": [
     {
-      "source": "/nyheter/(.*)",
+      "source": "/((?!.*\\.).*)",
       "destination": "/index.html"
     }
   ]
