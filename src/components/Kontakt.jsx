@@ -135,7 +135,7 @@ export default function Kontakt() {
                   Ønsker du å vite mer?
                 </h2>
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  Enten du er arbeidsgiver som søker kompetanse, eller kandidat som ønsker å jobbe i Norge, hjelper vi deg hele veien.
+                  Du treffer oss på e-post eller telefon, eller ved å fylle ut skjemaet under. Vi tar kontakt så snart vi har mulighet.
                 </p>
               </div>
 
@@ -206,7 +206,7 @@ export default function Kontakt() {
                 <form onSubmit={handleSubmit} noValidate className="space-y-5" aria-label="Kontaktskjema">
                   <div>
                     <p className="font-heading font-bold text-ink text-xl mb-1">Send oss en melding</p>
-                    <p className="text-gray-400 text-sm">Vi svarer innen 1 virkedag.</p>
+                    <p className="text-gray-400 text-sm">Vi svarer normalt innen 1 virkedag.</p>
                   </div>
 
                   {status === 'error' && (

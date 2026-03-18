@@ -3,7 +3,6 @@ import './index.css'
 import Navbar from './components/Navbar'
 import ScrollProgress from './components/ScrollProgress'
 import Hero from './components/Hero'
-import Partners from './components/Partners'
 import HvaGjor from './components/HvaGjor'
 import Rekruttering from './components/Rekruttering'
 import Helsesektor from './components/Helsesektor'
@@ -87,7 +86,6 @@ export default function App() {
         return (
           <>
             <Hero />
-            <Partners />
             <HvaGjor />
             <Rekruttering />
             <Helsesektor />

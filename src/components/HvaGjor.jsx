@@ -1,4 +1,4 @@
-import { IMAGES } from '../assets/images'
+﻿import { IMAGES } from '../assets/images'
 import AnimateIn from './AnimateIn'
 
 const services = [
@@ -11,8 +11,8 @@ const services = [
     ),
     title: 'Rekrutterer kompetanse',
     description:
-      'Vi rekrutterer kompetansen dere trenger i sektorer som helse, industri, bygg og utdanning. Kandidater kommer hovedsakelig fra Spania, Italia og Frankrike.',
-    image: IMAGES.teamHero
+      'Vi rekrutterer kompetansen dere trenger innen flere sektorer, blant annet helse og omsorg, industri og bygg, samt utdanning og barneomsorg.',
+    image: IMAGES.teamHero,
   },
   {
     icon: (
@@ -22,8 +22,8 @@ const services = [
     ),
     title: 'Sørger for ønsket språknivå',
     description:
-      'Alle kandidater går gjennom strukturert opplæring med opptil 600 timer norsk, terminologi og arbeidskultur. Opplæring tilbys fysisk (5 mnd), hybrid (7 mnd) eller nettbasert (9 mnd).',
-    image: IMAGES.claseNoruego
+      'Vi underviser fra ingen forkunnskaper til opptil B2-nivå, og tilpasser språk, rolle og arbeidshverdag til målene dere har satt.',
+    image: IMAGES.claseNoruego,
   },
   {
     icon: (
@@ -33,15 +33,14 @@ const services = [
     ),
     title: 'Trygg oppstart i Norge',
     description:
-      'Vi håndterer dokumentasjon og koordinering med arbeidsgiver. Intervjuer skjer normalt 1–4 uker etter opplæring, med ekstra oppfølging ved behov.',
-    image: IMAGES.alicanteOffice
+      'Vi hjelper kandidatene gjennom hele prosessen med nødvendige dokumenter og riktig papirarbeid, med ekstra språktimer ved behov.',
+    image: IMAGES.alicanteOffice,
   },
 ]
 
 export default function HvaGjor() {
   return (
     <section id="hvagjor" className="scroll-mt-28 py-24 lg:py-32 bg-white relative overflow-hidden" aria-labelledby="hvagjor-heading">
-      {/* Decorative Background Element */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-primary-50/30 rounded-full blur-3xl opacity-50 pointer-events-none" />
       <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-[600px] h-[600px] bg-blue-50/30 rounded-full blur-3xl opacity-50 pointer-events-none" />
 
@@ -54,7 +53,7 @@ export default function HvaGjor() {
             Hva gjør Global Working?
           </h2>
           <p className="text-gray-600 text-lg leading-relaxed">
-            Vi bygger bro mellom talent og behov gjennom en helhetlig modell som reduserer risiko i oppstarten og gir bedre forutsigbarhet for norske arbeidsgivere.
+            Vi finner og presenterer de mest relevante menneskene til din virksomhet, og følger prosessen helt frem til trygg oppstart.
           </p>
         </AnimateIn>
 
@@ -63,7 +62,6 @@ export default function HvaGjor() {
             <AnimateIn key={s.title} variant="fadeUp" delay={i * 150} className="h-full">
               <div className="group h-full bg-white rounded-[2rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:border-primary-100 transition-all duration-500 overflow-hidden">
                 <div className="p-8 h-full flex flex-col">
-                  {/* Step Number & Icon */}
                   <div className="flex items-center justify-between mb-8">
                     <div className="w-14 h-14 bg-primary-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary-200 group-hover:scale-110 transition-transform duration-300">
                       {s.icon}
@@ -80,7 +78,6 @@ export default function HvaGjor() {
                     {s.description}
                   </p>
 
-                  {/* Decorative line */}
                   <div className="w-12 h-1 bg-primary-100 group-hover:w-full transition-all duration-500 rounded-full" />
                 </div>
               </div>
@@ -94,16 +91,16 @@ export default function HvaGjor() {
               href="/kontakt"
               className="group inline-flex items-center gap-3 px-10 py-5 bg-primary-600 text-white font-bold rounded-2xl hover:bg-navy transition-all duration-300 shadow-xl shadow-primary-100 hover:shadow-navy/20 cursor-pointer active:scale-95"
             >
-              Book et møte
-              <svg 
-                width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" 
+              Book et møte med oss
+              <svg
+                width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"
                 className="group-hover:translate-x-1 transition-transform"
               >
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
             </a>
             <p className="text-gray-400 text-sm font-medium">
-              Uforpliktende samtale om dine behov
+              Uforpliktende kartlegging av behov
             </p>
           </div>
         </AnimateIn>

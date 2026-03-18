@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+﻿import { useEffect } from 'react'
 import { getAllNews, getNewsBySlug } from '../lib/news'
 import MarkdownArticle, { getMarkdownSections } from '../components/MarkdownArticle'
 import { IMAGES, img } from '../assets/images'
@@ -14,7 +14,7 @@ const getCoverImage = (article) => {
 export default function NewsArticlePage({ slug }) {
   const article = getNewsBySlug(slug)
   const allNews = getAllNews()
-  const related = allNews.filter(item => item.slug !== slug).slice(0, 3)
+  const related = allNews.filter((item) => item.slug !== slug).slice(0, 3)
   const sections = article ? getMarkdownSections(article.body) : []
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export default function NewsArticlePage({ slug }) {
           >
             <p className="text-sm font-semibold text-ink mb-3">Hopp til seksjon</p>
             <div className="flex flex-wrap gap-2">
-              {sections.map(section => (
+              {sections.map((section) => (
                 <a
                   key={section.id}
                   href={`#${section.id}`}
@@ -94,7 +94,7 @@ export default function NewsArticlePage({ slug }) {
           <div className="mt-14 pt-10 border-t border-gray-100">
             <h2 className="font-heading text-2xl font-bold text-ink mb-5">Relaterte nyheter</h2>
             <div className="grid md:grid-cols-3 gap-4">
-              {related.map(item => (
+              {related.map((item) => (
                 <a
                   key={item.slug}
                   href={`/nyheter/${item.slug}`}

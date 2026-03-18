@@ -1,4 +1,4 @@
-import { trackEvent } from '../lib/analytics'
+﻿import { trackEvent } from '../lib/analytics'
 
 const benefits = [
   {
@@ -7,8 +7,8 @@ const benefits = [
         <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
       </svg>
     ),
-    title: 'Digitalt søknadssystem',
-    desc: 'Arbeidsgivere får oversikt over tilgjengelige profiler og kan gå raskere fra behov til intervju.',
+    title: 'Se kandidater for fast ansettelse',
+    desc: 'Få oversikt over tilgjengelige kandidater og finn profiler som passer deres behov.',
   },
   {
     icon: (
@@ -16,8 +16,8 @@ const benefits = [
         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
       </svg>
     ),
-    title: 'Norskopplæring inkludert',
-    desc: 'Kandidatdata er koblet til språkforberedelse, terminologi og progresjon før oppstart.',
+    title: 'Inviter til intervju direkte',
+    desc: 'Arbeidsgivere kan selv gå gjennom profiler og invitere aktuelle kandidater til intervju.',
   },
   {
     icon: (
@@ -25,8 +25,8 @@ const benefits = [
         <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
       </svg>
     ),
-    title: 'Sanntid fremgang',
-    desc: 'Bedre oversikt over kandidatstatus i prosessen gir mer forutsigbar planlegging.',
+    title: 'Oversikt over språkforberedelse',
+    desc: 'Se status i språk- og faglig forberedelse, slik at oppstarten kan planlegges tryggere.',
   },
   {
     icon: (
@@ -34,8 +34,8 @@ const benefits = [
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
     ),
-    title: 'Direkte kontakt',
-    desc: 'Rask dialog mellom arbeidsgiver og rekrutteringsteam reduserer manuelt arbeid i tidlig fase.',
+    title: 'Rask dialog med oss',
+    desc: 'Portalen er koblet til rekrutteringsteamet vårt for korte avklaringer underveis.',
   },
 ]
 
@@ -60,31 +60,31 @@ export default function Talentportalen() {
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <div className="font-heading font-semibold text-ink text-sm">Talentportalen</div>
-                    <div className="text-gray-400 text-xs">Hei, Maria! 👋</div>
+                    <div className="font-heading font-semibold text-ink text-sm">Kandidatportal</div>
+                    <div className="text-gray-400 text-xs">For arbeidsgivere</div>
                   </div>
                   <div className="w-9 h-9 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="font-heading text-primary-700 font-bold text-sm">M</span>
+                    <span className="font-heading text-primary-700 font-bold text-sm">GW</span>
                   </div>
                 </div>
 
                 <div className="bg-primary-50 rounded-2xl p-4 mb-4">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-ink text-xs font-semibold">Norsk fremgang - B1</span>
-                    <span className="text-primary-600 text-xs font-bold">68%</span>
+                    <span className="text-ink text-xs font-semibold">Tilgjengelige kandidater</span>
+                    <span className="text-primary-600 text-xs font-bold">Oppdatert</span>
                   </div>
                   <div className="w-full bg-primary-100 rounded-full h-2">
-                    <div className="bg-primary-600 h-2 rounded-full" style={{ width: '68%' }} aria-label="68% fullført" />
+                    <div className="bg-primary-600 h-2 rounded-full" style={{ width: '76%' }} aria-label="Kandidatmatching 76%" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { label: 'Aktive søknader', value: '3', color: 'text-primary-600' },
-                    { label: 'Neste økt', value: 'I morgen', color: 'text-cta' },
-                    { label: 'Dokumenter', value: '7/9', color: 'text-green-600' },
-                    { label: 'Meldinger', value: '2 nye', color: 'text-purple-600' },
-                  ].map(c => (
+                    { label: 'Klar for intervju', value: 'Nye profiler', color: 'text-primary-600' },
+                    { label: 'Fast ansettelse', value: 'Filter aktiv', color: 'text-cta' },
+                    { label: 'Dokumentasjon', value: 'Verifisert', color: 'text-green-600' },
+                    { label: 'Siste aktivitet', value: 'I dag', color: 'text-purple-600' },
+                  ].map((c) => (
                     <div key={c.label} className="bg-surface rounded-xl p-3.5 border border-gray-100">
                       <div className={`font-heading font-bold text-base ${c.color}`}>{c.value}</div>
                       <div className="text-gray-400 text-xs mt-0.5">{c.label}</div>
@@ -100,14 +100,14 @@ export default function Talentportalen() {
               Talentportalen
             </span>
             <h2 id="talentportalen-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight">
-              Din personlige portal for karriere i Norge
+              Ny kandidatportal for arbeidsgivere
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-10">
-              Den nye kandidatportalen gjør det enklere å finne relevante kandidater for fast ansettelse. Portalen er knyttet til hele forberedelsesløpet vårt, slik at vurdering, språk og oppstart sees i sammenheng.
+              Global Working har fått ny kandidatportal. Nå kan du selv gå inn og se hvilke kandidater vi har tilgjengelig for fast ansettelse.
             </p>
 
             <ul className="space-y-5" role="list">
-              {benefits.map(b => (
+              {benefits.map((b) => (
                 <li key={b.title} className="flex gap-4">
                   <div className="shrink-0 w-11 h-11 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center">
                     {b.icon}
@@ -132,10 +132,10 @@ export default function Talentportalen() {
               </a>
               <a
                 href="/kontakt"
-                onClick={() => trackEvent('cta_click', { location: 'talentportalen', cta: 'registrer_bedrift' })}
+                onClick={() => trackEvent('cta_click', { location: 'talentportalen', cta: 'kontakt_oss' })}
                 className="inline-flex items-center justify-center px-7 py-4 border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors duration-200 cursor-pointer"
               >
-                Registrer din bedrift
+                Kontakt oss
               </a>
             </div>
           </div>

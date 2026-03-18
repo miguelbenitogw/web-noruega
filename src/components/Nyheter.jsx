@@ -1,4 +1,4 @@
-import { IMAGES, img } from '../assets/images'
+﻿import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
 import { getAllNews } from '../lib/news'
@@ -25,7 +25,7 @@ export default function Nyheter() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
             <div className="max-w-xl">
               <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                Nyheter
+                Nyheter & artikler
               </span>
               <h2 id="nyheter-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink leading-tight">
                 Siste nytt fra Global Working
@@ -82,7 +82,7 @@ export default function Nyheter() {
           </article>
 
           <div className="lg:col-span-2 flex flex-col gap-4">
-            {news.slice(1, 4).map(article => (
+            {news.slice(1, 4).map((article) => (
               <article
                 key={article.slug}
                 className="bg-surface rounded-2xl border border-gray-100 p-5 hover:shadow-md hover:border-primary-100 transition-all duration-200 flex flex-col gap-3"
@@ -108,7 +108,7 @@ export default function Nyheter() {
         </div>
 
         <div id="nyheter-arkiv" className="scroll-mt-28 mt-16 space-y-6">
-          {news.map(article => (
+          {news.map((article) => (
             <article id={`nyhet-${article.slug}`} key={article.slug} className="scroll-mt-28 border border-gray-100 rounded-2xl p-6 bg-white">
               <div className="flex items-center gap-3 mb-2 text-sm text-gray-500">
                 <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getTagStyles(article.tag)}`}>{article.tag}</span>
