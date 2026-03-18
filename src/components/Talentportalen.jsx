@@ -8,7 +8,7 @@ const benefits = [
       </svg>
     ),
     title: 'Digitalt søknadssystem',
-    desc: 'Søk på stillinger, last opp dokumenter og følg statusen på søknaden din - alt på ett sted.',
+    desc: 'Arbeidsgivere får oversikt over tilgjengelige profiler og kan gå raskere fra behov til intervju.',
   },
   {
     icon: (
@@ -17,7 +17,7 @@ const benefits = [
       </svg>
     ),
     title: 'Norskopplæring inkludert',
-    desc: 'Tilgang til kursmoduler fra A1 til B2, med bransjespesifikt innhold og liveøkter.',
+    desc: 'Kandidatdata er koblet til språkforberedelse, terminologi og progresjon før oppstart.',
   },
   {
     icon: (
@@ -26,7 +26,7 @@ const benefits = [
       </svg>
     ),
     title: 'Sanntid fremgang',
-    desc: 'Spor fremdriften din i språkopplæringen og rekrutteringsprosessen med live dashboard.',
+    desc: 'Bedre oversikt over kandidatstatus i prosessen gir mer forutsigbar planlegging.',
   },
   {
     icon: (
@@ -35,7 +35,7 @@ const benefits = [
       </svg>
     ),
     title: 'Direkte kontakt',
-    desc: 'Kontakt med veiledere og potensielle arbeidsgivere gjennom en trygg digital kanal.',
+    desc: 'Rask dialog mellom arbeidsgiver og rekrutteringsteam reduserer manuelt arbeid i tidlig fase.',
   },
 ]
 
@@ -103,7 +103,7 @@ export default function Talentportalen() {
               Din personlige portal for karriere i Norge
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-10">
-              Talentportalen følger kandidater fra første norsktime til oppstart i jobb. Arbeidsgivere kan søke og matche kandidater i sanntid. Når du logger inn, åpnes den nye talentportalen direkte.
+              Den nye kandidatportalen gjør det enklere å finne relevante kandidater for fast ansettelse. Portalen er knyttet til hele forberedelsesløpet vårt, slik at vurdering, språk og oppstart sees i sammenheng.
             </p>
 
             <ul className="space-y-5" role="list">
@@ -131,7 +131,7 @@ export default function Talentportalen() {
                 Logg inn på portalen
               </a>
               <a
-                href="/#kontakt"
+                href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'talentportalen', cta: 'registrer_bedrift' })}
                 className="inline-flex items-center justify-center px-7 py-4 border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors duration-200 cursor-pointer"
               >

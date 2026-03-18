@@ -11,7 +11,7 @@ const services = [
     ),
     title: 'Rekrutterer kompetanse',
     description:
-      'Vi rekrutterer kompetansen dere trenger i sektorer som helse, industri, bygg og utdanning. Vi finner de mest relevante menneskene til din virksomhet.',
+      'Vi rekrutterer kompetansen dere trenger i sektorer som helse, industri, bygg og utdanning. Kandidater kommer hovedsakelig fra Spania, Italia og Frankrike.',
     image: IMAGES.teamHero
   },
   {
@@ -22,7 +22,7 @@ const services = [
     ),
     title: 'Sørger for ønsket språknivå',
     description:
-      'Som verdens største norskskole utenfor Skandinavia, sikrer vi at alle kandidater når ønsket språknivå (opptil B2) før oppstart.',
+      'Alle kandidater går gjennom strukturert opplæring med opptil 600 timer norsk, terminologi og arbeidskultur. Opplæring tilbys fysisk (5 mnd), hybrid (7 mnd) eller nettbasert (9 mnd).',
     image: IMAGES.claseNoruego
   },
   {
@@ -33,7 +33,7 @@ const services = [
     ),
     title: 'Trygg oppstart i Norge',
     description:
-      'Vi håndterer alt papirarbeid og dokumentasjon, og gir personlig oppfølging for å sikre en smidig og trygg integrering i det norske samfunnet.',
+      'Vi håndterer dokumentasjon og koordinering med arbeidsgiver. Intervjuer skjer normalt 1–4 uker etter opplæring, med ekstra oppfølging ved behov.',
     image: IMAGES.alicanteOffice
   },
 ]
@@ -54,7 +54,7 @@ export default function HvaGjor() {
             Hva gjør Global Working?
           </h2>
           <p className="text-gray-600 text-lg leading-relaxed">
-            Vi bygger bro mellom talent og muligheter gjennom en helhetlig prosess som sikrer suksess for både kandidat og arbeidsgiver.
+            Vi bygger bro mellom talent og behov gjennom en helhetlig modell som reduserer risiko i oppstarten og gir bedre forutsigbarhet for norske arbeidsgivere.
           </p>
         </AnimateIn>
 
@@ -91,7 +91,7 @@ export default function HvaGjor() {
         <AnimateIn className="text-center">
           <div className="inline-flex flex-col sm:flex-row items-center gap-6">
             <a
-              href="/#kontakt"
+              href="/kontakt"
               className="group inline-flex items-center gap-3 px-10 py-5 bg-primary-600 text-white font-bold rounded-2xl hover:bg-navy transition-all duration-300 shadow-xl shadow-primary-100 hover:shadow-navy/20 cursor-pointer active:scale-95"
             >
               Book et møte

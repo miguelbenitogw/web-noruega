@@ -20,10 +20,10 @@ export default function OmOss() {
               Eksperter på mobilisering av europeisk arbeidskraft
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-8">
-              Siden 2014 har Global Working tilrettelagt for profesjonell mobilitet i det europeiske arbeidsmarkedet. Vi kombinerer språkopplæring, rekruttering og personlig oppfølging for å skape livsendrende muligheter.
+              Global Working er en spesialisert aktør innen språkopplæring og internasjonal rekruttering i Europa. Vi forbereder kandidater før ansettelse slik at arbeidsgivere får en tryggere oppstart.
             </p>
             <p className="text-gray-600 leading-relaxed mb-8">
-              Vårt team består av over 50 dedikerte fagfolk, hvorav 25 % er psykologer med fokus på utvelgelse og støtte, og 55 % er språklærere spesialisert på yrkesrettet norskopplæring. Vi er verdens største språkskole som underviser i norsk utenfor Skandinavia.
+              Selskapet ble etablert i 2014 og har i dag et team på over 50 ansatte. Omtrent 25 % er psykologer som arbeider med seleksjon og oppfølging, og 55 % er språklærere med yrkesrettet spesialisering. Vi er ISO-sertifisert for språkundervisning og internasjonal rekruttering i Europa, med hovedkontor i Alicante og kontor i Oslo.
             </p>
             <div className="flex flex-wrap gap-8">
               <div>
@@ -37,8 +37,8 @@ export default function OmOss() {
               </div>
               <div className="hidden sm:block w-px bg-gray-100"/>
               <div>
-                <div className="font-heading text-3xl font-bold text-primary-600">2000+</div>
-                <div className="text-gray-400 text-sm mt-0.5">Kandidater</div>
+                <div className="font-heading text-3xl font-bold text-primary-600">ISO</div>
+                <div className="text-gray-400 text-sm mt-0.5">Sertifisert kvalitet</div>
               </div>
             </div>
           </div>

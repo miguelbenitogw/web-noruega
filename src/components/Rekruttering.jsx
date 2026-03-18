@@ -5,7 +5,7 @@ const steps = [
   {
     step: '01',
     title: 'Behovsanalyse',
-    description: 'Vi starter med en grundig analyse av din virksomhets behov, kultur og krav til fremtidige ansatte.',
+    description: 'Vi kartlegger behov, rollekrav og ønsket språkprofil før vi presenterer relevante kandidater.',
     icon: (
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -15,7 +15,7 @@ const steps = [
   {
     step: '02',
     title: 'Språkopplæring',
-    description: 'Kandidatene gjennomgår intensiv norskopplæring fra grunnleggende nivå til B2, tilpasset din bransje.',
+    description: 'Kandidatene gjennomgår opplæring med opptil 600 timer norsk, bransjeterminologi og arbeidskultur.',
     icon: (
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
         <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
@@ -25,7 +25,7 @@ const steps = [
   {
     step: '03',
     title: 'Kulturintegrering',
-    description: 'Vi forbereder kandidatene på norsk arbeidskultur og verdier – slik at integrasjonen går smidig fra dag én.',
+    description: 'Vi forbereder kandidatene på norsk arbeidskultur og forventninger, slik at integrasjonen går smidig fra dag én.',
     icon: (
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
@@ -36,7 +36,7 @@ const steps = [
   {
     step: '04',
     title: 'Oppfølging',
-    description: 'Etter ansettelse tilbyr vi løpende støtte, dokumentasjon og tett oppfølging under prøveperioden.',
+    description: 'Vi følger opp kandidat og arbeidsgiver etter oppstart, med ekstra språkstøtte ved behov.',
     icon: (
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
@@ -63,7 +63,7 @@ export default function Rekruttering() {
               En helhetlig løsning — fra søk til integrering
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-8">
-              Vi dekker hele rekrutteringsreisen. Fra behovsanalyse og språkopplæring til kulturintegrering og løpende oppfølging etter ansettelse.
+              Vi dekker hele rekrutteringsreisen: behovsanalyse, språkopplæring, kulturforberedelse og oppfølging etter oppstart. Målet er varig rekruttering, ikke kortsiktige løsninger.
             </p>
             <div className="flex flex-wrap gap-3">
               {sectors.map(s => (
@@ -89,13 +89,13 @@ export default function Rekruttering() {
               />
             </div>
             {/* Floating badge */}
-            <div className="absolute -bottom-4 -left-4 bg-primary-600 text-white rounded-2xl px-5 py-3 shadow-lg font-heading font-semibold text-sm flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-                <polyline points="22 4 12 14.01 9 11.01"/>
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              </svg>
-              Dokumentert metode siden 2014
-            </div>
+              <div className="absolute -bottom-4 -left-4 bg-primary-600 text-white rounded-2xl px-5 py-3 shadow-lg font-heading font-semibold text-sm flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                </svg>
+                Strukturert modell siden 2014
+              </div>
           </div>
           </AnimateIn>
         </div>

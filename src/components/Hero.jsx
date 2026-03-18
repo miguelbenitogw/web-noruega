@@ -67,12 +67,12 @@ export default function Hero() {
             <p className="text-lg lg:text-xl text-blue-100 leading-relaxed mb-10 max-w-xl animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
               Global Working er verdens største språkskole som underviser i norsk utenfor Skandinavia. Vi
               spesialiserer oss på norsk språk- og kulturopplæring for søreuropeiske fagfolk, og kobler dem med
-              arbeidsgivere i Norge.
+              arbeidsgivere i Norge. Vi følger kandidatene fra første norsktime til trygg oppstart i jobb.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
               <a
-                href="/#hvagjor"
+                href="/vr-rekrutteringsmodell"
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'slik_jobber_vi' })}
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-cta text-white font-semibold rounded-xl hover:bg-cta-600 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
               >
@@ -82,7 +82,7 @@ export default function Hero() {
                 </svg>
               </a>
               <a
-                href="/#kontakt"
+                href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'kontakt_oss' })}
                 className="inline-flex items-center justify-center px-7 py-4 bg-white/10 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-200 backdrop-blur-sm cursor-pointer"
               >

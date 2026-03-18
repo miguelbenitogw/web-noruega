@@ -4,7 +4,7 @@ title: "Innkjøpsgrensen heves fra juli 2026"
 excerpt: "Fra 1. juli 2026 økes innkjøpsgrensen for arbeidskraft. Dette gir nye muligheter for kommuner og helseforetak."
 date: "2026-02-01"
 tag: "Lovgivning"
-readTime: "4 min"
+readTime: "6 min"
 coverImage: ""
 status: "published"
 publishAt: "2026-02-01T08:00:00Z"
@@ -13,21 +13,35 @@ seoTitle: "Innkjøpsgrensen heves fra juli 2026"
 seoDescription: "Oppdatert oversikt over endringen i innkjøpsgrensen fra 1. juli 2026 og hva dette betyr for offentlig sektor."
 ---
 
-Fra 1. juli 2026 trer en oppdatert innkjøpsgrense i kraft. Endringen kan gi større handlingsrom i planlegging av bemanning.
+Fra 1. juli 2026 omtales en heving av innkjøpsgrensen i våre kanaler. For mange virksomheter i offentlig sektor kan dette gi større fleksibilitet når bemanningsbehov må løses raskt og innenfor gjeldende rammer.
 
-## Hva endringen betyr i praksis
+## Hva dette kan bety i praksis
 
-Den nye grensen påvirker hvordan flere virksomheter kan planlegge innkjøp av tjenester og arbeidskraft innenfor regelverket.
+Når terskler endres, påvirker det ofte hvordan behov planlegges og hvordan prosesser gjennomføres. For kommuner og helseforetak kan det gi:
 
-## Hvem bør følge med
+- enklere planlegging av mindre innkjøp
+- raskere beslutningsløp i perioder med kapasitetsutfordringer
+- bedre mulighet til å kombinere kortsiktige og langsiktige tiltak
 
-- Kommuner og helseforetak
-- Innkjøpsansvarlige og HR-ledere
-- Enheter med sesong- eller kapasitetsbehov
+## Hvem bør følge ekstra godt med
 
-## Anbefalt forberedelse
+- kommuner og helseforetak med vedvarende bemanningspress
+- innkjøpsansvarlige som må tilpasse rutiner og dokumentasjon
+- HR-ledere som planlegger rekruttering på tvers av sesonger
 
-Gjennomgå interne rutiner tidlig, slik at behov og prosesser er klare før endringen trer i kraft.
+## Hva du bør gjøre før 1. juli 2026
 
-Global Working kan bistå med planlegging av bemanning tilpasset nye rammer.
+1. Oppdater interne rutiner for innkjøp og godkjenning.
+2. Avklar roller mellom innkjøp, HR og linjeledelse.
+3. Etabler en plan for hvilke behov som skal løses med direkte ansettelse.
+4. Sikre at språk- og kvalitetskrav er tydelige i hele løpet.
 
+God forberedelse reduserer risiko og gjør det enklere å bruke handlingsrommet riktig.
+
+## Kvalitet og trygghet må fortsatt stå først
+
+Selv med mer fleksibilitet er det avgjørende å holde høy kvalitet i vurdering og onboarding. For helserelaterte roller bør språkkrav, fagterminologi og oppfølging etter oppstart være tydelig definert.
+
+Målet er ikke bare raskere prosess, men tryggere og mer bærekraftige ansettelser for norske tjenester.
+
+Vi kan bistå med planlegging av bemanning og prosessdesign tilpasset de nye rammene fra 1. juli 2026.

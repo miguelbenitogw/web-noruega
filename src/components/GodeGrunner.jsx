@@ -9,7 +9,7 @@ const reasons = [
       </svg>
     ),
     title: 'Over 10 års erfaring',
-    desc: 'Siden 2014 har vi jobbet med å gi fagpersoner mulighet til å jobbe i Norge.',
+    desc: 'Siden 2014 har vi utviklet en strukturert modell for internasjonal rekruttering til Norge.',
   },
   {
     icon: (
@@ -19,7 +19,7 @@ const reasons = [
       </svg>
     ),
     title: '50+ dedikerte ansatte',
-    desc: 'Et mangfoldig team som rekrutterer, utdanner og klargjør fagfolk for det norske arbeidsmarkedet.',
+    desc: 'Teamet inkluderer spesialister i seleksjon, oppfølging og yrkesrettet språkopplæring.',
   },
   {
     icon: (
@@ -28,7 +28,7 @@ const reasons = [
       </svg>
     ),
     title: 'Verdens største norskskole',
-    desc: 'Den største språkskolen for norsk utenfor Skandinavia — det gir kandidatene et reelt fortrinn.',
+    desc: 'Vi underviser norsk utenfor Skandinavia i stor skala, med opptil 600 timer per kandidat.',
   },
   {
     icon: (
@@ -37,7 +37,7 @@ const reasons = [
       </svg>
     ),
     title: '95% retensjonsgrad',
-    desc: 'Våre kandidater blir – fordi vi investerer i riktig opplæring og integrering fra dag én.',
+    desc: 'Høy retensjon kommer av tydelig forventningsavklaring og tett oppfølging i oppstarten.',
   },
 ]
 
@@ -72,7 +72,7 @@ export default function GodeGrunner() {
                 Gode grunner til å samarbeide med Global Working
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed mb-10">
-                Global Working har siden 2014 jobbet med mål om å gi fagpersoner mulighet til å jobbe i Norge. I dag er vi et team på over 50 personer som rekrutterer, utdanner og klargjør fagfolk.
+                Global Working kombinerer rekruttering, språk og oppfølging i ett løp. Det gir mer forutsigbar onboarding og tryggere ansettelser for norske arbeidsgivere.
               </p>
             </AnimateIn>
 
@@ -94,7 +94,7 @@ export default function GodeGrunner() {
 
             <AnimateIn delay={500}>
               <a
-                href="/#om-oss"
+                href="/om-oss"
                 className="inline-flex items-center gap-2 mt-10 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
               >
                 Les mer om oss

@@ -4,11 +4,11 @@ import AnimateIn from './AnimateIn'
 const faqs = [
   {
     q: 'Hvor lang tid tar rekrutteringsprosessen?',
-    a: 'Fra behovsanalyse til kandidaten starter i jobb tar det normalt 4–8 måneder, avhengig av språknivå og autorisasjonskrav. Språkopplæringen er den mest tidkrevende delen.',
+    a: 'Tidslinjen avhenger av valgt opplæringsløp: fysisk (5 måneder), hybrid (7 måneder) eller fullt nettbasert (9 måneder). Intervjuer med arbeidsgiver skjer normalt 1–4 uker etter opplæring.',
   },
   {
     q: 'Hvilket språknivå har kandidatene når de ankommer Norge?',
-    a: 'Kandidatene våre oppnår minimum B1, og de fleste når B2-nivå i norsk før avreise. I tillegg får de bransjetilpasset terminologi og kulturopplæring.',
+    a: 'Kandidatene følger et strukturert løp med opptil 600 undervisningstimer i norsk, bransjespesifikk terminologi og innføring i norsk arbeidskultur. Målet settes ut fra rollekrav, ofte opp mot B2.',
   },
   {
     q: 'Hvilke sektorer dekker dere?',
@@ -16,11 +16,11 @@ const faqs = [
   },
   {
     q: 'Hva koster det å bruke Global Working?',
-    a: 'Prisene tilpasses omfang og behov. Vi tilbyr transparente pakkeløsninger som dekker hele prosessen – fra rekruttering og språkopplæring til oppfølging etter ansettelse. Ta kontakt for et uforpliktende tilbud.',
+    a: 'Pris avhenger av behov og omfang. Vi går gjennom modell og priser i et uforpliktende kartleggingsmøte, slik at løsningen tilpasses virksomheten deres.',
   },
   {
     q: 'Hvordan sikrer dere kvaliteten på kandidatene?',
-    a: 'Alle kandidater gjennomgår en grundig screening av faglige kvalifikasjoner, motivasjon og personlighet. Deretter følger vi dem tett gjennom språkopplæring, kulturintegrering og godkjenningsprosesser.',
+    a: 'Vi kombinerer seleksjon, språkforberedelse og tett oppfølging før oppstart. Teamet vårt inkluderer både psykologer og språklærere, og prosessene er ISO-sertifiserte.',
   },
   {
     q: 'Tilbyr dere oppfølging etter ansettelse?',
@@ -77,7 +77,7 @@ export default function FAQ() {
                 Finn svar på de vanligste spørsmålene om rekruttering og samarbeid med Global Working.
               </p>
               <a
-                href="/#kontakt"
+                href="/kontakt"
                 className="inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
               >
                 Fant du ikke svaret? Kontakt oss

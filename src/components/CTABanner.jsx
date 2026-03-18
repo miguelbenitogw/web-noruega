@@ -26,18 +26,18 @@ export default function CTABanner() {
           Finn riktig kompetanse for din virksomhet i dag
         </h2>
         <p className="text-blue-200 text-lg leading-relaxed max-w-2xl mx-auto mb-10">
-          Over 500 kandidater er allerede plassert i norske virksomheter gjennom vår prosess.
+          Vi kobler norske arbeidsgivere med kandidater som er språklig og faglig forberedt for trygg oppstart.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="/#kontakt"
+            href="/kontakt"
             onClick={() => trackEvent('cta_click', { location: 'cta_banner', cta: 'kontakt_oss_na' })}
             className="px-8 py-4 bg-cta text-white font-semibold rounded-xl hover:bg-cta-600 transition-all duration-200 shadow-lg hover:-translate-y-0.5 cursor-pointer"
           >
             Kontakt oss nå
           </a>
           <a
-            href="/#talentportalen"
+            href="/talentportalen"
             onClick={() => trackEvent('cta_click', { location: 'cta_banner', cta: 'se_kandidater' })}
             className="px-8 py-4 bg-white/10 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-200 cursor-pointer"
           >

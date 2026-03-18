@@ -5,19 +5,19 @@ import { trackEvent } from '../lib/analytics'
 const features = [
   {
     title: 'Sykepleiere og spesialsykepleiere',
-    description: 'Vi er en ledende leverandør av sykepleiere utenfor Skandinavia, med over 10 års erfaring siden 2015.',
+    description: 'Vi har over 10 års erfaring med levering av sykepleiere til kommuner og helseforetak i Norge.',
   },
   {
     title: 'Tilpasset helsefaglig norsk',
-    description: 'Språkopplæringen er spesialisert for helsesektoren med medisinsk terminologi og pasientkommunikasjon.',
+    description: 'Opplæringen inkluderer helseterminologi, pasientkommunikasjon og praktisk språkbruk i kliniske situasjoner.',
   },
   {
-    title: 'Godkjenningsprosess',
-    description: 'Vi veileder kandidatene gjennom Helsedirektoratets godkjenningsprosess og autorisasjon i Norge.',
+    title: 'Strukturert overgang',
+    description: 'Intervju med arbeidsgiver skjer normalt 1–4 uker etter opplæring, med tydelig koordinering før oppstart.',
   },
   {
-    title: 'Integrert oppfølging',
-    description: 'Tett samarbeid med arbeidsgivere i prøveperioden for høy retensjonsgrad.',
+    title: 'Ekstra oppfølging ved behov',
+    description: 'Kandidater kan få individuelt tilrettelagt språkstøtte før eller etter avreise for tryggere oppstart.',
   },
 ]
 
@@ -35,9 +35,23 @@ export default function Helsesektor() {
                 Norges ledende leverandør av helsepersonell
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed mb-8">
-                Siden 2015 har Global Working koblet dyktige sykepleiere fra Sør-Europa med det norske helsevesenet.
-                Vi dekker hele løpet – fra rekruttering og norskopplæring til godkjenning og integrering.
+                Global Working forbereder helsepersonell for norsk helsesektor med en dokumentert modell. Vi dekker hele løpet fra rekruttering og norskopplæring til oppstart og oppfølging hos arbeidsgiver.
               </p>
+
+              <div className="grid sm:grid-cols-3 gap-4 mb-8">
+                <div className="bg-white border border-gray-100 rounded-xl p-4">
+                  <p className="font-heading text-2xl font-bold text-primary-700">25 000+</p>
+                  <p className="text-xs text-gray-500">undervisningstimer i norsk</p>
+                </div>
+                <div className="bg-white border border-gray-100 rounded-xl p-4">
+                  <p className="font-heading text-2xl font-bold text-primary-700">17–20</p>
+                  <p className="text-xs text-gray-500">grupper årlig</p>
+                </div>
+                <div className="bg-white border border-gray-100 rounded-xl p-4">
+                  <p className="font-heading text-2xl font-bold text-primary-700">600</p>
+                  <p className="text-xs text-gray-500">timer opplæring per kandidat (opptil)</p>
+                </div>
+              </div>
 
               <ul className="space-y-5 mb-10" role="list">
                 {features.map(f => (
@@ -56,11 +70,11 @@ export default function Helsesektor() {
               </ul>
 
               <a
-                href="/#kontakt"
+                href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'helsesektor', cta: 'finn_sykepleiere' })}
                 className="inline-flex items-center gap-2 px-7 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
               >
-                Finn sykepleiere nå
+                Snakk med oss om bemanning
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>

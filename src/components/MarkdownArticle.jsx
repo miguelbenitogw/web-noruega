@@ -1,3 +1,22 @@
+const slugifyHeading = (value) =>
+  value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+
+const createHeadingIdGenerator = () => {
+  const seen = new Map()
+  return (heading) => {
+    const base = slugifyHeading(heading) || 'seksjon'
+    const count = seen.get(base) || 0
+    seen.set(base, count + 1)
+    return count === 0 ? base : `${base}-${count}`
+  }
+}
+
 const flushParagraph = (buffer, key) => {
   if (!buffer.length) return null
   const text = buffer.join(' ').trim()
@@ -10,12 +29,26 @@ const flushParagraph = (buffer, key) => {
   )
 }
 
+export const getMarkdownSections = (markdown) => {
+  const lines = markdown.split('\n')
+  const nextHeadingId = createHeadingIdGenerator()
+
+  return lines
+    .map(rawLine => rawLine.trim())
+    .filter(line => line.startsWith('## '))
+    .map(line => {
+      const title = line.replace(/^##\s+/, '').trim()
+      return { title, id: nextHeadingId(title) }
+    })
+}
+
 export default function MarkdownArticle({ markdown }) {
   const lines = markdown.split('\n')
   const nodes = []
   const paragraphBuffer = []
   let listItems = []
   let keyIndex = 0
+  const nextHeadingId = createHeadingIdGenerator()
 
   const flushList = () => {
     if (!listItems.length) return
@@ -41,9 +74,11 @@ export default function MarkdownArticle({ markdown }) {
       flushList()
       const paragraphNode = flushParagraph(paragraphBuffer, `p-${keyIndex++}`)
       if (paragraphNode) nodes.push(paragraphNode)
+      const headingText = line.replace(/^##\s+/, '')
+      const headingId = nextHeadingId(headingText)
       nodes.push(
-        <h2 key={`h2-${keyIndex++}`} className="font-heading text-2xl font-bold text-ink mt-8 mb-4">
-          {line.replace(/^##\s+/, '')}
+        <h2 id={headingId} key={`h2-${keyIndex++}`} className="font-heading text-2xl font-bold text-ink mt-8 mb-4 scroll-mt-28">
+          {headingText}
         </h2>,
       )
       continue
@@ -53,9 +88,11 @@ export default function MarkdownArticle({ markdown }) {
       flushList()
       const paragraphNode = flushParagraph(paragraphBuffer, `p-${keyIndex++}`)
       if (paragraphNode) nodes.push(paragraphNode)
+      const headingText = line.replace(/^###\s+/, '')
+      const headingId = nextHeadingId(headingText)
       nodes.push(
-        <h3 key={`h3-${keyIndex++}`} className="font-heading text-xl font-semibold text-ink mt-6 mb-3">
-          {line.replace(/^###\s+/, '')}
+        <h3 id={headingId} key={`h3-${keyIndex++}`} className="font-heading text-xl font-semibold text-ink mt-6 mb-3 scroll-mt-28">
+          {headingText}
         </h3>,
       )
       continue
@@ -77,4 +114,3 @@ export default function MarkdownArticle({ markdown }) {
 
   return <div>{nodes}</div>
 }
-

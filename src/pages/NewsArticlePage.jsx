@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { getAllNews, getNewsBySlug } from '../lib/news'
-import MarkdownArticle from '../components/MarkdownArticle'
+import MarkdownArticle, { getMarkdownSections } from '../components/MarkdownArticle'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import { setArticleSEO } from '../lib/seo'
@@ -15,6 +15,7 @@ export default function NewsArticlePage({ slug }) {
   const article = getNewsBySlug(slug)
   const allNews = getAllNews()
   const related = allNews.filter(item => item.slug !== slug).slice(0, 3)
+  const sections = article ? getMarkdownSections(article.body) : []
 
   useEffect(() => {
     if (!article) return
@@ -40,7 +41,7 @@ export default function NewsArticlePage({ slug }) {
   return (
     <section className="py-16 lg:py-24 bg-white">
       <div className="container-xl max-w-4xl">
-        <a href="/#nyheter" className="inline-flex items-center text-primary-600 text-sm font-semibold hover:text-primary-700 mb-8">
+        <a href="/journal#nyheter-arkiv" className="inline-flex items-center text-primary-600 text-sm font-semibold hover:text-primary-700 mb-8">
           ← Tilbake til nyheter
         </a>
 
@@ -64,6 +65,26 @@ export default function NewsArticlePage({ slug }) {
             loading="lazy"
           />
         </div>
+
+        {!!sections.length && (
+          <nav
+            aria-label="Innholdsoversikt"
+            className="mb-10 rounded-2xl border border-gray-100 bg-surface px-5 py-4"
+          >
+            <p className="text-sm font-semibold text-ink mb-3">Hopp til seksjon</p>
+            <div className="flex flex-wrap gap-2">
+              {sections.map(section => (
+                <a
+                  key={section.id}
+                  href={`#${section.id}`}
+                  className="inline-flex items-center rounded-full bg-white border border-gray-200 px-3 py-1.5 text-sm text-primary-700 hover:border-primary-300 hover:bg-primary-50 transition-colors"
+                >
+                  {section.title}
+                </a>
+              ))}
+            </div>
+          </nav>
+        )}
 
         <article className="prose prose-lg max-w-none">
           <MarkdownArticle markdown={article.body} />

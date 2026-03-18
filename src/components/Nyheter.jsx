@@ -32,7 +32,7 @@ export default function Nyheter() {
               </h2>
             </div>
             <a
-              href="/#nyheter-arkiv"
+              href="/journal#nyheter-arkiv"
               onClick={() => trackEvent('cta_click', { location: 'nyheter', cta: 'se_alle_nyheter' })}
               className="shrink-0 inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
             >

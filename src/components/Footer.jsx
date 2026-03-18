@@ -1,20 +1,20 @@
 const footerLinks = {
   Tjenester: [
-    { label: 'Rekruttering', href: '/#rekruttering' },
-    { label: 'Norskopplæring', href: '/#hvagjor' },
-    { label: 'Helsesektor', href: '/#helsesektor' },
-    { label: 'Talentportalen', href: '/#talentportalen' },
+    { label: 'Vår rekrutteringsmodell', href: '/vr-rekrutteringsmodell' },
+    { label: 'Helsesektor', href: '/helse' },
+    { label: 'Talentportalen', href: '/talentportalen' },
+    { label: 'Kontakt', href: '/kontakt' },
   ],
   Selskapet: [
-    { label: 'Om oss', href: '/#om-oss' },
-    { label: 'Nyheter', href: '/#nyheter' },
-    { label: 'Kontakt', href: '/#kontakt' },
+    { label: 'Om oss', href: '/om-oss' },
+    { label: 'Nyheter', href: '/journal' },
+    { label: 'Kontakt', href: '/kontakt' },
     { label: 'Personvern', href: '/#personvern' },
   ],
   Kontakt: [
-    { label: '+47 22 00 00 00', href: 'tel:+4722000000' },
-    { label: 'kontakt@globalworking.no', href: 'mailto:kontakt@globalworking.no' },
-    { label: 'Storgata 1, Oslo', href: 'https://maps.google.com/?q=Storgata+1+Oslo' },
+    { label: '+47 919 00 649', href: 'tel:+4791900649' },
+    { label: 'Miriam.Svendsen@globalworking.net', href: 'mailto:Miriam.Svendsen@globalworking.net' },
+    { label: 'Gro.anette@globalworking.net', href: 'mailto:Gro.anette@globalworking.net' },
   ],
 }
 
@@ -35,7 +35,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-blue-200 text-sm leading-relaxed mb-6">
-              Rekruttering og språkopplæring for kvalifiserte fagfolk til det norske arbeidsmarkedet.
+              Rekruttering og språkopplæring for kvalifiserte fagfolk til det norske arbeidsmarkedet, med strukturert oppfølging fra første kontakt til oppstart.
             </p>
             <div className="flex gap-3">
               {[
