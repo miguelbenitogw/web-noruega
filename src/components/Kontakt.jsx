@@ -3,6 +3,7 @@ import emailjs from '@emailjs/browser'
 import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
 import { IMAGES, img } from '../assets/images'
+import useContent from '../hooks/useContent'
 
 const EMAILJS_SERVICE = import.meta.env.VITE_EMAILJS_SERVICE_ID
 const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
@@ -13,22 +14,9 @@ const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
 const RATE_LIMIT_MAX = 3
 const MIN_FORM_FILL_MS = 3000
 
-const contacts = [
-  {
-    name: 'Miriam Svendsen',
-    email: 'Miriam.Svendsen@globalworking.net',
-    phone: '+47 919 00 649',
-    role: 'Rekrutteringsansvarlig',
-  },
-  {
-    name: 'Gro Anette',
-    email: 'Gro.anette@globalworking.net',
-    phone: '+47 408 98 448',
-    role: 'Kandidatoppfølging',
-  },
-]
-
 export default function Kontakt() {
+  const contacts = useContent('contacts')
+  const c = useContent('kontaktComp')
   const [form, setForm] = useState({
     from_name: '',
     from_email: '',
@@ -129,14 +117,12 @@ export default function Kontakt() {
             <div className="space-y-12">
               <div>
                 <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                  Kontakt
+                  {c.label}
                 </span>
                 <h2 id="kontakt-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight">
-                  Ønsker du å vite mer?
+                  {c.heading}
                 </h2>
-                <p className="text-gray-600 text-lg leading-relaxed">
-                  Du treffer oss på e-post eller telefon, eller ved å fylle ut skjemaet under. Vi tar kontakt så snart vi har mulighet.
-                </p>
+                <p className="text-gray-600 text-lg leading-relaxed">{c.description}</p>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
@@ -171,9 +157,9 @@ export default function Kontakt() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent flex flex-col justify-end p-8">
                   <div className="text-white">
-                    <h4 className="font-heading font-bold text-xl mb-1">Hovedkontor Alicante</h4>
+                    <h4 className="font-heading font-bold text-xl mb-1">{c.officeTitle}</h4>
                     <p className="text-blue-100 text-sm leading-relaxed max-w-xs">
-                      Carrer de Periodista Pirula Arderius, 4, 03001 Alicante, España
+                      {c.officeAddress}
                     </p>
                     <a
                       href="https://maps.google.com/?q=Global+Working+Alicante"

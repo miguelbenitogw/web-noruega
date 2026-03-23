@@ -1,45 +1,24 @@
-﻿import { trackEvent } from '../lib/analytics'
+import { trackEvent } from '../lib/analytics'
+import useContent from '../hooks/useContent'
 
-const benefits = [
-  {
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
-      </svg>
-    ),
-    title: 'Se kandidater for fast ansettelse',
-    desc: 'Få oversikt over tilgjengelige kandidater og finn profiler som passer deres behov.',
-  },
-  {
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-      </svg>
-    ),
-    title: 'Inviter til intervju direkte',
-    desc: 'Arbeidsgivere kan selv gå gjennom profiler og invitere aktuelle kandidater til intervju.',
-  },
-  {
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-      </svg>
-    ),
-    title: 'Oversikt over språkforberedelse',
-    desc: 'Se status i språk- og faglig forberedelse, slik at oppstarten kan planlegges tryggere.',
-  },
-  {
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-      </svg>
-    ),
-    title: 'Rask dialog med oss',
-    desc: 'Portalen er koblet til rekrutteringsteamet vårt for korte avklaringer underveis.',
-  },
+const benefitIcons = [
+  <svg key="b1" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+    <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+  </svg>,
+  <svg key="b2" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+  </svg>,
+  <svg key="b3" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+  </svg>,
+  <svg key="b4" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>,
 ]
 
 export default function Talentportalen() {
+  const c = useContent('talentportalenComp')
+
   return (
     <section id="talentportalen" className="scroll-mt-28 py-24 lg:py-32 bg-surface" aria-labelledby="talentportalen-heading">
       <div className="container-xl">
@@ -84,10 +63,10 @@ export default function Talentportalen() {
                     { label: 'Fast ansettelse', value: 'Filter aktiv', color: 'text-cta' },
                     { label: 'Dokumentasjon', value: 'Verifisert', color: 'text-green-600' },
                     { label: 'Siste aktivitet', value: 'I dag', color: 'text-purple-600' },
-                  ].map((c) => (
-                    <div key={c.label} className="bg-surface rounded-xl p-3.5 border border-gray-100">
-                      <div className={`font-heading font-bold text-base ${c.color}`}>{c.value}</div>
-                      <div className="text-gray-400 text-xs mt-0.5">{c.label}</div>
+                  ].map((card) => (
+                    <div key={card.label} className="bg-surface rounded-xl p-3.5 border border-gray-100">
+                      <div className={`font-heading font-bold text-base ${card.color}`}>{card.value}</div>
+                      <div className="text-gray-400 text-xs mt-0.5">{card.label}</div>
                     </div>
                   ))}
                 </div>
@@ -97,20 +76,18 @@ export default function Talentportalen() {
 
           <div className="order-1 lg:order-2">
             <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-              Talentportalen
+              {c.label}
             </span>
             <h2 id="talentportalen-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight">
-              Ny kandidatportal for arbeidsgivere
+              {c.heading}
             </h2>
-            <p className="text-gray-600 text-lg leading-relaxed mb-10">
-              Global Working har fått ny kandidatportal. Nå kan du selv gå inn og se hvilke kandidater vi har tilgjengelig for fast ansettelse.
-            </p>
+            <p className="text-gray-600 text-lg leading-relaxed mb-10">{c.description}</p>
 
             <ul className="space-y-5" role="list">
-              {benefits.map((b) => (
+              {(c.benefits || []).map((b, i) => (
                 <li key={b.title} className="flex gap-4">
                   <div className="shrink-0 w-11 h-11 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center">
-                    {b.icon}
+                    {benefitIcons[i] || benefitIcons[0]}
                   </div>
                   <div>
                     <h3 className="font-heading font-semibold text-ink text-base mb-0.5">{b.title}</h3>
@@ -122,20 +99,20 @@ export default function Talentportalen() {
 
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
               <a
-                href="https://globalworking-talentportal.lovable.app"
+                href={c.portalUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('cta_click', { location: 'talentportalen', cta: 'logg_inn' })}
                 className="inline-flex items-center justify-center px-7 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
               >
-                Logg inn på portalen
+                {c.ctaLogin}
               </a>
               <a
                 href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'talentportalen', cta: 'kontakt_oss' })}
                 className="inline-flex items-center justify-center px-7 py-4 border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors duration-200 cursor-pointer"
               >
-                Kontakt oss
+                {c.ctaContact}
               </a>
             </div>
           </div>

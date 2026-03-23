@@ -1,53 +1,26 @@
-﻿import { IMAGES, img } from '../assets/images'
+import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
+import useContent from '../hooks/useContent'
 
-const steps = [
-  {
-    step: '01',
-    title: 'Rekrutterer kompetansen du trenger',
-    description: 'Vi kartlegger kompetanse, motivasjon og ønsker før kandidatene presenteres for arbeidsgiver.',
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-    ),
-  },
-  {
-    step: '02',
-    title: 'Språk og faglig forberedelse',
-    description: 'Alle kandidater følger et strukturert løp med opptil 600 timer norsk, bransjeterminologi og arbeidskultur.',
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-        <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
-      </svg>
-    ),
-  },
-  {
-    step: '03',
-    title: 'Strukturert overgang',
-    description: '1–4 uker etter opplæring gjennomføres intervju med arbeidsgivere, og oppstart og avreisedato avtales.',
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-      </svg>
-    ),
-  },
-  {
-    step: '04',
-    title: 'Ekstra oppfølging ved behov',
-    description: 'Ved behov tilrettelegger vi individuelt opplegg med ekstra språktrening før eller etter avreise.',
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-      </svg>
-    ),
-  },
+const stepIcons = [
+  <svg key="s1" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+  </svg>,
+  <svg key="s2" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+    <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
+  </svg>,
+  <svg key="s3" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>,
+  <svg key="s4" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+  </svg>,
 ]
 
-const sectors = ['Helse og omsorg', 'Industri og bygg', 'Utdanning', 'Barneomsorg']
-
 export default function Rekruttering() {
+  const c = useContent('rekrutteringComp')
+
   return (
     <section id="rekruttering" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="rekruttering-heading">
       <div className="container-xl">
@@ -55,19 +28,15 @@ export default function Rekruttering() {
           <AnimateIn variant="fadeRight">
             <div>
               <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                Vår rekrutteringsmodell
+                {c.label}
               </span>
               <h2 id="rekruttering-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight">
-                Slik rekrutterer vi fagfolk til Norge
+                {c.heading}
               </h2>
-              <p className="text-gray-600 text-lg leading-relaxed mb-8">
-                Våre kandidater kommer hovedsakelig fra Spania, Italia og Frankrike, og er motiverte fagpersoner som ønsker å jobbe i Norge over lengre tid eller etablere seg her på sikt.
-              </p>
-              <p className="text-gray-600 text-base leading-relaxed mb-8">
-                Undervisningen kan gjennomføres fysisk i Alicante (5 måneder), som kombinasjon av fysisk og nettbasert undervisning (7 måneder), eller fullt nettbasert (9 måneder).
-              </p>
+              <p className="text-gray-600 text-lg leading-relaxed mb-8">{c.p1}</p>
+              <p className="text-gray-600 text-base leading-relaxed mb-8">{c.p2}</p>
               <div className="flex flex-wrap gap-3">
-                {sectors.map((s) => (
+                {(c.sectors || []).map((s) => (
                   <span key={s} className="px-4 py-2 bg-primary-50 border border-primary-100 text-primary-700 rounded-full text-sm font-medium">
                     {s}
                   </span>
@@ -93,22 +62,22 @@ export default function Rekruttering() {
                   <polyline points="22 4 12 14.01 9 11.01"/>
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                 </svg>
-                Strukturert modell siden 2014
+                {c.badge}
               </div>
             </div>
           </AnimateIn>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {steps.map((s, i) => (
-            <AnimateIn key={s.step} variant="fadeUp" delay={i * 120}>
+          {(c.steps || []).map((s, i) => (
+            <AnimateIn key={s.title} variant="fadeUp" delay={i * 120}>
               <div className="group bg-surface rounded-2xl p-7 border border-gray-100 hover:border-primary-200 hover:shadow-lg transition-all duration-300">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-12 h-12 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center group-hover:bg-primary-600 group-hover:text-white transition-colors duration-300">
-                    {s.icon}
+                    {stepIcons[i] || stepIcons[0]}
                   </div>
                   <span className="font-heading text-3xl font-bold text-gray-100 group-hover:text-primary-100 transition-colors select-none">
-                    {s.step}
+                    {String(i + 1).padStart(2, '0')}
                   </span>
                 </div>
                 <h3 className="font-heading text-base font-semibold text-ink mb-2">{s.title}</h3>

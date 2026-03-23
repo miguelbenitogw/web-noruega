@@ -5,20 +5,77 @@ const DEFAULT_SEO = {
   title: 'Global Working Norge | Rekruttering av helsepersonell og fagfolk til Norge',
   description:
     'Global Working hjelper norske arbeidsgivere med rekruttering av kvalifiserte fagfolk fra Sør-Europa. Språkopplæring, integrering og dokumentert oppfølging fra første kontakt til oppstart.',
-  url: `${SITE_URL}/`,
+  pathname: '/',
   image: DEFAULT_IMAGE,
   type: 'website',
 }
 
+const SECTION_SEO = {
+  rekruttering: {
+    title: 'Vår rekrutteringsmodell | Global Working Norge',
+    description:
+      'Se hvordan vi rekrutterer, forbereder og følger opp fagfolk fra Sør-Europa til trygg oppstart i Norge.',
+    pathname: '/vr-rekrutteringsmodell',
+  },
+  helse: {
+    title: 'Helsesektor | Global Working Norge',
+    description:
+      'Vi forbereder helsepersonell for den norske helsesektoren med språk, faglig oppfølging og strukturert overgang til jobb.',
+    pathname: '/helse',
+  },
+  nyheter: {
+    title: 'Nyheter & artikler | Global Working Norge',
+    description:
+      'Følg siste nytt, artikler og oppdateringer fra Global Working om rekruttering, språk og arbeidsliv i Norge.',
+    pathname: '/nyheter',
+  },
+  talentportalen: {
+    title: 'Talentportalen | Global Working Norge',
+    description:
+      'Se tilgjengelige kandidater og inviter til intervju direkte gjennom vår kandidatportal.',
+    pathname: '/talentportalen',
+  },
+  'om-oss': {
+    title: 'Om oss | Global Working Norge',
+    description:
+      'Lær mer om Global Working, teamet vårt og hvordan vi jobber med språk, kvalitet og internasjonal rekruttering.',
+    pathname: '/om-oss',
+  },
+  kontakt: {
+    title: 'Kontakt | Global Working Norge',
+    description:
+      'Ta kontakt for spørsmål om rekruttering, samarbeid eller kandidatportalen.',
+    pathname: '/kontakt',
+  },
+}
+
+const NOT_FOUND_SEO = {
+  title: 'Siden ble ikke funnet | Global Working Norge',
+  description: 'Siden du lette etter finnes ikke.',
+  pathname: '/',
+}
+
 const ensureMeta = (attr, key, value) => {
-  if (!value) return
-  let el = document.head.querySelector(`meta[${attr}="${key}"]`)
+  const selector = `meta[${attr}="${key}"]`
+  let el = document.head.querySelector(selector)
+
+  if (!value) {
+    if (el) el.remove()
+    return
+  }
+
   if (!el) {
     el = document.createElement('meta')
     el.setAttribute(attr, key)
     document.head.appendChild(el)
   }
+
   el.setAttribute('content', value)
+}
+
+const getCanonicalUrl = (pathname = '/') => {
+  const normalized = pathname && pathname !== '/' ? pathname.replace(/\/+$/, '') || '/' : '/'
+  return `${SITE_URL}${normalized}`
 }
 
 const setCanonical = (url) => {
@@ -29,6 +86,29 @@ const setCanonical = (url) => {
     document.head.appendChild(canonical)
   }
   canonical.setAttribute('href', url)
+}
+
+const setPageSEO = ({
+  title,
+  description,
+  pathname = '/',
+  image = DEFAULT_IMAGE,
+  type = 'website',
+  robots,
+}) => {
+  document.title = title
+  ensureMeta('name', 'description', description)
+  ensureMeta('property', 'og:type', type)
+  ensureMeta('property', 'og:url', getCanonicalUrl(pathname))
+  ensureMeta('property', 'og:title', title)
+  ensureMeta('property', 'og:description', description)
+  ensureMeta('property', 'og:image', image)
+  ensureMeta('name', 'twitter:card', 'summary_large_image')
+  ensureMeta('name', 'twitter:title', title)
+  ensureMeta('name', 'twitter:description', description)
+  ensureMeta('name', 'twitter:image', image)
+  ensureMeta('name', 'robots', robots)
+  setCanonical(getCanonicalUrl(pathname))
 }
 
 const clearJsonLd = (id) => {
@@ -46,18 +126,27 @@ const setJsonLd = (id, payload) => {
 }
 
 export function setDefaultSEO() {
-  document.title = DEFAULT_SEO.title
-  ensureMeta('name', 'description', DEFAULT_SEO.description)
-  ensureMeta('property', 'og:type', 'website')
-  ensureMeta('property', 'og:url', DEFAULT_SEO.url)
-  ensureMeta('property', 'og:title', DEFAULT_SEO.title)
-  ensureMeta('property', 'og:description', DEFAULT_SEO.description)
-  ensureMeta('property', 'og:image', DEFAULT_SEO.image)
-  ensureMeta('name', 'twitter:card', 'summary_large_image')
-  ensureMeta('name', 'twitter:title', DEFAULT_SEO.title)
-  ensureMeta('name', 'twitter:description', DEFAULT_SEO.description)
-  ensureMeta('name', 'twitter:image', DEFAULT_SEO.image)
-  setCanonical(DEFAULT_SEO.url)
+  setPageSEO(DEFAULT_SEO)
+  clearJsonLd('news-article-schema')
+}
+
+export function setSectionSEO(sectionRoute) {
+  const page = SECTION_SEO[sectionRoute]
+  if (!page) {
+    setDefaultSEO()
+    return
+  }
+
+  setPageSEO(page)
+  clearJsonLd('news-article-schema')
+}
+
+export function setNotFoundSEO(pathname = '/') {
+  setPageSEO({
+    ...NOT_FOUND_SEO,
+    pathname,
+    robots: 'noindex, nofollow',
+  })
   clearJsonLd('news-article-schema')
 }
 
@@ -67,18 +156,13 @@ export function setArticleSEO(article) {
   const description = article.seoDescription || article.excerpt
   const image = article.coverImage || DEFAULT_IMAGE
 
-  document.title = `${title} | Global Working`
-  ensureMeta('name', 'description', description)
-  ensureMeta('property', 'og:type', 'article')
-  ensureMeta('property', 'og:url', url)
-  ensureMeta('property', 'og:title', title)
-  ensureMeta('property', 'og:description', description)
-  ensureMeta('property', 'og:image', image)
-  ensureMeta('name', 'twitter:card', 'summary_large_image')
-  ensureMeta('name', 'twitter:title', title)
-  ensureMeta('name', 'twitter:description', description)
-  ensureMeta('name', 'twitter:image', image)
-  setCanonical(url)
+  setPageSEO({
+    title: `${title} | Global Working`,
+    description,
+    pathname: `/nyheter/${article.slug}`,
+    image,
+    type: 'article',
+  })
 
   setJsonLd('news-article-schema', {
     '@context': 'https://schema.org',

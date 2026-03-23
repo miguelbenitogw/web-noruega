@@ -6,7 +6,7 @@ import Footer from './components/Footer'
 import BackToTop from './components/BackToTop'
 import CookieConsent from './components/CookieConsent'
 import { initAnalyticsWithConsent, trackPageView } from './lib/analytics'
-import { setDefaultSEO } from './lib/seo'
+import { setDefaultSEO, setNotFoundSEO, setSectionSEO } from './lib/seo'
 
 // Pages
 import HomePage from './pages/HomePage'
@@ -17,6 +17,7 @@ import TalentportalenPage from './pages/TalentportalenPage'
 import OmOssPage from './pages/OmOssPage'
 import KontaktPage from './pages/KontaktPage'
 import NewsArticlePage from './pages/NewsArticlePage'
+import AdminPage from './pages/AdminPage'
 
 const getCurrentPath = () => `${window.location.pathname}${window.location.search}`
 
@@ -48,6 +49,8 @@ const getSectionRoute = (pathname) => {
       return 'om-oss'
     case '/kontakt':
       return 'kontakt'
+    case '/admin':
+      return 'admin'
     default:
       return null
   }
@@ -74,8 +77,21 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    if (!newsSlug) setDefaultSEO()
-  }, [newsSlug, sectionRoute])
+    if (sectionRoute === 'admin') return
+    if (newsSlug) return
+
+    if (sectionRoute === 'home') {
+      setDefaultSEO()
+      return
+    }
+
+    if (sectionRoute) {
+      setSectionSEO(sectionRoute)
+      return
+    }
+
+    setNotFoundSEO(currentPathname)
+  }, [currentPathname, newsSlug, sectionRoute])
 
   const renderPage = () => {
     if (newsSlug) return <NewsArticlePage slug={newsSlug} />
@@ -108,6 +124,11 @@ export default function App() {
           </section>
         )
     }
+  }
+
+  // Admin page renders standalone without chrome
+  if (sectionRoute === 'admin') {
+    return <AdminPage />
   }
 
   return (

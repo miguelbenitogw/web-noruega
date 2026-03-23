@@ -1,25 +1,25 @@
-﻿const footerLinks = {
-  Tjenester: [
-    { label: 'Vår rekrutteringsmodell', href: '/vr-rekrutteringsmodell' },
-    { label: 'Helsesektor', href: '/helse' },
-    { label: 'Talentportalen', href: '/talentportalen' },
-    { label: 'Kontakt', href: '/kontakt' },
-  ],
-  Selskapet: [
-    { label: 'Om oss', href: '/om-oss' },
-    { label: 'Nyheter', href: '/journal' },
-    { label: 'Kontakt', href: '/kontakt' },
-    { label: 'Personvern', href: '/#personvern' },
-  ],
-  Kontakt: [
-    { label: 'Miriam.Svendsen@globalworking.net', href: 'mailto:Miriam.Svendsen@globalworking.net' },
-    { label: '+47 919 00 649', href: 'tel:+4791900649' },
-    { label: 'Gro.anette@globalworking.net', href: 'mailto:Gro.anette@globalworking.net' },
-    { label: '+47 408 98 448', href: 'tel:+4740898448' },
-  ],
+import useContent from '../hooks/useContent'
+import { IMAGES } from '../assets/images'
+
+const socialIcons = {
+  LinkedIn: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/>
+      <circle cx="4" cy="4" r="2"/>
+    </svg>
+  ),
+  Instagram: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+      <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/>
+      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+    </svg>
+  ),
 }
 
 export default function Footer() {
+  const c = useContent('footer')
+  const links = c.links || {}
+
   return (
     <footer className="bg-primary-900 text-white" aria-label="Nettstedets bunntekst">
       <div className="container-xl py-16">
@@ -35,32 +35,9 @@ export default function Footer() {
                 Global Working <span className="text-primary-400">Norge</span>
               </span>
             </div>
-            <p className="text-blue-200 text-sm leading-relaxed mb-6">
-              Rekruttering og språkopplæring for kvalifiserte fagfolk til det norske arbeidsmarkedet, med strukturert oppfølging fra første kontakt til oppstart.
-            </p>
+            <p className="text-blue-200 text-sm leading-relaxed mb-6">{c.description}</p>
             <div className="flex gap-3">
-              {[
-                {
-                  label: 'LinkedIn',
-                  href: 'https://www.linkedin.com/company/globalworking-norge',
-                  icon: (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/>
-                      <circle cx="4" cy="4" r="2"/>
-                    </svg>
-                  ),
-                },
-                {
-                  label: 'Instagram',
-                  href: 'https://www.instagram.com/globalworkingnorge',
-                  icon: (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-                      <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/>
-                      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
-                    </svg>
-                  ),
-                },
-              ].map((s) => (
+              {(c.social || []).map((s) => (
                 <a
                   key={s.label}
                   href={s.href}
@@ -69,17 +46,17 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  {s.icon}
+                  {socialIcons[s.label]}
                 </a>
               ))}
             </div>
           </div>
 
-          {Object.entries(footerLinks).map(([title, items]) => (
+          {Object.entries(links).map(([title, items]) => (
             <div key={title}>
               <h3 className="font-heading font-semibold text-white text-sm uppercase tracking-wide mb-5">{title}</h3>
               <ul className="space-y-3" role="list">
-                {items.map((item) => (
+                {(items || []).map((item) => (
                   <li key={item.label}>
                     <a
                       href={item.href}

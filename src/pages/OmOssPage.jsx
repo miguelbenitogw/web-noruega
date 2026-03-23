@@ -2,52 +2,23 @@ import AnimateIn from '../components/AnimateIn'
 import { IMAGES, img } from '../assets/images'
 import OmOss from '../components/OmOss'
 import FAQ from '../components/FAQ'
-import Kontakt from '../components/Kontakt'
-import LegalSections from '../components/LegalSections'
-
-const team = [
-  {
-    initials: 'PS',
-    name: 'Pablo Santamarina',
-    role: 'CEO & Grunnlegger',
-    image: IMAGES.ceoPhoto,
-  },
-  {
-    initials: 'MS',
-    name: 'Miriam Svendsen',
-    role: 'Rekrutteringsansvarlig',
-    image: null,
-  },
-  {
-    initials: 'GA',
-    name: 'Gro Anette',
-    role: 'Kandidatoppfølging',
-    image: null,
-  },
-  {
-    initials: 'T',
-    name: 'Teamet',
-    role: '50+ ansatte i Alicante og Oslo',
-    image: null,
-  },
-]
+import PageEndNav from '../components/PageEndNav'
+import useContent from '../hooks/useContent'
 
 function TeamCard({ member, delay }) {
   return (
     <AnimateIn variant="fadeUp" delay={delay}>
       <div className="flex flex-col items-center text-center p-6 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-shadow">
-        {member.image ? (
+        {member.hasImage ? (
           <img
-            src={member.image}
+            src={IMAGES.ceoPhoto}
             alt={member.name}
             className="w-24 h-24 rounded-full object-cover mb-4 ring-4 ring-primary-600/20"
             loading="lazy"
           />
         ) : (
           <div className="w-24 h-24 rounded-full bg-primary-600 flex items-center justify-center mb-4 ring-4 ring-primary-600/20">
-            <span className="text-white font-heading text-2xl font-bold">
-              {member.initials}
-            </span>
+            <span className="text-white font-heading text-2xl font-bold">{member.initials}</span>
           </div>
         )}
         <h3 className="font-heading text-lg font-bold text-ink">{member.name}</h3>
@@ -58,6 +29,10 @@ function TeamCard({ member, delay }) {
 }
 
 export default function OmOssPage() {
+  const hero = useContent('omOssHero')
+  const teamSection = useContent('omOssTeam')
+  const offices = useContent('omOssOffices')
+
   return (
     <>
       {/* Hero Banner */}
@@ -71,56 +46,50 @@ export default function OmOssPage() {
               <span className="text-white">Om oss</span>
             </nav>
             <h1 className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-              Om oss
+              {hero.h1}
             </h1>
-            <p className="text-blue-100 text-lg max-w-2xl leading-relaxed">
-              Global Working er en spesialisert aktør innen språkopplæring og internasjonal rekruttering.
-            </p>
+            <p className="text-blue-100 text-lg max-w-2xl leading-relaxed">{hero.description}</p>
           </AnimateIn>
         </div>
       </section>
 
       <OmOss />
 
-      {/* Team Section - NEW */}
+      {/* Team Section */}
       <section className="py-24 lg:py-32 bg-surface">
         <div className="container-xl">
           <AnimateIn>
             <div className="text-center max-w-2xl mx-auto mb-14">
               <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                Vårt team
+                {teamSection.label}
               </span>
               <h2 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-4">
-                Møt teamet i Global Working
+                {teamSection.heading}
               </h2>
-              <p className="text-gray-600 leading-relaxed">
-                Vårt flerfaglige team av psykologer, språklærere og rekrutteringsspesialister sikrer en helhetlig prosess — fra utvelgelse og opplæring til oppfølging i Norge.
-              </p>
+              <p className="text-gray-600 leading-relaxed">{teamSection.description}</p>
             </div>
           </AnimateIn>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {team.map((member, i) => (
+            {(teamSection.members || []).map((member, i) => (
               <TeamCard key={member.name} member={member} delay={i * 100} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Offices Section - NEW */}
+      {/* Offices Section */}
       <section className="py-24 lg:py-32 bg-white">
         <div className="container-xl">
           <AnimateIn>
             <div className="text-center max-w-2xl mx-auto mb-14">
               <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                Lokasjon
+                {offices.label}
               </span>
               <h2 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-4">
-                Våre kontorer
+                {offices.heading}
               </h2>
-              <p className="text-gray-600 leading-relaxed">
-                Global Working har hovedkontor i Alicante, Spania, med kontor i Oslo.
-              </p>
+              <p className="text-gray-600 leading-relaxed">{offices.description}</p>
             </div>
           </AnimateIn>
 
@@ -134,12 +103,8 @@ export default function OmOssPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/30 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10 text-white">
-                <h3 className="font-heading text-xl md:text-2xl font-bold mb-2">
-                  Hovedkontor — Alicante
-                </h3>
-                <p className="text-white/80 text-sm md:text-base">
-                  Carrer de Periodista Pirula Arderius, 4, 03001 Alicante, España
-                </p>
+                <h3 className="font-heading text-xl md:text-2xl font-bold mb-2">{offices.officeName}</h3>
+                <p className="text-white/80 text-sm md:text-base">{offices.officeAddress}</p>
               </div>
             </div>
           </AnimateIn>
@@ -147,8 +112,7 @@ export default function OmOssPage() {
       </section>
 
       <FAQ />
-      <Kontakt />
-      <LegalSections />
+      <PageEndNav current="/om-oss" />
     </>
   )
 }

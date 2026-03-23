@@ -54,13 +54,18 @@ const run = async () => {
   articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   const homeLastmod = articles[0]?.date || TODAY
 
+  const mainPages = [
+    { loc: `${SITE_URL}/`,                        lastmod: homeLastmod, changefreq: 'weekly',  priority: '1.0' },
+    { loc: `${SITE_URL}/vr-rekrutteringsmodell`,  lastmod: TODAY,       changefreq: 'monthly', priority: '0.9' },
+    { loc: `${SITE_URL}/helse`,                   lastmod: TODAY,       changefreq: 'monthly', priority: '0.9' },
+    { loc: `${SITE_URL}/nyheter`,                 lastmod: homeLastmod, changefreq: 'weekly',  priority: '0.9' },
+    { loc: `${SITE_URL}/talentportalen`,          lastmod: TODAY,       changefreq: 'monthly', priority: '0.8' },
+    { loc: `${SITE_URL}/om-oss`,                  lastmod: TODAY,       changefreq: 'monthly', priority: '0.8' },
+    { loc: `${SITE_URL}/kontakt`,                 lastmod: TODAY,       changefreq: 'monthly', priority: '0.8' },
+  ]
+
   const nodes = [
-    buildUrlNode({
-      loc: `${SITE_URL}/`,
-      lastmod: homeLastmod,
-      changefreq: 'weekly',
-      priority: '1.0',
-    }),
+    ...mainPages.map(buildUrlNode),
     ...articles.map(article =>
       buildUrlNode({
         loc: `${SITE_URL}/nyheter/${article.slug}`,
@@ -79,7 +84,7 @@ ${nodes.join('\n')}
 
   await mkdir(path.dirname(SITEMAP_PATH), { recursive: true })
   await writeFile(SITEMAP_PATH, xml, 'utf8')
-  console.log(`Sitemap generated with ${articles.length} news URLs.`)
+  console.log(`Sitemap generated: ${mainPages.length} main pages + ${articles.length} news articles.`)
 }
 
 run().catch((error) => {

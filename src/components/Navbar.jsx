@@ -1,19 +1,14 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { IMAGES } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
-
-const navLinks = [
-  { label: 'Vår rekrutteringsmodell', href: '/vr-rekrutteringsmodell' },
-  { label: 'Helsesektor', href: '/helse' },
-  { label: 'Nyheter', href: '/journal' },
-  { label: 'Talentportalen', href: '/talentportalen' },
-  { label: 'Om oss', href: '/om-oss' },
-  { label: 'Kontakt', href: '/kontakt' },
-]
+import useContent from '../hooks/useContent'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const c = useContent('navbar')
+  const navLinks = c.links || []
+  const ctaLabel = c.ctaLabel || 'Kom i gang'
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -59,7 +54,7 @@ export default function Navbar() {
               onClick={() => trackEvent('cta_click', { location: 'navbar', cta: 'kom_i_gang' })}
               className="ml-3 px-5 py-2.5 bg-cta text-white rounded-lg text-sm font-semibold hover:bg-cta-600 transition-colors duration-200 shadow-sm cursor-pointer"
             >
-              Kom i gang
+              {ctaLabel}
             </a>
           </nav>
 
@@ -100,7 +95,7 @@ export default function Navbar() {
               }}
               className="mt-2 px-5 py-3 bg-cta text-white rounded-lg font-semibold text-center hover:bg-cta-600 transition-colors"
             >
-              Kom i gang
+              {ctaLabel}
             </a>
           </nav>
         </div>

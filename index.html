@@ -24,6 +24,13 @@
     <meta name="twitter:description" content="Rekruttering av kvalifiserte fagfolk til Norge med språk- og kulturforberedelse, godkjenning og oppfølging." />
     <meta name="twitter:image" content="https://globalworking.net/wp-content/uploads/2025/12/cropped-GlobalWorking-Logotipo-Principal-vertical-cuadrado-scaled-1.jpg" />
 
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+    <!-- Geo targeting -->
+    <meta name="geo.region" content="NO" />
+    <meta name="geo.placename" content="Oslo, Norway" />
+    <meta name="ICBM" content="59.9139, 10.7522" />
+
     <link rel="canonical" href="https://globalworking.no/" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#2563EB" />
@@ -47,17 +54,53 @@
         "contactType": "kundeservice",
         "email": "kontakt@globalworking.no",
         "telephone": "+47 22 00 00 00",
-        "availableLanguage": ["nb-NO"]
+        "availableLanguage": ["nb-NO", "es-ES"]
       },
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Oslo",
-        "addressCountry": "NO"
-      },
+      "address": [
+        {
+          "@type": "PostalAddress",
+          "addressLocality": "Oslo",
+          "addressCountry": "NO"
+        },
+        {
+          "@type": "PostalAddress",
+          "streetAddress": "Carrer de Periodista Pirula Arderius, 4",
+          "postalCode": "03001",
+          "addressLocality": "Alicante",
+          "addressCountry": "ES"
+        }
+      ],
       "sameAs": [
         "https://www.linkedin.com/company/globalworking-norge",
         "https://www.instagram.com/globalworkingnorge"
       ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Global Working – Alicante",
+      "url": "https://globalworking.no",
+      "image": "https://globalworking.net/wp-content/uploads/2025/12/cropped-GlobalWorking-Logotipo-Principal-vertical-cuadrado-scaled-1.jpg",
+      "description": "Oficina central de Global Working para reclutamiento de profesionales hacia Noruega.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Carrer de Periodista Pirula Arderius, 4",
+        "postalCode": "03001",
+        "addressLocality": "Alicante",
+        "addressRegion": "Comunitat Valenciana",
+        "addressCountry": "ES"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 38.3452,
+        "longitude": -0.4810
+      },
+      "telephone": "+47 919 00 649",
+      "openingHours": "Mo-Fr 09:00-17:00",
+      "priceRange": "$$"
     }
     </script>
 

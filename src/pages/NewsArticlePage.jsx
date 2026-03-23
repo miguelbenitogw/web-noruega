@@ -41,7 +41,7 @@ export default function NewsArticlePage({ slug }) {
   return (
     <section className="py-16 lg:py-24 bg-white">
       <div className="container-xl max-w-4xl">
-        <a href="/journal#nyheter-arkiv" className="inline-flex items-center text-primary-600 text-sm font-semibold hover:text-primary-700 mb-8">
+        <a href="/nyheter#nyheter-arkiv" className="inline-flex items-center text-primary-600 text-sm font-semibold hover:text-primary-700 mb-8">
           ← Tilbake til nyheter
         </a>
 

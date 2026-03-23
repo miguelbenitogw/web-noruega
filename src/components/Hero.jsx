@@ -3,13 +3,7 @@ import teamHero from '../assets/team-hero.jpg'
 import useInView from '../hooks/useInView'
 import useCounter from '../hooks/useCounter'
 import { trackEvent } from '../lib/analytics'
-
-const stats = [
-  { value: '2014', label: 'Grunnlagt', animate: false },
-  { value: '50+', label: 'Ansatte', animate: true },
-  { value: '500+', label: 'Kandidater plassert i Norge', animate: true },
-  { value: '95%', label: 'Retensjonsgrad', animate: true },
-]
+import useContent from '../hooks/useContent'
 
 function StatCard({ stat, active, delay }) {
   const animatedValue = useCounter(stat.value, active && stat.animate, 2000)
@@ -32,6 +26,7 @@ function StatCard({ stat, active, delay }) {
 
 export default function Hero() {
   const [statsRef, statsVisible] = useInView({ threshold: 0.3 })
+  const c = useContent('hero')
 
   return (
     <section
@@ -56,18 +51,16 @@ export default function Hero() {
             <div className="animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-sm font-medium mb-8 backdrop-blur-sm">
                 <span className="w-2 h-2 rounded-full bg-cta animate-pulse" aria-hidden="true" />
-                Norges ledende rekrutteringspartner
+                {c.badge}
               </div>
             </div>
 
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
-              Har dere behov for <span className="text-cta">arbeidskraft?</span>
+              {c.h1First} <span className="text-cta">{c.h1Highlight}</span>
             </h1>
 
             <p className="text-lg lg:text-xl text-blue-100 leading-relaxed mb-10 max-w-xl animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
-              Global Working er verdens største språkskole som underviser i norsk utenfor Skandinavia. Vi
-              spesialiserer oss på norsk språk- og kulturopplæring for søreuropeiske fagfolk, og kobler dem med
-              arbeidsgivere i Norge. Vi følger kandidatene fra første norsktime til trygg oppstart i jobb.
+              {c.description}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
@@ -76,7 +69,7 @@ export default function Hero() {
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'slik_jobber_vi' })}
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-cta text-white font-semibold rounded-xl hover:bg-cta-600 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
               >
-                Slik jobber vi
+                {c.cta1}
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
@@ -86,12 +79,12 @@ export default function Hero() {
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'kontakt_oss' })}
                 className="inline-flex items-center justify-center px-7 py-4 bg-white/10 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-200 backdrop-blur-sm cursor-pointer"
               >
-                Kontakt oss
+                {c.cta2}
               </a>
             </div>
 
             <div ref={statsRef} className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {stats.map((stat, i) => (
+              {(c.stats || []).map((stat, i) => (
                 <StatCard key={stat.label} stat={stat} active={statsVisible} delay={i * 150} />
               ))}
             </div>
@@ -100,7 +93,6 @@ export default function Hero() {
           <div className="hidden lg:flex items-center justify-center animate-[fadeInUp_1s_ease-out_1s_both]">
             <div className="relative">
               <div className="absolute -inset-6 bg-primary-500/20 rounded-3xl blur-2xl" aria-hidden="true" />
-
               <div className="relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl overflow-hidden shadow-2xl">
                 <div className="bg-white/15 px-4 py-3 flex items-center gap-2 border-b border-white/10">
                   <div className="flex gap-1.5">
@@ -132,4 +124,3 @@ export default function Hero() {
     </section>
   )
 }
-

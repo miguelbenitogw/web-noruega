@@ -1,27 +1,11 @@
-﻿import { IMAGES, img } from '../assets/images'
+import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
-
-const features = [
-  {
-    title: 'Språk og faglig forberedelse før ansettelse',
-    description: 'Kandidatene får opptil 600 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.',
-  },
-  {
-    title: 'Tre opplæringsmodeller',
-    description: 'Fysisk i Alicante (5 måneder), kombinasjon fysisk og nett (7 måneder), eller full nettbasert opplæring (9 måneder).',
-  },
-  {
-    title: 'Strukturert overgang til arbeidsgiver',
-    description: 'Intervju skjer 1–4 uker etter avsluttet opplæring. Vi koordinerer oppstart og avreisedato med begge parter.',
-  },
-  {
-    title: 'Ekstra oppfølging ved behov',
-    description: 'Vi kan tilrettelegge individuell språktrening før og etter avreise for å redusere usikkerhet i oppstarten.',
-  },
-]
+import useContent from '../hooks/useContent'
 
 export default function Helsesektor() {
+  const c = useContent('helsesektorComp')
+
   return (
     <section id="helsesektor" className="scroll-mt-28 py-24 lg:py-32 bg-surface" aria-labelledby="helsesektor-heading">
       <div className="container-xl">
@@ -29,32 +13,26 @@ export default function Helsesektor() {
           <AnimateIn variant="fadeRight">
             <div>
               <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                Tjenester for helseinstitusjoner
+                {c.label}
               </span>
               <h2 id="helsesektor-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight">
-                Vi forbereder helsepersonell for den norske helsesektoren
+                {c.heading}
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed mb-8">
-                Global Working er den største leverandøren av sykepleiere utenfra Skandinavia til Norge. Siden 2014 har vi spesialisert oss på å utdanne og kvalifisere sykepleiere for arbeid i Norge.
+                {c.description}
               </p>
 
               <div className="grid sm:grid-cols-3 gap-4 mb-8">
-                <div className="bg-white border border-gray-100 rounded-xl p-4">
-                  <p className="font-heading text-2xl font-bold text-primary-700">10+ år</p>
-                  <p className="text-xs text-gray-500">erfaring i Norge</p>
-                </div>
-                <div className="bg-white border border-gray-100 rounded-xl p-4">
-                  <p className="font-heading text-2xl font-bold text-primary-700">25 000+</p>
-                  <p className="text-xs text-gray-500">undervisningstimer i norsk</p>
-                </div>
-                <div className="bg-white border border-gray-100 rounded-xl p-4">
-                  <p className="font-heading text-2xl font-bold text-primary-700">600</p>
-                  <p className="text-xs text-gray-500">timer opplæring (opptil)</p>
-                </div>
+                {(c.stats || []).map(s => (
+                  <div key={s.label} className="bg-white border border-gray-100 rounded-xl p-4">
+                    <p className="font-heading text-2xl font-bold text-primary-700">{s.value}</p>
+                    <p className="text-xs text-gray-500">{s.label}</p>
+                  </div>
+                ))}
               </div>
 
               <ul className="space-y-5 mb-10" role="list">
-                {features.map((f) => (
+                {(c.features || []).map((f) => (
                   <li key={f.title} className="flex gap-4">
                     <div className="mt-0.5 shrink-0 w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center">
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -69,17 +47,19 @@ export default function Helsesektor() {
                 ))}
               </ul>
 
-              <blockquote className="mb-10 rounded-2xl border border-primary-100 bg-white p-5 text-sm leading-relaxed text-gray-600">
-                "Vi ønsket å tilby 6 sykepleiere fast stilling gjennom samarbeid med Global Working. For oss ble dette en god løsning på bemanningskrisen vi hadde."
-                <footer className="mt-3 font-semibold text-ink">— Kristina S, Vågå kommune</footer>
-              </blockquote>
+              {c.blockquote && (
+                <blockquote className="mb-10 rounded-2xl border border-primary-100 bg-white p-5 text-sm leading-relaxed text-gray-600">
+                  "{c.blockquote.text}"
+                  <footer className="mt-3 font-semibold text-ink">— {c.blockquote.author}</footer>
+                </blockquote>
+              )}
 
               <a
                 href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'helsesektor', cta: 'be_om_kandidater' })}
                 className="inline-flex items-center gap-2 px-7 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
               >
-                Be om kandidater
+                {c.ctaLabel}
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
@@ -109,8 +89,8 @@ export default function Helsesektor() {
                     </svg>
                   </div>
                   <div>
-                    <div className="font-heading font-bold text-2xl text-ink">17–20</div>
-                    <div className="text-gray-400 text-xs">grupper årlig</div>
+                    <div className="font-heading font-bold text-2xl text-ink">{c.groupsValue}</div>
+                    <div className="text-gray-400 text-xs">{c.groupsLabel}</div>
                   </div>
                 </div>
               </div>

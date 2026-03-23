@@ -1,73 +1,9 @@
-import Hero from '../components/Hero'
+﻿import Hero from '../components/Hero'
 import CTABanner from '../components/CTABanner'
 import AnimateIn from '../components/AnimateIn'
 import { trackEvent } from '../lib/analytics'
 import { getAllNews } from '../lib/news'
-
-const sections = [
-  {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-      </svg>
-    ),
-    title: 'Vår rekrutteringsmodell',
-    description: 'Vi finner, forbereder og følger opp fagfolk fra Sør-Europa til trygg oppstart i Norge. Opptil 600 timer norskopplæring.',
-    href: '/vr-rekrutteringsmodell',
-  },
-  {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-      </svg>
-    ),
-    title: 'Helsesektor',
-    description: 'Norges største leverandør av sykepleiere utenfra Skandinavia. Spesialisert helsefaglig forberedelse siden 2014.',
-    href: '/helse',
-  },
-  {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
-      </svg>
-    ),
-    title: 'Talentportalen',
-    description: 'Se tilgjengelige kandidater for fast ansettelse direkte i vår nye kandidatportal.',
-    href: '/talentportalen',
-  },
-  {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-      </svg>
-    ),
-    title: 'Om Global Working',
-    description: 'Grunnlagt i 2014. 50+ ansatte. ISO-sertifisert. Hovedkontor i Alicante med kontor i Oslo.',
-    href: '/om-oss',
-  },
-]
-
-const stats = [
-  { value: '500+', label: 'Kandidater plassert i Norge' },
-  { value: '95%', label: 'Retensjonsgrad' },
-  { value: '25 000+', label: 'Undervisningstimer i norsk' },
-]
-
-const contacts = [
-  {
-    name: 'Miriam Svendsen',
-    role: 'Rekrutteringsansvarlig',
-    email: 'miriam.svendsen@globalworking.net',
-    phone: '+47 919 00 649',
-  },
-  {
-    name: 'Gro Anette',
-    role: 'Kandidatoppfølging',
-    email: 'gro.anette@globalworking.net',
-    phone: '+47 408 98 448',
-  },
-]
+import useContent from '../hooks/useContent'
 
 function SummaryCard({ section, delay }) {
   return (
@@ -78,14 +14,14 @@ function SummaryCard({ section, delay }) {
         className="group block h-full bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-primary-100 transition-all duration-300 p-7"
       >
         <div className="w-12 h-12 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary-600 group-hover:text-white transition-colors duration-300">
-          {section.icon}
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
         </div>
         <h3 className="font-heading text-lg font-bold text-ink mb-2 group-hover:text-primary-600 transition-colors">
           {section.title}
         </h3>
-        <p className="text-gray-500 text-sm leading-relaxed mb-4">
-          {section.description}
-        </p>
+        <p className="text-gray-500 text-sm leading-relaxed mb-4">{section.description}</p>
         <span className="inline-flex items-center gap-1.5 text-primary-600 font-semibold text-sm">
           Les mer
           <svg
@@ -103,6 +39,11 @@ function SummaryCard({ section, delay }) {
 export default function HomePage() {
   const news = getAllNews()
   const latestNews = news.slice(0, 2)
+  const hs = useContent('homeServices')
+  const hStats = useContent('homeStats')
+  const hHealth = useContent('homeHealth')
+  const hContact = useContent('homeContact')
+  const contacts = useContent('contacts')
 
   const tagColors = {
     Plattform: 'bg-primary-50 text-primary-700',
@@ -120,18 +61,16 @@ export default function HomePage() {
         <div className="container-xl">
           <AnimateIn className="text-center max-w-3xl mx-auto mb-16">
             <span className="inline-block text-primary-600 font-bold text-xs uppercase tracking-[0.2em] mb-4">
-              Våre tjenester
+              {hs.label}
             </span>
             <h2 id="tilbud-heading" className="font-heading text-3xl lg:text-4xl xl:text-5xl font-bold text-ink mb-5 leading-tight">
-              Vårt tilbud til norske arbeidsgivere
+              {hs.heading}
             </h2>
-            <p className="text-gray-600 text-lg leading-relaxed">
-              Vi kobler norske arbeidsgivere med kvalifiserte fagfolk fra Sør-Europa – forberedt med språk, kultur og fagkompetanse.
-            </p>
+            <p className="text-gray-600 text-lg leading-relaxed">{hs.description}</p>
           </AnimateIn>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {sections.map((section, i) => (
+            {(hs.sections || []).map((section, i) => (
               <SummaryCard key={section.href} section={section} delay={i * 100} />
             ))}
           </div>
@@ -145,20 +84,18 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             <AnimateIn variant="fadeRight">
               <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-semibold mb-5">
-                Helsesektoren
+                {hHealth.label}
               </span>
               <h2 className="font-heading text-3xl lg:text-4xl font-bold text-white mb-5 leading-tight">
-                Vi støtter det norske helsevesenet
+                {hHealth.heading}
               </h2>
-              <p className="text-blue-100 text-lg leading-relaxed mb-8">
-                Global Working er den største leverandøren av sykepleiere utenfra Skandinavia til Norge. Siden 2014 har vi spesialisert oss på å utdanne og kvalifisere sykepleiere fra Spania, Italia og Frankrike for arbeid i norsk helsesektor.
-              </p>
+              <p className="text-blue-100 text-lg leading-relaxed mb-8">{hHealth.description}</p>
               <a
                 href="/helse"
                 onClick={() => trackEvent('cta_click', { location: 'landing_health', cta: 'les_mer_helse' })}
                 className="inline-flex items-center gap-2 px-7 py-4 bg-cta text-white font-semibold rounded-xl hover:bg-cta-600 transition-all duration-200 shadow-lg hover:-translate-y-0.5 cursor-pointer"
               >
-                Les mer om helse
+                {hHealth.cta}
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
@@ -167,7 +104,7 @@ export default function HomePage() {
 
             <AnimateIn variant="fadeLeft" delay={150}>
               <div className="grid grid-cols-3 gap-4">
-                {stats.map((stat) => (
+                {(hStats || []).map((stat) => (
                   <div key={stat.label} className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-5 text-center">
                     <div className="font-heading text-2xl lg:text-3xl font-bold text-white mb-1">{stat.value}</div>
                     <div className="text-blue-200 text-xs font-medium">{stat.label}</div>
@@ -194,7 +131,7 @@ export default function HomePage() {
                   </h2>
                 </div>
                 <a
-                  href="/journal"
+                  href="/nyheter"
                   onClick={() => trackEvent('cta_click', { location: 'landing_news', cta: 'se_alle' })}
                   className="shrink-0 inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
                 >
@@ -244,18 +181,16 @@ export default function HomePage() {
           <div className="max-w-3xl mx-auto text-center">
             <AnimateIn>
               <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                Kontakt
+                {hContact.label}
               </span>
               <h2 id="quick-contact-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight">
-                Ønsker du å vite mer?
+                {hContact.heading}
               </h2>
-              <p className="text-gray-600 text-lg leading-relaxed mb-12">
-                Du treffer oss på e-post eller telefon. Vi tar kontakt så snart vi har mulighet.
-              </p>
+              <p className="text-gray-600 text-lg leading-relaxed mb-12">{hContact.description}</p>
             </AnimateIn>
 
             <div className="grid sm:grid-cols-2 gap-5 mb-10">
-              {contacts.map((c, i) => (
+              {(contacts || []).map((c, i) => (
                 <AnimateIn key={c.name} variant="fadeUp" delay={i * 100}>
                   <div className="bg-surface rounded-2xl p-6 border border-gray-100 text-left">
                     <div className="flex items-center gap-4 mb-4">
@@ -282,7 +217,7 @@ export default function HomePage() {
                 onClick={() => trackEvent('cta_click', { location: 'landing_quick_contact', cta: 'send_melding' })}
                 className="inline-flex items-center gap-2 px-8 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
               >
-                Send oss en melding
+                {hContact.cta}
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
