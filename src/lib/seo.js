@@ -47,6 +47,24 @@ const SECTION_SEO = {
       'Ta kontakt for spørsmål om rekruttering, samarbeid eller kandidatportalen.',
     pathname: '/kontakt',
   },
+  personvern: {
+    title: 'Personvern | Global Working Norge',
+    description:
+      'Les hvordan Global Working Norge behandler personopplysninger, formål, lagringstid og dine rettigheter.',
+    pathname: '/personvern',
+  },
+  vilkar: {
+    title: 'Vilkår | Global Working Norge',
+    description:
+      'Vilkår for bruk av nettstedet og tjenester fra Global Working Norge, inkludert ansvar og kontaktinformasjon.',
+    pathname: '/vilkar',
+  },
+  cookies: {
+    title: 'Informasjonskapsler | Global Working Norge',
+    description:
+      'Informasjon om hvilke cookies vi bruker, hvorfor vi bruker dem og hvordan du kan administrere samtykke.',
+    pathname: '/cookies',
+  },
 }
 
 const NOT_FOUND_SEO = {

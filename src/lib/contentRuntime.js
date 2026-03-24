@@ -10,6 +10,9 @@ const ROUTE_DEFINITIONS = {
   '/talentportalen': { sectionRoute: 'talentportalen', pageSlug: 'talentportalen', aliases: ['talentportalen'] },
   '/om-oss': { sectionRoute: 'om-oss', pageSlug: 'om-oss', aliases: ['om-oss'] },
   '/kontakt': { sectionRoute: 'kontakt', pageSlug: 'kontakt', aliases: ['kontakt'] },
+  '/personvern': { sectionRoute: 'personvern', pageSlug: 'personvern', aliases: ['personvern', 'privacy'] },
+  '/vilkar': { sectionRoute: 'vilkar', pageSlug: 'vilkar', aliases: ['vilkar', 'terms'] },
+  '/cookies': { sectionRoute: 'cookies', pageSlug: 'cookies', aliases: ['cookies', 'informasjonskapsler'] },
   '/admin': { sectionRoute: 'admin', pageSlug: 'admin', aliases: ['admin'] },
 }
 

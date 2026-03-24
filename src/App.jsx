@@ -17,6 +17,9 @@ import NyheterPage from './pages/NyheterPage'
 import TalentportalenPage from './pages/TalentportalenPage'
 import OmOssPage from './pages/OmOssPage'
 import KontaktPage from './pages/KontaktPage'
+import PersonvernPage from './pages/PersonvernPage'
+import VilkarPage from './pages/VilkarPage'
+import CookiesPage from './pages/CookiesPage'
 import NewsArticlePage from './pages/NewsArticlePage'
 import AdminPage from './pages/AdminPage'
 
@@ -78,6 +81,12 @@ export default function App() {
         return <OmOssPage />
       case 'kontakt':
         return <KontaktPage />
+      case 'personvern':
+        return <PersonvernPage />
+      case 'vilkar':
+        return <VilkarPage />
+      case 'cookies':
+        return <CookiesPage />
       default:
         return (
           <section className="py-24 bg-white">
