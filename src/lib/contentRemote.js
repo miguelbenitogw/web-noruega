@@ -19,6 +19,10 @@ const clone = (value) => {
 
 const normalizeStatus = (status) => (status === 'published' ? 'published' : 'draft')
 
+const normalizeRole = (role) => String(role || '').trim().toLowerCase()
+
+const isAllowedEditorRole = (role) => ['admin', 'editor'].includes(normalizeRole(role))
+
 const normalizeSnapshot = (row) => {
   if (!row) return null
   return {
@@ -102,36 +106,32 @@ export async function canCurrentUserEditContent() {
   const { data: userData, error } = await client.auth.getUser()
   if (error || !userData?.user) return false
 
-  const allowedEmails = getAllowedEditorEmails()
-  if (allowedEmails.length > 0) {
-    const email = userData.user.email?.trim().toLowerCase() || ''
-    return allowedEmails.includes(email)
-  }
+  const email = userData.user.email?.trim().toLowerCase() || ''
 
   const { data: userMatch, error: userError } = await client
     .from(EDITORS_TABLE)
-    .select('id')
+    .select('id, role, user_id, email')
     .eq('user_id', userData.user.id)
     .limit(1)
     .maybeSingle()
 
   if (!userError && userMatch) {
-    return true
+    return isAllowedEditorRole(userMatch.role)
   }
 
-  const email = userData.user.email?.trim().toLowerCase() || ''
   if (!email) return false
 
-  const { data, error: emailError } = await client
+  const { data: emailMatch, error: emailError } = await client
     .from(EDITORS_TABLE)
-    .select('id')
+    .select('id, role, user_id, email')
     .eq('email', email)
     .limit(1)
     .maybeSingle()
 
-  if (emailError) {
-    return false
+  if (emailError || !emailMatch) {
+    const allowedEmails = getAllowedEditorEmails()
+    return allowedEmails.length > 0 && allowedEmails.includes(email)
   }
 
-  return Boolean(data)
+  return isAllowedEditorRole(emailMatch.role)
 }

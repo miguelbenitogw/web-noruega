@@ -7,6 +7,7 @@ import BackToTop from './components/BackToTop'
 import CookieConsent from './components/CookieConsent'
 import { initAnalyticsWithConsent, trackPageView } from './lib/analytics'
 import { setDefaultSEO, setNotFoundSEO, setSectionSEO } from './lib/seo'
+import { resolveRouteContext } from './lib/contentRuntime'
 
 // Pages
 import HomePage from './pages/HomePage'
@@ -21,46 +22,12 @@ import AdminPage from './pages/AdminPage'
 
 const getCurrentPath = () => `${window.location.pathname}${window.location.search}`
 
-const getNewsSlugFromPath = (pathname) => {
-  const match = pathname.match(/^\/(?:nyheter|journal)\/([^/]+)\/?$/)
-  return match ? match[1] : null
-}
-
-const normalizePath = (pathname) => {
-  if (!pathname || pathname === '/') return '/'
-  return pathname.endsWith('/') ? pathname.slice(0, -1) : pathname
-}
-
-const getSectionRoute = (pathname) => {
-  const normalized = normalizePath(pathname)
-  switch (normalized) {
-    case '/':
-      return 'home'
-    case '/vr-rekrutteringsmodell':
-      return 'rekruttering'
-    case '/helse':
-      return 'helse'
-    case '/journal':
-    case '/nyheter':
-      return 'nyheter'
-    case '/talentportalen':
-      return 'talentportalen'
-    case '/om-oss':
-      return 'om-oss'
-    case '/kontakt':
-      return 'kontakt'
-    case '/admin':
-      return 'admin'
-    default:
-      return null
-  }
-}
-
 export default function App() {
   const [currentPath, setCurrentPath] = useState(getCurrentPath)
   const currentPathname = currentPath.split('?')[0]
-  const newsSlug = getNewsSlugFromPath(currentPathname)
-  const sectionRoute = getSectionRoute(currentPathname)
+  const routeContext = resolveRouteContext(currentPathname)
+  const newsSlug = routeContext.newsSlug
+  const sectionRoute = routeContext.sectionRoute
 
   useEffect(() => {
     if (localStorage.getItem('gw-cookies') === 'accepted') {
@@ -77,7 +44,7 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    if (sectionRoute === 'admin') return
+    if (routeContext.isAdmin) return
     if (newsSlug) return
 
     if (sectionRoute === 'home') {
@@ -91,7 +58,7 @@ export default function App() {
     }
 
     setNotFoundSEO(currentPathname)
-  }, [currentPathname, newsSlug, sectionRoute])
+  }, [currentPathname, newsSlug, routeContext.isAdmin, sectionRoute])
 
   const renderPage = () => {
     if (newsSlug) return <NewsArticlePage slug={newsSlug} />

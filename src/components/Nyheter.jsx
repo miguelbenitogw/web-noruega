@@ -1,7 +1,7 @@
-﻿import { IMAGES, img } from '../assets/images'
+import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
-import { getAllNews } from '../lib/news'
+import { useNewsCollection } from '../hooks/useNews'
 
 const tagColors = {
   Plattform: 'bg-primary-50 text-primary-700',
@@ -13,7 +13,17 @@ const tagColors = {
 const getTagStyles = (tag) => tagColors[tag] || 'bg-gray-100 text-gray-700'
 
 export default function Nyheter() {
-  const news = getAllNews()
+  const { articles: news, loading } = useNewsCollection()
+  if (!news.length && loading) {
+    return (
+      <section id="nyheter" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="nyheter-heading">
+        <div className="container-xl">
+          <p className="text-gray-500">Laster nyheter...</p>
+        </div>
+      </section>
+    )
+  }
+
   if (!news.length) return null
 
   const featured = news[0]

@@ -22,8 +22,13 @@ create table if not exists public.content_editors (
   id uuid primary key default gen_random_uuid(),
   user_id uuid unique references auth.users(id) on delete cascade,
   email text unique,
+  role text not null default 'editor' check (role in ('admin', 'editor')),
   created_at timestamptz not null default now()
 );
+
+update public.content_editors
+set role = 'editor'
+where role is null;
 
 create or replace function public.set_content_snapshots_updated_at()
 returns trigger
@@ -57,8 +62,9 @@ as $$
   select exists (
     select 1
     from public.content_editors ce
-    where ce.user_id = auth.uid()
-       or lower(ce.email) = lower(auth.jwt() ->> 'email')
+    where (ce.user_id = auth.uid()
+       or lower(ce.email) = lower(auth.jwt() ->> 'email'))
+      and ce.role in ('admin', 'editor')
   );
 $$;
 
@@ -108,4 +114,4 @@ create policy "Editors can read their own row"
   using (user_id = auth.uid() or lower(email) = lower(auth.jwt() ->> 'email'));
 
 -- Seed your first editor manually:
--- insert into public.content_editors (email) values ('you@example.com');
+-- insert into public.content_editors (email, role) values ('you@example.com', 'admin');

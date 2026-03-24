@@ -1,9 +1,9 @@
-﻿import Hero from '../components/Hero'
+import Hero from '../components/Hero'
 import CTABanner from '../components/CTABanner'
 import AnimateIn from '../components/AnimateIn'
 import { trackEvent } from '../lib/analytics'
-import { getAllNews } from '../lib/news'
 import useContent from '../hooks/useContent'
+import { useNewsCollection } from '../hooks/useNews'
 
 function SummaryCard({ section, delay }) {
   return (
@@ -37,7 +37,7 @@ function SummaryCard({ section, delay }) {
 }
 
 export default function HomePage() {
-  const news = getAllNews()
+  const { articles: news } = useNewsCollection()
   const latestNews = news.slice(0, 2)
   const hs = useContent('homeServices')
   const hStats = useContent('homeStats')

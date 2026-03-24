@@ -3,8 +3,8 @@ import { readContentOverrides, CONTENT_OVERRIDE_EVENT } from '../lib/contentOver
 import { fetchPublishedContentSnapshot } from '../lib/contentRemote'
 import { getContentLocale, shouldUseSupabaseContent } from '../lib/supabaseClient'
 import defaultContent from '../data/siteContent'
-import { deepMergeContent } from '../lib/contentMappers'
-import { loadPublishedPageForPath, resolveRouteContext } from '../lib/contentRuntime'
+import { deepMergeContent } from '../lib/contentMappers.js'
+import { loadPublishedPageForPath, resolveRouteContext } from '../lib/contentRuntime.js'
 
 export default function useContent(section) {
   const [overrides, setOverrides] = useState(() => readContentOverrides())

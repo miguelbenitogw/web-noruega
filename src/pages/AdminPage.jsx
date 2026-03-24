@@ -1,18 +1,29 @@
-﻿import { useState, useRef, useEffect, useCallback } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { writeContentOverrides, clearContentOverrides } from '../lib/contentOverrides'
 import defaultContent from '../data/siteContent'
 import useContent from '../hooks/useContent'
+import useAuth from '../hooks/useAuth'
 import { canCurrentUserEditContent as canEditContentByPolicy, saveContentSnapshot } from '../lib/contentRemote'
+import useTemplates from '../hooks/useTemplates'
+import useTemplateContent from '../hooks/useTemplateContent'
+import ContentEntityManager from '../components/admin/ContentEntityManager'
 
-// â”€â”€â”€ Security constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const resolveAdminAuthMode = () => {
+  const configured = String(import.meta.env.VITE_ADMIN_AUTH_MODE || '').trim().toLowerCase()
+  if (configured === 'local' && import.meta.env.DEV) return 'local'
+  return 'supabase'
+}
+
+const ADMIN_AUTH_MODE = resolveAdminAuthMode()
+
+// Security constants
 const MAX_ATTEMPTS    = 5
 const LOCKOUT_MS      = 30 * 60 * 1000   // 30 min lockout after MAX_ATTEMPTS
 const SESSION_MS      = 60 * 60 * 1000   // 60 min idle timeout
 const RATE_KEY        = 'gw_admin_rate_v2'
 const SESSION_KEY     = 'gw_admin_sess_v2'
 
-// PBKDF2 â€“ 200 000 iterations (computationally expensive for attackers)
+// PBKDF2 - 200 000 iterations (computationally expensive for attackers)
 async function pbkdf2Hash(password) {
   const SALT = import.meta.env.VITE_ADMIN_SALT || 'gw-static-salt-v1'
   const enc  = new TextEncoder()
@@ -42,50 +53,11 @@ function touchSession() {
 }
 function clearSession() { sessionStorage.removeItem(SESSION_KEY) }
 
-const ADMIN_AUTH_MODE = (import.meta.env.VITE_ADMIN_AUTH_MODE || 'local').toLowerCase()
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || ''
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-
-let supabaseClientInstance = null
-
-function getSupabaseClient() {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null
-  if (!supabaseClientInstance) {
-    supabaseClientInstance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-      },
-    })
-  }
-  return supabaseClientInstance
-}
-
 function getErrorMessage(error) {
   if (!error) return 'Ukjent feil'
   if (typeof error === 'string') return error
   return error.message || error.error_description || 'Ukjent feil'
 }
-
-async function canCurrentUserEditContent(client = getSupabaseClient(), user = null) {
-  void client
-  void user
-  return canEditContentByPolicy()
-}
-
-async function signOutSupabase() {
-  const client = getSupabaseClient()
-  if (!client) return
-  try {
-    await client.auth.signOut()
-  } catch {
-    // Ignore sign-out errors.
-  }
-}
-
-
-// â”€â”€â”€ Field Components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function Field({ label, hint, children }) {
   return (
@@ -174,6 +146,124 @@ function Section({ title, children }) {
       </div>
       <div className="p-6">{children}</div>
     </div>
+  )
+}
+
+function JsonPreview({ value }) {
+  return (
+    <pre className="rounded-xl bg-slate-950 text-slate-100 p-4 text-xs font-mono overflow-auto max-h-80 whitespace-pre-wrap break-words">
+      {JSON.stringify(value ?? {}, null, 2)}
+    </pre>
+  )
+}
+
+function TemplatesEditor() {
+  const { templates, loading, error } = useTemplates()
+  const [selectedKey, setSelectedKey] = useState('')
+
+  const selectedTemplate = useMemo(() => {
+    if (!templates.length) return null
+    return templates.find((template) => template.key === selectedKey) || templates[0]
+  }, [selectedKey, templates])
+
+  const { resolvedContent, isValid, issues } = useTemplateContent({
+    template: selectedTemplate,
+    content: {},
+  })
+
+  return (
+    <>
+      <Section title="Templates">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <p className="text-sm text-gray-600 font-medium">Aktive templates</p>
+            <p className="text-xs text-gray-400">Base for fremtidig template-drevet redigering.</p>
+          </div>
+          <span className="text-xs font-semibold text-primary-700 bg-primary-50 px-2.5 py-1 rounded-full">
+            {templates.length} aktive
+          </span>
+        </div>
+
+        {loading && <p className="mt-4 text-sm text-gray-500">Laster templates...</p>}
+
+        {error && (
+          <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            {error.message}
+          </div>
+        )}
+
+        {!loading && !error && templates.length === 0 && (
+          <p className="mt-4 text-sm text-gray-500">Ingen aktive templates ble funnet.</p>
+        )}
+
+        <div className="mt-4 grid gap-2">
+          {templates.map((template) => (
+            <button
+              key={template.key}
+              type="button"
+              onClick={() => setSelectedKey(template.key)}
+              className={`text-left rounded-xl border px-4 py-3 transition-colors ${
+                selectedTemplate?.key === template.key
+                  ? 'border-primary-200 bg-primary-50'
+                  : 'border-gray-200 bg-white hover:bg-gray-50'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span className="font-semibold text-sm text-ink">{template.name}</span>
+                <span className="text-[11px] font-mono text-gray-400">{template.key}</span>
+              </div>
+              <div className="mt-1 flex flex-wrap gap-2 text-[11px] text-gray-500">
+                <span>{template.contentType}</span>
+                <span>•</span>
+                <span>{template.locale}</span>
+                {template.isStarter && <span>• starter</span>}
+              </div>
+            </button>
+          ))}
+        </div>
+      </Section>
+
+      {selectedTemplate && (
+        <Section title={`Preview: ${selectedTemplate.name}`}>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div>
+              <Field label="schema">
+                <JsonPreview value={selectedTemplate.schema} />
+              </Field>
+            </div>
+            <div>
+              <Field label="defaults">
+                <JsonPreview value={selectedTemplate.defaults} />
+              </Field>
+            </div>
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            <div>
+              <Field label="resolvedContent" hint="defaults + content">
+                <JsonPreview value={resolvedContent} />
+              </Field>
+            </div>
+            <div className="space-y-3">
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
+                <p className="font-semibold text-ink">Validation</p>
+                <p className="mt-1">{isValid ? 'Template shape ser grei ut.' : 'Template shape mangler minimumskrav.'}</p>
+              </div>
+              {!isValid && issues.length > 0 && (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                  <p className="font-semibold">Issues</p>
+                  <ul className="mt-2 list-disc pl-5 space-y-1">
+                    {issues.map((issue) => (
+                      <li key={issue}>{issue}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </Section>
+      )}
+    </>
   )
 }
 
@@ -625,12 +715,15 @@ function KontaktCompEditor({ draft, update }) {
 const NAV_GROUPS = [
   {
     title: 'Generelt',
-    items: [
-      { id: 'hero', label: 'Hero (Forside)' },
-      { id: 'contacts', label: 'Kontaktpersoner' },
-      { id: 'ctaBanner', label: 'CTA Banner' },
-    ],
-  },
+      items: [
+        { id: 'hero', label: 'Hero (Forside)' },
+        { id: 'contacts', label: 'Kontaktpersoner' },
+        { id: 'ctaBanner', label: 'CTA Banner' },
+        { id: 'templates', label: 'Templates' },
+        { id: 'pages', label: 'Pages' },
+        { id: 'news', label: 'News' },
+      ],
+    },
   {
     title: 'Forside',
     items: [
@@ -775,6 +868,22 @@ function LoginPage({ onLogin, password, setPassword, email, setEmail, authMode, 
   )
 }
 
+function AuthLoadingPage({ message }) {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-navy to-primary-900 flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-sm text-center">
+        <div className="w-14 h-14 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary-200">
+          <svg className="animate-spin" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+        </div>
+        <h1 className="font-heading text-2xl font-bold text-ink">Administrasjon</h1>
+        <p className="text-gray-400 text-sm mt-2">{message}</p>
+      </div>
+    </div>
+  )
+}
+
 export default function AdminPage() {
   // Prevent search engines from indexing the admin panel
   useEffect(() => {
@@ -793,7 +902,8 @@ export default function AdminPage() {
   }, [])
 
   const authMode = ADMIN_AUTH_MODE
-  const [authed, setAuthed] = useState(() => isSessionValid())
+  const { session, loading: authLoading, isConfigured: supabaseConfigured, signInWithPassword, signOut } = useAuth()
+  const [authed, setAuthed] = useState(() => authMode === 'local' && isSessionValid())
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
@@ -803,6 +913,8 @@ export default function AdminPage() {
   const [saveState, setSaveState] = useState({ kind: 'idle', message: '' })
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [hasLocalEdits, setHasLocalEdits] = useState(false)
+  const [supabaseAuthorized, setSupabaseAuthorized] = useState(false)
+  const [supabaseAccessLoading, setSupabaseAccessLoading] = useState(false)
   const importRef = useRef(null)
 
   const currentContent = useContent()
@@ -812,19 +924,27 @@ export default function AdminPage() {
 
   const handleLogout = useCallback(() => {
     clearSession()
-    void signOutSupabase()
     setAuthed(false)
-  }, [])
+    setSupabaseAuthorized(false)
+    setSupabaseAccessLoading(false)
+    setPassword('')
+    setEmail('')
+    setLoginError('')
+    setHasLocalEdits(false)
+    if (authMode === 'supabase') {
+      void signOut()
+    }
+  }, [authMode, signOut])
 
   useEffect(() => {
-    if (!authed) return
+    if (authMode !== 'local' || !authed) return
     if (hasLocalEdits) return
     setDraft(JSON.parse(JSON.stringify(currentContent)))
-  }, [authed, currentContent, hasLocalEdits])
+  }, [authed, authMode, currentContent, hasLocalEdits])
 
   // Session activity refresh + idle timeout check
   useEffect(() => {
-    if (!authed) return
+    if (authMode !== 'local' || !authed) return
     const refresh = () => touchSession()
     const checkIdle = () => { if (!isSessionValid()) handleLogout() }
     window.addEventListener('mousemove', refresh)
@@ -835,41 +955,50 @@ export default function AdminPage() {
       window.removeEventListener('keydown', refresh)
       clearInterval(interval)
     }
-  }, [authed, handleLogout])
+  }, [authed, authMode, handleLogout])
 
   useEffect(() => {
-    if (!authed || authMode !== 'supabase') return
+    if (authMode !== 'supabase') return
+    if (!session) {
+      setSupabaseAuthorized(false)
+      setSupabaseAccessLoading(false)
+      return
+    }
 
     let cancelled = false
+    setSupabaseAuthorized(false)
+    setSupabaseAccessLoading(true)
 
     ;(async () => {
-      const client = getSupabaseClient()
-      if (!client) {
-        if (!cancelled) {
-          setLoginError('Supabase auth er ikke konfigurert. Sett VITE_SUPABASE_URL og VITE_SUPABASE_ANON_KEY.')
-          handleLogout()
-        }
-        return
-      }
-
       try {
-        const allowed = await canCurrentUserEditContent(client)
-        if (!allowed && !cancelled) {
-          setLoginError('Kontoen har ikke editor- eller admin-tilgang.')
-          handleLogout()
+        const allowed = await canEditContentByPolicy()
+        if (cancelled) return
+        if (allowed) {
+          setSupabaseAuthorized(true)
+          return
         }
+        setLoginError('Kontoen har ikke editor- eller admin-tilgang.')
+        void signOut()
       } catch (error) {
-        if (!cancelled) {
-          setLoginError('Kunne ikke verifisere tilgang: ' + getErrorMessage(error))
-          handleLogout()
-        }
+        if (cancelled) return
+        setLoginError('Kunne ikke verifisere tilgang: ' + getErrorMessage(error))
+        void signOut()
+      } finally {
+        if (!cancelled) setSupabaseAccessLoading(false)
       }
     })()
 
     return () => {
       cancelled = true
     }
-  }, [authed, authMode, handleLogout])
+  }, [authMode, session, signOut])
+
+  useEffect(() => {
+    if (authMode !== 'supabase') return
+    if (!supabaseConfigured) {
+      setLoginError('Supabase auth er ikke konfigurert. Sett VITE_SUPABASE_URL og VITE_SUPABASE_ANON_KEY.')
+    }
+  }, [authMode, supabaseConfigured])
 
   async function handleLogin(e) {
     e.preventDefault()
@@ -886,19 +1015,13 @@ export default function AdminPage() {
 
     try {
       if (authMode === 'supabase') {
-        const client = getSupabaseClient()
-        if (!client) {
-          setLoginError('Supabase auth er ikke konfigurert. Sett VITE_SUPABASE_URL og VITE_SUPABASE_ANON_KEY.')
-          return
-        }
-
         const signInEmail = email.trim()
         if (!signInEmail) {
           setLoginError('Skriv inn e-postadressen din.')
           return
         }
 
-        const { data, error } = await client.auth.signInWithPassword({
+        const { error } = await signInWithPassword({
           email: signInEmail,
           password,
         })
@@ -917,58 +1040,48 @@ export default function AdminPage() {
           return
         }
 
-        const user = data?.user || (await client.auth.getUser()).data?.user
-        const allowed = await canCurrentUserEditContent(client, user)
-        if (!allowed) {
-          await client.auth.signOut()
-          setLoginError('Kontoen har ikke editor- eller admin-tilgang.')
-          setPassword('')
-          return
-        }
+        setRateState({ attempts: 0, lockedUntil: 0 })
+        setPassword('')
+        setEmail('')
+        return
+      }
 
+      const hash = await pbkdf2Hash(password)
+      const storedHash = import.meta.env.VITE_ADMIN_HASH
+      const fallback   = import.meta.env.VITE_ADMIN_PASSWORD
+
+      let ok = false
+      if (storedHash) {
+        ok = hash === storedHash
+      } else if (fallback) {
+        // Fallback: plaintext comparison (dev only - set VITE_ADMIN_HASH in production)
+        ok = password === fallback
+        if (ok && import.meta.env.DEV) {
+          console.info('[Admin] Configura VITE_ADMIN_HASH con este valor para mayor seguridad:\n' + hash)
+        }
+      } else {
+        // Nothing configured
+        setLoginError('Admin no est? configurado. Consulta la documentaci?n.')
+        setLoginLoading(false)
+        return
+      }
+
+      if (ok) {
         setRateState({ attempts: 0, lockedUntil: 0 })
         touchSession()
         setPassword('')
-        setEmail('')
         setAuthed(true)
       } else {
-        const hash = await pbkdf2Hash(password)
-        const storedHash = import.meta.env.VITE_ADMIN_HASH
-        const fallback   = import.meta.env.VITE_ADMIN_PASSWORD
-
-        let ok = false
-        if (storedHash) {
-          ok = hash === storedHash
-        } else if (fallback) {
-          // Fallback: plaintext comparison (dev only ? set VITE_ADMIN_HASH in production)
-          ok = password === fallback
-          if (ok && import.meta.env.DEV) {
-            console.info('[Admin] Configura VITE_ADMIN_HASH con este valor para mayor seguridad:\n' + hash)
-          }
-        } else {
-          // Nothing configured
-          setLoginError('Admin no est? configurado. Consulta la documentaci?n.')
-          setLoginLoading(false)
-          return
-        }
-
-        if (ok) {
-          setRateState({ attempts: 0, lockedUntil: 0 })
-          touchSession()
-          setPassword('')
-          setAuthed(true)
-        } else {
-          const attempts = rate.attempts + 1
-          const lock = attempts >= MAX_ATTEMPTS ? Date.now() + LOCKOUT_MS : 0
-          setRateState({ attempts, lockedUntil: lock })
-          setLockedUntil(lock)
-          const left = MAX_ATTEMPTS - attempts
-          setLoginError(lock
-            ? 'Tilgang blokkert i 30 minutter.'
-            : 'Feil passord. ' + left + ' fors?k gjenst?r.'
-          )
-          setPassword('')
-        }
+        const attempts = rate.attempts + 1
+        const lock = attempts >= MAX_ATTEMPTS ? Date.now() + LOCKOUT_MS : 0
+        setRateState({ attempts, lockedUntil: lock })
+        setLockedUntil(lock)
+        const left = MAX_ATTEMPTS - attempts
+        setLoginError(lock
+          ? 'Tilgang blokkert i 30 minutter.'
+          : 'Feil passord. ' + left + ' fors?k gjenst?r.'
+        )
+        setPassword('')
       }
     } finally {
       setLoginLoading(false)
@@ -1000,17 +1113,13 @@ export default function AdminPage() {
     }
 
     try {
-      const client = getSupabaseClient()
-      if (!client) {
-        throw new Error('Supabase auth er ikke konfigurert.')
+      if (!session) {
+        throw new Error('Du m? v?re logget inn for ? synkronisere innhold.')
       }
 
-      const { data: userData, error: userError } = await client.auth.getUser()
-      if (userError) throw userError
-
-      const user = userData?.user
-      if (!user) {
-        throw new Error('Du m? v?re logget inn for ? synkronisere innhold.')
+      const allowed = await canEditContentByPolicy()
+      if (!allowed) {
+        throw new Error('Kontoen har ikke editor- eller admin-tilgang.')
       }
 
       const publishedSnapshot = await saveContentSnapshot(snapshot, { status: 'published' })
@@ -1068,7 +1177,27 @@ export default function AdminPage() {
     e.target.value = ''
   }
 
-  if (!authed) {
+  if (authMode === 'supabase') {
+    if (authLoading || (session && supabaseAccessLoading)) {
+      return <AuthLoadingPage message="Verifiserer Supabase-tilgang..." />
+    }
+
+    if (!session || !supabaseAuthorized) {
+      return (
+        <LoginPage
+          onLogin={handleLogin}
+          password={password}
+          setPassword={setPassword}
+          email={email}
+          setEmail={setEmail}
+          authMode={authMode}
+          errorMsg={loginError}
+          loading={loginLoading}
+          lockedUntil={lockedUntil}
+        />
+      )
+    }
+  } else if (!authed) {
     return (
       <LoginPage
         onLogin={handleLogin}
@@ -1126,6 +1255,9 @@ export default function AdminPage() {
       case 'kontaktComp': return <KontaktCompEditor {...editorProps} />
       case 'navbar': return <NavbarEditor {...editorProps} />
       case 'footer': return <FooterEditor {...editorProps} />
+      case 'templates': return <TemplatesEditor />
+      case 'pages': return <ContentEntityManager entityType="page" />
+      case 'news': return <ContentEntityManager entityType="news" />
       default: return <p className="text-gray-400">Velg en seksjon fra menyen.</p>
     }
   }

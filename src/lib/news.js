@@ -1,3 +1,6 @@
+import { getContentLocale, isSupabaseConfigured } from './supabaseClient'
+import { listPublishedNews } from './contentServices'
+
 const markdownModules = import.meta.glob('../content/news/*.md', {
   query: '?raw',
   import: 'default',
@@ -30,9 +33,10 @@ const parseFrontmatter = (raw) => {
   return { meta, body: body.trim() }
 }
 
-const formatNorwegianDate = (isoDate) => {
-  const date = new Date(`${isoDate}T00:00:00`)
-  if (Number.isNaN(date.getTime())) return isoDate
+const formatNorwegianDate = (value) => {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return String(value || '')
+
   return new Intl.DateTimeFormat('no-NO', {
     day: 'numeric',
     month: 'long',
@@ -40,7 +44,7 @@ const formatNorwegianDate = (isoDate) => {
   }).format(date)
 }
 
-const normalizeNews = (filePath, rawContent) => {
+const normalizeLocalNews = (filePath, rawContent) => {
   const { meta, body } = parseFrontmatter(rawContent)
   const slugFromPath = filePath.split('/').pop().replace(/\.md$/, '')
 
@@ -65,16 +69,86 @@ const normalizeNews = (filePath, rawContent) => {
     seoDescription: meta.seoDescription || meta.excerpt || '',
     body,
     published: isPublished,
+    source: 'local',
   }
 }
 
-const allNews = Object.entries(markdownModules)
-  .map(([filePath, rawContent]) => normalizeNews(filePath, rawContent))
-  .filter(article => article.published)
-  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+const normalizeRemoteNews = (row) => {
+  if (!row) return null
 
-export const getAllNews = () => allNews
-export const getNewsBySlug = (slug) => allNews.find(article => article.slug === slug) || null
-export const getFeaturedNews = () => allNews[0] || null
-export const getSecondaryNews = (limit = 3) => allNews.slice(1, 1 + limit)
+  const publishedValue = row.publishedAt || row.publishAt || row.updatedAt || row.createdAt || ''
+  const dateValue = publishedValue ? String(publishedValue).slice(0, 10) : ''
 
+  return {
+    slug: row.slug,
+    title: row.title,
+    excerpt: row.excerpt || '',
+    date: dateValue,
+    dateLabel: formatNorwegianDate(publishedValue || dateValue || row.updatedAt || row.createdAt || row.slug),
+    tag: row.tag || 'Nyhet',
+    readTime: row.readTime || '3 min',
+    coverImage: row.coverImage || '',
+    status: row.status || 'published',
+    publishAt: row.publishAt || '',
+    author: row.author || 'Global Working',
+    seoTitle: row.seoTitle || row.title,
+    seoDescription: row.seoDescription || row.excerpt || '',
+    body: row.body || '',
+    published: true,
+    source: 'remote',
+    id: row.id || null,
+    metadata: row.metadata || {},
+    createdAt: row.createdAt || null,
+    updatedAt: row.updatedAt || null,
+  }
+}
+
+const sortNews = (articles) => articles.slice().sort((a, b) => {
+  const left = new Date(a.publishAt || a.date || a.updatedAt || a.createdAt || 0).getTime()
+  const right = new Date(b.publishAt || b.date || b.updatedAt || b.createdAt || 0).getTime()
+  return right - left
+})
+
+const localNews = Object.entries(markdownModules)
+  .map(([filePath, rawContent]) => normalizeLocalNews(filePath, rawContent))
+  .filter((article) => article.published)
+
+const localNewsSorted = sortNews(localNews)
+
+export const getAllNews = () => localNewsSorted
+export const getNewsBySlug = (slug) => localNewsSorted.find((article) => article.slug === slug) || null
+export const getFeaturedNews = () => localNewsSorted[0] || null
+export const getSecondaryNews = (limit = 3) => localNewsSorted.slice(1, 1 + limit)
+
+const newsCache = new Map()
+
+export async function loadPublishedNews(locale) {
+  if (!isSupabaseConfigured) {
+    return { source: 'local', articles: localNewsSorted }
+  }
+
+  const resolvedLocale = getContentLocale(locale)
+  if (newsCache.has(resolvedLocale)) {
+    return newsCache.get(resolvedLocale)
+  }
+
+  const promise = (async () => {
+    try {
+      const rows = await listPublishedNews(resolvedLocale)
+      const articles = sortNews(rows.map(normalizeRemoteNews).filter(Boolean))
+      return articles.length > 0
+        ? { source: 'remote', articles }
+        : { source: 'local', articles: localNewsSorted }
+    } catch {
+      return { source: 'local', articles: localNewsSorted }
+    }
+  })()
+
+  newsCache.set(resolvedLocale, promise)
+  return promise
+}
+
+export async function loadPublishedNewsBySlug(slug, locale) {
+  const collection = await loadPublishedNews(locale)
+  return collection.articles.find((article) => article.slug === slug) || null
+}

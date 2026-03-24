@@ -1,9 +1,9 @@
-﻿import { useEffect } from 'react'
-import { getAllNews, getNewsBySlug } from '../lib/news'
+import { useEffect } from 'react'
 import MarkdownArticle, { getMarkdownSections } from '../components/MarkdownArticle'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import { setArticleSEO } from '../lib/seo'
+import { useNewsArticle } from '../hooks/useNews'
 
 const getCoverImage = (article) => {
   if (article.coverImage && article.coverImage.startsWith('http')) return article.coverImage
@@ -12,8 +12,7 @@ const getCoverImage = (article) => {
 }
 
 export default function NewsArticlePage({ slug }) {
-  const article = getNewsBySlug(slug)
-  const allNews = getAllNews()
+  const { article, articles: allNews, loading } = useNewsArticle(slug)
   const related = allNews.filter((item) => item.slug !== slug).slice(0, 3)
   const sections = article ? getMarkdownSections(article.body) : []
 
@@ -23,6 +22,17 @@ export default function NewsArticlePage({ slug }) {
     setArticleSEO(article)
     trackEvent('news_open', { slug: article.slug, tag: article.tag })
   }, [article])
+
+  if (loading && !article) {
+    return (
+      <section className="py-24 bg-white">
+        <div className="container-xl">
+          <h1 className="font-heading text-3xl font-bold text-ink mb-4">Laster nyhet</h1>
+          <p className="text-gray-600">Henter publisert innhold...</p>
+        </div>
+      </section>
+    )
+  }
 
   if (!article) {
     return (
