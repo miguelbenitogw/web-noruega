@@ -1,38 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { readContentOverrides, CONTENT_OVERRIDE_EVENT } from '../lib/contentOverrides'
-import { fetchPublishedContentSnapshot, isSupabaseConfigured } from '../lib/contentRemote'
-import { getContentLocale } from '../lib/supabaseClient'
+import { fetchPublishedContentSnapshot } from '../lib/contentRemote'
+import { getContentLocale, shouldUseSupabaseContent } from '../lib/supabaseClient'
 import defaultContent from '../data/siteContent'
-
-function mergeDeep(target, source) {
-  if (!source || typeof source !== 'object') return target
-  if (Array.isArray(target)) {
-    if (!Array.isArray(source) || source.length === 0) return target
-    return source.map((item, i) => {
-      const def = target[i]
-      if (def && typeof def === 'object' && !Array.isArray(def) && typeof item === 'object' && item !== null && !Array.isArray(item)) {
-        return mergeDeep(def, item)
-      }
-      return item !== undefined ? item : def
-    })
-  }
-  const result = { ...target }
-  for (const key of Object.keys(source)) {
-    const srcVal = source[key]
-    const tgtVal = target[key]
-    if (srcVal === null || srcVal === undefined) continue
-    if (typeof srcVal === 'object' && !Array.isArray(srcVal) && typeof tgtVal === 'object' && tgtVal !== null && !Array.isArray(tgtVal)) {
-      result[key] = mergeDeep(tgtVal, srcVal)
-    } else {
-      result[key] = srcVal
-    }
-  }
-  return result
-}
+import { deepMergeContent } from '../lib/contentMappers'
+import { loadPublishedPageForPath, resolveRouteContext } from '../lib/contentRuntime'
 
 export default function useContent(section) {
   const [overrides, setOverrides] = useState(() => readContentOverrides())
-  const [remoteContent, setRemoteContent] = useState(null)
+  const [remoteSiteContent, setRemoteSiteContent] = useState(null)
+  const [remotePageState, setRemotePageState] = useState({ pathname: null, content: null })
+  const currentPathname = typeof window !== 'undefined' ? window.location.pathname : '/'
+  const routeContext = useMemo(() => resolveRouteContext(currentPathname), [currentPathname])
 
   useEffect(() => {
     const handler = () => setOverrides(readContentOverrides())
@@ -41,7 +20,11 @@ export default function useContent(section) {
   }, [])
 
   useEffect(() => {
-    if (!isSupabaseConfigured) {
+    if (section) {
+      return
+    }
+
+    if (!shouldUseSupabaseContent()) {
       return
     }
 
@@ -50,18 +33,49 @@ export default function useContent(section) {
 
     fetchPublishedContentSnapshot(locale)
       .then((snapshot) => {
-        if (!cancelled) setRemoteContent(snapshot?.content || null)
+        if (!cancelled) setRemoteSiteContent(snapshot?.content || null)
       })
       .catch(() => {
-        if (!cancelled) setRemoteContent(null)
+        if (!cancelled) setRemoteSiteContent(null)
       })
 
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [section])
 
-  const merged = mergeDeep(mergeDeep(defaultContent, remoteContent || {}), overrides)
+  useEffect(() => {
+    if (!section) {
+      return
+    }
+
+    if (!shouldUseSupabaseContent() || routeContext.isAdmin || routeContext.isNewsDetail || !routeContext.sectionRoute) {
+      return
+    }
+
+    let cancelled = false
+    const locale = getContentLocale()
+
+    loadPublishedPageForPath(currentPathname, locale)
+      .then((page) => {
+        if (!cancelled) setRemotePageState({ pathname: currentPathname, content: page?.content || null })
+      })
+      .catch(() => {
+        if (!cancelled) setRemotePageState({ pathname: currentPathname, content: null })
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [currentPathname, routeContext.isAdmin, routeContext.isNewsDetail, routeContext.sectionRoute, section])
+
+  const resolvedRemoteContent = section
+    ? remotePageState.pathname === currentPathname
+      ? remotePageState.content
+      : null
+    : remoteSiteContent
+
+  const merged = deepMergeContent(deepMergeContent(defaultContent, resolvedRemoteContent || {}), overrides)
   if (section) return merged[section] ?? defaultContent[section] ?? {}
   return merged
 }

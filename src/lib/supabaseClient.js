@@ -5,6 +5,13 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim() || ''
 const DEFAULT_CONTENT_LOCALE = import.meta.env.VITE_SUPABASE_CONTENT_LOCALE?.trim() || 'nb'
 const EDITOR_EMAILS = import.meta.env.VITE_SUPABASE_CONTENT_EDITORS?.split(',') || []
 
+const normalizeContentSource = (value) => {
+  const raw = String(value || 'auto').trim().toLowerCase()
+  return ['local', 'supabase', 'auto'].includes(raw) ? raw : 'auto'
+}
+
+const CONTENT_SOURCE = normalizeContentSource(import.meta.env.VITE_CONTENT_SOURCE)
+
 let client = null
 
 const isBrowser = () => typeof window !== 'undefined'
@@ -17,6 +24,10 @@ const normalizeLocale = (locale) => {
 }
 
 export const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY)
+
+export const getContentSource = () => CONTENT_SOURCE
+
+export const shouldUseSupabaseContent = () => CONTENT_SOURCE !== 'local' && isSupabaseConfigured
 
 export const getSupabaseClient = () => {
   if (!isSupabaseConfigured) return null
