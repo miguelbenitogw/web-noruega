@@ -822,7 +822,7 @@ function LoginPage({ onLogin, password, setPassword, email, setEmail, authMode, 
   const mins = Math.ceil(countdown / 60)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-navy to-primary-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-navy to-primary-900 flex items-center justify-center p-4 notranslate" translate="no">
       <div className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="w-14 h-14 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary-200">
@@ -898,7 +898,7 @@ function LoginPage({ onLogin, password, setPassword, email, setEmail, authMode, 
 
 function AuthLoadingPage({ message }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-navy to-primary-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-navy to-primary-900 flex items-center justify-center p-4 notranslate" translate="no">
       <div className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-sm text-center">
         <div className="w-14 h-14 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary-200">
           <svg className="animate-spin" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
@@ -926,6 +926,60 @@ export default function AdminPage() {
     return () => {
       const m = document.querySelector('meta[name="robots"]')
       if (m) m.setAttribute('content', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')
+    }
+  }, [])
+
+  useEffect(() => {
+    const html = document.documentElement
+    const body = document.body
+    const previousHtmlTranslate = html.getAttribute('translate')
+    const previousHtmlClass = html.classList.contains('notranslate')
+    const previousBodyTranslate = body ? body.getAttribute('translate') : null
+    const previousBodyClass = body ? body.classList.contains('notranslate') : false
+
+    const enforceNoTranslate = () => {
+      if (html.getAttribute('translate') !== 'no') {
+        html.setAttribute('translate', 'no')
+      }
+      if (html.getAttribute('lang') !== 'nb') {
+        html.setAttribute('lang', 'nb')
+      }
+      if (!html.classList.contains('notranslate')) {
+        html.classList.add('notranslate')
+      }
+
+      if (body) {
+        if (body.getAttribute('translate') !== 'no') {
+          body.setAttribute('translate', 'no')
+        }
+        if (!body.classList.contains('notranslate')) {
+          body.classList.add('notranslate')
+        }
+      }
+    }
+
+    enforceNoTranslate()
+
+    const observer = new MutationObserver(enforceNoTranslate)
+    observer.observe(html, { attributes: true, attributeFilter: ['translate', 'lang', 'class'] })
+    if (body) {
+      observer.observe(body, { attributes: true, attributeFilter: ['translate', 'class'] })
+    }
+
+    return () => {
+      observer.disconnect()
+
+      if (previousHtmlTranslate === null) html.removeAttribute('translate')
+      else html.setAttribute('translate', previousHtmlTranslate)
+
+      if (!previousHtmlClass) html.classList.remove('notranslate')
+
+      if (body) {
+        if (previousBodyTranslate === null) body.removeAttribute('translate')
+        else body.setAttribute('translate', previousBodyTranslate)
+
+        if (!previousBodyClass) body.classList.remove('notranslate')
+      }
     }
   }, [])
 
@@ -1307,7 +1361,7 @@ export default function AdminPage() {
   const activeLabel = NAV_GROUPS.flatMap(g => g.items).find(i => i.id === activeSection)?.label || 'Admin'
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col notranslate" translate="no">
       {/* Top bar */}
       <header className="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-40">
         <div className="flex items-center justify-between px-4 lg:px-6 h-14">

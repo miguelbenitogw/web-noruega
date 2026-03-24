@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import './index.css'
 import Navbar from './components/Navbar'
 import ScrollProgress from './components/ScrollProgress'
 import Footer from './components/Footer'
 import BackToTop from './components/BackToTop'
 import CookieConsent from './components/CookieConsent'
+import AdminErrorBoundary from './components/AdminErrorBoundary'
 import { initAnalyticsWithConsent, trackPageView } from './lib/analytics'
 import { setDefaultSEO, setNotFoundSEO, setSectionSEO } from './lib/seo'
 import { resolveRouteContext } from './lib/contentRuntime'
@@ -31,6 +32,44 @@ export default function App() {
   const routeContext = resolveRouteContext(currentPathname)
   const newsSlug = routeContext.newsSlug
   const sectionRoute = routeContext.sectionRoute
+
+  useLayoutEffect(() => {
+    if (!routeContext.isAdmin) return undefined
+
+    const html = document.documentElement
+    const body = document.body
+    const previousHtmlTranslate = html.getAttribute('translate')
+    const previousHtmlLang = html.getAttribute('lang')
+    const previousHtmlClass = html.classList.contains('notranslate')
+    const previousBodyTranslate = body ? body.getAttribute('translate') : null
+    const previousBodyClass = body ? body.classList.contains('notranslate') : false
+
+    html.classList.add('notranslate')
+    html.setAttribute('translate', 'no')
+    html.setAttribute('lang', 'nb')
+
+    if (body) {
+      body.classList.add('notranslate')
+      body.setAttribute('translate', 'no')
+    }
+
+    return () => {
+      if (previousHtmlTranslate === null) html.removeAttribute('translate')
+      else html.setAttribute('translate', previousHtmlTranslate)
+
+      if (previousHtmlLang === null) html.removeAttribute('lang')
+      else html.setAttribute('lang', previousHtmlLang)
+
+      if (!previousHtmlClass) html.classList.remove('notranslate')
+
+      if (body) {
+        if (previousBodyTranslate === null) body.removeAttribute('translate')
+        else body.setAttribute('translate', previousBodyTranslate)
+
+        if (!previousBodyClass) body.classList.remove('notranslate')
+      }
+    }
+  }, [routeContext.isAdmin])
 
   useEffect(() => {
     if (localStorage.getItem('gw-cookies') === 'accepted') {
@@ -104,7 +143,13 @@ export default function App() {
 
   // Admin page renders standalone without chrome
   if (sectionRoute === 'admin') {
-    return <AdminPage />
+    return (
+      <AdminErrorBoundary key={currentPathname}>
+        <div className="notranslate" translate="no">
+          <AdminPage />
+        </div>
+      </AdminErrorBoundary>
+    )
   }
 
   return (

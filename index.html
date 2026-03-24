@@ -1,8 +1,9 @@
 <!doctype html>
-<html lang="nb">
+<html lang="nb" translate="no" class="notranslate">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="notranslate" />
 
     <title>Global Working Norge | Rekruttering av helsepersonell og fagfolk til Norge</title>
     <meta name="description" content="Global Working hjelper norske arbeidsgivere med rekruttering av kvalifiserte fagfolk fra Sør-Europa. Språkopplæring, integrering og dokumentert oppfølging fra første kontakt til oppstart." />
@@ -34,6 +35,30 @@
     <link rel="canonical" href="https://globalworking.no/" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#2563EB" />
+    <meta name="google" content="notranslate" />
+    <meta name="translate" content="no" />
+
+    <script>
+      (function () {
+        try {
+          var isAdmin = location.pathname === '/admin' || location.pathname.indexOf('/admin/') === 0
+          if (!isAdmin) return
+
+          var html = document.documentElement
+          html.classList.add('notranslate')
+          html.setAttribute('translate', 'no')
+          html.setAttribute('lang', 'nb')
+
+          document.addEventListener('DOMContentLoaded', function () {
+            if (!document.body) return
+            document.body.classList.add('notranslate')
+            document.body.setAttribute('translate', 'no')
+          }, { once: true })
+        } catch (error) {
+          // Ignore browser-specific translate hardening errors.
+        }
+      })()
+    </script>
 
     <script type="application/ld+json">
     {
@@ -111,4 +136,3 @@
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-
