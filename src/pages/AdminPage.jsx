@@ -696,6 +696,25 @@ function FooterEditor({ draft, update }) {
   )
 }
 
+function LegalPageEditor({ sectionKey, title, draft, update }) {
+  const s = draft[sectionKey] || {}
+  const up = (k, v) => update(sectionKey, k, v)
+  return (
+    <>
+      <Section title={title}>
+        <Field label="Breadcrumb"><TextInput value={s.breadcrumb} onChange={v => up('breadcrumb', v)} /></Field>
+        <Field label="Tittel"><TextInput value={s.title} onChange={v => up('title', v)} /></Field>
+        <Field label="Introduksjon"><Textarea value={s.intro} onChange={v => up('intro', v)} rows={4} /></Field>
+      </Section>
+      <Section title="Innholdsblokker">
+        <Field label="JSON" hint="array av { heading, body }">
+          <JsonEditor value={s.blocks} onChange={v => up('blocks', v)} />
+        </Field>
+      </Section>
+    </>
+  )
+}
+
 function KontaktCompEditor({ draft, update }) {
   const s = draft.kontaktComp || {}
   const up = (k, v) => update('kontaktComp', k, v)
@@ -769,6 +788,9 @@ const NAV_GROUPS = [
     items: [
       { id: 'navbar', label: 'Toppmeny' },
       { id: 'footer', label: 'Bunntekst' },
+      { id: 'legalPersonvern', label: 'Legal - Personvern' },
+      { id: 'legalVilkar', label: 'Legal - Vilkår' },
+      { id: 'legalCookies', label: 'Legal - Cookies' },
     ],
   },
 ]
@@ -1272,6 +1294,9 @@ export default function AdminPage() {
       case 'kontaktComp': return <KontaktCompEditor {...editorProps} />
       case 'navbar': return <NavbarEditor {...editorProps} />
       case 'footer': return <FooterEditor {...editorProps} />
+      case 'legalPersonvern': return <LegalPageEditor sectionKey="legalPersonvern" title="Legal - Personvern" {...editorProps} />
+      case 'legalVilkar': return <LegalPageEditor sectionKey="legalVilkar" title="Legal - Vilkår" {...editorProps} />
+      case 'legalCookies': return <LegalPageEditor sectionKey="legalCookies" title="Legal - Cookies" {...editorProps} />
       case 'templates': return <TemplatesEditor />
       case 'pages': return <ContentEntityManager entityType="page" />
       case 'news': return <ContentEntityManager entityType="news" />

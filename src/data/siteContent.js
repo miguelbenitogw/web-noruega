@@ -322,7 +322,7 @@ const siteContent = {
         { label: 'Om oss', href: '/om-oss' },
         { label: 'Nyheter', href: '/nyheter' },
         { label: 'Kontakt', href: '/kontakt' },
-        { label: 'Personvern', href: '/#personvern' },
+        { label: 'Personvern', href: '/personvern' },
       ],
       Kontakt: [
         { label: 'Miriam.Svendsen@globalworking.net', href: 'mailto:Miriam.Svendsen@globalworking.net' },
@@ -339,6 +339,90 @@ const siteContent = {
     description: 'Du treffer oss pÃ¥ e-post eller telefon, eller ved Ã¥ fylle ut skjemaet under. Vi tar kontakt sÃ¥ snart vi har mulighet.',
     officeTitle: 'Hovedkontor Alicante',
     officeAddress: 'Carrer de Periodista Pirula Arderius, 4, 03001 Alicante, EspaÃ±a',
+  },
+
+  legalPersonvern: {
+    breadcrumb: 'Personvern',
+    title: 'PersonvernerklÃ¦ring',
+    intro: 'Denne siden forklarer hvilke personopplysninger vi behandler, hvorfor vi gjÃ¸r det og hvilke rettigheter du har.',
+    blocks: [
+      {
+        heading: 'Hvem er behandlingsansvarlig?',
+        body: 'Global Working Norge AS er behandlingsansvarlig for personopplysninger som samles inn via dette nettstedet.',
+      },
+      {
+        heading: 'Hvilke opplysninger vi behandler',
+        body: 'Vi kan behandle kontaktinformasjon, henvendelser sendt via skjema, og tekniske data som IP-adresse, nettleser og bruksmÃ¸nster.',
+      },
+      {
+        heading: 'FormÃ¥l og rettslig grunnlag',
+        body: 'Opplysninger behandles for Ã¥ besvare henvendelser, levere tjenester, forbedre nettstedet og oppfylle lovpÃ¥lagte krav.',
+      },
+      {
+        heading: 'Lagring og deling',
+        body: 'Personopplysninger lagres ikke lenger enn nÃ¸dvendig. Vi kan dele data med databehandlere som leverer drift, analyse eller kommunikasjonstjenester.',
+      },
+      {
+        heading: 'Dine rettigheter',
+        body: 'Du kan be om innsyn, retting, sletting, begrensning eller dataportabilitet, og protestere pÃ¥ behandling der det er relevant.',
+      },
+    ],
+  },
+
+  legalVilkar: {
+    breadcrumb: 'VilkÃ¥r',
+    title: 'VilkÃ¥r for bruk',
+    intro: 'Disse vilkÃ¥rene regulerer bruk av nettstedet og relaterte tjenester fra Global Working Norge.',
+    blocks: [
+      {
+        heading: 'Generelt',
+        body: 'Ved Ã¥ bruke dette nettstedet aksepterer du disse vilkÃ¥rene. Dersom du ikke aksepterer vilkÃ¥rene, ber vi deg avstÃ¥ fra bruk.',
+      },
+      {
+        heading: 'Innhold og immaterielle rettigheter',
+        body: 'Alt innhold pÃ¥ nettstedet tilhÃ¸rer Global Working Norge eller vÃ¥re lisensgivere, med mindre annet er oppgitt.',
+      },
+      {
+        heading: 'Ansvarsbegrensning',
+        body: 'Vi tilstreber korrekt og oppdatert informasjon, men kan ikke garantere at alt innhold alltid er feilfritt. Bruk av nettstedet skjer pÃ¥ eget ansvar.',
+      },
+      {
+        heading: 'Lenker til tredjepart',
+        body: 'Nettstedet kan inneholde lenker til eksterne nettsteder. Vi er ikke ansvarlige for innhold eller praksis pÃ¥ slike nettsteder.',
+      },
+      {
+        heading: 'Endringer i vilkÃ¥r',
+        body: 'Vi kan oppdatere vilkÃ¥rene ved behov. Oppdatert versjon publiseres pÃ¥ denne siden med virkning fra publiseringsdato.',
+      },
+    ],
+  },
+
+  legalCookies: {
+    breadcrumb: 'Informasjonskapsler',
+    title: 'Informasjonskapsler (cookies)',
+    intro: 'Denne siden forklarer hvilke informasjonskapsler vi bruker, og hvordan du kan kontrollere eller trekke tilbake samtykke.',
+    blocks: [
+      {
+        heading: 'Hva er cookies?',
+        body: 'Cookies er smÃ¥ tekstfiler som lagres i nettleseren din for Ã¥ fÃ¥ nettstedet til Ã¥ fungere, forbedre brukeropplevelsen og mÃ¥le bruk.',
+      },
+      {
+        heading: 'Typer cookies vi bruker',
+        body: 'Vi bruker nÃ¸dvendige cookies for grunnleggende funksjonalitet, samt valgfri statistikk/analytiske cookies nÃ¥r du samtykker.',
+      },
+      {
+        heading: 'Samtykke og administrasjon',
+        body: 'Du kan nÃ¥r som helst endre cookie-valg i nettleseren din eller ved Ã¥ oppdatere samtykket pÃ¥ nettstedet.',
+      },
+      {
+        heading: 'Tredjepartscookies',
+        body: 'Dersom analyseverktÃ¸y er aktivert, kan tredjepartsleverandÃ¸rer sette cookies i henhold til sine egne retningslinjer.',
+      },
+      {
+        heading: 'Kontakt',
+        body: 'Har du spÃ¸rsmÃ¥l om vÃ¥r bruk av cookies, kontakt oss pÃ¥ kontakt@globalworking.no.',
+      },
+    ],
   },
 }
 
