@@ -780,14 +780,20 @@ function LoginPage({ onLogin, password, setPassword, email, setEmail, authMode, 
 
   useEffect(() => {
     if (!lockedUntil) return
+    let intervalId = null
     const tick = () => {
       const secs = Math.max(0, Math.ceil((lockedUntil - Date.now()) / 1000))
       setCountdown(secs)
-      if (secs === 0) clearInterval(id)
+      if (secs === 0 && intervalId) {
+        clearInterval(intervalId)
+        intervalId = null
+      }
     }
     tick()
-    const id = setInterval(tick, 1000)
-    return () => clearInterval(id)
+    intervalId = setInterval(tick, 1000)
+    return () => {
+      if (intervalId) clearInterval(intervalId)
+    }
   }, [lockedUntil])
 
   const isLocked = countdown > 0
@@ -1002,10 +1008,18 @@ export default function AdminPage() {
 
   async function handleLogin(e) {
     e.preventDefault()
-    const rate = getRateState()
+    const now = Date.now()
+    const rawRate = getRateState()
+    const rate = now >= (rawRate.lockedUntil || 0)
+      ? { attempts: 0, lockedUntil: 0 }
+      : rawRate
+
+    if (rate.attempts !== rawRate.attempts || rate.lockedUntil !== rawRate.lockedUntil) {
+      setRateState(rate)
+    }
 
     // Check lockout
-    if (Date.now() < rate.lockedUntil) {
+    if (now < rate.lockedUntil) {
       setLockedUntil(rate.lockedUntil)
       return
     }
@@ -1083,6 +1097,9 @@ export default function AdminPage() {
         )
         setPassword('')
       }
+    } catch (error) {
+      setLoginError(getErrorMessage(error))
+      setPassword('')
     } finally {
       setLoginLoading(false)
     }
@@ -1307,9 +1324,10 @@ export default function AdminPage() {
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-1.5 text-xs font-bold bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
+              disabled={isSaving}
+              className="px-4 py-1.5 text-xs font-bold bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Lagre alt
+              {isSaving ? 'Lagrer...' : 'Lagre alt'}
             </button>
             <button onClick={handleLogout} className="px-3 py-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors" title="Logg ut">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

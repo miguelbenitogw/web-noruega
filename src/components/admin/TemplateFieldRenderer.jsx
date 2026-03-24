@@ -111,8 +111,10 @@ export default function TemplateFieldRenderer({
   }
 
   if (fieldType === 'object' || fieldType === 'array') {
+    const jsonStateKey = `${fieldKey}:${JSON.stringify(value ?? getJsonFallback(fieldType))}`
     return (
       <JsonField
+        key={jsonStateKey}
         fieldKey={fieldKey}
         label={displayLabel}
         value={value}
