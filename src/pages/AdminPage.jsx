@@ -60,9 +60,9 @@ function clearSession() {
 }
 
 function getErrorMessage(error) {
-  if (!error) return 'Error desconocido'
+  if (!error) return 'Ukjent feil'
   if (typeof error === 'string') return error
-  return error.message || error.error_description || 'Error desconocido'
+  return error.message || error.error_description || 'Ukjent feil'
 }
 
 function AdminLoadingScreen({ message }) {
@@ -74,7 +74,7 @@ function AdminLoadingScreen({ message }) {
             <path d="M21 12a9 9 0 1 1-2.64-6.36" />
           </svg>
         </div>
-        <p className="text-sm font-semibold text-white">Preparando editor visual</p>
+        <p className="text-sm font-semibold text-white">Klargjør adminverktøyet</p>
         <p className="mt-2 text-sm leading-relaxed text-slate-300">{message}</p>
       </div>
     </div>
@@ -125,13 +125,13 @@ function AdminLoginScreen({
         <div className="mb-8 flex items-start justify-between gap-4">
           <div>
             <span className="inline-flex items-center rounded-full border border-primary-400/30 bg-primary-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-100">
-              /admin visual shell
+              /admin
             </span>
             <h1 className="mt-4 font-heading text-3xl font-bold leading-tight text-white">
-              Editor visual centralizado
+              Sentralisert innholdsadmin
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-slate-300">
-              Acá editás Landing, Noticias y Helse con canvas real y panel de secciones. Sin vueltas.
+              Her redigerer du startside, nyheter og helse med ekte canvas, seksjonspanel og nyhetsstudio på ett sted.
             </p>
           </div>
 
@@ -156,12 +156,12 @@ function AdminLoginScreen({
             </label>
           ) : (
             <div className="rounded-2xl border border-amber-400/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
-              Modo local activo. Úsalo solo en desarrollo.
+              Lokal innlogging er aktiv. Bruk den bare i utviklingsmiljø.
             </div>
           )}
 
           <label className="block">
-            <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Contraseña</span>
+            <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Passord</span>
             <input
               type="password"
               value={password}
@@ -175,7 +175,7 @@ function AdminLoginScreen({
 
           {!supabaseConfigured && authMode === 'supabase' && (
             <div className="rounded-2xl border border-amber-400/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
-              Supabase auth no está configurado para este entorno.
+              Supabase-autentisering er ikke konfigurert i dette miljøet.
             </div>
           )}
 
@@ -187,7 +187,7 @@ function AdminLoginScreen({
 
           {isLocked && (
             <div className="rounded-2xl border border-amber-400/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
-              Acceso bloqueado durante {minutes} min. Ponete las pilas y esperá a que termine el lockout.
+              Tilgangen er midlertidig låst i {minutes} min. Vent til sperren er over før du prøver igjen.
             </div>
           )}
 
@@ -196,7 +196,7 @@ function AdminLoginScreen({
             disabled={loading || isLocked || (authMode === 'supabase' && !supabaseConfigured)}
             className="w-full rounded-2xl bg-primary-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {loading ? 'Ingresando…' : 'Entrar al shell visual'}
+            {loading ? 'Logger inn…' : 'Åpne admin'}
           </button>
         </form>
       </div>
@@ -276,7 +276,7 @@ export default function AdminPage() {
     if (!supabaseConfigured) {
       setSupabaseAccessLoading(false)
       setSupabaseAuthorized(false)
-      setLoginError('Supabase auth no está configurado para este entorno.')
+      setLoginError('Supabase-autentisering er ikke konfigurert i dette miljøet.')
       return undefined
     }
 
@@ -295,7 +295,7 @@ export default function AdminPage() {
         if (cancelled) return
 
         if (!allowed) {
-          setLoginError('La cuenta no tiene permisos de editor o admin.')
+          setLoginError('Kontoen mangler redaktør- eller adminrettigheter.')
           setSupabaseAuthorized(false)
           void signOut()
           return
@@ -306,7 +306,7 @@ export default function AdminPage() {
       } catch (error) {
         if (cancelled) return
         setSupabaseAuthorized(false)
-        setLoginError(`No se pudo verificar acceso: ${getErrorMessage(error)}`)
+        setLoginError(`Kunne ikke verifisere tilgang: ${getErrorMessage(error)}`)
         void signOut()
       } finally {
         if (!cancelled) setSupabaseAccessLoading(false)
@@ -360,8 +360,8 @@ export default function AdminPage() {
           setLockedUntil(lock)
           setLoginError(
             lock
-              ? 'Acceso bloqueado durante 30 minutos.'
-              : `${getErrorMessage(error)}. Quedan ${Math.max(0, MAX_ATTEMPTS - attempts)} intentos.`,
+              ? 'Tilgangen er låst i 30 minutter.'
+              : `${getErrorMessage(error)}. Du har ${Math.max(0, MAX_ATTEMPTS - attempts)} forsøk igjen.`,
           )
           return
         }
@@ -382,10 +382,10 @@ export default function AdminPage() {
       } else if (fallbackPassword) {
         isValid = password === fallbackPassword
         if (isValid && import.meta.env.DEV) {
-          console.info(`[Admin] Configurá VITE_ADMIN_HASH con este valor para endurecer el acceso:\n${hash}`)
+          console.info(`[Admin] Sett VITE_ADMIN_HASH til denne verdien for å stramme inn tilgangen:\n${hash}`)
         }
       } else {
-        throw new Error('No hay credenciales locales configuradas.')
+        throw new Error('Ingen lokale legitimasjonsdata er konfigurert.')
       }
 
       if (!isValid) {
@@ -395,8 +395,8 @@ export default function AdminPage() {
         setLockedUntil(lock)
         setLoginError(
           lock
-            ? 'Acceso bloqueado durante 30 minutos.'
-            : `Contraseña inválida. Quedan ${Math.max(0, MAX_ATTEMPTS - attempts)} intentos.`,
+            ? 'Tilgangen er låst i 30 minutter.'
+            : `Ugyldig passord. Du har ${Math.max(0, MAX_ATTEMPTS - attempts)} forsøk igjen.`,
         )
         return
       }
@@ -414,7 +414,7 @@ export default function AdminPage() {
   }, [authMode, email, password, signInWithPassword])
 
   if (authMode === 'supabase' && (authLoading || (session && supabaseAccessLoading))) {
-    return <AdminLoadingScreen message="Verificando sesión y permisos de edición…" />
+    return <AdminLoadingScreen message="Verifiserer økt og redigeringstilgang…" />
   }
 
   if (!canRenderShell) {

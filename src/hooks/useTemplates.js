@@ -24,7 +24,7 @@ export default function useTemplates(contentType) {
       } catch (err) {
         if (!cancelled) {
           setTemplates([])
-          setError(err instanceof Error ? err : new Error('Could not load templates.'))
+          setError(err instanceof Error ? err : new Error('Kunne ikke laste maler.'))
         }
       } finally {
         if (!cancelled) setLoading(false)

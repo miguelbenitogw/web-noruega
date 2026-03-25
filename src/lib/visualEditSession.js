@@ -169,7 +169,7 @@ export const saveVisualEditDraft = async () => {
   } catch (error) {
     setState({
       isSaving: false,
-      error: error instanceof Error ? error.message : 'No se pudo guardar el borrador.',
+      error: error instanceof Error ? error.message : 'Kunne ikke lagre kladden.',
     })
     throw error
   }
@@ -193,7 +193,7 @@ export const publishVisualEditChanges = async () => {
   } catch (error) {
     setState({
       isPublishing: false,
-      error: error instanceof Error ? error.message : 'No se pudo publicar el contenido.',
+      error: error instanceof Error ? error.message : 'Kunne ikke publisere innholdet.',
     })
     throw error
   }

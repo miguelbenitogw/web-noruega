@@ -1,4 +1,4 @@
-﻿import { getMarkdownSections } from '../components/MarkdownArticle'
+import { getMarkdownSections } from '../components/MarkdownArticle'
 
 const field = (path, label, description) => ({ path, label, description })
 
@@ -13,10 +13,11 @@ const section = (id, label, options = {}) => ({
 })
 
 export const ADMIN_PREVIEW_MODES = [
-  { id: 'landing', label: 'Landing', path: '/' },
-  { id: 'nyheter', label: 'Noticias', path: '/nyheter' },
+  { id: 'landing', label: 'Startside', path: '/' },
+  { id: 'nyheter', label: 'Nyhetsside', path: '/nyheter' },
   { id: 'helse', label: 'Helse', path: '/helse' },
-  { id: 'article', label: 'Artículo', path: '/nyheter' },
+  { id: 'article', label: 'Artikkel', path: '/nyheter' },
+  { id: 'news-manager', label: 'Nyhetsstudio', path: '/nyheter' },
 ]
 
 const buildLandingSections = (articles) => {
@@ -24,72 +25,72 @@ const buildLandingSections = (articles) => {
   const secondaryArticle = articles[1]
 
   return [
-    section('landing-hero', 'Hero', {
+    section('landing-hero', 'Toppseksjon', {
       scrollToTop: true,
-      description: 'El primer impacto. Badge, título, descripción, CTAs y stats.',
+      description: 'Førsteinntrykket: merke, hovedtittel, ingress, CTA-er og nøkkeltall.',
       fields: [
-        field('hero.badge', 'Badge'),
-        field('hero.h1First', 'Título · parte 1'),
-        field('hero.h1Highlight', 'Título · destacado'),
-        field('hero.description', 'Descripción'),
-        field('hero.cta1', 'CTA primaria'),
-        field('hero.cta2', 'CTA secundaria'),
-        field('hero.stats.0.value', 'Stat 1 · valor'),
-        field('hero.stats.0.label', 'Stat 1 · etiqueta'),
+        field('hero.badge', 'Merke'),
+        field('hero.h1First', 'Tittel · del 1'),
+        field('hero.h1Highlight', 'Tittel · uthevet'),
+        field('hero.description', 'Ingress'),
+        field('hero.cta1', 'Primær-CTA'),
+        field('hero.cta2', 'Sekundær-CTA'),
+        field('hero.stats.0.value', 'Nøkkeltall 1 · verdi'),
+        field('hero.stats.0.label', 'Nøkkeltall 1 · etikett'),
       ],
     }),
-    section('landing-services', 'Servicios', {
+    section('landing-services', 'Tjenester', {
       sectionIndex: 1,
-      description: 'Resumen principal de la propuesta de valor.',
+      description: 'Kort oppsummering av verdiforslaget på startsiden.',
       fields: [
-        field('homeServices.label', 'Eyebrow'),
-        field('homeServices.heading', 'Título'),
-        field('homeServices.description', 'Descripción'),
-        field('homeServices.sections.0.title', 'Card 1 · título'),
-        field('homeServices.sections.0.description', 'Card 1 · descripción'),
-        field('homeServices.sections.1.title', 'Card 2 · título'),
+        field('homeServices.label', 'Fortekst'),
+        field('homeServices.heading', 'Tittel'),
+        field('homeServices.description', 'Beskrivelse'),
+        field('homeServices.sections.0.title', 'Kort 1 · tittel'),
+        field('homeServices.sections.0.description', 'Kort 1 · beskrivelse'),
+        field('homeServices.sections.1.title', 'Kort 2 · tittel'),
       ],
     }),
-    section('landing-health', 'Bloque Helse', {
+    section('landing-health', 'Helseblokk', {
       sectionIndex: 2,
-      description: 'Sección oscura que empuja al vertical sanitario.',
+      description: 'Mørk seksjon som leder videre til helsevertikalen.',
       fields: [
-        field('homeHealth.label', 'Eyebrow'),
-        field('homeHealth.heading', 'Título'),
-        field('homeHealth.description', 'Descripción'),
+        field('homeHealth.label', 'Fortekst'),
+        field('homeHealth.heading', 'Tittel'),
+        field('homeHealth.description', 'Beskrivelse'),
         field('homeHealth.cta', 'CTA'),
-        field('homeStats.0.value', 'Stat 1 · valor'),
-        field('homeStats.0.label', 'Stat 1 · etiqueta'),
+        field('homeStats.0.value', 'Nøkkeltall 1 · verdi'),
+        field('homeStats.0.label', 'Nøkkeltall 1 · etikett'),
       ],
     }),
-    section('landing-news', 'Últimas noticias', {
+    section('landing-news', 'Siste nyheter', {
       sectionIndex: 3,
-      description: 'Preview editorial de landing.',
+      description: 'Redaksjonell forhåndsvisning på startsiden.',
       fields: [
-        field(featuredArticle ? `news.${featuredArticle.slug}.tag` : 'news.{slug}.tag', 'Destacada · tag'),
-        field(featuredArticle ? `news.${featuredArticle.slug}.title` : 'news.{slug}.title', 'Destacada · título'),
-        field(featuredArticle ? `news.${featuredArticle.slug}.excerpt` : 'news.{slug}.excerpt', 'Destacada · extracto'),
-        field(secondaryArticle ? `news.${secondaryArticle.slug}.title` : 'news.{slug}.title', 'Card 2 · título'),
+        field(featuredArticle ? `news.${featuredArticle.slug}.tag` : 'news.{slug}.tag', 'Fremhevet · tagg'),
+        field(featuredArticle ? `news.${featuredArticle.slug}.title` : 'news.{slug}.title', 'Fremhevet · tittel'),
+        field(featuredArticle ? `news.${featuredArticle.slug}.excerpt` : 'news.{slug}.excerpt', 'Fremhevet · ingress'),
+        field(secondaryArticle ? `news.${secondaryArticle.slug}.title` : 'news.{slug}.title', 'Kort 2 · tittel'),
       ],
     }),
-    section('landing-cta', 'CTA banner', {
+    section('landing-cta', 'CTA-banner', {
       sectionIndex: 4,
       fields: [
-        field('ctaBanner.badge', 'Badge'),
-        field('ctaBanner.heading', 'Título'),
-        field('ctaBanner.description', 'Descripción'),
+        field('ctaBanner.badge', 'Merke'),
+        field('ctaBanner.heading', 'Tittel'),
+        field('ctaBanner.description', 'Beskrivelse'),
         field('ctaBanner.cta', 'CTA'),
       ],
     }),
-    section('landing-contact', 'Contacto rápido', {
+    section('landing-contact', 'Kontakt', {
       sectionIndex: 5,
       fields: [
-        field('homeContact.label', 'Eyebrow'),
-        field('homeContact.heading', 'Título'),
-        field('homeContact.description', 'Descripción'),
+        field('homeContact.label', 'Fortekst'),
+        field('homeContact.heading', 'Tittel'),
+        field('homeContact.description', 'Beskrivelse'),
         field('homeContact.cta', 'CTA'),
-        field('contacts.0.name', 'Contacto 1 · nombre'),
-        field('contacts.0.email', 'Contacto 1 · email'),
+        field('contacts.0.name', 'Kontakt 1 · navn'),
+        field('contacts.0.email', 'Kontakt 1 · e-post'),
       ],
     }),
   ]
@@ -100,73 +101,73 @@ const buildNewsSections = (articles) => {
   const archiveArticle = articles[1] || featuredArticle
 
   return [
-    section('news-hero', 'Hero de Noticias', {
+    section('news-hero', 'Toppseksjon', {
       sectionIndex: 0,
       fields: [
-        field('nyheterHero.h1', 'Título'),
-        field('nyheterHero.description', 'Descripción'),
+        field('nyheterHero.h1', 'Tittel'),
+        field('nyheterHero.description', 'Beskrivelse'),
       ],
     }),
-    section('news-featured', 'Bloque destacado', {
+    section('news-featured', 'Fremhevet blokk', {
       anchorId: 'nyheter-heading',
-      description: 'La pieza principal del listado.',
+      description: 'Hovedsaken i nyhetslisten.',
       fields: [
-        field(featuredArticle ? `news.${featuredArticle.slug}.tag` : 'news.{slug}.tag', 'Tag'),
-        field(featuredArticle ? `news.${featuredArticle.slug}.readTime` : 'news.{slug}.readTime', 'Read time'),
-        field(featuredArticle ? `news.${featuredArticle.slug}.title` : 'news.{slug}.title', 'Título'),
-        field(featuredArticle ? `news.${featuredArticle.slug}.excerpt` : 'news.{slug}.excerpt', 'Extracto'),
+        field(featuredArticle ? `news.${featuredArticle.slug}.tag` : 'news.{slug}.tag', 'Tagg'),
+        field(featuredArticle ? `news.${featuredArticle.slug}.readTime` : 'news.{slug}.readTime', 'Lesetid'),
+        field(featuredArticle ? `news.${featuredArticle.slug}.title` : 'news.{slug}.title', 'Tittel'),
+        field(featuredArticle ? `news.${featuredArticle.slug}.excerpt` : 'news.{slug}.excerpt', 'Ingress'),
       ],
     }),
-    section('news-archive', 'Archivo', {
+    section('news-archive', 'Arkiv', {
       anchorId: 'nyheter-arkiv',
-      description: 'Listado completo del archivo.',
+      description: 'Hele arkivet under toppseksjonen.',
       fields: [
-        field(archiveArticle ? `news.${archiveArticle.slug}.tag` : 'news.{slug}.tag', 'Item archivo · tag'),
-        field(archiveArticle ? `news.${archiveArticle.slug}.title` : 'news.{slug}.title', 'Item archivo · título'),
-        field(archiveArticle ? `news.${archiveArticle.slug}.excerpt` : 'news.{slug}.excerpt', 'Item archivo · extracto'),
+        field(archiveArticle ? `news.${archiveArticle.slug}.tag` : 'news.{slug}.tag', 'Arkivkort · tagg'),
+        field(archiveArticle ? `news.${archiveArticle.slug}.title` : 'news.{slug}.title', 'Arkivkort · tittel'),
+        field(archiveArticle ? `news.${archiveArticle.slug}.excerpt` : 'news.{slug}.excerpt', 'Arkivkort · ingress'),
       ],
     }),
   ]
 }
 
 const buildHelseSections = () => [
-  section('helse-hero', 'Hero Helse', {
+  section('helse-hero', 'Toppseksjon', {
     sectionIndex: 0,
     fields: [
-      field('helseHero.h1', 'Título'),
-      field('helseHero.description', 'Descripción'),
+      field('helseHero.h1', 'Tittel'),
+      field('helseHero.description', 'Beskrivelse'),
     ],
   }),
-  section('helse-sector', 'Argumento sectorial', {
+  section('helse-sector', 'Sektorargument', {
     anchorId: 'helsesektor-heading',
     fields: [
-      field('helsesektorComp.label', 'Eyebrow'),
-      field('helsesektorComp.heading', 'Título'),
-      field('helsesektorComp.description', 'Descripción'),
+      field('helsesektorComp.label', 'Fortekst'),
+      field('helsesektorComp.heading', 'Tittel'),
+      field('helsesektorComp.description', 'Beskrivelse'),
       field('helsesektorComp.ctaLabel', 'CTA'),
-      field('helsesektorComp.features.0.title', 'Feature 1 · título'),
-      field('helsesektorComp.features.0.description', 'Feature 1 · descripción'),
+      field('helsesektorComp.features.0.title', 'Fordel 1 · tittel'),
+      field('helsesektorComp.features.0.description', 'Fordel 1 · beskrivelse'),
     ],
   }),
-  section('helse-phases', 'Proceso', {
+  section('helse-phases', 'Faser', {
     anchorId: 'faser-heading',
     fields: [
-      field('helsePhases.label', 'Eyebrow'),
-      field('helsePhases.heading', 'Título'),
-      field('helsePhases.description', 'Descripción'),
-      field('helsePhases.phases.0.title', 'Fase 1 · título'),
-      field('helsePhases.phases.0.description', 'Fase 1 · descripción'),
+      field('helsePhases.label', 'Fortekst'),
+      field('helsePhases.heading', 'Tittel'),
+      field('helsePhases.description', 'Beskrivelse'),
+      field('helsePhases.phases.0.title', 'Fase 1 · tittel'),
+      field('helsePhases.phases.0.description', 'Fase 1 · beskrivelse'),
     ],
   }),
-  section('helse-partnership', 'Partnership', {
+  section('helse-partnership', 'Partnerskap', {
     sectionIndex: 3,
     fields: [
-      field('helsePartnership.label', 'Eyebrow'),
-      field('helsePartnership.heading', 'Título'),
-      field('helsePartnership.p1', 'Párrafo 1'),
-      field('helsePartnership.p2', 'Párrafo 2'),
-      field('helsePartnership.cta1', 'CTA primaria'),
-      field('helsePartnership.cta2', 'CTA secundaria'),
+      field('helsePartnership.label', 'Fortekst'),
+      field('helsePartnership.heading', 'Tittel'),
+      field('helsePartnership.p1', 'Avsnitt 1'),
+      field('helsePartnership.p2', 'Avsnitt 2'),
+      field('helsePartnership.cta1', 'Primær-CTA'),
+      field('helsePartnership.cta2', 'Sekundær-CTA'),
     ],
   }),
 ]
@@ -174,7 +175,7 @@ const buildHelseSections = () => [
 const buildArticleSections = (article) => {
   if (!article) {
     return [
-      section('article-empty', 'Sin artículo seleccionado', {
+      section('article-empty', 'Ingen artikkel valgt', {
         scrollToTop: true,
         fields: [],
       }),
@@ -184,28 +185,44 @@ const buildArticleSections = (article) => {
   const markdownSections = getMarkdownSections(article.body || '').map((heading, index) => (
     section(`article-heading-${heading.id}`, heading.title, {
       anchorId: heading.id,
-      description: `Bloque ${index + 1} dentro del markdown.`,
-      fields: [field(`news.${article.slug}.body`, 'Body markdown', 'Editá este bloque desde el markdown completo.')],
+      description: `Del ${index + 1} i artikkelstrukturen.`,
+      fields: [field(`news.${article.slug}.body`, 'Brødtekst', 'Denne delen redigeres fra artikkelinnholdet.')],
     })
   ))
 
   return [
-    section('article-header', 'Cabecera', {
+    section('article-header', 'Artikkelhode', {
       scrollToTop: true,
       fields: [
-        field(`news.${article.slug}.tag`, 'Tag'),
-        field(`news.${article.slug}.title`, 'Título'),
-        field(`news.${article.slug}.excerpt`, 'Extracto'),
-        field(`news.${article.slug}.readTime`, 'Read time'),
+        field(`news.${article.slug}.tag`, 'Tagg'),
+        field(`news.${article.slug}.title`, 'Tittel'),
+        field(`news.${article.slug}.excerpt`, 'Ingress'),
+        field(`news.${article.slug}.readTime`, 'Lesetid'),
       ],
     }),
-    section('article-body', 'Cuerpo', {
+    section('article-body', 'Brødtekst', {
       sectionIndex: 0,
-      fields: [field(`news.${article.slug}.body`, 'Body markdown')],
+      fields: [field(`news.${article.slug}.body`, 'Artikkelinnhold')],
     }),
     ...markdownSections,
   ]
 }
+
+const buildNewsStudioSections = () => [
+  section('news-studio-flow', 'Arbeidsflyt', {
+    scrollToTop: true,
+    description: 'Skjemaet i midten håndterer opprettelse, redigering, kladd og publisering.',
+    fields: [],
+  }),
+  section('news-studio-featured', 'Fremhevet nyhet', {
+    description: 'Bryteren i skjemaet lagrer fremhevet-status kompatibelt i metadata/content.',
+    fields: [],
+  }),
+  section('news-studio-body', 'Artikkelbygger', {
+    description: 'Bruk hjelpeknappene i body-editoren for å sette inn seksjoner uten å skrive markdown manuelt.',
+    fields: [],
+  }),
+]
 
 export function getAdminPreviewConfig({ viewId, article, articles = [] }) {
   const currentMode = ADMIN_PREVIEW_MODES.find((entry) => entry.id === viewId) || ADMIN_PREVIEW_MODES[0]
@@ -213,9 +230,12 @@ export function getAdminPreviewConfig({ viewId, article, articles = [] }) {
   if (currentMode.id === 'landing') {
     return {
       id: 'landing',
-      label: 'Landing',
+      label: 'Startside',
       path: '/',
       routeKey: 'admin:landing',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Rediger innhold direkte i forhåndsvisningen og bruk høyrepanelet for å holde oversikt over seksjoner og felter.',
       sections: buildLandingSections(articles),
     }
   }
@@ -223,9 +243,12 @@ export function getAdminPreviewConfig({ viewId, article, articles = [] }) {
   if (currentMode.id === 'nyheter') {
     return {
       id: 'nyheter',
-      label: 'Noticias',
+      label: 'Nyhetsside',
       path: '/nyheter',
       routeKey: 'admin:nyheter',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Finjuster toppseksjon, fremhevet sak og arkiv direkte på den publiserte nyhetssiden.',
       sections: buildNewsSections(articles),
     }
   }
@@ -236,15 +259,35 @@ export function getAdminPreviewConfig({ viewId, article, articles = [] }) {
       label: 'Helse',
       path: '/helse',
       routeKey: 'admin:helse',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Jobb seksjonsvis med helse-siden uten å miste oversikten over strukturen.',
       sections: buildHelseSections(),
+    }
+  }
+
+  if (currentMode.id === 'news-manager') {
+    return {
+      id: 'news-manager',
+      label: 'Nyhetsstudio',
+      path: '/nyheter',
+      routeKey: 'admin:news-manager',
+      usesVisualSession: false,
+      topbarTitle: 'Nyhetsstudio',
+      topbarDescription: 'Opprett, rediger og publiser nyheter med skjema og hjelpeverktøy – uten å skrive markdown manuelt.',
+      panelVariant: 'news-manager',
+      sections: buildNewsStudioSections(),
     }
   }
 
   return {
     id: 'article',
-    label: article ? `Artículo · ${article.title}` : 'Artículo',
+    label: article ? `Artikkel · ${article.title}` : 'Artikkel',
     path: article ? `/nyheter/${article.slug}` : '/nyheter',
     routeKey: article ? `admin:article:${article.slug}` : 'admin:article',
+    usesVisualSession: true,
+    topbarTitle: 'Visuell redigering',
+    topbarDescription: 'Velg en artikkel og rediger overskrift, ingress og innhold direkte mot artikkelsiden.',
     sections: buildArticleSections(article),
   }
 }

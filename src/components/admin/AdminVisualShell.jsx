@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNewsCollection } from '../../hooks/useNews'
 import { ADMIN_PREVIEW_MODES, getAdminPreviewConfig } from '../../lib/adminSectionRegistry'
 import {
@@ -55,17 +55,18 @@ export default function AdminVisualShell({ onSignOut }) {
   }, [previewConfig.sections, selectedSectionId])
 
   const activeSection = previewConfig.sections.find((entry) => entry.id === activeSectionId) || previewConfig.sections[0] || null
+  const showSessionActions = previewConfig.usesVisualSession !== false
 
   useEffect(() => {
     updateVisualEditState({
-      requested: true,
-      enabled: true,
-      canEdit: true,
-      isEditableRoute: true,
+      requested: showSessionActions,
+      enabled: showSessionActions,
+      canEdit: showSessionActions,
+      isEditableRoute: showSessionActions,
       routeKey: previewConfig.routeKey,
       routeLabel: previewConfig.label,
     })
-  }, [previewConfig.label, previewConfig.routeKey])
+  }, [previewConfig.label, previewConfig.routeKey, showSessionActions])
 
   useEffect(() => () => resetVisualEditState(), [])
 
@@ -92,6 +93,8 @@ export default function AdminVisualShell({ onSignOut }) {
         activeArticleSlug={activeArticleSlug}
         activePreviewMode={activePreviewMode}
         articleOptions={articleOptions}
+        headerDescription={previewConfig.topbarDescription}
+        headerTitle={previewConfig.topbarTitle}
         onChangeArticle={setSelectedArticleSlug}
         onChangePreviewMode={handleChangePreviewMode}
         onExit={handleExit}
@@ -100,6 +103,8 @@ export default function AdminVisualShell({ onSignOut }) {
         onSignOut={onSignOut}
         previewModes={ADMIN_PREVIEW_MODES}
         session={visualSession}
+        showSessionActions={showSessionActions}
+        statusText={showSessionActions ? null : 'Bruk skjemaet i nyhetsstudioet for å lagre og publisere.'}
       />
 
       <div className="flex min-h-0 flex-1 flex-col xl:flex-row">
@@ -119,7 +124,7 @@ export default function AdminVisualShell({ onSignOut }) {
 
       {articlesLoading && activePreviewMode === 'article' && !activeArticle && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-white/10 bg-slate-900/90 px-4 py-2 text-sm text-slate-200 shadow-lg backdrop-blur">
-          Cargando artículos para el selector…
+          Laster artikler til velgeren…
         </div>
       )}
     </div>
