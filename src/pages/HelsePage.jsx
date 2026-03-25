@@ -5,6 +5,7 @@ import Nyheter from '../components/Nyheter'
 import PageEndNav from '../components/PageEndNav'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
+import EditableText, { createArrayItemCommitter } from '../components/editable/EditableText'
 
 export default function HelsePage() {
   const hero = useContent('helseHero')
@@ -23,10 +24,19 @@ export default function HelsePage() {
               <span className="mx-2">/</span>
               <span className="text-white">Helsesektor</span>
             </nav>
-            <h1 className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-              {hero.h1}
-            </h1>
-            <p className="text-blue-100 text-lg max-w-2xl leading-relaxed">{hero.description}</p>
+            <EditableText
+              as="h1"
+              path="helseHero.h1"
+              value={hero.h1}
+              className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight"
+            />
+            <EditableText
+              as="p"
+              path="helseHero.description"
+              value={hero.description}
+              multiline
+              className="text-blue-100 text-lg max-w-2xl leading-relaxed"
+            />
           </AnimateIn>
         </div>
       </section>
@@ -38,47 +48,88 @@ export default function HelsePage() {
         <div className="container-xl">
           <AnimateIn>
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                {phases.label}
-              </span>
-              <h2 id="faser-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight">
-                {phases.heading}
-              </h2>
-              <p className="text-gray-600 text-lg leading-relaxed">{phases.description}</p>
+              <EditableText
+                as="span"
+                path="helsePhases.label"
+                value={phases.label}
+                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+              />
+              <EditableText
+                as="h2"
+                path="helsePhases.heading"
+                value={phases.heading}
+                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
+              />
+              <EditableText
+                as="p"
+                path="helsePhases.description"
+                value={phases.description}
+                multiline
+                className="text-gray-600 text-lg leading-relaxed"
+              />
             </div>
           </AnimateIn>
 
           <div className="space-y-8 max-w-4xl mx-auto">
-            {(phases.phases || []).map((phase, i) => (
-              <AnimateIn key={phase.number} variant="fadeUp" delay={i * 120}>
-                <div className="relative pl-16 lg:pl-20">
-                  {i < (phases.phases || []).length - 1 && (
-                    <div className="absolute left-[1.65rem] lg:left-[1.9rem] top-14 bottom-0 w-0.5 bg-primary-100" aria-hidden="true" />
-                  )}
-                  <div className="absolute left-0 top-0 w-14 h-14 lg:w-16 lg:h-16 rounded-2xl bg-primary-600 text-white flex items-center justify-center font-heading text-xl font-bold shadow-lg shadow-primary-200">
-                    {phase.number}
-                  </div>
+            {(phases.phases || []).map((phase, i) => {
+              const commitPhaseTitle = createArrayItemCommitter({
+                basePath: 'helsePhases.phases',
+                fallbackItems: phases.phases || [],
+                index: i,
+                field: 'title',
+              })
+              const commitPhaseDescription = createArrayItemCommitter({
+                basePath: 'helsePhases.phases',
+                fallbackItems: phases.phases || [],
+                index: i,
+                field: 'description',
+              })
 
-                  <div className="bg-surface rounded-2xl border border-gray-100 p-7 lg:p-8">
-                    <h3 className="font-heading text-xl font-bold text-ink mb-3">
-                      Fase {phase.number}: {phase.title}
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed mb-4">{phase.description}</p>
-
-                    {phase.formats && (
-                      <div className="grid sm:grid-cols-3 gap-3 mt-5">
-                        {phase.formats.map((f) => (
-                          <div key={f.label} className="bg-white rounded-xl border border-gray-100 p-4 text-center">
-                            <div className="font-heading font-bold text-primary-700 text-sm mb-1">{f.duration}</div>
-                            <div className="text-gray-500 text-xs">{f.label}</div>
-                          </div>
-                        ))}
-                      </div>
+              return (
+                <AnimateIn key={phase.number} variant="fadeUp" delay={i * 120}>
+                  <div className="relative pl-16 lg:pl-20">
+                    {i < (phases.phases || []).length - 1 && (
+                      <div className="absolute left-[1.65rem] lg:left-[1.9rem] top-14 bottom-0 w-0.5 bg-primary-100" aria-hidden="true" />
                     )}
+                    <div className="absolute left-0 top-0 w-14 h-14 lg:w-16 lg:h-16 rounded-2xl bg-primary-600 text-white flex items-center justify-center font-heading text-xl font-bold shadow-lg shadow-primary-200">
+                      {phase.number}
+                    </div>
+
+                    <div className="bg-surface rounded-2xl border border-gray-100 p-7 lg:p-8">
+                      <h3 className="font-heading text-xl font-bold text-ink mb-3">
+                        Fase {phase.number}:{' '}
+                        <EditableText
+                          as="span"
+                          path={`helsePhases.phases.${i}.title`}
+                          value={phase.title}
+                          onCommit={commitPhaseTitle}
+                          className="inline"
+                        />
+                      </h3>
+                      <EditableText
+                        as="p"
+                        path={`helsePhases.phases.${i}.description`}
+                        value={phase.description}
+                        onCommit={commitPhaseDescription}
+                        multiline
+                        className="text-gray-600 leading-relaxed mb-4"
+                      />
+
+                      {phase.formats && (
+                        <div className="grid sm:grid-cols-3 gap-3 mt-5">
+                          {phase.formats.map((f) => (
+                            <div key={f.label} className="bg-white rounded-xl border border-gray-100 p-4 text-center">
+                              <div className="font-heading font-bold text-primary-700 text-sm mb-1">{f.duration}</div>
+                              <div className="text-gray-500 text-xs">{f.label}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </AnimateIn>
-            ))}
+                </AnimateIn>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -88,15 +139,31 @@ export default function HelsePage() {
         <div className="container-xl">
           <div className="max-w-3xl mx-auto text-center">
             <AnimateIn>
-              <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                {partnership.label}
-              </span>
-              <h2 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight">
-                {partnership.heading}
-              </h2>
+              <EditableText
+                as="span"
+                path="helsePartnership.label"
+                value={partnership.label}
+                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+              />
+              <EditableText
+                as="h2"
+                path="helsePartnership.heading"
+                value={partnership.heading}
+                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight"
+              />
               <div className="space-y-4 text-gray-600 text-lg leading-relaxed mb-10">
-                <p>{partnership.p1}</p>
-                <p>{partnership.p2}</p>
+                <EditableText
+                  as="p"
+                  path="helsePartnership.p1"
+                  value={partnership.p1}
+                  multiline
+                />
+                <EditableText
+                  as="p"
+                  path="helsePartnership.p2"
+                  value={partnership.p2}
+                  multiline
+                />
               </div>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
@@ -104,14 +171,14 @@ export default function HelsePage() {
                   onClick={() => trackEvent('cta_click', { location: 'helse_partnership', cta: 'kontakt_oss' })}
                   className="inline-flex items-center justify-center px-7 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
                 >
-                  {partnership.cta1}
+                  <EditableText as="span" path="helsePartnership.cta1" value={partnership.cta1} className="inline" />
                 </a>
                 <a
                   href="/talentportalen"
                   onClick={() => trackEvent('cta_click', { location: 'helse_partnership', cta: 'se_portalen' })}
                   className="inline-flex items-center justify-center px-7 py-4 border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors duration-200 cursor-pointer"
                 >
-                  {partnership.cta2}
+                  <EditableText as="span" path="helsePartnership.cta2" value={partnership.cta2} className="inline" />
                 </a>
               </div>
             </AnimateIn>

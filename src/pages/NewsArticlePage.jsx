@@ -1,9 +1,14 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import MarkdownArticle, { getMarkdownSections } from '../components/MarkdownArticle'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import { setArticleSEO } from '../lib/seo'
 import { useNewsArticle } from '../hooks/useNews'
+import EditableRichText from '../components/editable/EditableRichText'
+import EditableText, { readOverrideValue } from '../components/editable/EditableText'
+import { CONTENT_OVERRIDE_EVENT, getByPath, readContentOverrides } from '../lib/contentOverrides'
+import { registerVisualEditPersistor } from '../lib/visualEditSession'
+import { upsertNews } from '../lib/contentServices'
 
 const getCoverImage = (article) => {
   if (article.coverImage && article.coverImage.startsWith('http')) return article.coverImage
@@ -11,16 +16,90 @@ const getCoverImage = (article) => {
   return IMAGES.platformHero
 }
 
+const useOverrideRefresh = () => {
+  const [refreshTick, setRefreshTick] = useState(0)
+
+  useEffect(() => {
+    const sync = () => setRefreshTick((value) => value + 1)
+    window.addEventListener(CONTENT_OVERRIDE_EVENT, sync)
+    return () => window.removeEventListener(CONTENT_OVERRIDE_EVENT, sync)
+  }, [])
+
+  return refreshTick
+}
+
+const resolveNewsField = (article, field) => readOverrideValue(`news.${article.slug}.${field}`, article[field])
+
+const hasNewsOverrideForSlug = (overrides, slug) => Boolean(getByPath(overrides, `news.${slug}`))
+
+const buildNewsPayload = (article, mode = 'draft') => {
+  const title = resolveNewsField(article, 'title')
+  const excerpt = resolveNewsField(article, 'excerpt')
+  const body = resolveNewsField(article, 'body')
+  const tag = resolveNewsField(article, 'tag')
+  const readTime = resolveNewsField(article, 'readTime')
+
+  return {
+    id: article.id || undefined,
+    slug: article.slug,
+    title,
+    excerpt,
+    body,
+    tag,
+    readTime,
+    author: article.author || 'Global Working',
+    coverImage: article.coverImage || '',
+    status: mode === 'publish' ? 'published' : 'draft',
+    publishAt: article.publishAt || article.date || null,
+    seoTitle: article.seoTitle || title,
+    seoDescription: article.seoDescription || excerpt,
+  }
+}
+
 export default function NewsArticlePage({ slug }) {
   const { article, articles: allNews, loading } = useNewsArticle(slug)
+  const overrideTick = useOverrideRefresh()
+
+  const effectiveArticle = useMemo(() => {
+    if (!article) return null
+    void overrideTick
+
+    return {
+      ...article,
+      title: resolveNewsField(article, 'title'),
+      excerpt: resolveNewsField(article, 'excerpt'),
+      tag: resolveNewsField(article, 'tag'),
+      readTime: resolveNewsField(article, 'readTime'),
+      body: resolveNewsField(article, 'body'),
+    }
+  }, [article, overrideTick])
+
   const related = allNews.filter((item) => item.slug !== slug).slice(0, 3)
-  const sections = article ? getMarkdownSections(article.body) : []
+  const sections = effectiveArticle ? getMarkdownSections(effectiveArticle.body || '') : []
 
   useEffect(() => {
     if (!article) return
-
-    setArticleSEO(article)
     trackEvent('news_open', { slug: article.slug, tag: article.tag })
+  }, [article])
+
+  useEffect(() => {
+    if (!effectiveArticle) return
+    setArticleSEO(effectiveArticle)
+  }, [effectiveArticle])
+
+  useEffect(() => {
+    if (!article) return undefined
+
+    const persistArticle = async (mode) => upsertNews(buildNewsPayload(article, mode))
+
+    return registerVisualEditPersistor(`visual-edit-news-article-${article.slug}`, {
+      hasChanges: () => {
+        const overrides = readContentOverrides()
+        return hasNewsOverrideForSlug(overrides, article.slug)
+      },
+      saveDraft: () => persistArticle('draft'),
+      publish: () => persistArticle('publish'),
+    })
   }, [article])
 
   if (loading && !article) {
@@ -56,21 +135,38 @@ export default function NewsArticlePage({ slug }) {
         </a>
 
         <div className="mb-6 flex items-center gap-3 text-sm text-gray-500">
-          <span className="px-2.5 py-1 rounded-full bg-primary-50 text-primary-700 font-semibold">{article.tag}</span>
-          <time>{article.dateLabel}</time>
+          <EditableText
+            as="span"
+            path={`news.${effectiveArticle.slug}.tag`}
+            value={effectiveArticle.tag}
+            className="px-2.5 py-1 rounded-full bg-primary-50 text-primary-700 font-semibold"
+          />
+          <time>{effectiveArticle.dateLabel}</time>
           <span aria-hidden="true">·</span>
-          <span>{article.readTime} lesetid</span>
+          <span>
+            <EditableText as="span" path={`news.${effectiveArticle.slug}.readTime`} value={effectiveArticle.readTime} className="inline" />
+            {' '}lesetid
+          </span>
         </div>
 
-        <h1 className="font-heading text-3xl lg:text-5xl font-bold text-ink leading-tight mb-4">
-          {article.title}
-        </h1>
-        <p className="text-lg text-gray-600 mb-8">{article.excerpt}</p>
+        <EditableText
+          as="h1"
+          path={`news.${effectiveArticle.slug}.title`}
+          value={effectiveArticle.title}
+          className="font-heading text-3xl lg:text-5xl font-bold text-ink leading-tight mb-4"
+        />
+        <EditableText
+          as="p"
+          path={`news.${effectiveArticle.slug}.excerpt`}
+          value={effectiveArticle.excerpt}
+          multiline
+          className="text-lg text-gray-600 mb-8"
+        />
 
         <div className="rounded-3xl overflow-hidden mb-10 border border-gray-100">
           <img
-            src={img(getCoverImage(article), 1200)}
-            alt={article.title}
+            src={img(getCoverImage(effectiveArticle), 1200)}
+            alt={effectiveArticle.title}
             className="w-full h-auto object-cover"
             loading="lazy"
           />
@@ -96,9 +192,12 @@ export default function NewsArticlePage({ slug }) {
           </nav>
         )}
 
-        <article className="prose prose-lg max-w-none">
-          <MarkdownArticle markdown={article.body} />
-        </article>
+        <EditableRichText
+          path={`news.${effectiveArticle.slug}.body`}
+          value={effectiveArticle.body}
+          modalTitle="Rediger artikkelinnhold"
+          renderPreview={(markdown) => <MarkdownArticle markdown={markdown} />}
+        />
 
         {!!related.length && (
           <div className="mt-14 pt-10 border-t border-gray-100">

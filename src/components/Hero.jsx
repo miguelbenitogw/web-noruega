@@ -4,10 +4,23 @@ import useInView from '../hooks/useInView'
 import useCounter from '../hooks/useCounter'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
+import EditableText, { createArrayItemCommitter } from './editable/EditableText'
 
-function StatCard({ stat, active, delay }) {
+function StatCard({ stat, active, delay, index, allStats }) {
   const animatedValue = useCounter(stat.value, active && stat.animate, 2000)
   const display = stat.animate ? animatedValue : stat.value
+  const commitValue = createArrayItemCommitter({
+    basePath: 'hero.stats',
+    fallbackItems: allStats,
+    index,
+    field: 'value',
+  })
+  const commitLabel = createArrayItemCommitter({
+    basePath: 'hero.stats',
+    fallbackItems: allStats,
+    index,
+    field: 'label',
+  })
 
   return (
     <div
@@ -18,8 +31,21 @@ function StatCard({ stat, active, delay }) {
         transitionDelay: `${delay}ms`,
       }}
     >
-      <div className="font-heading text-2xl font-bold text-white mb-0.5">{display}</div>
-      <div className="text-blue-200 text-xs font-medium">{stat.label}</div>
+      <EditableText
+        as="div"
+        path={`hero.stats.${index}.value`}
+        value={display}
+        onCommit={commitValue}
+        className="font-heading text-2xl font-bold text-white mb-0.5"
+        inputClassName="font-heading text-2xl font-bold"
+      />
+      <EditableText
+        as="div"
+        path={`hero.stats.${index}.label`}
+        value={stat.label}
+        onCommit={commitLabel}
+        className="text-blue-200 text-xs font-medium"
+      />
     </div>
   )
 }
@@ -49,19 +75,27 @@ export default function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
             <div className="animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-sm font-medium mb-8 backdrop-blur-sm">
-                <span className="w-2 h-2 rounded-full bg-cta animate-pulse" aria-hidden="true" />
-                {c.badge}
-              </div>
+              <EditableText
+                as="div"
+                path="hero.badge"
+                value={c.badge}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-sm font-medium mb-8 backdrop-blur-sm"
+              />
             </div>
 
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
-              {c.h1First} <span className="text-cta">{c.h1Highlight}</span>
+              <EditableText as="span" path="hero.h1First" value={c.h1First} className="inline" />{' '}
+              <EditableText as="span" path="hero.h1Highlight" value={c.h1Highlight} className="inline text-cta" />
             </h1>
 
-            <p className="text-lg lg:text-xl text-blue-100 leading-relaxed mb-10 max-w-xl animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
-              {c.description}
-            </p>
+            <EditableText
+              as="p"
+              path="hero.description"
+              value={c.description}
+              multiline
+              className="text-lg lg:text-xl text-blue-100 leading-relaxed mb-10 max-w-xl animate-[fadeInUp_0.8s_ease-out_0.6s_both]"
+              inputClassName="min-h-[180px]"
+            />
 
             <div className="flex flex-col sm:flex-row gap-4 animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
               <a
@@ -69,7 +103,7 @@ export default function Hero() {
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'slik_jobber_vi' })}
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-cta text-white font-semibold rounded-xl hover:bg-cta-600 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
               >
-                {c.cta1}
+                <EditableText as="span" path="hero.cta1" value={c.cta1} className="inline" />
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
@@ -79,13 +113,20 @@ export default function Hero() {
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'kontakt_oss' })}
                 className="inline-flex items-center justify-center px-7 py-4 bg-white/10 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-200 backdrop-blur-sm cursor-pointer"
               >
-                {c.cta2}
+                <EditableText as="span" path="hero.cta2" value={c.cta2} className="inline" />
               </a>
             </div>
 
             <div ref={statsRef} className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-4">
               {(c.stats || []).map((stat, i) => (
-                <StatCard key={stat.label} stat={stat} active={statsVisible} delay={i * 150} />
+                <StatCard
+                  key={`${stat.label}-${i}`}
+                  stat={stat}
+                  active={statsVisible}
+                  delay={i * 150}
+                  index={i}
+                  allStats={c.stats || []}
+                />
               ))}
             </div>
           </div>

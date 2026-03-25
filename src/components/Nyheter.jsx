@@ -1,7 +1,12 @@
+import { useEffect, useState } from 'react'
 import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
+import EditableText, { readOverrideValue } from './editable/EditableText'
 import { trackEvent } from '../lib/analytics'
 import { useNewsCollection } from '../hooks/useNews'
+import { CONTENT_OVERRIDE_EVENT, getByPath, readContentOverrides } from '../lib/contentOverrides'
+import { upsertNews } from '../lib/contentServices'
+import { registerVisualEditPersistor } from '../lib/visualEditSession'
 
 const tagColors = {
   Plattform: 'bg-primary-50 text-primary-700',
@@ -12,8 +17,77 @@ const tagColors = {
 
 const getTagStyles = (tag) => tagColors[tag] || 'bg-gray-100 text-gray-700'
 
+const useOverrideRefresh = () => {
+  const [, setRefreshTick] = useState(0)
+
+  useEffect(() => {
+    const sync = () => setRefreshTick((value) => value + 1)
+    window.addEventListener(CONTENT_OVERRIDE_EVENT, sync)
+    return () => window.removeEventListener(CONTENT_OVERRIDE_EVENT, sync)
+  }, [])
+}
+
+const resolveNewsField = (article, field) => readOverrideValue(`news.${article.slug}.${field}`, article[field])
+
+const hasNewsOverrideForSlug = (overrides, slug) => Boolean(getByPath(overrides, `news.${slug}`))
+
+const buildNewsPayload = (article, mode = 'draft') => {
+  const title = resolveNewsField(article, 'title')
+  const excerpt = resolveNewsField(article, 'excerpt')
+  const body = resolveNewsField(article, 'body')
+  const tag = resolveNewsField(article, 'tag')
+  const readTime = resolveNewsField(article, 'readTime')
+
+  return {
+    id: article.id || undefined,
+    locale: article.locale || undefined,
+    slug: article.slug,
+    title,
+    excerpt,
+    body,
+    tag,
+    readTime,
+    author: article.author || 'Global Working',
+    coverImage: article.coverImage || '',
+    status: mode === 'publish' ? 'published' : 'draft',
+    publishAt: article.publishAt || article.date || null,
+    seoTitle: article.seoTitle || title,
+    seoDescription: article.seoDescription || excerpt,
+  }
+}
+
 export default function Nyheter() {
   const { articles: news, loading } = useNewsCollection()
+  useOverrideRefresh()
+
+  useEffect(() => {
+    const persistNews = async (mode) => {
+      const overrides = readContentOverrides()
+      const changedArticles = news.filter((article) => hasNewsOverrideForSlug(overrides, article.slug))
+
+      if (!changedArticles.length) {
+        return []
+      }
+
+      const results = []
+      for (const article of changedArticles) {
+        const result = await upsertNews(buildNewsPayload(article, mode))
+        results.push(result)
+      }
+
+      return results
+    }
+
+    return registerVisualEditPersistor('visual-edit-news-collection', {
+      hasChanges: () => {
+        const overrides = readContentOverrides()
+        return news.some((article) => hasNewsOverrideForSlug(overrides, article.slug))
+      },
+      saveDraft: () => persistNews('draft'),
+      publish: () => persistNews('publish'),
+    })
+  }, [news])
+
   if (!news.length && loading) {
     return (
       <section id="nyheter" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="nyheter-heading">
@@ -27,6 +101,10 @@ export default function Nyheter() {
   if (!news.length) return null
 
   const featured = news[0]
+  const featuredTitle = resolveNewsField(featured, 'title')
+  const featuredExcerpt = resolveNewsField(featured, 'excerpt')
+  const featuredTag = resolveNewsField(featured, 'tag')
+  const featuredReadTime = resolveNewsField(featured, 'readTime')
 
   return (
     <section id="nyheter" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="nyheter-heading">
@@ -59,25 +137,42 @@ export default function Nyheter() {
             <div className="relative h-60 overflow-hidden">
               <img
                 src={img(featured.coverImage || IMAGES.platformHero, 900)}
-                alt={featured.title}
+                alt={featuredTitle}
                 className="w-full h-full object-cover"
                 loading="lazy"
                 width="640"
                 height="240"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" aria-hidden="true" />
-              <span className={`absolute bottom-4 left-5 px-3 py-1.5 rounded-full text-xs font-semibold ${getTagStyles(featured.tag)}`}>
-                {featured.tag}
-              </span>
+              <EditableText
+                as="span"
+                path={`news.${featured.slug}.tag`}
+                value={featuredTag}
+                className={`absolute bottom-4 left-5 px-3 py-1.5 rounded-full text-xs font-semibold ${getTagStyles(featuredTag)}`}
+              />
             </div>
             <div className="p-7 flex flex-col flex-1">
               <div className="flex items-center gap-3 text-gray-400 text-sm mb-4">
                 <time>{featured.dateLabel}</time>
                 <span aria-hidden="true">·</span>
-                <span>{featured.readTime} lesetid</span>
+                <span>
+                  <EditableText as="span" path={`news.${featured.slug}.readTime`} value={featuredReadTime} className="inline" />
+                  {' '}lesetid
+                </span>
               </div>
-              <h3 className="font-heading text-xl font-bold text-ink mb-3">{featured.title}</h3>
-              <p className="text-gray-500 leading-relaxed flex-1">{featured.excerpt}</p>
+              <EditableText
+                as="h3"
+                path={`news.${featured.slug}.title`}
+                value={featuredTitle}
+                className="font-heading text-xl font-bold text-ink mb-3"
+              />
+              <EditableText
+                as="p"
+                path={`news.${featured.slug}.excerpt`}
+                value={featuredExcerpt}
+                multiline
+                className="text-gray-500 leading-relaxed flex-1"
+              />
               <a
                 href={`/nyheter/${featured.slug}`}
                 onClick={() => trackEvent('cta_click', { location: 'nyheter', cta: 'les_mer_featured' })}
@@ -92,51 +187,97 @@ export default function Nyheter() {
           </article>
 
           <div className="lg:col-span-2 flex flex-col gap-4">
-            {news.slice(1, 4).map((article) => (
-              <article
-                key={article.slug}
-                className="bg-surface rounded-2xl border border-gray-100 p-5 hover:shadow-md hover:border-primary-100 transition-all duration-200 flex flex-col gap-3"
-              >
-                <div className="flex items-center justify-between">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getTagStyles(article.tag)}`}>
-                    {article.tag}
-                  </span>
-                  <time className="text-gray-400 text-xs">{article.dateLabel}</time>
-                </div>
-                <h3 className="font-heading text-base font-semibold text-ink leading-snug">{article.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed line-clamp-2">{article.excerpt}</p>
-                <a
-                  href={`/nyheter/${article.slug}`}
-                  onClick={() => trackEvent('cta_click', { location: 'nyheter', cta: `les_mer_${article.slug}` })}
-                  className="text-primary-600 font-semibold text-sm hover:text-primary-700 transition-colors"
+            {news.slice(1, 4).map((article) => {
+              const title = resolveNewsField(article, 'title')
+              const excerpt = resolveNewsField(article, 'excerpt')
+              const tag = resolveNewsField(article, 'tag')
+
+              return (
+                <article
+                  key={article.slug}
+                  className="bg-surface rounded-2xl border border-gray-100 p-5 hover:shadow-md hover:border-primary-100 transition-all duration-200 flex flex-col gap-3"
                 >
-                  Les mer →
-                </a>
-              </article>
-            ))}
+                  <div className="flex items-center justify-between">
+                    <EditableText
+                      as="span"
+                      path={`news.${article.slug}.tag`}
+                      value={tag}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${getTagStyles(tag)}`}
+                    />
+                    <time className="text-gray-400 text-xs">{article.dateLabel}</time>
+                  </div>
+                  <EditableText
+                    as="h3"
+                    path={`news.${article.slug}.title`}
+                    value={title}
+                    className="font-heading text-base font-semibold text-ink leading-snug"
+                  />
+                  <EditableText
+                    as="p"
+                    path={`news.${article.slug}.excerpt`}
+                    value={excerpt}
+                    multiline
+                    className="text-gray-500 text-sm leading-relaxed line-clamp-2"
+                  />
+                  <a
+                    href={`/nyheter/${article.slug}`}
+                    onClick={() => trackEvent('cta_click', { location: 'nyheter', cta: `les_mer_${article.slug}` })}
+                    className="text-primary-600 font-semibold text-sm hover:text-primary-700 transition-colors"
+                  >
+                    Les mer →
+                  </a>
+                </article>
+              )
+            })}
           </div>
         </div>
 
         <div id="nyheter-arkiv" className="scroll-mt-28 mt-16 space-y-6">
-          {news.map((article) => (
-            <article id={`nyhet-${article.slug}`} key={article.slug} className="scroll-mt-28 border border-gray-100 rounded-2xl p-6 bg-white">
-              <div className="flex items-center gap-3 mb-2 text-sm text-gray-500">
-                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getTagStyles(article.tag)}`}>{article.tag}</span>
-                <time>{article.dateLabel}</time>
-                <span aria-hidden="true">·</span>
-                <span>{article.readTime} lesetid</span>
-              </div>
-              <h3 className="font-heading text-xl font-bold text-ink mb-2">{article.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{article.excerpt}</p>
-              <a
-                href={`/nyheter/${article.slug}`}
-                onClick={() => trackEvent('news_read_more_click', { slug: article.slug })}
-                className="inline-flex mt-4 text-primary-600 text-sm font-semibold hover:text-primary-700"
-              >
-                Les artikkel
-              </a>
-            </article>
-          ))}
+          {news.map((article) => {
+            const title = resolveNewsField(article, 'title')
+            const excerpt = resolveNewsField(article, 'excerpt')
+            const tag = resolveNewsField(article, 'tag')
+            const readTime = resolveNewsField(article, 'readTime')
+
+            return (
+              <article id={`nyhet-${article.slug}`} key={article.slug} className="scroll-mt-28 border border-gray-100 rounded-2xl p-6 bg-white">
+                <div className="flex items-center gap-3 mb-2 text-sm text-gray-500">
+                  <EditableText
+                    as="span"
+                    path={`news.${article.slug}.tag`}
+                    value={tag}
+                    className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getTagStyles(tag)}`}
+                  />
+                  <time>{article.dateLabel}</time>
+                  <span aria-hidden="true">·</span>
+                  <span>
+                    <EditableText as="span" path={`news.${article.slug}.readTime`} value={readTime} className="inline" />
+                    {' '}lesetid
+                  </span>
+                </div>
+                <EditableText
+                  as="h3"
+                  path={`news.${article.slug}.title`}
+                  value={title}
+                  className="font-heading text-xl font-bold text-ink mb-2"
+                />
+                <EditableText
+                  as="p"
+                  path={`news.${article.slug}.excerpt`}
+                  value={excerpt}
+                  multiline
+                  className="text-gray-600 leading-relaxed"
+                />
+                <a
+                  href={`/nyheter/${article.slug}`}
+                  onClick={() => trackEvent('news_read_more_click', { slug: article.slug })}
+                  className="inline-flex mt-4 text-primary-600 text-sm font-semibold hover:text-primary-700"
+                >
+                  Les artikkel
+                </a>
+              </article>
+            )
+          })}
         </div>
       </div>
     </section>

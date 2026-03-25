@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import './index.css'
 import Navbar from './components/Navbar'
 import ScrollProgress from './components/ScrollProgress'
@@ -6,9 +6,12 @@ import Footer from './components/Footer'
 import BackToTop from './components/BackToTop'
 import CookieConsent from './components/CookieConsent'
 import AdminErrorBoundary from './components/AdminErrorBoundary'
+import VisualEditToolbar from './components/admin/VisualEditToolbar'
 import { initAnalyticsWithConsent, trackPageView } from './lib/analytics'
 import { setDefaultSEO, setNotFoundSEO, setSectionSEO } from './lib/seo'
 import { resolveRouteContext } from './lib/contentRuntime'
+import { canCurrentUserEditContent } from './lib/contentRemote'
+import { resetVisualEditState, updateVisualEditState } from './lib/visualEditSession'
 
 // Pages
 import HomePage from './pages/HomePage'
@@ -28,10 +31,25 @@ const getCurrentPath = () => `${window.location.pathname}${window.location.searc
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(getCurrentPath)
+  const [canEditVisualContent, setCanEditVisualContent] = useState(false)
   const currentPathname = currentPath.split('?')[0]
   const routeContext = resolveRouteContext(currentPathname)
   const newsSlug = routeContext.newsSlug
   const sectionRoute = routeContext.sectionRoute
+  const searchParams = useMemo(() => new URLSearchParams(currentPath.split('?')[1] || ''), [currentPath])
+  const isVisualEditRequested = searchParams.get('edit') === '1'
+  const isEditableRoute = !routeContext.isAdmin && (['home', 'nyheter', 'helse'].includes(sectionRoute) || Boolean(newsSlug))
+  const hasVisualEditPermission = isVisualEditRequested && isEditableRoute ? canEditVisualContent : false
+  const isVisualEditMode = isVisualEditRequested && isEditableRoute && hasVisualEditPermission
+  const visualEditRouteLabel = newsSlug
+    ? `Noticia: ${newsSlug}`
+    : sectionRoute === 'home'
+      ? 'Landing'
+      : sectionRoute === 'nyheter'
+        ? 'Noticias'
+        : sectionRoute === 'helse'
+          ? 'Sector sanitario'
+          : null
 
   useLayoutEffect(() => {
     if (!routeContext.isAdmin) return undefined
@@ -84,6 +102,56 @@ export default function App() {
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
   }, [])
+
+  useEffect(() => {
+    let cancelled = false
+
+    if (!isVisualEditRequested || !isEditableRoute) return undefined
+
+    const checkPermissions = async () => {
+      try {
+        const allowed = await canCurrentUserEditContent()
+        if (!cancelled) {
+          setCanEditVisualContent(Boolean(allowed))
+        }
+      } catch {
+        if (!cancelled) {
+          setCanEditVisualContent(false)
+        }
+      }
+    }
+
+    checkPermissions()
+
+    return () => {
+      cancelled = true
+    }
+  }, [isEditableRoute, isVisualEditRequested])
+
+  useEffect(() => {
+    updateVisualEditState({
+      requested: isVisualEditRequested,
+      enabled: isVisualEditMode,
+      canEdit: hasVisualEditPermission,
+      isEditableRoute,
+      routeKey: newsSlug ? `news:${newsSlug}` : sectionRoute || null,
+      routeLabel: visualEditRouteLabel,
+      error: null,
+    })
+
+    if (!isVisualEditRequested && !isVisualEditMode) {
+      resetVisualEditState()
+    }
+  }, [
+    canEditVisualContent,
+    hasVisualEditPermission,
+    isEditableRoute,
+    isVisualEditMode,
+    isVisualEditRequested,
+    newsSlug,
+    sectionRoute,
+    visualEditRouteLabel,
+  ])
 
   useEffect(() => {
     if (routeContext.isAdmin) return
@@ -165,6 +233,13 @@ export default function App() {
       <main id="main-content">
         {renderPage()}
       </main>
+      <VisualEditToolbar
+        isRequested={isVisualEditRequested}
+        isEnabled={isVisualEditMode}
+        canEdit={hasVisualEditPermission}
+        isEditableRoute={isEditableRoute}
+        routeLabel={visualEditRouteLabel}
+      />
       <Footer />
       <BackToTop />
       <CookieConsent />

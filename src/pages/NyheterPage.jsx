@@ -1,6 +1,7 @@
-import Nyheter from '../components/Nyheter'
+﻿import Nyheter from '../components/Nyheter'
 import PageEndNav from '../components/PageEndNav'
 import AnimateIn from '../components/AnimateIn'
+import EditableText from '../components/editable/EditableText'
 import useContent from '../hooks/useContent'
 
 export default function NyheterPage() {
@@ -17,10 +18,19 @@ export default function NyheterPage() {
               <span className="mx-2">/</span>
               <span className="text-white">Nyheter</span>
             </nav>
-            <h1 className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-              {hero.h1}
-            </h1>
-            <p className="text-blue-100 text-lg max-w-2xl leading-relaxed">{hero.description}</p>
+            <EditableText
+              as="h1"
+              path="nyheterHero.h1"
+              value={hero.h1}
+              className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight"
+            />
+            <EditableText
+              as="p"
+              path="nyheterHero.description"
+              value={hero.description}
+              multiline
+              className="text-blue-100 text-lg max-w-2xl leading-relaxed"
+            />
           </AnimateIn>
         </div>
       </section>
