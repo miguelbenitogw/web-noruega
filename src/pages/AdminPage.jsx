@@ -92,7 +92,7 @@ function JsonEditor({ value, onChange }) {
       setError(null)
       onChange(parsed)
     } catch {
-      setError('JSON invÃ¡lido')
+      setError('JSON inv?lido')
     }
   }
 
@@ -124,7 +124,7 @@ function StringListEditor({ items, onChange }) {
             onClick={() => onChange(items.filter((_, j) => j !== i))}
             className="px-2 text-red-400 hover:text-red-600 transition-colors"
             title="Fjern"
-          >Ã—</button>
+          >?-</button>
         </div>
       ))}
       <button
@@ -136,7 +136,7 @@ function StringListEditor({ items, onChange }) {
   )
 }
 
-// â”€â”€â”€ Section Panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ?"??"??"? Section Panel ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 
 function Section({ title, children }) {
   return (
@@ -214,9 +214,9 @@ function TemplatesEditor() {
               </div>
               <div className="mt-1 flex flex-wrap gap-2 text-[11px] text-gray-500">
                 <span>{template.contentType}</span>
-                <span>•</span>
+                <span>.</span>
                 <span>{template.locale}</span>
-                {template.isStarter && <span>• starter</span>}
+                {template.isStarter && <span>. starter</span>}
               </div>
             </button>
           ))}
@@ -267,7 +267,7 @@ function TemplatesEditor() {
   )
 }
 
-// â”€â”€â”€ Section Editors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ?"??"??"? Section Editors ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 
 function HeroEditor({ draft, update }) {
   const s = draft.hero || {}
@@ -276,8 +276,8 @@ function HeroEditor({ draft, update }) {
     <>
       <Section title="Tekster">
         <Field label="Badge-tekst"><TextInput value={s.badge} onChange={v => up('badge', v)} /></Field>
-        <Field label="Tittel â€“ del 1"><TextInput value={s.h1First} onChange={v => up('h1First', v)} /></Field>
-        <Field label="Tittel â€“ fremhevet ord"><TextInput value={s.h1Highlight} onChange={v => up('h1Highlight', v)} /></Field>
+        <Field label="Tittel del 1"><TextInput value={s.h1First} onChange={v => up('h1First', v)} /></Field>
+        <Field label="Tittel fremhevet ord"><TextInput value={s.h1Highlight} onChange={v => up('h1Highlight', v)} /></Field>
         <Field label="Beskrivelse"><Textarea value={s.description} onChange={v => up('description', v)} rows={4} /></Field>
         <Field label="Knapp 1 (CTA)"><TextInput value={s.cta1} onChange={v => up('cta1', v)} /></Field>
         <Field label="Knapp 2"><TextInput value={s.cta2} onChange={v => up('cta2', v)} /></Field>
@@ -294,7 +294,7 @@ function HeroEditor({ draft, update }) {
 function ContactsEditor({ draft, update }) {
   const s = draft.contacts || []
   return (
-    <Section title="Kontaktpersoner (vises pÃ¥ forside og kontaktside)">
+    <Section title="Kontaktpersoner (vises p? forside og kontaktside)">
       <Field label="JSON" hint="array av { name, role, email, phone }">
         <JsonEditor value={s} onChange={v => update('contacts', null, v)} />
       </Field>
@@ -336,7 +336,7 @@ function HomeHealthEditor({ draft, update }) {
   const s = draft.homeHealth || {}
   const up = (k, v) => update('homeHealth', k, v)
   return (
-    <Section title="Helse-fremhevet (mÃ¸rk seksjon pÃ¥ forside)">
+    <Section title="Helse-fremhevet (m?rk seksjon p? forside)">
       <Field label="Etikett"><TextInput value={s.label} onChange={v => up('label', v)} /></Field>
       <Field label="Overskrift"><TextInput value={s.heading} onChange={v => up('heading', v)} /></Field>
       <Field label="Beskrivelse"><Textarea value={s.description} onChange={v => up('description', v)} /></Field>
@@ -509,7 +509,7 @@ function RekrutteringCompEditor({ draft, update }) {
         <Field label="Badge"><TextInput value={s.badge} onChange={v => up('badge', v)} /></Field>
       </Section>
       <Section title="Sektorer">
-        <Field label="Liste (Ã©n per linje)">
+        <Field label="Liste (?n per linje)">
           <StringListEditor items={s.sectors} onChange={v => up('sectors', v)} />
         </Field>
       </Section>
@@ -532,7 +532,7 @@ function HelsesektorCompEditor({ draft, update }) {
         <Field label="Overskrift"><TextInput value={s.heading} onChange={v => up('heading', v)} /></Field>
         <Field label="Beskrivelse"><Textarea value={s.description} onChange={v => up('description', v)} /></Field>
         <Field label="Sitat"><Textarea value={s.blockquote?.text} onChange={v => up('blockquote', { ...s.blockquote, text: v })} /></Field>
-        <Field label="Sitat â€“ forfatter"><TextInput value={s.blockquote?.author} onChange={v => up('blockquote', { ...s.blockquote, author: v })} /></Field>
+        <Field label="Sitat forfatter"><TextInput value={s.blockquote?.author} onChange={v => up('blockquote', { ...s.blockquote, author: v })} /></Field>
         <Field label="CTA-knapp"><TextInput value={s.ctaLabel} onChange={v => up('ctaLabel', v)} /></Field>
         <Field label="Grupper (tall)"><TextInput value={s.groupsValue} onChange={v => up('groupsValue', v)} /></Field>
         <Field label="Grupper (etikett)"><TextInput value={s.groupsLabel} onChange={v => up('groupsLabel', v)} /></Field>
@@ -562,7 +562,7 @@ function OmOssCompEditor({ draft, update }) {
         <Field label="Avsnitt 1"><Textarea value={s.p1} onChange={v => up('p1', v)} /></Field>
         <Field label="Avsnitt 2"><Textarea value={s.p2} onChange={v => up('p2', v)} /></Field>
         <Field label="Sitat"><Textarea value={s.blockquote?.text} onChange={v => up('blockquote', { ...s.blockquote, text: v })} /></Field>
-        <Field label="Sitat â€“ forfatter"><TextInput value={s.blockquote?.author} onChange={v => up('blockquote', { ...s.blockquote, author: v })} /></Field>
+        <Field label="Sitat forfatter"><TextInput value={s.blockquote?.author} onChange={v => up('blockquote', { ...s.blockquote, author: v })} /></Field>
         <Field label="Lokasjon-etikett"><TextInput value={s.locationLabel} onChange={v => up('locationLabel', v)} /></Field>
         <Field label="Lokasjon-undertekst"><TextInput value={s.locationSub} onChange={v => up('locationSub', v)} /></Field>
       </Section>
@@ -590,8 +590,8 @@ function TalentportalenCompEditor({ draft, update }) {
         <Field label="Overskrift"><TextInput value={s.heading} onChange={v => up('heading', v)} /></Field>
         <Field label="Beskrivelse"><Textarea value={s.description} onChange={v => up('description', v)} /></Field>
         <Field label="Portal-URL"><TextInput value={s.portalUrl} onChange={v => up('portalUrl', v)} /></Field>
-        <Field label="CTA â€“ Logg inn"><TextInput value={s.ctaLogin} onChange={v => up('ctaLogin', v)} /></Field>
-        <Field label="CTA â€“ Kontakt"><TextInput value={s.ctaContact} onChange={v => up('ctaContact', v)} /></Field>
+        <Field label="CTA Logg inn"><TextInput value={s.ctaLogin} onChange={v => up('ctaLogin', v)} /></Field>
+        <Field label="CTA Kontakt"><TextInput value={s.ctaContact} onChange={v => up('ctaContact', v)} /></Field>
       </Section>
       <Section title="Fordeler (4 elementer)">
         <Field label="JSON" hint="array av { title, desc }">
@@ -627,7 +627,7 @@ function CtaBannerEditor({ draft, update }) {
   const s = draft.ctaBanner || {}
   const up = (k, v) => update('ctaBanner', k, v)
   return (
-    <Section title="CTA-banner (mÃ¸rk seksjon med bilde)">
+    <Section title="CTA-banner (m?rk seksjon med bilde)">
       <Field label="Badge"><TextInput value={s.badge} onChange={v => up('badge', v)} /></Field>
       <Field label="Overskrift"><TextInput value={s.heading} onChange={v => up('heading', v)} /></Field>
       <Field label="Beskrivelse"><Textarea value={s.description} onChange={v => up('description', v)} /></Field>
@@ -648,7 +648,7 @@ function FaqEditor({ draft, update }) {
         <Field label="Beskrivelse"><Textarea value={s.description} onChange={v => up('description', v)} /></Field>
         <Field label="Lenketekst"><TextInput value={s.ctaText} onChange={v => up('ctaText', v)} /></Field>
       </Section>
-      <Section title="SpÃ¸rsmÃ¥l og svar">
+      <Section title="Sp?rsm?l og svar">
         <Field label="JSON" hint="array av { q, a }">
           <JsonEditor value={s.items} onChange={v => up('items', v)} />
         </Field>
@@ -688,7 +688,7 @@ function FooterEditor({ draft, update }) {
         </Field>
       </Section>
       <Section title="Lenkekolonner">
-        <Field label="JSON" hint="{ Tjenester, Selskapet, Kontakt } â€“ array av { label, href }">
+        <Field label="JSON" hint="{ Tjenester, Selskapet, Kontakt } — array av { label, href }">
           <JsonEditor value={s.links} onChange={v => up('links', v)} />
         </Field>
       </Section>
@@ -729,7 +729,7 @@ function KontaktCompEditor({ draft, update }) {
   )
 }
 
-// â”€â”€â”€ Navigation Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ?"??"??"? Navigation Config ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 
 const NAV_GROUPS = [
   {
@@ -755,25 +755,25 @@ const NAV_GROUPS = [
   {
     title: 'Sider',
     items: [
-      { id: 'rekrutteringHero', label: 'Rekruttering â€“ Hero' },
-      { id: 'rekrutteringCollab', label: 'Rekruttering â€“ Samarbeid' },
-      { id: 'helseHero', label: 'Helse â€“ Hero' },
-      { id: 'helsePhases', label: 'Helse â€“ Faser' },
-      { id: 'helsePartnership', label: 'Helse â€“ Samarbeid' },
-      { id: 'omOssHero', label: 'Om Oss â€“ Hero' },
-      { id: 'omOssTeam', label: 'Om Oss â€“ Team' },
-      { id: 'omOssOffices', label: 'Om Oss â€“ Kontorer' },
-      { id: 'talentportalenHero', label: 'Talentportalen â€“ Hero' },
-      { id: 'talentportalenSteps', label: 'Talentportalen â€“ Steg' },
-      { id: 'talentportalenBenefits', label: 'Talentportalen â€“ Fordeler' },
-      { id: 'kontaktHero', label: 'Kontakt â€“ Hero' },
-      { id: 'nyheterHero', label: 'Nyheter â€“ Hero' },
+      { id: 'rekrutteringHero', label: 'Rekruttering Hero' },
+      { id: 'rekrutteringCollab', label: 'Rekruttering Samarbeid' },
+      { id: 'helseHero', label: 'Helse Hero' },
+      { id: 'helsePhases', label: 'Helse Faser' },
+      { id: 'helsePartnership', label: 'Helse Samarbeid' },
+      { id: 'omOssHero', label: 'Om Oss Hero' },
+      { id: 'omOssTeam', label: 'Om Oss Team' },
+      { id: 'omOssOffices', label: 'Om Oss Kontorer' },
+      { id: 'talentportalenHero', label: 'Talentportalen Hero' },
+      { id: 'talentportalenSteps', label: 'Talentportalen Steg' },
+      { id: 'talentportalenBenefits', label: 'Talentportalen Fordeler' },
+      { id: 'kontaktHero', label: 'Kontakt Hero' },
+      { id: 'nyheterHero', label: 'Nyheter Hero' },
     ],
   },
   {
     title: 'Seksjoner',
     items: [
-      { id: 'hvaGjor', label: 'Hva GjÃ¸r Vi' },
+      { id: 'hvaGjor', label: 'Hva Gj?r Vi' },
       { id: 'rekrutteringComp', label: 'Rekrutteringsmodell' },
       { id: 'helsesektorComp', label: 'Helsesektor' },
       { id: 'omOssComp', label: 'Om Oss' },
@@ -789,13 +789,13 @@ const NAV_GROUPS = [
       { id: 'navbar', label: 'Toppmeny' },
       { id: 'footer', label: 'Bunntekst' },
       { id: 'legalPersonvern', label: 'Legal - Personvern' },
-      { id: 'legalVilkar', label: 'Legal - Vilkår' },
+      { id: 'legalVilkar', label: 'Legal - Vilk?r' },
       { id: 'legalCookies', label: 'Legal - Cookies' },
     ],
   },
 ]
 
-// â”€â”€â”€ Main Admin â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ?"??"??"? Main Admin ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 
 function LoginPage({ onLogin, password, setPassword, email, setEmail, authMode, errorMsg, loading, lockedUntil }) {
   const [countdown, setCountdown] = useState(0)
@@ -838,7 +838,7 @@ function LoginPage({ onLogin, password, setPassword, email, setEmail, authMode, 
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
             <p className="text-red-700 font-semibold text-sm">Tilgang blokkert</p>
             <p className="text-red-500 text-xs mt-1">
-              PrÃ¸v igjen om {mins > 1 ? `${mins} minutter` : `${countdown} sekunder`}
+              Pr?v igjen om {mins > 1 ? `${mins} minutter` : `${countdown} sekunder`}
             </p>
           </div>
         ) : (
@@ -872,7 +872,7 @@ function LoginPage({ onLogin, password, setPassword, email, setEmail, authMode, 
             </div>
             {authMode === 'supabase' && (
               <p className="text-gray-400 text-xs leading-relaxed">
-                Logg inn med Supabase-brukeren din. Du mÃ¥ ha editor- eller admin-tilgang for Ã¥ redigere innhold.
+                Logg inn med Supabase-brukeren din. Du m? ha editor- eller admin-tilgang for ? redigere innhold.
               </p>
             )}
             <button
@@ -885,7 +885,7 @@ function LoginPage({ onLogin, password, setPassword, email, setEmail, authMode, 
                   <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
                   </svg>
-                  Verifisererâ€¦
+                  Verifiserer???
                 </>
               ) : 'Logg inn'}
             </button>
@@ -1325,19 +1325,19 @@ export default function AdminPage() {
           ))}
         </Section>
       )
-      case 'rekrutteringHero': return <PageHeroEditor sectionKey="rekrutteringHero" title="Rekruttering â€“ Sidehero" {...editorProps} />
+      case 'rekrutteringHero': return <PageHeroEditor sectionKey="rekrutteringHero" title="Rekruttering Sidehero" {...editorProps} />
       case 'rekrutteringCollab': return <RekrutteringCollabEditor {...editorProps} />
-      case 'helseHero': return <PageHeroEditor sectionKey="helseHero" title="Helse â€“ Sidehero" {...editorProps} />
+      case 'helseHero': return <PageHeroEditor sectionKey="helseHero" title="Helse Sidehero" {...editorProps} />
       case 'helsePhases': return <HelsePhasesEditor {...editorProps} />
       case 'helsePartnership': return <HelsePartnershipEditor {...editorProps} />
-      case 'omOssHero': return <PageHeroEditor sectionKey="omOssHero" title="Om Oss â€“ Sidehero" {...editorProps} />
+      case 'omOssHero': return <PageHeroEditor sectionKey="omOssHero" title="Om Oss Sidehero" {...editorProps} />
       case 'omOssTeam': return <OmOssTeamEditor {...editorProps} />
       case 'omOssOffices': return <OmOssOfficesEditor {...editorProps} />
-      case 'talentportalenHero': return <PageHeroEditor sectionKey="talentportalenHero" title="Talentportalen â€“ Sidehero" {...editorProps} />
+      case 'talentportalenHero': return <PageHeroEditor sectionKey="talentportalenHero" title="Talentportalen Sidehero" {...editorProps} />
       case 'talentportalenSteps': return <TalentportalenStepsEditor {...editorProps} />
       case 'talentportalenBenefits': return <TalentportalenBenefitsEditor {...editorProps} />
-      case 'kontaktHero': return <PageHeroEditor sectionKey="kontaktHero" title="Kontakt â€“ Sidehero" {...editorProps} />
-      case 'nyheterHero': return <PageHeroEditor sectionKey="nyheterHero" title="Nyheter â€“ Sidehero" {...editorProps} />
+      case 'kontaktHero': return <PageHeroEditor sectionKey="kontaktHero" title="Kontakt Sidehero" {...editorProps} />
+      case 'nyheterHero': return <PageHeroEditor sectionKey="nyheterHero" title="Nyheter Sidehero" {...editorProps} />
       case 'hvaGjor': return <HvaGjorEditor {...editorProps} />
       case 'rekrutteringComp': return <RekrutteringCompEditor {...editorProps} />
       case 'helsesektorComp': return <HelsesektorCompEditor {...editorProps} />
@@ -1349,7 +1349,7 @@ export default function AdminPage() {
       case 'navbar': return <NavbarEditor {...editorProps} />
       case 'footer': return <FooterEditor {...editorProps} />
       case 'legalPersonvern': return <LegalPageEditor sectionKey="legalPersonvern" title="Legal - Personvern" {...editorProps} />
-      case 'legalVilkar': return <LegalPageEditor sectionKey="legalVilkar" title="Legal - Vilkår" {...editorProps} />
+      case 'legalVilkar': return <LegalPageEditor sectionKey="legalVilkar" title="Legal - Vilk?r" {...editorProps} />
       case 'legalCookies': return <LegalPageEditor sectionKey="legalCookies" title="Legal - Cookies" {...editorProps} />
       case 'templates': return <TemplatesEditor />
       case 'pages': return <ContentEntityManager entityType="page" />
@@ -1465,7 +1465,7 @@ export default function AdminPage() {
           <div className="max-w-2xl mx-auto">
             <div className="mb-6">
               <h2 className="font-heading text-xl font-bold text-ink">{activeLabel}</h2>
-              <p className="text-gray-400 text-sm mt-0.5">Rediger innhold og klikk Â«Lagre altÂ» for Ã¥ publisere endringer.</p>
+              <p className="text-gray-400 text-sm mt-0.5">Rediger innhold og klikk ?Lagre alt? for ? publisere endringer.</p>
             </div>
             {saveState.kind !== 'idle' && (
               <div

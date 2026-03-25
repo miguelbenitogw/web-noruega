@@ -1,4 +1,4 @@
-﻿import Nyheter from '../components/Nyheter'
+import Nyheter from '../components/Nyheter'
 import PageEndNav from '../components/PageEndNav'
 import AnimateIn from '../components/AnimateIn'
 import useContent from '../hooks/useContent'
@@ -12,7 +12,7 @@ export default function NyheterPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(30,115,190,0.3),transparent_60%)]" aria-hidden="true" />
         <div className="container-xl relative z-10">
           <AnimateIn>
-            <nav className="text-blue-200/70 text-sm mb-6" aria-label="BrÃ¸dsmuler">
+            <nav className="text-blue-200/70 text-sm mb-6" aria-label="Brødsmuler">
               <a href="/" className="hover:text-white transition-colors">Hjem</a>
               <span className="mx-2">/</span>
               <span className="text-white">Nyheter</span>

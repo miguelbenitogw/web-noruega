@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import AdminEntityEditorShell from './AdminEntityEditorShell'
+import ContentLivePreview from './ContentLivePreview'
 import TemplateFieldRenderer from './TemplateFieldRenderer'
 import useTemplates from '../../hooks/useTemplates'
 import useTemplateContent from '../../hooks/useTemplateContent'
 import { cloneValue, deepMergeContent } from '../../lib/contentMappers'
+import { isStructuredAdminEditorEnabled } from './fields/helpers'
 import {
   getNewsBySlug,
   getPageBySlug,
@@ -17,12 +20,13 @@ const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
 const baseInputClass = 'w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-100'
 const baseTextareaClass = `${baseInputClass} min-h-[110px] resize-y`
+const adminDateFormatter = new Intl.DateTimeFormat('no-NO', { dateStyle: 'medium', timeStyle: 'short' })
 
 const entityConfig = {
   page: {
     title: 'Sider',
     createLabel: 'Ny side',
-    emptyLabel: 'Ingen sider ennÃ¥.',
+    emptyLabel: 'Ingen sider ennå.',
     singular: 'page',
     titleFieldLabel: 'Tittel',
     loadList: listPages,
@@ -34,7 +38,7 @@ const entityConfig = {
   news: {
     title: 'Nyheter',
     createLabel: 'Ny nyhet',
-    emptyLabel: 'Ingen nyheter ennÃ¥.',
+    emptyLabel: 'Ingen nyheter ennå.',
     singular: 'news item',
     titleFieldLabel: 'Overskrift',
     loadList: listNews,
@@ -141,7 +145,7 @@ function Field({ label, children, hint, required = false }) {
 
 function Section({ title, children, description }) {
   return (
-    <section className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+    <section className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
       <div className="border-b border-gray-100 bg-gray-50 px-5 py-4">
         <div className="flex flex-col gap-1">
           <h3 className="font-heading text-base font-bold text-ink">{title}</h3>
@@ -155,8 +159,8 @@ function Section({ title, children, description }) {
 
 function StatusBadge({ status }) {
   const tone = status === 'published'
-    ? 'bg-green-50 text-green-700 border-green-200'
-    : 'bg-amber-50 text-amber-700 border-amber-200'
+    ? 'border-green-200 bg-green-50 text-green-700'
+    : 'border-amber-200 bg-amber-50 text-amber-700'
 
   return (
     <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold ${tone}`}>
@@ -184,7 +188,7 @@ function ListItem({ item, selected, templateName, onSelect }) {
       <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-gray-500">
         <span>{templateName || 'No template'}</span>
         {item.updatedAt ? <span>•</span> : null}
-        {item.updatedAt ? <span>{new Intl.DateTimeFormat('no-NO', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(item.updatedAt))}</span> : null}
+        {item.updatedAt ? <span>{adminDateFormatter.format(new Date(item.updatedAt))}</span> : null}
       </div>
     </button>
   )
@@ -214,6 +218,33 @@ export default function ContentEntityManager({ entityType }) {
   })
 
   const templateFieldEntries = useMemo(() => Object.entries(resolvedContent || {}), [resolvedContent])
+  const currentItem = useMemo(() => items.find((item) => item.slug === selectedSlug) || null, [items, selectedSlug])
+  const hasTemplateIssues = templateIssues.length > 0
+  const structuredEditorEnabled = isStructuredAdminEditorEnabled()
+  const statusBusy = saving || formLoading || templatesLoading || listLoading
+
+  const previewPayload = useMemo(() => ({
+    id: draft.id,
+    slug: draft.slug,
+    title: draft.title,
+    excerpt: draft.excerpt,
+    body: draft.body,
+    status: draft.status,
+    publishAt: draft.publishAt,
+    seoTitle: draft.seoTitle,
+    seoDescription: draft.seoDescription,
+    coverImage: draft.coverImage,
+    templateId: draft.templateId || activeTemplate?.id || '',
+    templateKey: draft.templateKey || activeTemplate?.key || '',
+    content: resolvedContent,
+    ...(entityType === 'news'
+      ? {
+          tag: draft.tag,
+          readTime: draft.readTime,
+          author: draft.author,
+        }
+      : {}),
+  }), [activeTemplate?.id, activeTemplate?.key, draft, entityType, resolvedContent])
 
   const reloadItems = useCallback(() => {
     setRefreshTick((value) => value + 1)
@@ -335,28 +366,25 @@ export default function ContentEntityManager({ entityType }) {
     })
   }, [])
 
-  const currentItem = useMemo(() => items.find((item) => item.slug === selectedSlug) || null, [items, selectedSlug])
-  const statusBusy = saving || formLoading || templatesLoading || listLoading
-
   const validateDraft = useCallback((nextDraft) => {
     const errors = []
 
     if (!activeTemplate?.id) {
-      errors.push('Velg en template fÃ¸r du lagrer.')
+      errors.push('Velg en template før du lagrer.')
     }
 
     if (!nextDraft.slug?.trim()) {
-      errors.push('Slug er pÃ¥krevd.')
+      errors.push('Slug er påkrevd.')
     } else if (!slugPattern.test(nextDraft.slug.trim())) {
-      errors.push('Slug kan bare inneholde smÃ¥ bokstaver, tall og bindestreker.')
+      errors.push('Slug kan bare inneholde små bokstaver, tall og bindestreker.')
     }
 
     if (!nextDraft.title?.trim()) {
-      errors.push(`${config.titleFieldLabel} er pÃ¥krevd.`)
+      errors.push(`${config.titleFieldLabel} er påkrevd.`)
     }
 
     if (Object.values(fieldErrors).length > 0) {
-      errors.push('Fiks ugyldige JSON-felt fÃ¸r lagring.')
+      errors.push('Fiks ugyldige JSON-felt før lagring.')
     }
 
     return errors
@@ -424,7 +452,209 @@ export default function ContentEntityManager({ entityType }) {
     setSaveState({ kind: 'idle', message: '' })
   }, [])
 
-  const hasTemplateIssues = templateIssues.length > 0
+  const editor = (
+    <Section
+      title={selectedSlug ? `Rediger ${config.singular}` : `Opprett ${config.singular}`}
+      description={activeTemplate ? `Template: ${activeTemplate.name}` : 'Velg en template for å starte.'}
+    >
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Field label="Template" required>
+          <select
+            className={baseInputClass}
+            value={templateValue}
+            onChange={(event) => handleTemplateChange(event.target.value)}
+            disabled={templatesLoading || templates.length === 0}
+          >
+            {getTemplateOptions(templates).map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </Field>
+
+        <Field label="Status" required>
+          <select
+            className={baseInputClass}
+            value={draft.status}
+            onChange={(event) => updateDraft('status', event.target.value)}
+          >
+            <option value="draft">draft</option>
+            <option value="published">published</option>
+          </select>
+        </Field>
+
+        <Field label="Slug" required>
+          <input
+            className={baseInputClass}
+            value={draft.slug}
+            onChange={(event) => updateDraft('slug', event.target.value.toLowerCase().replace(/\s+/g, '-'))}
+            placeholder="my-page-or-news-item"
+          />
+        </Field>
+
+        <Field label={config.titleFieldLabel} required>
+          <input
+            className={baseInputClass}
+            value={draft.title}
+            onChange={(event) => updateDraft('title', event.target.value)}
+            placeholder={config.titleFieldLabel}
+          />
+        </Field>
+
+        <Field label="SEO title">
+          <input
+            className={baseInputClass}
+            value={draft.seoTitle}
+            onChange={(event) => updateDraft('seoTitle', event.target.value)}
+          />
+        </Field>
+
+        <Field label="Cover image">
+          <input
+            className={baseInputClass}
+            value={draft.coverImage}
+            onChange={(event) => updateDraft('coverImage', event.target.value)}
+            placeholder="https://..."
+          />
+        </Field>
+
+        <div className="lg:col-span-2">
+          <Field label="Excerpt">
+            <textarea
+              className={baseTextareaClass}
+              value={draft.excerpt}
+              onChange={(event) => updateDraft('excerpt', event.target.value)}
+              rows={3}
+            />
+          </Field>
+        </div>
+
+        <div className="lg:col-span-2">
+          <Field label="Body">
+            <textarea
+              className={`${baseTextareaClass} min-h-[180px] font-sans text-sm`}
+              value={draft.body}
+              onChange={(event) => updateDraft('body', event.target.value)}
+              rows={8}
+            />
+          </Field>
+        </div>
+
+        <Field label="Publish at" hint="ISO string">
+          <input
+            className={baseInputClass}
+            value={draft.publishAt}
+            onChange={(event) => updateDraft('publishAt', event.target.value)}
+            placeholder="2026-03-16T08:00:00Z"
+          />
+        </Field>
+
+        <Field label="SEO description">
+          <textarea
+            className={baseTextareaClass}
+            value={draft.seoDescription}
+            onChange={(event) => updateDraft('seoDescription', event.target.value)}
+            rows={3}
+          />
+        </Field>
+
+        {config.extraFields.map((field) => (
+          <Field key={field.key} label={field.label}>
+            <input
+              className={baseInputClass}
+              value={draft[field.key] ?? ''}
+              onChange={(event) => updateDraft(field.key, event.target.value)}
+              placeholder={field.placeholder || field.label}
+            />
+          </Field>
+        ))}
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-gray-100 bg-gray-50 p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h4 className="text-sm font-semibold text-ink">Template fields</h4>
+            <p className="text-xs text-gray-500">Verdiene kommer fra defaults slått sammen med gjeldende content.</p>
+          </div>
+          {hasTemplateIssues ? <StatusBadge status="draft" /> : null}
+        </div>
+
+        {hasTemplateIssues ? (
+          <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            <p className="font-semibold">Template-valideringsfeil</p>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              {templateIssues.map((issue) => (
+                <li key={issue}>{issue}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        {templateFieldEntries.length === 0 ? (
+          <p className="mt-4 text-sm text-gray-500">Denne templaten eksponerer ikke redigerbare content-felt ennå.</p>
+        ) : (
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            {templateFieldEntries.map(([fieldKey, fieldValue]) => (
+              <TemplateFieldRenderer
+                key={`${fieldKey}-${draft.id || 'new'}-${templateValue || 'none'}-${draft.updatedAt || 'pending'}`}
+                fieldKey={fieldKey}
+                label={fieldKey}
+                value={Object.prototype.hasOwnProperty.call(draft.content || {}, fieldKey) ? draft.content[fieldKey] : fieldValue}
+                schemaNode={resolveSchemaNode(activeTemplate?.schema ?? activeTemplate?.frontmatter_schema, fieldKey)}
+                onChange={(nextValue) => updateTemplateField(fieldKey, nextValue)}
+                onErrorChange={updateFieldError}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {currentItem ? (
+        <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-4 text-xs text-gray-500">
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            <span>ID: {currentItem.id}</span>
+            {currentItem.updatedAt ? <span>Updated: {adminDateFormatter.format(new Date(currentItem.updatedAt))}</span> : null}
+            {currentItem.publishedAt ? <span>Published: {adminDateFormatter.format(new Date(currentItem.publishedAt))}</span> : null}
+          </div>
+        </div>
+      ) : null}
+
+      <div className="mt-6 flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={statusBusy || !templates.length}
+          className="inline-flex items-center justify-center rounded-xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {saving ? 'Saving...' : 'Save'}
+        </button>
+      </div>
+    </Section>
+  )
+
+  const previewPane = (
+    <ContentLivePreview
+      entityType={entityType}
+      draft={draft}
+      resolvedContent={resolvedContent}
+      activeTemplate={activeTemplate}
+      templateIssues={templateIssues}
+      currentItem={currentItem}
+      previewPayload={previewPayload}
+    />
+  )
+
+  const contentWorkspace = structuredEditorEnabled ? (
+    <AdminEntityEditorShell editor={editor} preview={previewPane} />
+  ) : (
+    <div className="space-y-6">
+      {editor}
+      <div className="rounded-[28px] border border-gray-200 bg-white p-4 shadow-[0_12px_48px_-24px_rgba(15,23,42,0.35)]">
+        {previewPane}
+      </div>
+    </div>
+  )
 
   return (
     <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
@@ -438,9 +668,7 @@ export default function ContentEntityManager({ entityType }) {
             >
               {config.createLabel}
             </button>
-            <span className="text-xs text-gray-500">
-              {items.length} total
-            </span>
+            <span className="text-xs text-gray-500">{items.length} total</span>
           </div>
         </Section>
 
@@ -465,11 +693,11 @@ export default function ContentEntityManager({ entityType }) {
       </div>
 
       <div className="space-y-6">
-        {isSupabaseConfigured ? null : (
+        {!isSupabaseConfigured ? (
           <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            Supabase er ikke konfigurert. Listing og lagring er deaktivert til miljÃ¸variablene er satt.
+            Supabase er ikke konfigurert. Listing og lagring er deaktivert til miljøvariablene er satt.
           </div>
-        )}
+        ) : null}
 
         {templatesError ? (
           <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
@@ -489,184 +717,7 @@ export default function ContentEntityManager({ entityType }) {
           </div>
         ) : null}
 
-        <Section
-          title={selectedSlug ? `Rediger ${config.singular}` : `Opprett ${config.singular}`}
-          description={activeTemplate ? `Template: ${activeTemplate.name}` : 'Velg en template for Ã¥ starte.'}
-        >
-          <div className="grid gap-4 lg:grid-cols-2">
-            <Field label="Template" required>
-              <select
-                className={baseInputClass}
-                value={templateValue}
-                onChange={(event) => handleTemplateChange(event.target.value)}
-                disabled={templatesLoading || templates.length === 0}
-              >
-                {getTemplateOptions(templates).map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </Field>
-
-            <Field label="Status" required>
-              <select
-                className={baseInputClass}
-                value={draft.status}
-                onChange={(event) => updateDraft('status', event.target.value)}
-              >
-                <option value="draft">draft</option>
-                <option value="published">published</option>
-              </select>
-            </Field>
-
-            <Field label="Slug" required>
-              <input
-                className={baseInputClass}
-                value={draft.slug}
-                onChange={(event) => updateDraft('slug', event.target.value.toLowerCase().replace(/\s+/g, '-'))}
-                placeholder="my-page-or-news-item"
-              />
-            </Field>
-
-            <Field label={config.titleFieldLabel} required>
-              <input
-                className={baseInputClass}
-                value={draft.title}
-                onChange={(event) => updateDraft('title', event.target.value)}
-                placeholder={config.titleFieldLabel}
-              />
-            </Field>
-
-            <Field label="SEO title">
-              <input
-                className={baseInputClass}
-                value={draft.seoTitle}
-                onChange={(event) => updateDraft('seoTitle', event.target.value)}
-              />
-            </Field>
-
-            <Field label="Cover image">
-              <input
-                className={baseInputClass}
-                value={draft.coverImage}
-                onChange={(event) => updateDraft('coverImage', event.target.value)}
-                placeholder="https://..."
-              />
-            </Field>
-
-            <div className="lg:col-span-2">
-              <Field label="Excerpt">
-                <textarea
-                  className={baseTextareaClass}
-                  value={draft.excerpt}
-                  onChange={(event) => updateDraft('excerpt', event.target.value)}
-                  rows={3}
-                />
-              </Field>
-            </div>
-
-            <div className="lg:col-span-2">
-              <Field label="Body">
-                <textarea
-                  className={`${baseTextareaClass} min-h-[180px] font-sans text-sm`}
-                  value={draft.body}
-                  onChange={(event) => updateDraft('body', event.target.value)}
-                  rows={8}
-                />
-              </Field>
-            </div>
-
-            <Field label="Publish at" hint="ISO string">
-              <input
-                className={baseInputClass}
-                value={draft.publishAt}
-                onChange={(event) => updateDraft('publishAt', event.target.value)}
-                placeholder="2026-03-16T08:00:00Z"
-              />
-            </Field>
-
-            <Field label="SEO description">
-              <textarea
-                className={baseTextareaClass}
-                value={draft.seoDescription}
-                onChange={(event) => updateDraft('seoDescription', event.target.value)}
-                rows={3}
-              />
-            </Field>
-
-            {config.extraFields.map((field) => (
-              <Field key={field.key} label={field.label}>
-                <input
-                  className={baseInputClass}
-                  value={draft[field.key] ?? ''}
-                  onChange={(event) => updateDraft(field.key, event.target.value)}
-                  placeholder={field.placeholder || field.label}
-                />
-              </Field>
-            ))}
-          </div>
-
-          <div className="mt-6 rounded-2xl border border-gray-100 bg-gray-50 p-4">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h4 className="text-sm font-semibold text-ink">Template fields</h4>
-                <p className="text-xs text-gray-500">Verdiene kommer fra defaults slÃ¥tt sammen med gjeldende content.</p>
-              </div>
-              {hasTemplateIssues ? <StatusBadge status="draft" /> : null}
-            </div>
-
-            {hasTemplateIssues ? (
-              <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-                <p className="font-semibold">Template-valideringsfeil</p>
-                <ul className="mt-2 list-disc space-y-1 pl-5">
-                  {templateIssues.map((issue) => (
-                    <li key={issue}>{issue}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {templateFieldEntries.length === 0 ? (
-              <p className="mt-4 text-sm text-gray-500">Denne templaten eksponerer ikke redigerbare content-felt ennÃ¥.</p>
-            ) : (
-              <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                {templateFieldEntries.map(([fieldKey, fieldValue]) => (
-                  <TemplateFieldRenderer
-                    key={`${fieldKey}-${draft.id || 'new'}-${templateValue || 'none'}-${draft.updatedAt || 'pending'}`}
-                    fieldKey={fieldKey}
-                    label={fieldKey}
-                    value={Object.prototype.hasOwnProperty.call(draft.content || {}, fieldKey) ? draft.content[fieldKey] : fieldValue}
-                    schemaNode={resolveSchemaNode(activeTemplate?.schema ?? activeTemplate?.frontmatter_schema, fieldKey)}
-                    onChange={(nextValue) => updateTemplateField(fieldKey, nextValue)}
-                    onErrorChange={updateFieldError}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-
-          {currentItem ? (
-            <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-4 text-xs text-gray-500">
-              <div className="flex flex-wrap gap-x-4 gap-y-2">
-                <span>ID: {currentItem.id}</span>
-                {currentItem.updatedAt ? <span>Updated: {new Intl.DateTimeFormat('no-NO', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(currentItem.updatedAt))}</span> : null}
-                {currentItem.publishedAt ? <span>Published: {new Intl.DateTimeFormat('no-NO', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(currentItem.publishedAt))}</span> : null}
-              </div>
-            </div>
-          ) : null}
-
-          <div className="mt-6 flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={statusBusy || !templates.length}
-              className="inline-flex items-center justify-center rounded-xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {saving ? 'Saving...' : 'Save'}
-            </button>
-          </div>
-        </Section>
+        {contentWorkspace}
       </div>
     </div>
   )

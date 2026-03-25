@@ -1,34 +1,19 @@
-import { useMemo, useState } from 'react'
-
-const baseInputClass = 'w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-100'
-const baseTextareaClass = `${baseInputClass} min-h-[110px] resize-y font-mono text-xs leading-5`
-
-const formatLabel = (value) =>
-  String(value || '')
-    .replace(/_/g, ' ')
-    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/^./, (char) => char.toUpperCase())
-
-const getSchemaType = (schemaNode, value) => {
-  if (schemaNode && typeof schemaNode === 'object' && !Array.isArray(schemaNode) && typeof schemaNode.type === 'string') {
-    return schemaNode.type.toLowerCase()
-  }
-
-  if (typeof schemaNode === 'string') {
-    return schemaNode.toLowerCase()
-  }
-
-  if (Array.isArray(value)) return 'array'
-  if (value !== null && typeof value === 'object') return 'object'
-  if (typeof value === 'boolean') return 'boolean'
-  if (typeof value === 'number') return 'number'
-
-  return 'string'
-}
-
-const getJsonFallback = (fieldType) => (fieldType === 'array' ? [] : {})
+﻿import { useMemo, useState } from 'react'
+import ObjectFieldGroup from './fields/ObjectFieldGroup'
+import ObjectListField from './fields/ObjectListField'
+import StringListField from './fields/StringListField'
+import {
+  baseInputClass,
+  baseTextareaClass,
+  canRenderObjectListField,
+  canRenderStructuredField,
+  formatLabel,
+  getJsonFallback,
+  getSchemaType,
+  isObjectArraySchema,
+  isStructuredAdminEditorEnabled,
+  isStringArraySchema,
+} from './fields/helpers'
 
 function JsonField({ fieldKey, label, value, fieldType, onChange, onErrorChange }) {
   const initialRaw = useMemo(() => JSON.stringify(value ?? getJsonFallback(fieldType), null, 2), [fieldType, value])
@@ -52,9 +37,14 @@ function JsonField({ fieldKey, label, value, fieldType, onChange, onErrorChange 
 
   return (
     <label className="block space-y-2">
-      <span className="block text-xs font-semibold uppercase tracking-wide text-gray-600">
-        {label}
-      </span>
+      <div className="flex items-center justify-between gap-3">
+        <span className="block text-xs font-semibold uppercase tracking-wide text-gray-600">
+          {label}
+        </span>
+        <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-700">
+          JSON fallback
+        </span>
+      </div>
       <textarea
         className={baseTextareaClass}
         value={raw}
@@ -75,7 +65,13 @@ export default function TemplateFieldRenderer({
   onErrorChange,
 }) {
   const fieldType = getSchemaType(schemaNode, value)
+  const structuredEditorEnabled = isStructuredAdminEditorEnabled()
   const displayLabel = label || formatLabel(fieldKey)
+
+  const commit = (nextValue) => {
+    onErrorChange?.(fieldKey, '')
+    onChange(nextValue)
+  }
 
   if (fieldType === 'boolean') {
     return (
@@ -84,7 +80,7 @@ export default function TemplateFieldRenderer({
         <input
           type="checkbox"
           checked={Boolean(value)}
-          onChange={(event) => onChange(event.target.checked)}
+          onChange={(event) => commit(event.target.checked)}
           className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
         />
       </label>
@@ -103,10 +99,53 @@ export default function TemplateFieldRenderer({
           value={value ?? ''}
           onChange={(event) => {
             const nextValue = event.target.value === '' ? null : Number(event.target.value)
-            onChange(Number.isNaN(nextValue) ? null : nextValue)
+            commit(Number.isNaN(nextValue) ? null : nextValue)
           }}
         />
       </label>
+    )
+  }
+
+  if (structuredEditorEnabled && fieldType === 'array' && isStringArraySchema(schemaNode, value)) {
+    return (
+      <StringListField
+        fieldKey={fieldKey}
+        label={displayLabel}
+        value={value}
+        onChange={onChange}
+        onErrorChange={onErrorChange}
+      />
+    )
+  }
+
+  if (
+    structuredEditorEnabled
+    && fieldType === 'array'
+    && isObjectArraySchema(schemaNode, value)
+    && canRenderObjectListField(schemaNode, value)
+  ) {
+    return (
+      <ObjectListField
+        fieldKey={fieldKey}
+        label={displayLabel}
+        value={value}
+        schemaNode={schemaNode}
+        onChange={onChange}
+        onErrorChange={onErrorChange}
+      />
+    )
+  }
+
+  if (structuredEditorEnabled && fieldType === 'object' && canRenderStructuredField(schemaNode, value)) {
+    return (
+      <ObjectFieldGroup
+        fieldKey={fieldKey}
+        label={displayLabel}
+        value={value}
+        schemaNode={schemaNode}
+        onChange={onChange}
+        onErrorChange={onErrorChange}
+      />
     )
   }
 
@@ -134,7 +173,7 @@ export default function TemplateFieldRenderer({
         type="text"
         className={baseInputClass}
         value={value ?? ''}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) => commit(event.target.value)}
       />
     </label>
   )
