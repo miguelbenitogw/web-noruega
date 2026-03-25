@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import './index.css'
 import Navbar from './components/Navbar'
 import ScrollProgress from './components/ScrollProgress'
@@ -129,6 +129,8 @@ export default function App() {
   }, [isEditableRoute, isVisualEditRequested])
 
   useEffect(() => {
+    if (routeContext.isAdmin) return
+
     updateVisualEditState({
       requested: isVisualEditRequested,
       enabled: isVisualEditMode,
@@ -149,6 +151,7 @@ export default function App() {
     isVisualEditMode,
     isVisualEditRequested,
     newsSlug,
+    routeContext.isAdmin,
     sectionRoute,
     visualEditRouteLabel,
   ])
@@ -199,7 +202,7 @@ export default function App() {
           <section className="py-24 bg-white">
             <div className="container-xl">
               <h1 className="font-heading text-3xl font-bold text-ink mb-4">Siden ble ikke funnet</h1>
-              <p className="text-gray-600 mb-6">Kontroller adressen eller gå tilbake til forsiden.</p>
+              <p className="text-gray-600 mb-6">Kontroller adressen eller gÃ¥ tilbake til forsiden.</p>
               <a href="/" className="text-primary-600 font-semibold hover:text-primary-700">
                 Tilbake til forsiden
               </a>
@@ -246,3 +249,4 @@ export default function App() {
     </>
   )
 }
+
