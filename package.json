@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "npm run test:anchors",
+    "test": "npm run test:anchors && npm run test:admin-editor && npm run test:news-mvp",
     "test:anchors": "node scripts/check-anchors.mjs",
     "test:admin-editor": "node src/components/admin/__tests__/structuredFields.test.mjs",
+    "test:news-mvp": "node --experimental-specifier-resolution=node src/lib/__tests__/newsMvpContracts.test.mjs",
     "prebuild": "node scripts/generate-sitemap.mjs",
     "build": "vite build",
     "lint": "eslint .",

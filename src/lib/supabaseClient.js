@@ -1,16 +1,18 @@
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL?.trim() || ''
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim() || ''
-const DEFAULT_CONTENT_LOCALE = import.meta.env.VITE_SUPABASE_CONTENT_LOCALE?.trim() || 'nb'
-const EDITOR_EMAILS = import.meta.env.VITE_SUPABASE_CONTENT_EDITORS?.split(',') || []
+const ENV = import.meta?.env ?? {}
+
+const SUPABASE_URL = ENV.VITE_SUPABASE_URL?.trim() || ''
+const SUPABASE_ANON_KEY = ENV.VITE_SUPABASE_ANON_KEY?.trim() || ''
+const DEFAULT_CONTENT_LOCALE = ENV.VITE_SUPABASE_CONTENT_LOCALE?.trim() || 'nb'
+const EDITOR_EMAILS = ENV.VITE_SUPABASE_CONTENT_EDITORS?.split(',') || []
 
 const normalizeContentSource = (value) => {
   const raw = String(value || 'auto').trim().toLowerCase()
   return ['local', 'supabase', 'auto'].includes(raw) ? raw : 'auto'
 }
 
-const CONTENT_SOURCE = normalizeContentSource(import.meta.env.VITE_CONTENT_SOURCE)
+const CONTENT_SOURCE = normalizeContentSource(ENV.VITE_CONTENT_SOURCE)
 
 let client = null
 

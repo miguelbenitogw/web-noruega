@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
 import EditableText, { readOverrideValue } from './editable/EditableText'
@@ -16,6 +16,50 @@ const tagColors = {
 }
 
 const getTagStyles = (tag) => tagColors[tag] || 'bg-gray-100 text-gray-700'
+
+const cloneNewsValue = (value) => {
+  if (Array.isArray(value)) return value.map(cloneNewsValue)
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, nestedValue]) => [key, cloneNewsValue(nestedValue)]))
+  }
+  return value
+}
+
+const parseNewsDate = (value) => {
+  if (!value) return null
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return null
+  return date
+}
+
+const isAdminNewsEditingContext = () => {
+  if (typeof window === 'undefined') return false
+  return window.location.pathname.startsWith('/admin')
+}
+
+const isFeaturedArticle = (article) => Boolean(
+  article?.featured
+  || article?.content?.featured
+  || article?.metadata?.featured
+  || article?.metadata?.content?.featured,
+)
+
+const getNewsSortTime = (article) => {
+  const candidates = [article?.publishAt, article?.publishedAt, article?.date, article?.updatedAt, article?.createdAt]
+  for (const candidate of candidates) {
+    const date = parseNewsDate(candidate)
+    if (date) return date.getTime()
+  }
+  return 0
+}
+
+const sortNewsForDisplay = (articles) => articles.slice().sort((left, right) => {
+  if (isFeaturedArticle(left) !== isFeaturedArticle(right)) {
+    return Number(isFeaturedArticle(right)) - Number(isFeaturedArticle(left))
+  }
+
+  return getNewsSortTime(right) - getNewsSortTime(left)
+})
 
 const useOverrideRefresh = () => {
   const [, setRefreshTick] = useState(0)
@@ -37,6 +81,9 @@ const buildNewsPayload = (article, mode = 'draft') => {
   const body = resolveNewsField(article, 'body')
   const tag = resolveNewsField(article, 'tag')
   const readTime = resolveNewsField(article, 'readTime')
+  const metadata = cloneNewsValue(article.metadata || {})
+  const content = cloneNewsValue(article.content || article.metadata?.content || {})
+  const featured = isFeaturedArticle(article)
 
   return {
     id: article.id || undefined,
@@ -51,8 +98,13 @@ const buildNewsPayload = (article, mode = 'draft') => {
     coverImage: article.coverImage || '',
     status: mode === 'publish' ? 'published' : 'draft',
     publishAt: article.publishAt || article.date || null,
-    seoTitle: article.seoTitle || title,
-    seoDescription: article.seoDescription || excerpt,
+    seoTitle: article.seoTitle || '',
+    seoDescription: article.seoDescription || '',
+    templateId: article.templateId || undefined,
+    templateKey: article.templateKey || article.template?.key || undefined,
+    metadata,
+    content,
+    featured,
   }
 }
 
@@ -60,10 +112,14 @@ export default function Nyheter() {
   const { articles: news, loading } = useNewsCollection()
   useOverrideRefresh()
 
+  const orderedNews = useMemo(() => sortNewsForDisplay(news), [news])
+
   useEffect(() => {
+    if (!isAdminNewsEditingContext()) return undefined
+
     const persistNews = async (mode) => {
       const overrides = readContentOverrides()
-      const changedArticles = news.filter((article) => hasNewsOverrideForSlug(overrides, article.slug))
+      const changedArticles = orderedNews.filter((article) => hasNewsOverrideForSlug(overrides, article.slug))
 
       if (!changedArticles.length) {
         return []
@@ -81,14 +137,14 @@ export default function Nyheter() {
     return registerVisualEditPersistor('visual-edit-news-collection', {
       hasChanges: () => {
         const overrides = readContentOverrides()
-        return news.some((article) => hasNewsOverrideForSlug(overrides, article.slug))
+        return orderedNews.some((article) => hasNewsOverrideForSlug(overrides, article.slug))
       },
       saveDraft: () => persistNews('draft'),
       publish: () => persistNews('publish'),
     })
-  }, [news])
+  }, [orderedNews])
 
-  if (!news.length && loading) {
+  if (!orderedNews.length && loading) {
     return (
       <section id="nyheter" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="nyheter-heading">
         <div className="container-xl">
@@ -98,9 +154,9 @@ export default function Nyheter() {
     )
   }
 
-  if (!news.length) return null
+  if (!orderedNews.length) return null
 
-  const featured = news[0]
+  const featured = orderedNews[0]
   const featuredTitle = resolveNewsField(featured, 'title')
   const featuredExcerpt = resolveNewsField(featured, 'excerpt')
   const featuredTag = resolveNewsField(featured, 'tag')
@@ -187,7 +243,7 @@ export default function Nyheter() {
           </article>
 
           <div className="lg:col-span-2 flex flex-col gap-4">
-            {news.slice(1, 4).map((article) => {
+            {orderedNews.slice(1, 4).map((article) => {
               const title = resolveNewsField(article, 'title')
               const excerpt = resolveNewsField(article, 'excerpt')
               const tag = resolveNewsField(article, 'tag')
@@ -233,7 +289,7 @@ export default function Nyheter() {
         </div>
 
         <div id="nyheter-arkiv" className="scroll-mt-28 mt-16 space-y-6">
-          {news.map((article) => {
+          {orderedNews.map((article) => {
             const title = resolveNewsField(article, 'title')
             const excerpt = resolveNewsField(article, 'excerpt')
             const tag = resolveNewsField(article, 'tag')

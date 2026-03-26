@@ -22,6 +22,19 @@ const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const baseInputClass = 'w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-100'
 const baseTextareaClass = `${baseInputClass} min-h-[120px] resize-y`
 const adminDateFormatter = new Intl.DateTimeFormat('nb-NO', { dateStyle: 'medium', timeStyle: 'short' })
+const NEWS_TEMPLATE_DEFINITIONS = [
+  {
+    key: 'news_plattform',
+    label: 'Kommunikasjon',
+    description: 'Bedriftsoppdateringer, lanseringer og korte meldinger.',
+  },
+  {
+    key: 'news_suksesshistorie',
+    label: 'Suksesshistorie',
+    description: 'Kundecaser og historier med tydelig resultat.',
+  },
+]
+const ALLOWED_NEWS_TEMPLATE_KEYS = new Set(NEWS_TEMPLATE_DEFINITIONS.map((template) => template.key))
 
 const entityConfig = {
   page: {
@@ -137,10 +150,16 @@ const normalizeEntityFromRow = (entityType, row) => {
   }
 }
 
-const getTemplateOptions = (templates) => templates.map((template) => ({
-  value: template.id,
-  label: `${template.name} (${template.key})`,
-}))
+const getTemplateOptions = (templates, entityType) => templates.map((template) => {
+  const newsDefinition = entityType === 'news'
+    ? NEWS_TEMPLATE_DEFINITIONS.find((definition) => definition.key === template.key)
+    : null
+
+  return {
+    value: template.id,
+    label: newsDefinition?.label || `${template.name} (${template.key})`,
+  }
+})
 
 function Field({ label, children, hint, required = false }) {
   return (
@@ -232,9 +251,16 @@ export default function ContentEntityManager({ entityType }) {
   const [saveState, setSaveState] = useState({ kind: 'idle', message: '' })
   const [fieldErrors, setFieldErrors] = useState({})
 
-  const templateMap = useMemo(() => Object.fromEntries(templates.map((template) => [template.id, template])), [templates])
-  const activeTemplate = useMemo(() => templateMap[draft.templateId] || templates[0] || null, [draft.templateId, templateMap, templates])
-  const templateValue = draft.templateId || activeTemplate?.id || ''
+  const availableTemplates = useMemo(() => {
+    if (entityType !== 'news') return templates
+    return templates.filter((template) => ALLOWED_NEWS_TEMPLATE_KEYS.has(template.key))
+  }, [entityType, templates])
+  const templateMap = useMemo(() => Object.fromEntries(availableTemplates.map((template) => [template.id, template])), [availableTemplates])
+  const activeTemplate = useMemo(
+    () => templateMap[draft.templateId] || availableTemplates[0] || null,
+    [availableTemplates, draft.templateId, templateMap],
+  )
+  const templateValue = templateMap[draft.templateId] ? draft.templateId : activeTemplate?.id || ''
 
   const { resolvedContent, issues: templateIssues } = useTemplateContent({
     template: activeTemplate,
@@ -283,7 +309,7 @@ export default function ContentEntityManager({ entityType }) {
       setListError(null)
 
       try {
-        if (!isSupabaseConfigured()) {
+        if (!isSupabaseConfigured) {
           if (!cancelled) setItems([])
           return
         }
@@ -352,14 +378,14 @@ export default function ContentEntityManager({ entityType }) {
   }, [config, entityType, selectedSlug, templateMap])
 
   useEffect(() => {
-    if (selectedSlug || !draft.templateId || !activeTemplate) return
+    if (selectedSlug || !activeTemplate || templateMap[draft.templateId]) return
 
     setDraft((current) => ({
       ...current,
       templateId: activeTemplate.id,
       templateKey: activeTemplate.key,
     }))
-  }, [activeTemplate, draft.templateId, selectedSlug])
+  }, [activeTemplate, draft.templateId, selectedSlug, templateMap])
 
   const handleTemplateChange = useCallback((templateId) => {
     const nextTemplate = templateMap[templateId] || null
@@ -419,7 +445,7 @@ export default function ContentEntityManager({ entityType }) {
     const errors = []
 
     if (!activeTemplate?.id) {
-      errors.push('Velg en mal før du lagrer.')
+      errors.push(entityType === 'news' ? 'Velg enten Kommunikasjon eller Suksesshistorie før du lagrer.' : 'Velg en mal før du lagrer.')
     }
 
     if (!nextDraft.slug?.trim()) {
@@ -432,12 +458,22 @@ export default function ContentEntityManager({ entityType }) {
       errors.push(`${config.titleFieldLabel} er påkrevd.`)
     }
 
+    if (nextDraft.status === 'published') {
+      if (!nextDraft.seoTitle?.trim()) {
+        errors.push('SEO-tittel er påkrevd før publisering.')
+      }
+
+      if (!nextDraft.seoDescription?.trim()) {
+        errors.push('SEO-beskrivelse er påkrevd før publisering.')
+      }
+    }
+
     if (Object.values(fieldErrors).length > 0) {
       errors.push('Rett opp ugyldige felt før du lagrer.')
     }
 
     return errors
-  }, [activeTemplate?.id, config.titleFieldLabel, fieldErrors])
+  }, [activeTemplate?.id, config.titleFieldLabel, entityType, fieldErrors])
 
   const handleSave = useCallback(async (modeOverride) => {
     const publishAt = draft.publishAt.trim()
@@ -517,7 +553,7 @@ export default function ContentEntityManager({ entityType }) {
   const editor = (
     <Section
       title={selectedSlug ? `Rediger ${config.singular}` : `Opprett ${config.singular}`}
-      description={activeTemplate ? `Mal: ${activeTemplate.name}` : 'Velg en mal for å starte.'}
+      description={activeTemplate ? `Mal: ${getTemplateOptions([activeTemplate], entityType)[0]?.label || activeTemplate.name}` : 'Velg en mal for å starte.'}
     >
       <div className="grid gap-4 lg:grid-cols-2">
         <Field label="Mal" required>
@@ -525,9 +561,9 @@ export default function ContentEntityManager({ entityType }) {
             className={baseInputClass}
             value={templateValue}
             onChange={(event) => handleTemplateChange(event.target.value)}
-            disabled={templatesLoading || templates.length === 0}
+            disabled={templatesLoading || availableTemplates.length === 0}
           >
-            {getTemplateOptions(templates).map((option) => (
+            {getTemplateOptions(availableTemplates, entityType).map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -564,7 +600,7 @@ export default function ContentEntityManager({ entityType }) {
           />
         </Field>
 
-        <Field label="SEO-tittel">
+        <Field label="SEO-tittel" hint="må fylles ut ved publisering">
           <input
             className={baseInputClass}
             value={draft.seoTitle}
@@ -619,7 +655,7 @@ export default function ContentEntityManager({ entityType }) {
           />
         </Field>
 
-        <Field label="SEO-beskrivelse">
+        <Field label="SEO-beskrivelse" hint="må fylles ut ved publisering">
           <textarea
             className={baseTextareaClass}
             value={draft.seoDescription}
@@ -651,7 +687,7 @@ export default function ContentEntityManager({ entityType }) {
               <div>
                 <p className="text-sm font-semibold text-slate-950">Fremhev denne nyheten</p>
                 <p className="mt-1 text-sm leading-relaxed text-slate-500">
-                  Lagres kompatibelt i metadata/content slik at vi slipper SQL-endringer og fortsatt kan styre fremhevet sak.
+                  Lagres som et enkelt av/på-flagg i metadata/content slik at offentlig visning bruker samme sannhet.
                 </p>
               </div>
             </label>
@@ -712,7 +748,7 @@ export default function ContentEntityManager({ entityType }) {
         <button
           type="button"
           onClick={() => handleSave('draft')}
-          disabled={statusBusy || !templates.length}
+          disabled={statusBusy || !availableTemplates.length}
           className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {saving ? 'Lagrer…' : 'Lagre som kladd'}
@@ -720,7 +756,7 @@ export default function ContentEntityManager({ entityType }) {
         <button
           type="button"
           onClick={() => handleSave('published')}
-          disabled={statusBusy || !templates.length}
+          disabled={statusBusy || !availableTemplates.length}
           className="inline-flex items-center justify-center rounded-2xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {publishing ? 'Publiserer…' : 'Publiser'}
@@ -766,6 +802,11 @@ export default function ContentEntityManager({ entityType }) {
             </button>
             <span className="text-xs text-slate-500">{items.length} totalt</span>
           </div>
+          {entityType === 'news' ? (
+            <p className="mt-3 text-xs leading-relaxed text-slate-500">
+              Nye artikler opprettes bare med malene <strong>Kommunikasjon</strong> og <strong>Suksesshistorie</strong>.
+            </p>
+          ) : null}
         </Section>
 
         <Section title="Oversikt">
@@ -789,7 +830,7 @@ export default function ContentEntityManager({ entityType }) {
       </div>
 
       <div className="space-y-6">
-        {!isSupabaseConfigured() ? (
+        {!isSupabaseConfigured ? (
           <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
             Supabase er ikke konfigurert. Lister og lagring er deaktivert til miljøvariablene er satt.
           </div>
@@ -798,6 +839,12 @@ export default function ContentEntityManager({ entityType }) {
         {templatesError ? (
           <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
             Kunne ikke laste maler: {templatesError.message}
+          </div>
+        ) : null}
+
+        {entityType === 'news' && !templatesLoading && !templatesError && availableTemplates.length !== 2 ? (
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            Nyhetsstudio forventer to aktive maler: Kommunikasjon og Suksesshistorie. Sjekk template-oppsettet i CMS om en av dem mangler.
           </div>
         ) : null}
 

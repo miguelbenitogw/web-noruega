@@ -10,6 +10,50 @@ import { CONTENT_OVERRIDE_EVENT, getByPath, readContentOverrides } from '../lib/
 import { registerVisualEditPersistor } from '../lib/visualEditSession'
 import { upsertNews } from '../lib/contentServices'
 
+const cloneNewsValue = (value) => {
+  if (Array.isArray(value)) return value.map(cloneNewsValue)
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, nestedValue]) => [key, cloneNewsValue(nestedValue)]))
+  }
+  return value
+}
+
+const parseNewsDate = (value) => {
+  if (!value) return null
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return null
+  return date
+}
+
+const isAdminNewsEditingContext = () => {
+  if (typeof window === 'undefined') return false
+  return window.location.pathname.startsWith('/admin')
+}
+
+const isFeaturedArticle = (article) => Boolean(
+  article?.featured
+  || article?.content?.featured
+  || article?.metadata?.featured
+  || article?.metadata?.content?.featured,
+)
+
+const getNewsSortTime = (article) => {
+  const candidates = [article?.publishAt, article?.publishedAt, article?.date, article?.updatedAt, article?.createdAt]
+  for (const candidate of candidates) {
+    const date = parseNewsDate(candidate)
+    if (date) return date.getTime()
+  }
+  return 0
+}
+
+const sortNewsForDisplay = (articles) => articles.slice().sort((left, right) => {
+  if (isFeaturedArticle(left) !== isFeaturedArticle(right)) {
+    return Number(isFeaturedArticle(right)) - Number(isFeaturedArticle(left))
+  }
+
+  return getNewsSortTime(right) - getNewsSortTime(left)
+})
+
 const getCoverImage = (article) => {
   if (article.coverImage && article.coverImage.startsWith('http')) return article.coverImage
   if (article.coverImage && article.coverImage.startsWith('/')) return article.coverImage
@@ -38,9 +82,13 @@ const buildNewsPayload = (article, mode = 'draft') => {
   const body = resolveNewsField(article, 'body')
   const tag = resolveNewsField(article, 'tag')
   const readTime = resolveNewsField(article, 'readTime')
+  const metadata = cloneNewsValue(article.metadata || {})
+  const content = cloneNewsValue(article.content || article.metadata?.content || {})
+  const featured = isFeaturedArticle(article)
 
   return {
     id: article.id || undefined,
+    locale: article.locale || undefined,
     slug: article.slug,
     title,
     excerpt,
@@ -51,8 +99,13 @@ const buildNewsPayload = (article, mode = 'draft') => {
     coverImage: article.coverImage || '',
     status: mode === 'publish' ? 'published' : 'draft',
     publishAt: article.publishAt || article.date || null,
-    seoTitle: article.seoTitle || title,
-    seoDescription: article.seoDescription || excerpt,
+    seoTitle: article.seoTitle || '',
+    seoDescription: article.seoDescription || '',
+    templateId: article.templateId || undefined,
+    templateKey: article.templateKey || article.template?.key || undefined,
+    metadata,
+    content,
+    featured,
   }
 }
 
@@ -74,7 +127,10 @@ export default function NewsArticlePage({ slug }) {
     }
   }, [article, overrideTick])
 
-  const related = allNews.filter((item) => item.slug !== slug).slice(0, 3)
+  const related = useMemo(
+    () => sortNewsForDisplay(allNews.filter((item) => item.slug !== slug)).slice(0, 3),
+    [allNews, slug],
+  )
   const sections = effectiveArticle ? getMarkdownSections(effectiveArticle.body || '') : []
 
   useEffect(() => {
@@ -89,6 +145,7 @@ export default function NewsArticlePage({ slug }) {
 
   useEffect(() => {
     if (!article) return undefined
+    if (!isAdminNewsEditingContext()) return undefined
 
     const persistArticle = async (mode) => upsertNews(buildNewsPayload(article, mode))
 

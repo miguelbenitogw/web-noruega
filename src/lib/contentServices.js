@@ -1,10 +1,10 @@
-import { getContentLocale, getSupabaseClient, isSupabaseConfigured } from './supabaseClient'
+import { getContentLocale, getSupabaseClient, isSupabaseConfigured } from './supabaseClient.js'
 import {
   cloneValue,
   isPlainObject,
   normalizeTemplateBlueprint,
   validateTemplateShape,
-} from './contentMappers'
+} from './contentMappers.js'
 
 const TEMPLATES_TABLE = 'content_templates'
 const PAGES_TABLE = 'content_pages'
@@ -83,6 +83,70 @@ const normalizeContentType = (contentType) => {
 
 const buildSelect = (fields) => fields.join(', ')
 
+const parseDateValue = (value) => {
+  if (!value) return null
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return null
+  return date
+}
+
+const isTruthyFeatured = (value) => {
+  if (typeof value === 'boolean') return value
+  if (typeof value === 'number') return value === 1
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase()
+    return normalized === 'true' || normalized === '1' || normalized === 'yes'
+  }
+  return false
+}
+
+const resolveFeaturedFlag = (row) => {
+  if (!row) return false
+
+  const metadata = isPlainObject(row.metadata) ? row.metadata : {}
+  const content = isPlainObject(metadata.content) ? metadata.content : {}
+
+  return isTruthyFeatured(row.featured) || isTruthyFeatured(metadata.featured) || isTruthyFeatured(content.featured)
+}
+
+const isPublishableNow = (row) => {
+  const publishDate = parseDateValue(row?.publish_at)
+  if (!publishDate) return true
+  return publishDate.getTime() <= Date.now()
+}
+
+const getNewsTimestamp = (item) => {
+  const candidates = [item.publishAt, item.publishedAt, item.updatedAt, item.createdAt]
+  for (const candidate of candidates) {
+    const date = parseDateValue(candidate)
+    if (date) return date.getTime()
+  }
+  return 0
+}
+
+const sortNewsItems = (items) => items.slice().sort((left, right) => {
+  if (left.featured !== right.featured) {
+    return Number(right.featured) - Number(left.featured)
+  }
+
+  const timeDiff = getNewsTimestamp(right) - getNewsTimestamp(left)
+  if (timeDiff !== 0) return timeDiff
+
+  return String(left.slug || '').localeCompare(String(right.slug || ''))
+})
+
+const validateNewsPayload = (payload) => {
+  if (normalizeStatus(payload.status) !== 'published') return
+
+  if (!String(payload.seoTitle ?? payload.seo_title ?? '').trim()) {
+    throw new Error('SEO-tittel er påkrevd for å publisere en nyhet.')
+  }
+
+  if (!String(payload.seoDescription ?? payload.seo_description ?? '').trim()) {
+    throw new Error('SEO-beskrivelse er påkrevd for å publisere en nyhet.')
+  }
+}
+
 const normalizeTemplate = (row) => {
   if (!row) return null
 
@@ -142,6 +206,8 @@ const normalizePage = (row) => {
 const normalizeNews = (row) => {
   if (!row) return null
 
+  const metadata = isPlainObject(row.metadata) ? cloneValue(row.metadata) : {}
+
   return {
     id: row.id,
     templateId: row.template_id || null,
@@ -160,8 +226,9 @@ const normalizeNews = (row) => {
     publishedBy: row.published_by || null,
     seoTitle: row.seo_title || '',
     seoDescription: row.seo_description || '',
-    metadata: isPlainObject(row.metadata) ? cloneValue(row.metadata) : {},
-    content: normalizeMetadataContent(row.metadata),
+    metadata,
+    content: normalizeMetadataContent(metadata),
+    featured: resolveFeaturedFlag(row),
     createdAt: row.created_at || null,
     updatedAt: row.updated_at || null,
   }
@@ -190,10 +257,21 @@ const resolveTemplateId = async (payload) => {
 
 const prepareMetadata = (payload) => {
   const metadata = isPlainObject(payload.metadata) ? cloneValue(payload.metadata) : {}
-  const content = payload.content !== undefined ? cloneValue(payload.content) : metadata.content
+  const metadataContent = isPlainObject(metadata.content) ? cloneValue(metadata.content) : {}
+  const providedContent = payload.content !== undefined ? cloneValue(payload.content) : metadataContent
+  const content = isPlainObject(providedContent) ? providedContent : metadataContent
 
   if (content !== undefined) {
     metadata.content = content
+  }
+
+  if (payload.featured !== undefined) {
+    const featured = Boolean(payload.featured)
+    metadata.featured = featured
+    metadata.content = {
+      ...(isPlainObject(metadata.content) ? metadata.content : {}),
+      featured,
+    }
   }
 
   return metadata
@@ -211,7 +289,7 @@ const prepareUpsertPayload = async (client, payload, entityType) => {
     excerpt: String(payload.excerpt || ''),
     body: String(payload.body || ''),
     status,
-    publish_at: payload.publishAt ?? payload.publish_at ?? null,
+    publish_at: payload.publishAt ?? payload.publish_at ?? (status === 'published' ? new Date().toISOString() : null),
     seo_title: payload.seoTitle ?? payload.seo_title ?? null,
     seo_description: payload.seoDescription ?? payload.seo_description ?? null,
     cover_image: payload.coverImage ?? payload.cover_image ?? null,
@@ -293,6 +371,15 @@ const queryPublishedList = async (table, fields, locale) => {
 
   if (error || !data) return []
   return data
+}
+
+export const __newsMvpTestables = {
+  normalizeStatus,
+  resolveFeaturedFlag,
+  sortNewsItems,
+  validateNewsPayload,
+  prepareMetadata,
+  prepareUpsertPayload,
 }
 
 export { isSupabaseConfigured }
@@ -404,6 +491,7 @@ export async function upsertNews(payload = {}) {
   const client = getSupabaseClient()
   if (!client) return null
 
+  validateNewsPayload(payload)
   const body = await prepareUpsertPayload(client, payload, 'news')
   const query = payload.id
     ? client.from(NEWS_TABLE).update(body).eq('id', payload.id)
@@ -422,7 +510,7 @@ export async function upsertNews(payload = {}) {
 
 export async function listPublishedPages(locale) {
   const rows = await queryPublishedList(PAGES_TABLE, PAGE_FIELDS, locale)
-  return rows.map(normalizePage).filter(Boolean)
+  return rows.filter(isPublishableNow).map(normalizePage).filter(Boolean)
 }
 
 export async function getPublishedPageBySlug(slug, locale) {
@@ -431,12 +519,13 @@ export async function getPublishedPageBySlug(slug, locale) {
   const data = await queryPublishedBySlug(PAGES_TABLE, PAGE_FIELDS, slug, locale)
   if (!data) return null
 
+  if (!isPublishableNow(data)) return null
   return normalizePage(data)
 }
 
 export async function listPublishedNews(locale) {
   const rows = await queryPublishedList(NEWS_TABLE, NEWS_FIELDS, locale)
-  return rows.map(normalizeNews).filter(Boolean)
+  return sortNewsItems(rows.filter(isPublishableNow).map(normalizeNews).filter(Boolean))
 }
 
 export async function getPublishedNewsBySlug(slug, locale) {
@@ -445,5 +534,6 @@ export async function getPublishedNewsBySlug(slug, locale) {
   const data = await queryPublishedBySlug(NEWS_TABLE, NEWS_FIELDS, slug, locale)
   if (!data) return null
 
+  if (!isPublishableNow(data)) return null
   return normalizeNews(data)
 }
