@@ -10,6 +10,12 @@ const ROUTE_DEFINITIONS = {
   '/talentportalen': { sectionRoute: 'talentportalen', pageSlug: 'talentportalen', aliases: ['talentportalen'] },
   '/om-oss': { sectionRoute: 'om-oss', pageSlug: 'om-oss', aliases: ['om-oss'] },
   '/kontakt': { sectionRoute: 'kontakt', pageSlug: 'kontakt', aliases: ['kontakt'] },
+  '/spansk-i-alicante': { sectionRoute: 'spansk-i-alicante', pageSlug: 'spansk-i-alicante', aliases: ['spansk-i-alicante', 'alicante'] },
+  '/spansk-i-alicante/hvorfor': {
+    sectionRoute: 'spansk-i-alicante-hvorfor',
+    pageSlug: 'spansk-i-alicante-hvorfor',
+    aliases: ['spansk-i-alicante-hvorfor', 'spansk-i-alicante-why', 'alicante-hvorfor'],
+  },
   '/personvern': { sectionRoute: 'personvern', pageSlug: 'personvern', aliases: ['personvern', 'privacy'] },
   '/vilkar': { sectionRoute: 'vilkar', pageSlug: 'vilkar', aliases: ['vilkar', 'terms'] },
   '/cookies': { sectionRoute: 'cookies', pageSlug: 'cookies', aliases: ['cookies', 'informasjonskapsler'] },

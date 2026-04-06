@@ -21,6 +21,8 @@ import NyheterPage from './pages/NyheterPage'
 import TalentportalenPage from './pages/TalentportalenPage'
 import OmOssPage from './pages/OmOssPage'
 import KontaktPage from './pages/KontaktPage'
+import SpanskAlicantePage from './pages/SpanskAlicantePage'
+import SpanskAlicanteHvorforPage from './pages/SpanskAlicanteHvorforPage'
 import PersonvernPage from './pages/PersonvernPage'
 import VilkarPage from './pages/VilkarPage'
 import CookiesPage from './pages/CookiesPage'
@@ -38,18 +40,23 @@ export default function App() {
   const sectionRoute = routeContext.sectionRoute
   const searchParams = useMemo(() => new URLSearchParams(currentPath.split('?')[1] || ''), [currentPath])
   const isVisualEditRequested = searchParams.get('edit') === '1'
-  const isEditableRoute = !routeContext.isAdmin && (['home', 'nyheter', 'helse'].includes(sectionRoute) || Boolean(newsSlug))
+  const isEditableRoute = !routeContext.isAdmin
+    && (['home', 'nyheter', 'helse', 'spansk-i-alicante', 'spansk-i-alicante-hvorfor'].includes(sectionRoute) || Boolean(newsSlug))
   const hasVisualEditPermission = isVisualEditRequested && isEditableRoute ? canEditVisualContent : false
   const isVisualEditMode = isVisualEditRequested && isEditableRoute && hasVisualEditPermission
   const visualEditRouteLabel = newsSlug
     ? `Noticia: ${newsSlug}`
     : sectionRoute === 'home'
       ? 'Landing'
-      : sectionRoute === 'nyheter'
-        ? 'Noticias'
-        : sectionRoute === 'helse'
-          ? 'Sector sanitario'
-          : null
+        : sectionRoute === 'nyheter'
+          ? 'Noticias'
+          : sectionRoute === 'helse'
+            ? 'Sector sanitario'
+            : sectionRoute === 'spansk-i-alicante'
+              ? 'Spansk i Alicante'
+              : sectionRoute === 'spansk-i-alicante-hvorfor'
+                ? 'Spansk i Alicante · Hvorfor'
+            : null
 
   useLayoutEffect(() => {
     if (!routeContext.isAdmin) return undefined
@@ -191,6 +198,10 @@ export default function App() {
         return <OmOssPage />
       case 'kontakt':
         return <KontaktPage />
+      case 'spansk-i-alicante':
+        return <SpanskAlicantePage />
+      case 'spansk-i-alicante-hvorfor':
+        return <SpanskAlicanteHvorforPage />
       case 'personvern':
         return <PersonvernPage />
       case 'vilkar':

@@ -47,6 +47,18 @@ const SECTION_SEO = {
       'Ta kontakt for spørsmål om rekruttering, samarbeid eller kandidatportalen.',
     pathname: '/kontakt',
   },
+  'spansk-i-alicante': {
+    title: 'Spansk i Alicante | Global Working Norge',
+    description:
+      'Bo gratis i Alicante og bli samtaleassistent i et internasjonalt miljø gjennom Spansk i Alicante-programmet.',
+    pathname: '/spansk-i-alicante',
+  },
+  'spansk-i-alicante-hvorfor': {
+    title: 'Hvorfor finnes Spansk i Alicante? | Global Working Norge',
+    description:
+      'Lær hvorfor Spansk i Alicante er en viktig del av Global Working sin forberedelse av fagfolk til jobb i Norge.',
+    pathname: '/spansk-i-alicante/hvorfor',
+  },
   personvern: {
     title: 'Personvern | Global Working Norge',
     description:

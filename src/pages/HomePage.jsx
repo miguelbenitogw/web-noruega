@@ -1,6 +1,7 @@
 import Hero from '../components/Hero'
 import CTABanner from '../components/CTABanner'
 import AnimateIn from '../components/AnimateIn'
+import SpanskAlicanteTeaser from '../components/SpanskAlicanteTeaser'
 import EditableText, { createArrayItemCommitter } from '../components/editable/EditableText'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
@@ -258,6 +259,8 @@ export default function HomePage() {
           </div>
         </section>
       )}
+
+      <SpanskAlicanteTeaser />
 
       <CTABanner />
 

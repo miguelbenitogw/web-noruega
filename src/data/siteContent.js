@@ -47,6 +47,101 @@ const siteContent = {
     cta: 'Send oss en melding',
   },
 
+  spanskAlicanteTeaser: {
+    label: 'Nytt konsept i Alicante',
+    heading: 'Bo gratis i Alicante med Spansk i Alicante',
+    description: 'Bli en del av hverdagen hos Global Working i Spania. Du bidrar som samtaleassistent rundt 15 timer i uken og f?r bolig, sosialt milj? og internasjonal erfaring tilbake.',
+    cta: 'Utforsk Spansk i Alicante',
+  },
+
+  spanskAlicantePage: {
+    breadcrumb: 'Spansk i Alicante',
+    heroTitle: 'Bo gratis i Alicante',
+    heroSubtitle: 'Bli en del av hverdagen til Global Working i Spania',
+    intro: 'Spansk i Alicante er en enkel m?te ? teste livet i Spania p?, med bolig, mennesker og en hverdag allerede p? plass. Du bor sammen med 2 til 3 spanske studenter som l?rer norsk og bidrar sosialt i milj?et rundt skolen.',
+    exchangeNote: 'Dette er en bytteordning, ikke en typisk jobb. Du bidrar rundt 15 timer i uken som samtaleassistent og f?r gratis bolig i Alicante.',
+    roleTitle: 'Hva gj?r du som samtaleassistent?',
+    roleItems: [
+      'Ha samtaletimer eller spr?kkaf? p? norsk',
+      'V?re litt l?rerassistent i undervisning',
+      'Delta i lunsj med elevene',
+      'Hjelpe med CV og s?knader',
+      'Arrangere sm? sosiale aktiviteter',
+    ],
+    benefitsTitle: 'Hva f?r du?',
+    benefitsItems: [
+      'Gratis bolig i Alicante sammen med spanjoler',
+      'Et sosialt milj? fra dag ?n',
+      'Internasjonal erfaring',
+      'En hverdag med struktur og frihet',
+      'Erfaring som er relevant ? ha p? CV',
+    ],
+    weekTitle: 'Hvordan ser en vanlig uke ut?',
+    weekItems: [
+      'Ca 13 timer bidrag p? skolen',
+      '2 timer lunsj og sosial tid med elevene',
+      'Resten av tiden og helgene er fri',
+      'Mange kombinerer med spanskkurs, studier p? nett eller deltidsjobb',
+    ],
+    testimonialQuote: 'Det har v?rt en sann glede ? ha v?rt i Alicante sammen med Global Working. Jeg har f?tt gode venner, praktisert mye spansk og hatt stor frihet i samtaletimene.',
+    testimonialAuthor: 'Oliver Payne, samtaleassistent v?r 2026',
+    spanishCourseTitle: 'Spanskkurs',
+    spanishCourseItems: [
+      '2 til 15 timer i uken',
+      'Du velger niv? og intensitet selv',
+      'Kursene betales av deg',
+    ],
+    fitTitle: 'Hvem passer dette for?',
+    fitItems: [
+      'Deg som har fri?r',
+      'Deg som studerer p? nett',
+      'Deg som vil teste livet i Spania uten for mye risiko',
+      'Deg som vil l?re spansk i praksis',
+      'Deg som vil ha en sosial hverdag, ikke bare et opphold',
+    ],
+    cityTitle: 'Litt om livet i Alicante',
+    cityItems: [
+      'Strand og promenade',
+      'Mange unge og studenter',
+      'Kafeer, restauranter og uteliv',
+      'Lett ? bli kjent med folk',
+    ],
+    socialTitle: 'F?lg hverdagen',
+    socialInstagram: 'Instagram: Spansk i Alicante',
+    socialTikTok: 'TikTok: Spansk i Alicante',
+    processTitle: 'Klar for ? teste livet i Spania?',
+    processSteps: [
+      'Send inn interesse',
+      'Kort prat med oss',
+      'Vi ser om dette passer for deg',
+      'Klar for Alicante',
+    ],
+    ctaPrimary: 'S?k n?!',
+    ctaSecondary: 'Send oss en melding',
+    visionLinkLabel: 'Les hvorfor Spansk i Alicante finnes',
+  },
+
+  spanskAlicanteVision: {
+    breadcrumb: 'Hvorfor finnes Spansk i Alicante?',
+    title: 'Hvorfor finnes Spansk i Alicante?',
+    intro: 'Spansk i Alicante er en viktig del av hvordan vi forbereder sykepleiere fra S?r-Europa p? et liv og en jobb i Norge. Spr?k alene er ikke nok. Det som ofte mangler er det som skjer mellom linjene i hverdagen.',
+    sections: [
+      {
+        heading: 'Din rolle i det',
+        body: 'Som samtaleassistent blir du en naturlig del av l?ringsprosessen. Gjennom samtaler, lunsj og sosiale initiativ gj?r du spr?ket levende og gir deltakerne et f?rste m?te med norsk kultur og kommunikasjon.',
+      },
+      {
+        heading: 'Hva f?r du igjen?',
+        body: 'Du blir en del av et sosialt milj? fra start, bor sammen med deltakere og bygger relasjoner p? tvers av spr?k og kultur. Oppholdet gir perspektiv, internasjonal erfaring og praktisk spr?kbruk.',
+      },
+    ],
+    highlights: [
+      'Innsikt i en annen kultur p? n?rt hold',
+      'Mulighet til ? l?re spr?k i praksis',
+      'Erfaring som er relevant b?de personlig og profesjonelt',
+    ],
+  },
+
   contacts: [
     { name: 'Miriam Svendsen', role: 'Rekrutteringsansvarlig', email: 'miriam.svendsen@globalworking.net', phone: '+47 919 00 649' },
     { name: 'Gro Anette', role: 'Kandidatoppf?lging', email: 'gro.anette@globalworking.net', phone: '+47 408 98 448' },
@@ -297,6 +392,7 @@ const siteContent = {
     links: [
       { label: 'V?r rekrutteringsmodell', href: '/vr-rekrutteringsmodell' },
       { label: 'Helsesektor', href: '/helse' },
+      { label: 'Spansk i Alicante', href: '/spansk-i-alicante' },
       { label: 'Nyheter', href: '/nyheter' },
       { label: 'Talentportalen', href: '/talentportalen' },
       { label: 'Om oss', href: '/om-oss' },
@@ -315,6 +411,7 @@ const siteContent = {
       Tjenester: [
         { label: 'V?r rekrutteringsmodell', href: '/vr-rekrutteringsmodell' },
         { label: 'Helsesektor', href: '/helse' },
+        { label: 'Spansk i Alicante', href: '/spansk-i-alicante' },
         { label: 'Talentportalen', href: '/talentportalen' },
         { label: 'Kontakt', href: '/kontakt' },
       ],

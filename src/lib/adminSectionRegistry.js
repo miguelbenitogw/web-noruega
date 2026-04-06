@@ -16,6 +16,8 @@ export const ADMIN_PREVIEW_MODES = [
   { id: 'landing', label: 'Startside', path: '/' },
   { id: 'nyheter', label: 'Nyhetsside', path: '/nyheter' },
   { id: 'helse', label: 'Helse', path: '/helse' },
+  { id: 'spansk-alicante', label: 'Spansk i Alicante', path: '/spansk-i-alicante' },
+  { id: 'spansk-alicante-hvorfor', label: 'Spansk i Alicante · Hvorfor', path: '/spansk-i-alicante/hvorfor' },
   { id: 'article', label: 'Artikkel', path: '/nyheter' },
   { id: 'news-manager', label: 'Nyhetsstudio', path: '/nyheter' },
 ]
@@ -73,17 +75,28 @@ const buildLandingSections = (articles) => {
         field(secondaryArticle ? `news.${secondaryArticle.slug}.title` : 'news.{slug}.title', 'Kort 2 · tittel'),
       ],
     }),
-    section('landing-cta', 'CTA-banner', {
+    section('landing-spansk-alicante', 'Spansk i Alicante', {
       sectionIndex: 4,
+      description: 'Teaserblokk som leder til den nye Alicante-siden.',
+      fields: [
+        field('spanskAlicanteTeaser.label', 'Fortekst'),
+        field('spanskAlicanteTeaser.heading', 'Tittel'),
+        field('spanskAlicanteTeaser.description', 'Beskrivelse'),
+        field('spanskAlicanteTeaser.cta', 'CTA'),
+      ],
+    }),
+    section('landing-cta', 'CTA-banner', {
+      sectionIndex: 5,
       fields: [
         field('ctaBanner.badge', 'Merke'),
         field('ctaBanner.heading', 'Tittel'),
         field('ctaBanner.description', 'Beskrivelse'),
-        field('ctaBanner.cta', 'CTA'),
+        field('ctaBanner.cta1', 'Primær-CTA'),
+        field('ctaBanner.cta2', 'Sekundær-CTA'),
       ],
     }),
     section('landing-contact', 'Kontakt', {
-      sectionIndex: 5,
+      sectionIndex: 6,
       fields: [
         field('homeContact.label', 'Fortekst'),
         field('homeContact.heading', 'Tittel'),
@@ -168,6 +181,84 @@ const buildHelseSections = () => [
       field('helsePartnership.p2', 'Avsnitt 2'),
       field('helsePartnership.cta1', 'Primær-CTA'),
       field('helsePartnership.cta2', 'Sekundær-CTA'),
+    ],
+  }),
+]
+
+const buildSpanskAlicanteSections = () => [
+  section('spansk-alicante-hero', 'Hero', {
+    sectionIndex: 0,
+    fields: [
+      field('spanskAlicantePage.heroTitle', 'Tittel'),
+      field('spanskAlicantePage.heroSubtitle', 'Undertittel'),
+      field('spanskAlicantePage.intro', 'Intro'),
+    ],
+  }),
+  section('spansk-alicante-role', 'Rolle og oppgaver', {
+    sectionIndex: 1,
+    fields: [
+      field('spanskAlicantePage.roleTitle', 'Seksjonstittel'),
+      field('spanskAlicantePage.roleItems.0', 'Oppgave 1'),
+      field('spanskAlicantePage.roleItems.1', 'Oppgave 2'),
+      field('spanskAlicantePage.exchangeNote', 'Bytteordning'),
+    ],
+  }),
+  section('spansk-alicante-benefits', 'Fordeler', {
+    sectionIndex: 2,
+    fields: [
+      field('spanskAlicantePage.benefitsTitle', 'Seksjonstittel'),
+      field('spanskAlicantePage.benefitsItems.0', 'Fordel 1'),
+      field('spanskAlicantePage.weekTitle', 'Ukestruktur · tittel'),
+      field('spanskAlicantePage.weekItems.0', 'Ukestruktur · punkt 1'),
+    ],
+  }),
+  section('spansk-alicante-social', 'Byliv og sosial proof', {
+    sectionIndex: 3,
+    fields: [
+      field('spanskAlicantePage.testimonialQuote', 'Testimonial'),
+      field('spanskAlicantePage.testimonialAuthor', 'Testimonial · forfatter'),
+      field('spanskAlicantePage.cityTitle', 'Byliv · tittel'),
+      field('spanskAlicantePage.cityItems.0', 'Byliv · punkt 1'),
+      field('spanskAlicantePage.socialInstagram', 'Instagram'),
+      field('spanskAlicantePage.socialTikTok', 'TikTok'),
+    ],
+  }),
+  section('spansk-alicante-cta', 'CTA', {
+    sectionIndex: 4,
+    fields: [
+      field('spanskAlicantePage.processTitle', 'Prosess · tittel'),
+      field('spanskAlicantePage.processSteps.0', 'Steg 1'),
+      field('spanskAlicantePage.ctaPrimary', 'Primær-CTA'),
+      field('spanskAlicantePage.ctaSecondary', 'Sekundær-CTA'),
+      field('spanskAlicantePage.visionLinkLabel', 'Lenke til hvorfor-siden'),
+    ],
+  }),
+]
+
+const buildSpanskAlicanteHvorforSections = () => [
+  section('spansk-alicante-hvorfor-hero', 'Hero', {
+    sectionIndex: 0,
+    fields: [
+      field('spanskAlicanteVision.breadcrumb', 'Brødsmule'),
+      field('spanskAlicanteVision.title', 'Tittel'),
+      field('spanskAlicanteVision.intro', 'Intro'),
+    ],
+  }),
+  section('spansk-alicante-hvorfor-sections', 'Innhold', {
+    sectionIndex: 1,
+    fields: [
+      field('spanskAlicanteVision.sections.0.heading', 'Seksjon 1 · tittel'),
+      field('spanskAlicanteVision.sections.0.body', 'Seksjon 1 · brødtekst'),
+      field('spanskAlicanteVision.sections.1.heading', 'Seksjon 2 · tittel'),
+      field('spanskAlicanteVision.sections.1.body', 'Seksjon 2 · brødtekst'),
+    ],
+  }),
+  section('spansk-alicante-hvorfor-highlights', 'Highlights', {
+    sectionIndex: 2,
+    fields: [
+      field('spanskAlicanteVision.highlights.0', 'Highlight 1'),
+      field('spanskAlicanteVision.highlights.1', 'Highlight 2'),
+      field('spanskAlicanteVision.highlights.2', 'Highlight 3'),
     ],
   }),
 ]
@@ -263,6 +354,32 @@ export function getAdminPreviewConfig({ viewId, article, articles = [] }) {
       topbarTitle: 'Visuell redigering',
       topbarDescription: 'Jobb seksjonsvis med helse-siden uten å miste oversikten over strukturen.',
       sections: buildHelseSections(),
+    }
+  }
+
+  if (currentMode.id === 'spansk-alicante') {
+    return {
+      id: 'spansk-alicante',
+      label: 'Spansk i Alicante',
+      path: '/spansk-i-alicante',
+      routeKey: 'admin:spansk-alicante',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Rediger nye Alicante-siden seksjonsvis uten å miste struktur og CTA-flyt.',
+      sections: buildSpanskAlicanteSections(),
+    }
+  }
+
+  if (currentMode.id === 'spansk-alicante-hvorfor') {
+    return {
+      id: 'spansk-alicante-hvorfor',
+      label: 'Spansk i Alicante · Hvorfor',
+      path: '/spansk-i-alicante/hvorfor',
+      routeKey: 'admin:spansk-alicante-hvorfor',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Rediger under­siden om hvorfor Spansk i Alicante finnes med egne seksjoner og highlights.',
+      sections: buildSpanskAlicanteHvorforSections(),
     }
   }
 
