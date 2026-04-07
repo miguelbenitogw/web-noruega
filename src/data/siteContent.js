@@ -170,28 +170,28 @@ const siteContent = {
   helsePhases: {
     label: 'Rekrutteringsprosessen',
     heading: 'Slik rekrutterer vi sykepleiere til Norge',
-    description: 'V?r prosess er delt inn i tre faser for ? sikre at kandidatene er godt forberedt f?r de starter i jobb.',
+    description: 'Prosessen vår er delt inn i tre tydelige faser, slik at kandidatene er godt forberedt før oppstart i jobb.',
     phases: [
       {
         number: '01',
-        title: 'Spr?k og faglig forberedelse',
-        description: 'Kandidatene gjennomf?rer opptil 600 undervisningstimer i norsk, helseterminologi og praktisk spr?kbruk i kliniske situasjoner.',
+        title: 'Språk og faglig forberedelse',
+        description: 'Kandidatene gjennomfører opptil 600 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.',
         formats: [
-          { label: 'Fysisk i Alicante', duration: '5 m?neder' },
+          { label: 'Fysisk i Alicante', duration: '5 måneder' },
           { label: 'Kombinasjon fysisk og nett', duration: '7 m?neder' },
           { label: 'Full nettbasert oppl?ring', duration: '9 m?neder' },
         ],
       },
       {
         number: '02',
-        title: 'Strukturert overgang',
-        description: '1??"4 uker etter avsluttet oppl?ring gjennomf?res intervju med arbeidsgivere. Vi koordinerer oppstart og avreisedato med begge parter.',
+        title: 'Strukturert overgang til jobb',
+        description: '1–4 uker etter avsluttet opplæring gjennomføres intervju med arbeidsgiver. Vi koordinerer oppstart og avreisedato med begge parter.',
         formats: null,
       },
       {
         number: '03',
-        title: 'Ekstra oppf?lging',
-        description: 'Ved behov tilrettelegger vi individuell spr?ktrening f?r og etter avreise. Vi kj?rer 17??"20 oppl?ringsgrupper ?rlig for ? sikre kontinuitet.',
+        title: 'Ekstra oppfølging ved behov',
+        description: 'Ved behov tilrettelegger vi individuell språktrening før og etter avreise. Vi kjører 17–20 opplæringsgrupper årlig for å sikre kontinuitet.',
         formats: null,
       },
     ],
@@ -299,7 +299,7 @@ const siteContent = {
   helsesektorComp: {
     label: 'Tjenester for helseinstitusjoner',
     heading: 'Vi forbereder helsepersonell for den norske helsesektoren',
-    description: 'Global Working er den st?rste leverand?ren av sykepleiere utenfra Skandinavia til Norge. Siden 2014 har vi spesialisert oss p? ? utdanne og kvalifisere sykepleiere for arbeid i Norge.',
+    description: 'Global Working er den største leverandøren av sykepleiere utenfor Skandinavia til Norge. Siden 2014 har vi spesialisert oss på å utdanne og kvalifisere sykepleiere for arbeid i norsk helsesektor.',
     stats: [
       { value: '10+ ?r', label: 'erfaring i Norge' },
       { value: '25 000+', label: 'undervisningstimer i norsk' },
@@ -307,11 +307,16 @@ const siteContent = {
     ],
     features: [
       { title: 'Spr?k og faglig forberedelse f?r ansettelse', description: 'Kandidatene f?r opptil 600 undervisningstimer i norsk, helseterminologi og praktisk spr?kbruk i kliniske situasjoner.' },
-      { title: 'Tre oppl?ringsmodeller', description: 'Fysisk i Alicante (5 m?neder), kombinasjon fysisk og nett (7 m?neder), eller full nettbasert oppl?ring (9 m?neder).' },
+      { title: 'Tre opplæringsmodeller', description: 'Fysisk i Alicante (5 måneder), kombinasjon fysisk og nett (7 måneder), eller full nettbasert opplæring (9 måneder).' },
       { title: 'Strukturert overgang til arbeidsgiver', description: 'Intervju skjer 1??"4 uker etter avsluttet oppl?ring. Vi koordinerer oppstart og avreisedato med begge parter.' },
-      { title: 'Ekstra oppf?lging ved behov', description: 'Vi kan tilrettelegge individuell spr?ktrening f?r og etter avreise for ? redusere usikkerhet i oppstarten.' },
+      { title: 'Ekstra oppfølging ved behov', description: 'Vi kan tilrettelegge individuell språktrening før og etter avreise for å redusere usikkerhet i oppstarten.' },
     ],
-    blockquote: { text: 'Vi ?nsket ? tilby 6 sykepleiere fast stilling gjennom samarbeid med Global Working. For oss ble dette en god l?sning p? bemanningskrisen vi hadde.', author: 'Kristina S, V?g? kommune' },
+    blockquote: {
+      text: 'Vi ønsket å tilby 6 sykepleiere fast stilling gjennom samarbeid med Global Working. For oss ble dette en god løsning på bemanningskrisen vi hadde.',
+      author: 'Kristina S, Vågå kommune',
+      ctaLabel: 'Les hele intervjuet',
+      ctaHref: '/nyheter',
+    },
     groupsValue: '17??"20',
     groupsLabel: 'grupper ?rlig',
     ctaLabel: 'Be om kandidater',
@@ -353,11 +358,11 @@ const siteContent = {
   },
 
   godeGrunner: {
-    label: 'Et samarbeid som gir nye l?sninger',
-    heading: 'Hva sier kommunene vi samarbeider med?',
-    description: 'Mangelen p? helsepersonell kombinert med sykefrav?r og permisjoner gj?r det n?dvendig ? finne varige l?sninger p? arbeidskraft for ? gi pasientene oppf?lgingen de trenger.',
-    articleLink: '/nyheter/sor-fron-integrasjon',
-    articleLinkLabel: 'Les artikkel',
+    label: 'Gode grunner til å samarbeide med oss',
+    heading: 'Kommuner som lykkes med langsiktig rekruttering',
+    description: 'Mangel på helsepersonell krever varige løsninger. Vi kombinerer rekruttering, språk og tett oppfølging slik at både arbeidsgiver og kandidat får en trygg start.',
+    articleLink: '/om-oss',
+    articleLinkLabel: 'Les mer om oss',
     testimonials: [
       { quote: 'Vi har v?rt veldig forn?yd med to av v?re sykepleiere fra Spania. Spr?ket var mye bedre enn forventet, og de passet godt inn hos oss.', author: 'Karin, ?.mot kommune' },
       { quote: 'Vi fant en god l?sning med ? la en sykepleier jobbe i helsefagarbeider-stilling til hun var bedre i spr?ket. Tre-fire uker etterp? var hun klar til ? jobbe fast som sykepleier hos oss.', author: 'Daniel, Kautokeino kommune' },

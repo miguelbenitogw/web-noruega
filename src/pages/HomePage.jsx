@@ -6,6 +6,9 @@ import EditableText, { createArrayItemCommitter } from '../components/editable/E
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import { useNewsCollection } from '../hooks/useNews'
+import metricsTeamPhoto from '../assets/home/metrics-team.jpg'
+import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
+import groPhoto from '../assets/team/gro-anette.jpg'
 
 function SummaryCard({ section, delay, index, sections }) {
   const titleCommitter = createArrayItemCommitter({
@@ -92,6 +95,13 @@ export default function HomePage() {
     field,
   })
 
+  const resolveContactPhoto = (name = '') => {
+    const lower = name.toLowerCase()
+    if (lower.includes('miriam')) return miriamPhoto
+    if (lower.includes('gro')) return groPhoto
+    return null
+  }
+
   return (
     <>
       <Hero />
@@ -167,25 +177,35 @@ export default function HomePage() {
             </AnimateIn>
 
             <AnimateIn variant="fadeLeft" delay={150}>
-              <div className="grid grid-cols-3 gap-4">
-                {(hStats || []).map((stat, index) => (
-                  <div key={`${stat.label}-${index}`} className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-5 text-center">
-                    <EditableText
-                      as="div"
-                      path={`homeStats.${index}.value`}
-                      value={stat.value}
-                      onCommit={createStatCommitter(index, 'value')}
-                      className="font-heading text-2xl lg:text-3xl font-bold text-white mb-1"
-                    />
-                    <EditableText
-                      as="div"
-                      path={`homeStats.${index}.label`}
-                      value={stat.label}
-                      onCommit={createStatCommitter(index, 'label')}
-                      className="text-blue-200 text-xs font-medium"
-                    />
-                  </div>
-                ))}
+              <div className="space-y-4">
+                <div className="rounded-2xl overflow-hidden border border-white/15 bg-white/5">
+                  <img
+                    src={metricsTeamPhoto}
+                    alt="Global Working team i samarbeid med norske arbeidsgivere"
+                    className="w-full h-44 object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  {(hStats || []).map((stat, index) => (
+                    <div key={`${stat.label}-${index}`} className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-5 text-center">
+                      <EditableText
+                        as="div"
+                        path={`homeStats.${index}.value`}
+                        value={stat.value}
+                        onCommit={createStatCommitter(index, 'value')}
+                        className="font-heading text-2xl lg:text-3xl font-bold text-white mb-1"
+                      />
+                      <EditableText
+                        as="div"
+                        path={`homeStats.${index}.label`}
+                        value={stat.label}
+                        onCommit={createStatCommitter(index, 'label')}
+                        className="text-blue-200 text-xs font-medium"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </AnimateIn>
           </div>
@@ -295,9 +315,18 @@ export default function HomePage() {
                 <AnimateIn key={`${c.name}-${i}`} variant="fadeUp" delay={i * 100}>
                   <div className="bg-surface rounded-2xl p-6 border border-gray-100 text-left">
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary-200">
-                        <span className="font-heading font-bold text-white text-lg">{c.name.charAt(0)}</span>
-                      </div>
+                      {resolveContactPhoto(c.name) ? (
+                        <img
+                          src={resolveContactPhoto(c.name)}
+                          alt={c.name}
+                          className="w-12 h-12 rounded-xl object-cover shrink-0 shadow-lg shadow-primary-200"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary-200">
+                          <span className="font-heading font-bold text-white text-lg">{c.name.charAt(0)}</span>
+                        </div>
+                      )}
                       <div>
                         <EditableText
                           as="div"

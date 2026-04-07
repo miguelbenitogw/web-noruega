@@ -1,8 +1,8 @@
-import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import healthTeamPhoto from '../assets/helse/health-team.jpg'
 
 export default function Helsesektor() {
   const c = useContent('helsesektorComp')
@@ -127,6 +127,18 @@ export default function Helsesektor() {
                   <footer className="mt-3 font-semibold text-ink">
                     — <EditableText as="span" path="helsesektorComp.blockquote.author" value={c.blockquote.author} className="inline" />
                   </footer>
+                  {c.blockquote.ctaHref && c.blockquote.ctaLabel && (
+                    <a
+                      href={c.blockquote.ctaHref}
+                      onClick={() => trackEvent('cta_click', { location: 'helsesektor_testimonial', cta: 'les_hele_intervjuet' })}
+                      className="mt-4 inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
+                    >
+                      <EditableText as="span" path="helsesektorComp.blockquote.ctaLabel" value={c.blockquote.ctaLabel} className="inline" />
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </a>
+                  )}
                 </blockquote>
               )}
 
@@ -147,8 +159,8 @@ export default function Helsesektor() {
             <div className="relative">
               <div className="rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src={img(IMAGES.helsesektor, 900)}
-                  alt="Helsepersonell i Norge rekruttert av Global Working"
+                  src={healthTeamPhoto}
+                  alt="Helsepersonell i opplæring gjennom Global Working"
                   className="w-full object-cover"
                   loading="lazy"
                   width="640"

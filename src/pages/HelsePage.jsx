@@ -97,7 +97,7 @@ export default function HelsePage() {
 
                     <div className="bg-surface rounded-2xl border border-gray-100 p-7 lg:p-8">
                       <h3 className="font-heading text-xl font-bold text-ink mb-3">
-                        Fase {phase.number}:{' '}
+                        Fase {phase.number}{' '}
                         <EditableText
                           as="span"
                           path={`helsePhases.phases.${i}.title`}

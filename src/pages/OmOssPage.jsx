@@ -4,14 +4,23 @@ import OmOss from '../components/OmOss'
 import FAQ from '../components/FAQ'
 import PageEndNav from '../components/PageEndNav'
 import useContent from '../hooks/useContent'
+import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
+import groPhoto from '../assets/team/gro-anette.jpg'
 
 function TeamCard({ member, delay }) {
+  const normalizedName = (member.name || '').toLowerCase()
+  let portrait = null
+
+  if (normalizedName.includes('miriam')) portrait = miriamPhoto
+  else if (normalizedName.includes('gro')) portrait = groPhoto
+  else if (member.hasImage) portrait = IMAGES.ceoPhoto
+
   return (
     <AnimateIn variant="fadeUp" delay={delay}>
       <div className="flex flex-col items-center text-center p-6 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-shadow">
-        {member.hasImage ? (
+        {portrait ? (
           <img
-            src={IMAGES.ceoPhoto}
+            src={portrait}
             alt={member.name}
             className="w-24 h-24 rounded-full object-cover mb-4 ring-4 ring-primary-600/20"
             loading="lazy"
