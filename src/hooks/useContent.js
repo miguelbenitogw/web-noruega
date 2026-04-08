@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { readContentOverrides, CONTENT_OVERRIDE_EVENT } from '../lib/contentOverrides'
+import { readContentOverrides, sanitizeContentOverrides, CONTENT_OVERRIDE_EVENT } from '../lib/contentOverrides'
 import { fetchPublishedContentSnapshot } from '../lib/contentRemote'
 import { getContentLocale, shouldUseSupabaseContent } from '../lib/supabaseClient'
 import defaultContent from '../data/siteContent'
@@ -7,7 +7,10 @@ import { deepMergeContent } from '../lib/contentMappers.js'
 import { loadPublishedPageForPath, resolveRouteContext } from '../lib/contentRuntime.js'
 
 export default function useContent(section) {
-  const [overrides, setOverrides] = useState(() => readContentOverrides())
+  const [overrides, setOverrides] = useState(() => {
+    sanitizeContentOverrides()
+    return readContentOverrides()
+  })
   const [remoteSiteContent, setRemoteSiteContent] = useState(null)
   const [remotePageState, setRemotePageState] = useState({ pathname: null, content: null })
   const currentPathname = typeof window !== 'undefined' ? window.location.pathname : '/'

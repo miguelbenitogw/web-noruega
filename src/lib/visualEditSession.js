@@ -89,13 +89,16 @@ const buildDefaultSnapshotResult = async (mode) => {
   if (!hasObjectValues(overrides)) return null
 
   if (mode === 'publish') {
-    await saveContentSnapshot(cloneValue(overrides), { status: 'draft' })
+    const savedDraft = await saveContentSnapshot(cloneValue(overrides), { status: 'draft' })
+    if (!savedDraft) throw new Error('Kunne ikke lagre kladd til Supabase før publisering. Sjekk tilkobling og tilgang.')
     const published = await publishDraftSnapshot()
-    return published ? { type: 'snapshot', status: 'published', snapshot: published } : null
+    if (!published) throw new Error('Publisering til Supabase mislyktes. Sjekk tilkobling og tilgang.')
+    return { type: 'snapshot', status: 'published', snapshot: published }
   }
 
   const draft = await saveContentSnapshot(cloneValue(overrides), { status: 'draft' })
-  return draft ? { type: 'snapshot', status: 'draft', snapshot: draft } : null
+  if (!draft) throw new Error('Kunne ikke lagre kladd til Supabase. Sjekk tilkobling og tilgang.')
+  return { type: 'snapshot', status: 'draft', snapshot: draft }
 }
 
 export const getVisualEditState = () => {

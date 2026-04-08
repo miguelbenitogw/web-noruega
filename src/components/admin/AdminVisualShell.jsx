@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNewsCollection } from '../../hooks/useNews'
 import { ADMIN_PREVIEW_MODES, getAdminPreviewConfig } from '../../lib/adminSectionRegistry'
 import {
+  clearVisualEditLocalChanges,
   getVisualEditState,
   publishVisualEditChanges,
   resetVisualEditState,
@@ -82,6 +83,10 @@ export default function AdminVisualShell({ onSignOut }) {
     await publishVisualEditChanges()
   }
 
+  const handleClearCache = () => {
+    clearVisualEditLocalChanges()
+  }
+
   const handleChangePreviewMode = (modeId) => {
     setActivePreviewMode(modeId)
     setActiveTab('sections')
@@ -97,6 +102,7 @@ export default function AdminVisualShell({ onSignOut }) {
         headerTitle={previewConfig.topbarTitle}
         onChangeArticle={setSelectedArticleSlug}
         onChangePreviewMode={handleChangePreviewMode}
+        onClearCache={handleClearCache}
         onExit={handleExit}
         onPublish={handlePublish}
         onSave={handleSave}

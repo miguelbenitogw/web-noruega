@@ -21,6 +21,7 @@ export default function AdminVisualTopbar({
   headerTitle,
   onChangeArticle,
   onChangePreviewMode,
+  onClearCache,
   onExit,
   onPublish,
   onSave,
@@ -100,6 +101,17 @@ export default function AdminVisualTopbar({
               </>
             ) : null}
 
+            {showSessionActions && (
+              <button
+                type="button"
+                onClick={onClearCache}
+                disabled={isBusy || !session.hasPendingChanges}
+                className="inline-flex items-center justify-center rounded-2xl border border-amber-400/20 bg-amber-500/10 px-4 py-2.5 text-sm font-semibold text-amber-100 transition hover:bg-amber-500/20 disabled:cursor-not-allowed disabled:opacity-40"
+                title="Slett lokale endringer fra nettleseren (gw_content_overrides_v1)"
+              >
+                Tøm lokal cache
+              </button>
+            )}
             <button
               type="button"
               onClick={onExit}

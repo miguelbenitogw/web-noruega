@@ -119,4 +119,28 @@ export const importContentOverrides = (jsonString) => {
   }
 }
 
+// Patterns that indicate encoding corruption: a lone '?' replacing a Norwegian
+// special character (ø, å, æ) in the middle of a word.  We look for '?' that
+// is preceded and followed by alphanumeric characters, which is never valid in
+// normal Norwegian prose (question marks only appear at the end of sentences).
+const CORRUPTION_RE = /[a-zA-Z]\?[a-zA-Z]/
+
+export const hasCorruptedOverrides = () => {
+  if (!isBrowser()) return false
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY)
+    if (!raw) return false
+    return CORRUPTION_RE.test(raw)
+  } catch {
+    return false
+  }
+}
+
+export const sanitizeContentOverrides = () => {
+  if (!isBrowser()) return false
+  if (!hasCorruptedOverrides()) return false
+  clearContentOverrides()
+  return true
+}
+
 export const CONTENT_OVERRIDE_EVENT = UPDATE_EVENT

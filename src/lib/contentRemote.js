@@ -73,7 +73,8 @@ const upsertSnapshot = async (content, status, locale) => {
     .select('id, locale, status, content, updated_at, published_at')
     .maybeSingle()
 
-  if (error || !data) return null
+  if (error) throw new Error(error.message || 'Supabase snapshot upsert mislyktes.')
+  if (!data) return null
   return normalizeSnapshot(data)
 }
 
