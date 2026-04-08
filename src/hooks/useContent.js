@@ -23,10 +23,6 @@ export default function useContent(section) {
   }, [])
 
   useEffect(() => {
-    if (section) {
-      return
-    }
-
     if (!shouldUseSupabaseContent()) {
       return
     }
@@ -45,7 +41,7 @@ export default function useContent(section) {
     return () => {
       cancelled = true
     }
-  }, [section])
+  }, [])
 
   useEffect(() => {
     if (!section) {
@@ -72,13 +68,16 @@ export default function useContent(section) {
     }
   }, [currentPathname, routeContext.isAdmin, routeContext.isNewsDetail, routeContext.sectionRoute, section])
 
-  const resolvedRemoteContent = section
+  const pageContent = section
     ? remotePageState.pathname === currentPathname
       ? remotePageState.content
       : null
-    : remoteSiteContent
+    : null
 
-  const merged = deepMergeContent(deepMergeContent(defaultContent, resolvedRemoteContent || {}), overrides)
+  const merged = deepMergeContent(
+    deepMergeContent(deepMergeContent(defaultContent, remoteSiteContent || {}), pageContent || {}),
+    overrides
+  )
   if (section) return merged[section] ?? defaultContent[section] ?? {}
   return merged
 }
