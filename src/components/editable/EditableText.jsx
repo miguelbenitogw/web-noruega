@@ -159,6 +159,12 @@ export default function EditableText({
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
             onBlur={saveDraft}
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') {
+                event.preventDefault()
+                cancelEditing()
+              }
+            }}
             className={`w-full min-h-[140px] rounded-2xl border border-primary-300 bg-white px-4 py-3 text-ink shadow-sm outline-none ring-0 focus:border-primary-500 focus:shadow-md ${inputClassName}`}
             placeholder={placeholder}
           />
@@ -186,9 +192,20 @@ export default function EditableText({
     )
   }
 
-  const displayValue = resolvedValue === undefined || resolvedValue === null || resolvedValue === ''
-    ? placeholder
-    : resolvedValue
+  const isEmpty = resolvedValue === undefined || resolvedValue === null || resolvedValue === ''
+  const displayValue = isEmpty ? placeholder : resolvedValue
+
+  const renderDisplayValue = () => {
+    if (isEmpty || !multiline || typeof displayValue !== 'string') return displayValue
+    const lines = displayValue.split('\n')
+    if (lines.length <= 1) return displayValue
+    return lines.map((line, i) => (
+      <span key={i}>
+        {line}
+        {i < lines.length - 1 && <br />}
+      </span>
+    ))
+  }
 
   return (
     <Component
@@ -212,7 +229,7 @@ export default function EditableText({
       data-editable-active={enabled ? 'true' : 'false'}
       title={enabled ? `Rediger ${path}` : undefined}
     >
-      {displayValue}
+      {renderDisplayValue()}
       {enabled && (
         <span className="ml-2 inline-flex align-middle rounded-full border border-primary-200 bg-white/90 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary-600 shadow-sm">
           Edit
