@@ -162,6 +162,8 @@ export const saveVisualEditDraft = async () => {
     const snapshotResult = await buildDefaultSnapshotResult('draft')
     if (snapshotResult) results.unshift({ id: 'snapshot', result: snapshotResult })
 
+    clearContentOverrides()
+
     setState({
       isSaving: false,
       lastSavedAt: new Date().toISOString(),
@@ -185,6 +187,8 @@ export const publishVisualEditChanges = async () => {
     const results = await collectPersistorResults('publish')
     const snapshotResult = await buildDefaultSnapshotResult('publish')
     if (snapshotResult) results.unshift({ id: 'snapshot', result: snapshotResult })
+
+    clearContentOverrides()
 
     setState({
       isPublishing: false,

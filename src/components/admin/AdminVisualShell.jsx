@@ -76,11 +76,19 @@ export default function AdminVisualShell({ onSignOut }) {
   }
 
   const handleSave = async () => {
-    await saveVisualEditDraft()
+    try {
+      await saveVisualEditDraft()
+    } catch {
+      // Error state is already managed by visualEditSession.
+    }
   }
 
   const handlePublish = async () => {
-    await publishVisualEditChanges()
+    try {
+      await publishVisualEditChanges()
+    } catch {
+      // Error state is already managed by visualEditSession.
+    }
   }
 
   const handleClearCache = () => {
