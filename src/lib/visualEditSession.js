@@ -86,15 +86,19 @@ const collectPersistorResults = async (methodName) => {
 
 const buildDefaultSnapshotResult = async (mode) => {
   const overrides = readContentOverrides()
-  if (!hasObjectValues(overrides)) return null
+  const hasLocal = hasObjectValues(overrides)
 
   if (mode === 'publish') {
-    const savedDraft = await saveContentSnapshot(cloneValue(overrides), { status: 'draft' })
-    if (!savedDraft) throw new Error('Kunne ikke lagre kladd til Supabase før publisering. Sjekk tilkobling og tilgang.')
+    if (hasLocal) {
+      const savedDraft = await saveContentSnapshot(cloneValue(overrides), { status: 'draft' })
+      if (!savedDraft) throw new Error('Kunne ikke lagre kladd til Supabase før publisering. Sjekk tilkobling og tilgang.')
+    }
     const published = await publishDraftSnapshot()
     if (!published) throw new Error('Publisering til Supabase mislyktes. Sjekk tilkobling og tilgang.')
     return { type: 'snapshot', status: 'published', snapshot: published }
   }
+
+  if (!hasLocal) return null
 
   const draft = await saveContentSnapshot(cloneValue(overrides), { status: 'draft' })
   if (!draft) throw new Error('Kunne ikke lagre kladd til Supabase. Sjekk tilkobling og tilgang.')
