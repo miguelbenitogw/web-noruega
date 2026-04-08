@@ -10,7 +10,7 @@ import metricsTeamPhoto from '../assets/home/metrics-team.jpg'
 import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
 import groPhoto from '../assets/team/gro-anette.jpg'
 
-function SummaryCard({ section, delay, index, sections }) {
+function SummaryCard({ section, delay, index, sections, readMoreLabel }) {
   const titleCommitter = createArrayItemCommitter({
     basePath: 'homeServices.sections',
     fallbackItems: sections,
@@ -52,7 +52,7 @@ function SummaryCard({ section, delay, index, sections }) {
           className="text-gray-500 text-sm leading-relaxed mb-4"
         />
         <span className="inline-flex items-center gap-1.5 text-primary-600 font-semibold text-sm">
-          Les mer
+          {readMoreLabel}
           <svg
             width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
             className="group-hover:translate-x-1 transition-transform" aria-hidden="true"
@@ -134,7 +134,7 @@ export default function HomePage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {(hs.sections || []).map((section, i) => (
-              <SummaryCard key={section.href} section={section} delay={i * 100} index={i} sections={hs.sections || []} />
+              <SummaryCard key={section.href} section={section} delay={i * 100} index={i} sections={hs.sections || []} readMoreLabel={hs.readMoreLabel} />
             ))}
           </div>
         </div>
@@ -268,7 +268,7 @@ export default function HomePage() {
                       onClick={() => trackEvent('news_open', { slug: article.slug, location: 'landing' })}
                       className="inline-flex items-center gap-1.5 text-primary-600 font-semibold text-sm hover:text-primary-700 transition-colors"
                     >
-                      Les mer
+                      {nyheter.readMoreLabel || 'Les mer'}
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                       </svg>

@@ -2,18 +2,9 @@
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 
-const allSections = [
-  { label: 'Rekrutteringsmodell', href: '/vr-rekrutteringsmodell' },
-  { label: 'Helsesektor', href: '/helse' },
-  { label: 'Nyheter', href: '/nyheter' },
-  { label: 'Talentportalen', href: '/talentportalen' },
-  { label: 'Om oss', href: '/om-oss' },
-  { label: 'Kontakt', href: '/kontakt' },
-]
-
 export default function PageEndNav({ current }) {
   const nav = useContent('pageEndNav')
-  const otherSections = allSections.filter(s => s.href !== current)
+  const otherSections = (nav.sections || []).filter(s => s.href !== current)
 
   return (
     <section className="py-16 lg:py-20 bg-surface border-t border-gray-100">

@@ -23,7 +23,7 @@ export default function RekrutteringPage() {
               <ol className="flex items-center gap-2 text-sm text-blue-200">
                 <li><a href="/" className="hover:text-white transition-colors">Hjem</a></li>
                 <li aria-hidden="true">/</li>
-                <li className="text-white font-medium">Vår rekrutteringsmodell</li>
+                <li className="text-white font-medium">{hero.breadcrumb}</li>
               </ol>
             </nav>
             <EditableText

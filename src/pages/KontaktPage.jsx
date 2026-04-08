@@ -16,7 +16,7 @@ export default function KontaktPage() {
             <nav className="text-blue-200/70 text-sm mb-6" aria-label="Brødsmuler">
               <a href="/" className="hover:text-white transition-colors">Hjem</a>
               <span className="mx-2">/</span>
-              <span className="text-white">Kontakt</span>
+              <span className="text-white">{hero.breadcrumb}</span>
             </nav>
             <EditableText
               as="h1"

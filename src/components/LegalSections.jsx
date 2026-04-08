@@ -1,3 +1,6 @@
+// TODO: DEAD CODE — This component is not imported or rendered anywhere.
+// PersonvernPage, VilkarPage, and CookiesPage replaced it with dedicated pages.
+// Safe to delete once confirmed by the team.
 export default function LegalSections() {
   return (
     <section className="bg-white border-t border-gray-100" aria-label="Juridisk informasjon">

@@ -150,7 +150,7 @@ export default function Nyheter() {
     return (
       <section id="nyheter" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="nyheter-heading">
         <div className="container-xl">
-          <p className="text-gray-500">Laster nyheter...</p>
+          <p className="text-gray-500">{nyheter.loadingLabel}</p>
         </div>
       </section>
     )
@@ -215,7 +215,7 @@ export default function Nyheter() {
                 <span aria-hidden="true">·</span>
                 <span>
                   <EditableText as="span" path={`news.${featured.slug}.readTime`} value={featuredReadTime} className="inline" />
-                  {' '}lesetid
+                  {' '}{nyheter.readTimeSuffix}
                 </span>
               </div>
               <EditableText
@@ -236,7 +236,7 @@ export default function Nyheter() {
                 onClick={() => trackEvent('cta_click', { location: 'nyheter', cta: 'les_mer_featured' })}
                 className="mt-6 inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700 transition-colors text-sm"
               >
-                Les mer
+                {nyheter.readMoreLabel}
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
@@ -282,7 +282,7 @@ export default function Nyheter() {
                     onClick={() => trackEvent('cta_click', { location: 'nyheter', cta: `les_mer_${article.slug}` })}
                     className="text-primary-600 font-semibold text-sm hover:text-primary-700 transition-colors"
                   >
-                    Les mer →
+                    {nyheter.readMoreLabel} →
                   </a>
                 </article>
               )
@@ -310,7 +310,7 @@ export default function Nyheter() {
                   <span aria-hidden="true">·</span>
                   <span>
                     <EditableText as="span" path={`news.${article.slug}.readTime`} value={readTime} className="inline" />
-                    {' '}lesetid
+                    {' '}{nyheter.readTimeSuffix}
                   </span>
                 </div>
                 <EditableText
@@ -331,7 +331,7 @@ export default function Nyheter() {
                   onClick={() => trackEvent('news_read_more_click', { slug: article.slug })}
                   className="inline-flex mt-4 text-primary-600 text-sm font-semibold hover:text-primary-700"
                 >
-                  Les artikkel
+                  {nyheter.readArticleLabel}
                 </a>
               </article>
             )

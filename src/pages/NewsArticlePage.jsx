@@ -9,6 +9,7 @@ import EditableText, { readOverrideValue } from '../components/editable/Editable
 import { CONTENT_OVERRIDE_EVENT, getByPath, readContentOverrides } from '../lib/contentOverrides'
 import { registerVisualEditPersistor } from '../lib/visualEditSession'
 import { upsertNews } from '../lib/contentServices'
+import useContent from '../hooks/useContent'
 
 const cloneNewsValue = (value) => {
   if (Array.isArray(value)) return value.map(cloneNewsValue)
@@ -111,6 +112,7 @@ const buildNewsPayload = (article, mode = 'draft') => {
 
 export default function NewsArticlePage({ slug }) {
   const { article, articles: allNews, loading } = useNewsArticle(slug)
+  const nyheter = useContent('nyheterSection')
   const overrideTick = useOverrideRefresh()
 
   const effectiveArticle = useMemo(() => {
@@ -163,8 +165,8 @@ export default function NewsArticlePage({ slug }) {
     return (
       <section className="py-24 bg-white">
         <div className="container-xl">
-          <h1 className="font-heading text-3xl font-bold text-ink mb-4">Laster nyhet</h1>
-          <p className="text-gray-600">Henter publisert innhold...</p>
+          <h1 className="font-heading text-3xl font-bold text-ink mb-4">{nyheter.loadingTitle}</h1>
+          <p className="text-gray-600">{nyheter.loadingDescription}</p>
         </div>
       </section>
     )
@@ -174,10 +176,10 @@ export default function NewsArticlePage({ slug }) {
     return (
       <section className="py-24 bg-white">
         <div className="container-xl">
-          <h1 className="font-heading text-3xl font-bold text-ink mb-4">Nyhet ikke funnet</h1>
-          <p className="text-gray-600 mb-6">Artikkelen finnes ikke eller er ikke publisert.</p>
+          <h1 className="font-heading text-3xl font-bold text-ink mb-4">{nyheter.notFoundTitle}</h1>
+          <p className="text-gray-600 mb-6">{nyheter.notFoundDescription}</p>
           <a href="/" className="text-primary-600 font-semibold hover:text-primary-700">
-            Tilbake til forsiden
+            {nyheter.backToNewsLabel || 'Tilbake til forsiden'}
           </a>
         </div>
       </section>
@@ -188,7 +190,7 @@ export default function NewsArticlePage({ slug }) {
     <section className="py-16 lg:py-24 bg-white">
       <div className="container-xl max-w-4xl">
         <a href="/nyheter#nyheter-arkiv" className="inline-flex items-center text-primary-600 text-sm font-semibold hover:text-primary-700 mb-8">
-          ← Tilbake til nyheter
+          ← {nyheter.backToNewsLabel}
         </a>
 
         <div className="mb-6 flex items-center gap-3 text-sm text-gray-500">
@@ -202,7 +204,7 @@ export default function NewsArticlePage({ slug }) {
           <span aria-hidden="true">·</span>
           <span>
             <EditableText as="span" path={`news.${effectiveArticle.slug}.readTime`} value={effectiveArticle.readTime} className="inline" />
-            {' '}lesetid
+            {' '}{nyheter.readTimeSuffix}
           </span>
         </div>
 
@@ -234,7 +236,7 @@ export default function NewsArticlePage({ slug }) {
             aria-label="Innholdsoversikt"
             className="mb-10 rounded-2xl border border-gray-100 bg-surface px-5 py-4"
           >
-            <p className="text-sm font-semibold text-ink mb-3">Hopp til seksjon</p>
+            <p className="text-sm font-semibold text-ink mb-3">{nyheter.jumpToSectionLabel}</p>
             <div className="flex flex-wrap gap-2">
               {sections.map((section) => (
                 <a
@@ -258,7 +260,7 @@ export default function NewsArticlePage({ slug }) {
 
         {!!related.length && (
           <div className="mt-14 pt-10 border-t border-gray-100">
-            <h2 className="font-heading text-2xl font-bold text-ink mb-5">Relaterte nyheter</h2>
+            <h2 className="font-heading text-2xl font-bold text-ink mb-5">{nyheter.relatedLabel}</h2>
             <div className="grid md:grid-cols-3 gap-4">
               {related.map((item) => (
                 <a

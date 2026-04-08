@@ -105,11 +105,13 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-blue-300 text-sm">
-          <p>© {new Date().getFullYear()} Global Working Norge AS. Alle rettigheter forbeholdt.</p>
+          <p>© {new Date().getFullYear()} {c.copyright}</p>
           <div className="flex gap-6">
-            <a href="/personvern" className="hover:text-white transition-colors">Personvern</a>
-            <a href="/vilkar" className="hover:text-white transition-colors">Vilkår</a>
-            <a href="/cookies" className="hover:text-white transition-colors">Informasjonskapsler</a>
+            {(c.bottomLinks || []).map((link) => (
+              <a key={link.href} href={link.href} className="hover:text-white transition-colors">
+                {link.label}
+              </a>
+            ))}
           </div>
         </div>
       </div>

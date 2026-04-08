@@ -3,16 +3,16 @@ import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter } from './editable/EditableText'
 
-function AccordionItem({ faq, index, basePath, isOpen, onToggle }) {
+function AccordionItem({ faq, index, basePath, isOpen, onToggle, allItems }) {
   const commitQ = createArrayItemCommitter({
     basePath,
-    fallbackItems: [],
+    fallbackItems: allItems,
     index,
     field: 'q',
   })
   const commitA = createArrayItemCommitter({
     basePath,
-    fallbackItems: [],
+    fallbackItems: allItems,
     index,
     field: 'a',
   })
@@ -99,6 +99,7 @@ export default function FAQ() {
                   faq={faq}
                   index={i}
                   basePath="faq.items"
+                  allItems={c.items || []}
                   isOpen={openIndex === i}
                   onToggle={() => setOpenIndex(openIndex === i ? -1 : i)}
                 />

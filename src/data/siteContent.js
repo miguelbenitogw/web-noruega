@@ -19,6 +19,7 @@ const siteContent = {
     label: 'Våre tjenester',
     heading: 'Vårt tilbud til norske arbeidsgivere',
     description: 'Vi kobler norske arbeidsgivere med kvalifiserte fagfolk fra Sør-Europa – forberedt med språk, kultur og fagkompetanse.',
+    readMoreLabel: 'Les mer',
     sections: [
       { title: 'Vår rekrutteringsmodell', description: 'Vi finner, forbereder og følger opp fagfolk fra Sør-Europa til trygg oppstart i Norge. Opptil 600 timer norskopplæring.', href: '/vr-rekrutteringsmodell' },
       { title: 'Helsesektor', description: 'Norges største leverandør av sykepleiere utenfra Skandinavia. Spesialisert helsefaglig forberedelse siden 2014.', href: '/helse' },
@@ -148,6 +149,7 @@ const siteContent = {
   ],
 
   rekrutteringHero: {
+    breadcrumb: 'Vår rekrutteringsmodell',
     h1: 'Hva gjør Global Working?',
     description: 'Vi finner og presenterer de mest relevante menneskene til din virksomhet, og følger prosessen helt frem til trygg oppstart.',
   },
@@ -163,6 +165,7 @@ const siteContent = {
   },
 
   helseHero: {
+    breadcrumb: 'Helsesektor',
     h1: 'Tjenester for helseinstitusjoner',
     description: 'Vi forbereder helsepersonell for den norske helsesektoren – fra språkopplæring til trygg oppstart i jobb.',
   },
@@ -207,6 +210,7 @@ const siteContent = {
   },
 
   omOssHero: {
+    breadcrumb: 'Om oss',
     h1: 'Om oss',
     description: 'Global Working er en spesialisert aktør innen språkopplæring og internasjonal rekruttering.',
   },
@@ -232,6 +236,7 @@ const siteContent = {
   },
 
   talentportalenHero: {
+    breadcrumb: 'Talentportalen',
     h1: 'Kandidatportal for arbeidsgivere',
     description: 'Se tilgjengelige kandidater og inviter til intervju direkte gjennom vår nye plattform.',
   },
@@ -259,11 +264,13 @@ const siteContent = {
   },
 
   kontaktHero: {
+    breadcrumb: 'Kontakt',
     h1: 'Kontakt oss',
     description: 'Vi er tilgjengelige for spørsmål om rekruttering, samarbeid og kandidatportal. Ta kontakt – vi svarer normalt innen 1 virkedag.',
   },
 
   nyheterHero: {
+    breadcrumb: 'Nyheter',
     h1: 'Nyheter & Artikler',
     description: 'Følg med på siste nytt fra Global Working – artikler, oppdateringer og historier fra vårt arbeid med rekruttering og språkopplæring.',
   },
@@ -408,6 +415,12 @@ const siteContent = {
 
   footer: {
     description: 'Rekruttering og språkopplæring for kvalifiserte fagfolk til det norske arbeidsmarkedet, med strukturert oppfølging fra første kontakt til oppstart.',
+    copyright: 'Global Working Norge AS. Alle rettigheter forbeholdt.',
+    bottomLinks: [
+      { label: 'Personvern', href: '/personvern' },
+      { label: 'Vilkår', href: '/vilkar' },
+      { label: 'Informasjonskapsler', href: '/cookies' },
+    ],
     social: [
       { label: 'LinkedIn', href: 'https://www.linkedin.com/company/globalworking-norge' },
       { label: 'Instagram', href: 'https://www.instagram.com/globalworkingnorge' },
@@ -441,6 +454,14 @@ const siteContent = {
     description: 'Du treffer oss på e-post eller telefon, eller ved å fylle ut skjemaet under. Vi tar kontakt så snart vi har mulighet.',
     officeTitle: 'Hovedkontor Alicante',
     officeAddress: 'Carrer de Periodista Pirula Arderius, 4, 03001 Alicante, España',
+    mapsLabel: 'Se i Google Maps',
+    formTitle: 'Send oss en melding',
+    formSubtitle: 'Vi svarer normalt innen 1 virkedag.',
+    successTitle: 'Takk for henvendelsen!',
+    successDescription: 'Vi kontakter deg innen 1 virkedag.',
+    successReset: 'Send ny melding',
+    submitLabel: 'Send melding',
+    sendingLabel: 'Sender...',
   },
 
   legalPersonvern: {
@@ -532,11 +553,31 @@ const siteContent = {
     heading: 'Siste nytt fra Global Working',
     headingPreview: 'Siste nytt',
     ctaLabel: 'Se alle nyheter',
+    loadingLabel: 'Laster nyheter...',
+    readTimeSuffix: 'lesetid',
+    readMoreLabel: 'Les mer',
+    readArticleLabel: 'Les artikkel',
+    backToNewsLabel: 'Tilbake til nyheter',
+    relatedLabel: 'Relaterte nyheter',
+    jumpToSectionLabel: 'Hopp til seksjon',
+    notFoundTitle: 'Nyhet ikke funnet',
+    notFoundDescription: 'Artikkelen finnes ikke eller er ikke publisert.',
+    loadingTitle: 'Laster nyhet',
+    loadingDescription: 'Henter publisert innhold...',
   },
 
   pageEndNav: {
+    homeLabel: 'Hjem',
     backLabel: 'Tilbake til forsiden',
     contactLabel: 'Kontakt oss',
+    sections: [
+      { label: 'Rekrutteringsmodell', href: '/vr-rekrutteringsmodell' },
+      { label: 'Helsesektor', href: '/helse' },
+      { label: 'Nyheter', href: '/nyheter' },
+      { label: 'Talentportalen', href: '/talentportalen' },
+      { label: 'Om oss', href: '/om-oss' },
+      { label: 'Kontakt', href: '/kontakt' },
+    ],
   },
 
   cookieConsent: {
@@ -544,6 +585,14 @@ const siteContent = {
     description: 'Vi bruker informasjonskapsler for å forbedre opplevelsen på nettsiden vår. Ved å godta samtykker du til bruk av informasjonskapsler i samsvar med vår personvernerklæring.',
     acceptLabel: 'Godta alle',
     declineLabel: 'Avslå',
+  },
+
+  partners: {
+    label: 'Samarbeidspartnere',
+    heading: 'Vi jobber med',
+    row1Alt: 'Partnere innen helse og rekruttering',
+    row2Alt: 'Norske kommune- og helsepartnere',
+    caption: 'Vi samarbeider med en rekke norske kommuner og helseforetak over hele landet.',
   },
 
   spanskAlicanteTeaserExtra: {

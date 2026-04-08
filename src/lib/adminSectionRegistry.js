@@ -292,7 +292,11 @@ const buildRekrutteringSections = () => [
     fields: [
       field('rekrutteringComp.label', 'Fortekst'),
       field('rekrutteringComp.heading', 'Tittel'),
-      field('rekrutteringComp.description', 'Beskrivelse'),
+      field('rekrutteringComp.p1', 'Avsnitt 1'),
+      field('rekrutteringComp.p2', 'Avsnitt 2'),
+      field('rekrutteringComp.badge', 'Merke'),
+      field('rekrutteringComp.steps.0.title', 'Steg 1 · tittel'),
+      field('rekrutteringComp.steps.0.description', 'Steg 1 · beskrivelse'),
     ],
   }),
   section('rekruttering-collab', 'Samarbeidsmodell', {

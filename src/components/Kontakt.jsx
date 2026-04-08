@@ -140,7 +140,7 @@ export default function Kontakt() {
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
-                {contacts.map((contact, i) => {
+                {(contacts || []).map((contact, i) => {
                   const commitName = createArrayItemCommitter({
                     basePath: 'contacts',
                     fallbackItems: contacts,
@@ -216,7 +216,7 @@ export default function Kontakt() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 mt-4 text-xs font-bold uppercase tracking-wider text-white hover:text-blue-200 transition-colors"
                     >
-                      Se i Google Maps
+                      {c.mapsLabel}
                     </a>
                   </div>
                 </div>
@@ -228,20 +228,20 @@ export default function Kontakt() {
             <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 lg:p-10">
               {status === 'sent' ? (
                 <div className="flex flex-col items-center justify-center text-center py-8 gap-4">
-                  <h3 className="font-heading text-xl font-bold text-ink">Takk for henvendelsen!</h3>
-                  <p className="text-gray-500 leading-relaxed">Vi kontakter deg innen 1 virkedag.</p>
+                  <h3 className="font-heading text-xl font-bold text-ink">{c.successTitle}</h3>
+                  <p className="text-gray-500 leading-relaxed">{c.successDescription}</p>
                   <button
                     onClick={reset}
                     className="mt-2 text-primary-600 font-semibold text-sm hover:text-primary-700 transition-colors cursor-pointer"
                   >
-                    Send ny melding
+                    {c.successReset}
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate className="space-y-5" aria-label="Kontaktskjema">
                   <div>
-                    <p className="font-heading font-bold text-ink text-xl mb-1">Send oss en melding</p>
-                    <p className="text-gray-400 text-sm">Vi svarer normalt innen 1 virkedag.</p>
+                    <p className="font-heading font-bold text-ink text-xl mb-1">{c.formTitle}</p>
+                    <p className="text-gray-400 text-sm">{c.formSubtitle}</p>
                   </div>
 
                   {status === 'error' && (
@@ -347,7 +347,7 @@ export default function Kontakt() {
                     disabled={status === 'sending'}
                     className="w-full py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    {status === 'sending' ? 'Sender...' : 'Send melding'}
+                    {status === 'sending' ? c.sendingLabel : c.submitLabel}
                   </button>
                 </form>
               )}
