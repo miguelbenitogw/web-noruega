@@ -27,6 +27,7 @@ const MIN_FORM_FILL_MS = 3000
 export default function Kontakt() {
   const contacts = useContent('contacts')
   const c = useContent('kontaktComp')
+  const [expandedPhoto, setExpandedPhoto] = useState(null)
   const [form, setForm] = useState({
     from_name: '',
     from_email: '',
@@ -169,7 +170,12 @@ export default function Kontakt() {
                           <img
                             src={resolveContactPhoto(contact.name)}
                             alt={contact.name}
-                            className="w-12 h-12 rounded-xl object-cover shrink-0 shadow-lg shadow-primary-200"
+                            onClick={() => setExpandedPhoto(expandedPhoto === i ? null : i)}
+                            className={`rounded-xl object-cover shrink-0 shadow-lg shadow-primary-200 cursor-pointer transition-all duration-300 hover:scale-110 ${
+                              expandedPhoto === i
+                                ? 'w-40 h-40 rounded-2xl shadow-2xl'
+                                : 'w-12 h-12'
+                            }`}
                           />
                         ) : (
                           <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary-200">
