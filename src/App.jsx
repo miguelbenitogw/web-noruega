@@ -41,7 +41,7 @@ export default function App() {
   const searchParams = useMemo(() => new URLSearchParams(currentPath.split('?')[1] || ''), [currentPath])
   const isVisualEditRequested = searchParams.get('edit') === '1'
   const isEditableRoute = !routeContext.isAdmin
-    && (['home', 'nyheter', 'helse', 'spansk-i-alicante', 'spansk-i-alicante-hvorfor'].includes(sectionRoute) || Boolean(newsSlug))
+    && (['home', 'nyheter', 'helse', 'rekruttering', 'spansk-i-alicante', 'spansk-i-alicante-hvorfor', 'kontakt', 'om-oss', 'talentportalen', 'personvern', 'vilkar', 'cookies'].includes(sectionRoute) || Boolean(newsSlug))
   const hasVisualEditPermission = isVisualEditRequested && isEditableRoute ? canEditVisualContent : false
   const isVisualEditMode = isVisualEditRequested && isEditableRoute && hasVisualEditPermission
   const visualEditRouteLabel = newsSlug
@@ -52,11 +52,25 @@ export default function App() {
           ? 'Noticias'
           : sectionRoute === 'helse'
             ? 'Sector sanitario'
+            : sectionRoute === 'rekruttering'
+              ? 'Rekrutteringsmodell'
             : sectionRoute === 'spansk-i-alicante'
               ? 'Spansk i Alicante'
               : sectionRoute === 'spansk-i-alicante-hvorfor'
                 ? 'Spansk i Alicante · Hvorfor'
-            : null
+              : sectionRoute === 'kontakt'
+                ? 'Kontakt'
+                : sectionRoute === 'om-oss'
+                  ? 'Om oss'
+                  : sectionRoute === 'talentportalen'
+                    ? 'Talentportalen'
+                    : sectionRoute === 'personvern'
+                      ? 'Personvern'
+                      : sectionRoute === 'vilkar'
+                        ? 'Vilkår'
+                        : sectionRoute === 'cookies'
+                          ? 'Cookies'
+                          : null
 
   useLayoutEffect(() => {
     if (!routeContext.isAdmin) return undefined

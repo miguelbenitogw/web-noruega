@@ -13,13 +13,21 @@ const section = (id, label, options = {}) => ({
 })
 
 export const ADMIN_PREVIEW_MODES = [
+  { id: 'global', label: 'Navigasjon & Footer', path: '/' },
   { id: 'landing', label: 'Startside', path: '/' },
   { id: 'nyheter', label: 'Nyhetsside', path: '/nyheter' },
   { id: 'helse', label: 'Helse', path: '/helse' },
   { id: 'spansk-alicante', label: 'Spansk i Alicante', path: '/spansk-i-alicante' },
   { id: 'spansk-alicante-hvorfor', label: 'Spansk i Alicante · Hvorfor', path: '/spansk-i-alicante/hvorfor' },
+  { id: 'rekruttering', label: 'Rekrutteringsmodell', path: '/vr-rekrutteringsmodell' },
   { id: 'article', label: 'Artikkel', path: '/nyheter' },
   { id: 'news-manager', label: 'Nyhetsstudio', path: '/nyheter' },
+  { id: 'kontakt', label: 'Kontakt', path: '/kontakt' },
+  { id: 'om-oss', label: 'Om oss', path: '/om-oss' },
+  { id: 'talentportalen', label: 'Talentportalen', path: '/talentportalen' },
+  { id: 'personvern', label: 'Personvern', path: '/personvern' },
+  { id: 'vilkar', label: 'Vilkår', path: '/vilkar' },
+  { id: 'cookies', label: 'Cookies', path: '/cookies' },
 ]
 
 const buildLandingSections = (articles) => {
@@ -263,6 +271,188 @@ const buildSpanskAlicanteHvorforSections = () => [
   }),
 ]
 
+const buildRekrutteringSections = () => [
+  section('rekruttering-hero', 'Toppseksjon', {
+    sectionIndex: 0,
+    fields: [
+      field('rekrutteringHero.h1', 'Tittel'),
+      field('rekrutteringHero.description', 'Beskrivelse'),
+    ],
+  }),
+  section('rekruttering-hva-gjor', 'Hva gjør vi', {
+    sectionIndex: 1,
+    fields: [
+      field('hvaGjor.label', 'Fortekst'),
+      field('hvaGjor.heading', 'Tittel'),
+      field('hvaGjor.description', 'Beskrivelse'),
+    ],
+  }),
+  section('rekruttering-comp', 'Rekrutteringsprosessen', {
+    sectionIndex: 2,
+    fields: [
+      field('rekrutteringComp.label', 'Fortekst'),
+      field('rekrutteringComp.heading', 'Tittel'),
+      field('rekrutteringComp.description', 'Beskrivelse'),
+    ],
+  }),
+  section('rekruttering-collab', 'Samarbeidsmodell', {
+    sectionIndex: 3,
+    fields: [
+      field('rekrutteringCollab.label', 'Fortekst'),
+      field('rekrutteringCollab.heading', 'Tittel'),
+      field('rekrutteringCollab.p1', 'Avsnitt 1'),
+      field('rekrutteringCollab.p2', 'Avsnitt 2'),
+      field('rekrutteringCollab.p3', 'Avsnitt 3'),
+      field('rekrutteringCollab.cta1', 'Primær-CTA'),
+      field('rekrutteringCollab.cta2', 'Sekundær-CTA'),
+    ],
+  }),
+]
+
+const buildKontaktSections = () => [
+  section('kontakt-hero', 'Toppseksjon', {
+    scrollToTop: true,
+    fields: [
+      field('kontaktHero.h1', 'Tittel'),
+      field('kontaktHero.description', 'Beskrivelse'),
+    ],
+  }),
+  section('kontakt-comp', 'Kontaktblokk', {
+    sectionIndex: 1,
+    fields: [
+      field('kontaktComp.label', 'Fortekst'),
+      field('kontaktComp.heading', 'Tittel'),
+      field('kontaktComp.description', 'Beskrivelse'),
+      field('kontaktComp.officeTitle', 'Kontortittel'),
+      field('kontaktComp.officeAddress', 'Kontoradresse'),
+    ],
+  }),
+  section('kontakt-contacts', 'Kontaktpersoner', {
+    sectionIndex: 2,
+    fields: [
+      field('contacts.0.name', 'Kontakt 1 · navn'),
+      field('contacts.0.role', 'Kontakt 1 · rolle'),
+      field('contacts.1.name', 'Kontakt 2 · navn'),
+      field('contacts.1.role', 'Kontakt 2 · rolle'),
+    ],
+  }),
+]
+
+const buildOmOssSections = () => [
+  section('om-oss-hero', 'Toppseksjon', {
+    scrollToTop: true,
+    fields: [
+      field('omOssHero.h1', 'Tittel'),
+      field('omOssHero.description', 'Beskrivelse'),
+    ],
+  }),
+  section('om-oss-team', 'Team', {
+    sectionIndex: 1,
+    fields: [
+      field('omOssTeam.label', 'Fortekst'),
+      field('omOssTeam.heading', 'Tittel'),
+      field('omOssTeam.description', 'Beskrivelse'),
+      field('omOssTeam.members.0.name', 'Medlem 1 · navn'),
+      field('omOssTeam.members.0.role', 'Medlem 1 · rolle'),
+    ],
+  }),
+  section('om-oss-offices', 'Kontorer', {
+    sectionIndex: 2,
+    fields: [
+      field('omOssOffices.label', 'Fortekst'),
+      field('omOssOffices.heading', 'Tittel'),
+      field('omOssOffices.description', 'Beskrivelse'),
+      field('omOssOffices.officeName', 'Kontornavn'),
+      field('omOssOffices.officeAddress', 'Kontoradresse'),
+    ],
+  }),
+  section('om-oss-comp', 'Om-blokk', {
+    sectionIndex: 3,
+    fields: [
+      field('omOssComp.label', 'Fortekst'),
+      field('omOssComp.heading', 'Tittel'),
+      field('omOssComp.p1', 'Avsnitt 1'),
+      field('omOssComp.p2', 'Avsnitt 2'),
+      field('omOssComp.blockquote.text', 'Sitat'),
+      field('omOssComp.blockquote.author', 'Sitatforfatter'),
+      field('omOssComp.stats.0.value', 'Nøkkeltall 1 · verdi'),
+      field('omOssComp.stats.0.label', 'Nøkkeltall 1 · etikett'),
+      field('omOssComp.locationLabel', 'Lokasjon'),
+      field('omOssComp.locationSub', 'Lokasjon · undertekst'),
+    ],
+  }),
+  section('om-oss-faq', 'FAQ', {
+    sectionIndex: 4,
+    fields: [
+      field('faq.label', 'Fortekst'),
+      field('faq.heading', 'Tittel'),
+      field('faq.description', 'Beskrivelse'),
+      field('faq.ctaText', 'CTA-tekst'),
+      field('faq.items.0.q', 'Spørsmål 1'),
+      field('faq.items.0.a', 'Svar 1'),
+    ],
+  }),
+]
+
+const buildTalentportalenSections = () => [
+  section('talentportalen-hero', 'Toppseksjon', {
+    scrollToTop: true,
+    fields: [
+      field('talentportalenHero.h1', 'Tittel'),
+      field('talentportalenHero.description', 'Beskrivelse'),
+    ],
+  }),
+  section('talentportalen-steps', 'Steg', {
+    sectionIndex: 1,
+    fields: [
+      field('talentportalenSteps.label', 'Fortekst'),
+      field('talentportalenSteps.heading', 'Tittel'),
+      field('talentportalenSteps.steps.0.title', 'Steg 1 · tittel'),
+      field('talentportalenSteps.steps.0.desc', 'Steg 1 · beskrivelse'),
+    ],
+  }),
+  section('talentportalen-benefits', 'Fordeler', {
+    sectionIndex: 2,
+    fields: [
+      field('talentportalenBenefits.label', 'Fortekst'),
+      field('talentportalenBenefits.heading', 'Tittel'),
+      field('talentportalenBenefits.items.0', 'Fordel 1'),
+      field('talentportalenBenefits.items.1', 'Fordel 2'),
+    ],
+  }),
+  section('talentportalen-comp', 'Portalblokk', {
+    sectionIndex: 3,
+    fields: [
+      field('talentportalenComp.label', 'Fortekst'),
+      field('talentportalenComp.heading', 'Tittel'),
+      field('talentportalenComp.description', 'Beskrivelse'),
+      field('talentportalenComp.benefits.0.title', 'Fordel 1 · tittel'),
+      field('talentportalenComp.benefits.0.desc', 'Fordel 1 · beskrivelse'),
+      field('talentportalenComp.ctaLogin', 'CTA Logg inn'),
+      field('talentportalenComp.ctaContact', 'CTA Kontakt'),
+    ],
+  }),
+]
+
+const buildLegalSections = (contentKey, label) => [
+  section(`${contentKey}-title`, label, {
+    scrollToTop: true,
+    fields: [
+      field(`${contentKey}.title`, 'Tittel'),
+      field(`${contentKey}.intro`, 'Intro'),
+    ],
+  }),
+  section(`${contentKey}-blocks`, 'Innhold', {
+    sectionIndex: 1,
+    fields: [
+      field(`${contentKey}.blocks.0.heading`, 'Blokk 1 · tittel'),
+      field(`${contentKey}.blocks.0.body`, 'Blokk 1 · tekst'),
+      field(`${contentKey}.blocks.1.heading`, 'Blokk 2 · tittel'),
+      field(`${contentKey}.blocks.1.body`, 'Blokk 2 · tekst'),
+    ],
+  }),
+]
+
 const buildArticleSections = (article) => {
   if (!article) {
     return [
@@ -315,8 +505,57 @@ const buildNewsStudioSections = () => [
   }),
 ]
 
+const buildGlobalSections = () => [
+  section('global-navbar', 'Navigasjon', {
+    scrollToTop: true,
+    description: 'Navigasjonslenker og CTA-knapp som vises i toppen av alle sider.',
+    fields: [
+      field('navbar.links.0.label', 'Lenke 1 · tekst'),
+      field('navbar.links.1.label', 'Lenke 2 · tekst'),
+      field('navbar.links.2.label', 'Lenke 3 · tekst'),
+      field('navbar.links.3.label', 'Lenke 4 · tekst'),
+      field('navbar.links.4.label', 'Lenke 5 · tekst'),
+      field('navbar.links.5.label', 'Lenke 6 · tekst'),
+      field('navbar.links.6.label', 'Lenke 7 · tekst'),
+      field('navbar.ctaLabel', 'CTA-knapp'),
+    ],
+  }),
+  section('global-footer', 'Footer', {
+    sectionIndex: 1,
+    description: 'Beskrivelsestekst, kolonnetitler og lenkelabels i bunnteksten.',
+    fields: [
+      field('footer.description', 'Beskrivelse'),
+      field('footer.links.Tjenester', 'Kolonne 1 · tittel'),
+      field('footer.links.Tjenester.0.label', 'Tjenester · lenke 1'),
+      field('footer.links.Tjenester.1.label', 'Tjenester · lenke 2'),
+      field('footer.links.Tjenester.2.label', 'Tjenester · lenke 3'),
+      field('footer.links.Tjenester.3.label', 'Tjenester · lenke 4'),
+      field('footer.links.Tjenester.4.label', 'Tjenester · lenke 5'),
+      field('footer.links.Selskapet', 'Kolonne 2 · tittel'),
+      field('footer.links.Selskapet.0.label', 'Selskapet · lenke 1'),
+      field('footer.links.Selskapet.1.label', 'Selskapet · lenke 2'),
+      field('footer.links.Selskapet.2.label', 'Selskapet · lenke 3'),
+      field('footer.links.Selskapet.3.label', 'Selskapet · lenke 4'),
+      field('footer.links.Kontakt', 'Kolonne 3 · tittel'),
+    ],
+  }),
+]
+
 export function getAdminPreviewConfig({ viewId, article, articles = [] }) {
   const currentMode = ADMIN_PREVIEW_MODES.find((entry) => entry.id === viewId) || ADMIN_PREVIEW_MODES[0]
+
+  if (currentMode.id === 'global') {
+    return {
+      id: 'global',
+      label: 'Navigasjon & Footer',
+      path: '/',
+      routeKey: 'admin:global',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Rediger navigasjonslenker, CTA og footer-innhold som vises på alle sider.',
+      sections: buildGlobalSections(),
+    }
+  }
 
   if (currentMode.id === 'landing') {
     return {
@@ -383,6 +622,19 @@ export function getAdminPreviewConfig({ viewId, article, articles = [] }) {
     }
   }
 
+  if (currentMode.id === 'rekruttering') {
+    return {
+      id: 'rekruttering',
+      label: 'Rekrutteringsmodell',
+      path: '/vr-rekrutteringsmodell',
+      routeKey: 'admin:rekruttering',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Rediger rekrutteringsmodell-siden seksjonsvis med hero, prosess og samarbeidsmodell.',
+      sections: buildRekrutteringSections(),
+    }
+  }
+
   if (currentMode.id === 'news-manager') {
     return {
       id: 'news-manager',
@@ -394,6 +646,84 @@ export function getAdminPreviewConfig({ viewId, article, articles = [] }) {
       topbarDescription: 'Opprett, rediger og publiser nyheter med skjema og hjelpeverktøy – uten å skrive markdown manuelt.',
       panelVariant: 'news-manager',
       sections: buildNewsStudioSections(),
+    }
+  }
+
+  if (currentMode.id === 'kontakt') {
+    return {
+      id: 'kontakt',
+      label: 'Kontakt',
+      path: '/kontakt',
+      routeKey: 'admin:kontakt',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Rediger kontaktsiden seksjonsvis med hero, kontaktblokk og kontaktpersoner.',
+      sections: buildKontaktSections(),
+    }
+  }
+
+  if (currentMode.id === 'om-oss') {
+    return {
+      id: 'om-oss',
+      label: 'Om oss',
+      path: '/om-oss',
+      routeKey: 'admin:om-oss',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Rediger om-oss-siden seksjonsvis med hero, team, kontorer, om-blokk og FAQ.',
+      sections: buildOmOssSections(),
+    }
+  }
+
+  if (currentMode.id === 'talentportalen') {
+    return {
+      id: 'talentportalen',
+      label: 'Talentportalen',
+      path: '/talentportalen',
+      routeKey: 'admin:talentportalen',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Rediger talentportalen-siden seksjonsvis med hero, steg, fordeler og portalblokk.',
+      sections: buildTalentportalenSections(),
+    }
+  }
+
+  if (currentMode.id === 'personvern') {
+    return {
+      id: 'personvern',
+      label: 'Personvern',
+      path: '/personvern',
+      routeKey: 'admin:personvern',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Rediger personvernerklæringen med tittel, intro og innholdsblokker.',
+      sections: buildLegalSections('legalPersonvern', 'Personvern'),
+    }
+  }
+
+  if (currentMode.id === 'vilkar') {
+    return {
+      id: 'vilkar',
+      label: 'Vilkår',
+      path: '/vilkar',
+      routeKey: 'admin:vilkar',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Rediger vilkårssiden med tittel, intro og innholdsblokker.',
+      sections: buildLegalSections('legalVilkar', 'Vilkår'),
+    }
+  }
+
+  if (currentMode.id === 'cookies') {
+    return {
+      id: 'cookies',
+      label: 'Cookies',
+      path: '/cookies',
+      routeKey: 'admin:cookies',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Rediger cookies-siden med tittel, intro og innholdsblokker.',
+      sections: buildLegalSections('legalCookies', 'Cookies'),
     }
   }
 

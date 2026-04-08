@@ -1,6 +1,7 @@
 import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
+import EditableText, { createArrayItemCommitter } from './editable/EditableText'
 
 export default function GodeGrunner() {
   const c = useContent('godeGrunner')
@@ -25,20 +26,36 @@ export default function GodeGrunner() {
 
           <div>
             <AnimateIn>
-              <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                {c.label}
-              </span>
-              <h2 id="gode-grunner-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight">
-                {c.heading}
-              </h2>
-              <p className="text-gray-600 text-lg leading-relaxed mb-8">
-                {c.description}
-              </p>
+              <EditableText
+                as="span"
+                path="godeGrunner.label"
+                value={c.label}
+                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+              />
+              <EditableText
+                id="gode-grunner-heading"
+                as="h2"
+                path="godeGrunner.heading"
+                value={c.heading}
+                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
+              />
+              <EditableText
+                as="p"
+                path="godeGrunner.description"
+                value={c.description}
+                multiline
+                className="text-gray-600 text-lg leading-relaxed mb-8"
+              />
               <a
                 href={c.articleLink}
                 className="inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
               >
-                {c.articleLinkLabel}
+                <EditableText
+                  as="span"
+                  path="godeGrunner.articleLinkLabel"
+                  value={c.articleLinkLabel}
+                  className="inline"
+                />
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
@@ -48,14 +65,42 @@ export default function GodeGrunner() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-5">
-          {(c.testimonials || []).map((t, i) => (
-            <AnimateIn key={t.author} variant="fadeUp" delay={i * 100}>
-              <article className="h-full rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
-                <p className="text-gray-600 text-sm leading-relaxed mb-5">"{t.quote}"</p>
-                <p className="font-semibold text-ink text-sm">— {t.author}</p>
-              </article>
-            </AnimateIn>
-          ))}
+          {(c.testimonials || []).map((t, i) => {
+            const commitQuote = createArrayItemCommitter({
+              basePath: 'godeGrunner.testimonials',
+              fallbackItems: c.testimonials || [],
+              index: i,
+              field: 'quote',
+            })
+            const commitAuthor = createArrayItemCommitter({
+              basePath: 'godeGrunner.testimonials',
+              fallbackItems: c.testimonials || [],
+              index: i,
+              field: 'author',
+            })
+
+            return (
+              <AnimateIn key={t.author} variant="fadeUp" delay={i * 100}>
+                <article className="h-full rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <EditableText
+                    as="p"
+                    path={`godeGrunner.testimonials.${i}.quote`}
+                    value={t.quote}
+                    onCommit={commitQuote}
+                    multiline
+                    className="text-gray-600 text-sm leading-relaxed mb-5"
+                  />
+                  <EditableText
+                    as="p"
+                    path={`godeGrunner.testimonials.${i}.author`}
+                    value={t.author}
+                    onCommit={commitAuthor}
+                    className="font-semibold text-ink text-sm"
+                  />
+                </article>
+              </AnimateIn>
+            )
+          })}
         </div>
       </div>
     </section>

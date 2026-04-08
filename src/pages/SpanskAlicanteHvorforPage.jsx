@@ -26,6 +26,7 @@ function HighlightItem({ item, index }) {
 export default function SpanskAlicanteHvorforPage() {
   const vision = useContent('spanskAlicanteVision')
   const page = useContent('spanskAlicantePage')
+  const hvorfor = useContent('spanskAlicanteHvorfor')
 
   return (
     <>
@@ -118,7 +119,7 @@ export default function SpanskAlicanteHvorforPage() {
 
             <AnimateIn variant="fadeLeft" delay={160}>
               <aside className="bg-surface border border-gray-100 rounded-[2rem] p-8 sticky top-28">
-                <h2 className="font-heading text-2xl font-bold text-ink mb-6">Hva gir oppholdet deg?</h2>
+                <h2 className="font-heading text-2xl font-bold text-ink mb-6">{hvorfor.sidebarHeading}</h2>
                 <ul className="space-y-4 mb-8">
                   {(vision.highlights || []).map((item, index) => (
                     <HighlightItem key={`highlight-${index}`} item={item} index={index} />
@@ -130,7 +131,7 @@ export default function SpanskAlicanteHvorforPage() {
                     onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hvorfor', cta: 'tilbake_til_programmet' })}
                     className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 cursor-pointer"
                   >
-                    Tilbake til programmet
+                    {hvorfor.backLabel}
                   </a>
                   <a
                     href="/kontakt"

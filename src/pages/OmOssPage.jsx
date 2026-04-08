@@ -4,16 +4,30 @@ import OmOss from '../components/OmOss'
 import FAQ from '../components/FAQ'
 import PageEndNav from '../components/PageEndNav'
 import useContent from '../hooks/useContent'
+import EditableText, { createArrayItemCommitter } from '../components/editable/EditableText'
 import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
 import groPhoto from '../assets/team/gro-anette.jpg'
 
-function TeamCard({ member, delay }) {
+function TeamCard({ member, index, basePath, delay, members }) {
   const normalizedName = (member.name || '').toLowerCase()
   let portrait = null
 
   if (normalizedName.includes('miriam')) portrait = miriamPhoto
   else if (normalizedName.includes('gro')) portrait = groPhoto
   else if (member.hasImage) portrait = IMAGES.ceoPhoto
+
+  const commitName = createArrayItemCommitter({
+    basePath,
+    fallbackItems: members || [],
+    index,
+    field: 'name',
+  })
+  const commitRole = createArrayItemCommitter({
+    basePath,
+    fallbackItems: members || [],
+    index,
+    field: 'role',
+  })
 
   return (
     <AnimateIn variant="fadeUp" delay={delay}>
@@ -30,8 +44,20 @@ function TeamCard({ member, delay }) {
             <span className="text-white font-heading text-2xl font-bold">{member.initials}</span>
           </div>
         )}
-        <h3 className="font-heading text-lg font-bold text-ink">{member.name}</h3>
-        <p className="text-gray-500 text-sm mt-1">{member.role}</p>
+        <EditableText
+          as="h3"
+          path={`${basePath}.${index}.name`}
+          value={member.name}
+          onCommit={commitName}
+          className="font-heading text-lg font-bold text-ink"
+        />
+        <EditableText
+          as="p"
+          path={`${basePath}.${index}.role`}
+          value={member.role}
+          onCommit={commitRole}
+          className="text-gray-500 text-sm mt-1"
+        />
       </div>
     </AnimateIn>
   )
@@ -54,10 +80,19 @@ export default function OmOssPage() {
               <span className="mx-2">/</span>
               <span className="text-white">Om oss</span>
             </nav>
-            <h1 className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-              {hero.h1}
-            </h1>
-            <p className="text-blue-100 text-lg max-w-2xl leading-relaxed">{hero.description}</p>
+            <EditableText
+              as="h1"
+              path="omOssHero.h1"
+              value={hero.h1}
+              className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight"
+            />
+            <EditableText
+              as="p"
+              path="omOssHero.description"
+              value={hero.description}
+              multiline
+              className="text-blue-100 text-lg max-w-2xl leading-relaxed"
+            />
           </AnimateIn>
         </div>
       </section>
@@ -69,19 +104,31 @@ export default function OmOssPage() {
         <div className="container-xl">
           <AnimateIn>
             <div className="text-center max-w-2xl mx-auto mb-14">
-              <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                {teamSection.label}
-              </span>
-              <h2 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-4">
-                {teamSection.heading}
-              </h2>
-              <p className="text-gray-600 leading-relaxed">{teamSection.description}</p>
+              <EditableText
+                as="span"
+                path="omOssTeam.label"
+                value={teamSection.label}
+                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+              />
+              <EditableText
+                as="h2"
+                path="omOssTeam.heading"
+                value={teamSection.heading}
+                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-4"
+              />
+              <EditableText
+                as="p"
+                path="omOssTeam.description"
+                value={teamSection.description}
+                multiline
+                className="text-gray-600 leading-relaxed"
+              />
             </div>
           </AnimateIn>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {(teamSection.members || []).map((member, i) => (
-              <TeamCard key={member.name} member={member} delay={i * 100} />
+              <TeamCard key={member.name} member={member} index={i} basePath="omOssTeam.members" delay={i * 100} members={teamSection.members || []} />
             ))}
           </div>
         </div>
@@ -92,13 +139,25 @@ export default function OmOssPage() {
         <div className="container-xl">
           <AnimateIn>
             <div className="text-center max-w-2xl mx-auto mb-14">
-              <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                {offices.label}
-              </span>
-              <h2 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-4">
-                {offices.heading}
-              </h2>
-              <p className="text-gray-600 leading-relaxed">{offices.description}</p>
+              <EditableText
+                as="span"
+                path="omOssOffices.label"
+                value={offices.label}
+                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+              />
+              <EditableText
+                as="h2"
+                path="omOssOffices.heading"
+                value={offices.heading}
+                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-4"
+              />
+              <EditableText
+                as="p"
+                path="omOssOffices.description"
+                value={offices.description}
+                multiline
+                className="text-gray-600 leading-relaxed"
+              />
             </div>
           </AnimateIn>
 
@@ -112,15 +171,27 @@ export default function OmOssPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/30 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10 text-white">
-                <h3 className="font-heading text-xl md:text-2xl font-bold mb-2">{offices.officeName}</h3>
-                <p className="text-white/80 text-sm md:text-base">{offices.officeAddress}</p>
+                <EditableText
+                  as="h3"
+                  path="omOssOffices.officeName"
+                  value={offices.officeName}
+                  className="font-heading text-xl md:text-2xl font-bold mb-2"
+                />
+                <EditableText
+                  as="p"
+                  path="omOssOffices.officeAddress"
+                  value={offices.officeAddress}
+                  className="text-white/80 text-sm md:text-base"
+                />
               </div>
             </div>
           </AnimateIn>
         </div>
       </section>
 
-      <FAQ />
+      <section id="om-oss-faq">
+        <FAQ />
+      </section>
       <PageEndNav current="/om-oss" />
     </>
   )

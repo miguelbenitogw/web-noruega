@@ -2,7 +2,7 @@ import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter } from './editable/EditableText'
-import healthTeamPhoto from '../assets/helse/health-team.jpg'
+import { IMAGES } from '../assets/images'
 
 export default function Helsesektor() {
   const c = useContent('helsesektorComp')
@@ -70,78 +70,6 @@ export default function Helsesektor() {
                 })}
               </div>
 
-              <ul className="space-y-5 mb-10" role="list">
-                {(c.features || []).map((f, index) => {
-                  const commitTitle = createArrayItemCommitter({
-                    basePath: 'helsesektorComp.features',
-                    fallbackItems: c.features || [],
-                    index,
-                    field: 'title',
-                  })
-                  const commitDescription = createArrayItemCommitter({
-                    basePath: 'helsesektorComp.features',
-                    fallbackItems: c.features || [],
-                    index,
-                    field: 'description',
-                  })
-
-                  return (
-                    <li key={f.title} className="flex gap-4">
-                      <div className="mt-0.5 shrink-0 w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center">
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                          <path d="M2 6l3 3 5-5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </div>
-                      <div>
-                        <EditableText
-                          as="h3"
-                          path={`helsesektorComp.features.${index}.title`}
-                          value={f.title}
-                          onCommit={commitTitle}
-                          className="font-heading font-semibold text-ink text-base mb-0.5"
-                        />
-                        <EditableText
-                          as="p"
-                          path={`helsesektorComp.features.${index}.description`}
-                          value={f.description}
-                          onCommit={commitDescription}
-                          multiline
-                          className="text-gray-500 text-sm leading-relaxed"
-                        />
-                      </div>
-                    </li>
-                  )
-                })}
-              </ul>
-
-              {c.blockquote && (
-                <blockquote className="mb-10 rounded-2xl border border-primary-100 bg-white p-5 text-sm leading-relaxed text-gray-600">
-                  “
-                  <EditableText
-                    as="span"
-                    path="helsesektorComp.blockquote.text"
-                    value={c.blockquote.text}
-                    className="inline"
-                  />
-                  ”
-                  <footer className="mt-3 font-semibold text-ink">
-                    — <EditableText as="span" path="helsesektorComp.blockquote.author" value={c.blockquote.author} className="inline" />
-                  </footer>
-                  {c.blockquote.ctaHref && c.blockquote.ctaLabel && (
-                    <a
-                      href={c.blockquote.ctaHref}
-                      onClick={() => trackEvent('cta_click', { location: 'helsesektor_testimonial', cta: 'les_hele_intervjuet' })}
-                      className="mt-4 inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
-                    >
-                      <EditableText as="span" path="helsesektorComp.blockquote.ctaLabel" value={c.blockquote.ctaLabel} className="inline" />
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
-                    </a>
-                  )}
-                </blockquote>
-              )}
-
               <a
                 href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'helsesektor', cta: 'be_om_kandidater' })}
@@ -159,7 +87,7 @@ export default function Helsesektor() {
             <div className="relative">
               <div className="rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src={healthTeamPhoto}
+                  src={IMAGES.enfermeria}
                   alt="Helsepersonell i opplæring gjennom Global Working"
                   className="w-full object-cover"
                   loading="lazy"

@@ -1,5 +1,6 @@
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
+import EditableText, { createArrayItemCommitter } from './editable/EditableText'
 
 const benefitIcons = [
   <svg key="b1" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
@@ -75,26 +76,67 @@ export default function Talentportalen() {
           </div>
 
           <div className="order-1 lg:order-2">
-            <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-              {c.label}
-            </span>
-            <h2 id="talentportalen-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight">
-              {c.heading}
-            </h2>
-            <p className="text-gray-600 text-lg leading-relaxed mb-10">{c.description}</p>
+            <EditableText
+              as="span"
+              path="talentportalenComp.label"
+              value={c.label}
+              className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+            />
+            <EditableText
+              as="h2"
+              id="talentportalen-heading"
+              path="talentportalenComp.heading"
+              value={c.heading}
+              className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
+            />
+            <EditableText
+              as="p"
+              path="talentportalenComp.description"
+              value={c.description}
+              multiline
+              className="text-gray-600 text-lg leading-relaxed mb-10"
+            />
 
             <ul className="space-y-5" role="list">
-              {(c.benefits || []).map((b, i) => (
-                <li key={b.title} className="flex gap-4">
-                  <div className="shrink-0 w-11 h-11 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center">
-                    {benefitIcons[i] || benefitIcons[0]}
-                  </div>
-                  <div>
-                    <h3 className="font-heading font-semibold text-ink text-base mb-0.5">{b.title}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed">{b.desc}</p>
-                  </div>
-                </li>
-              ))}
+              {(c.benefits || []).map((b, i) => {
+                const commitBenefitTitle = createArrayItemCommitter({
+                  basePath: 'talentportalenComp.benefits',
+                  fallbackItems: c.benefits || [],
+                  index: i,
+                  field: 'title',
+                })
+                const commitBenefitDesc = createArrayItemCommitter({
+                  basePath: 'talentportalenComp.benefits',
+                  fallbackItems: c.benefits || [],
+                  index: i,
+                  field: 'desc',
+                })
+
+                return (
+                  <li key={b.title} className="flex gap-4">
+                    <div className="shrink-0 w-11 h-11 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center">
+                      {benefitIcons[i] || benefitIcons[0]}
+                    </div>
+                    <div>
+                      <EditableText
+                        as="h3"
+                        path={`talentportalenComp.benefits.${i}.title`}
+                        value={b.title}
+                        onCommit={commitBenefitTitle}
+                        className="font-heading font-semibold text-ink text-base mb-0.5"
+                      />
+                      <EditableText
+                        as="p"
+                        path={`talentportalenComp.benefits.${i}.desc`}
+                        value={b.desc}
+                        onCommit={commitBenefitDesc}
+                        multiline
+                        className="text-gray-500 text-sm leading-relaxed"
+                      />
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
 
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
@@ -105,14 +147,24 @@ export default function Talentportalen() {
                 onClick={() => trackEvent('cta_click', { location: 'talentportalen', cta: 'logg_inn' })}
                 className="inline-flex items-center justify-center px-7 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
               >
-                {c.ctaLogin}
+                <EditableText
+                  as="span"
+                  path="talentportalenComp.ctaLogin"
+                  value={c.ctaLogin}
+                  className="inline"
+                />
               </a>
               <a
                 href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'talentportalen', cta: 'kontakt_oss' })}
                 className="inline-flex items-center justify-center px-7 py-4 border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors duration-200 cursor-pointer"
               >
-                {c.ctaContact}
+                <EditableText
+                  as="span"
+                  path="talentportalenComp.ctaContact"
+                  value={c.ctaContact}
+                  className="inline"
+                />
               </a>
             </div>
           </div>

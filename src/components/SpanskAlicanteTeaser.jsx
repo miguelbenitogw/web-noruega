@@ -7,6 +7,7 @@ import useContent from '../hooks/useContent'
 
 export default function SpanskAlicanteTeaser() {
   const teaser = useContent('spanskAlicanteTeaser')
+  const extra = useContent('spanskAlicanteTeaserExtra')
 
   return (
     <section className="py-24 lg:py-32 bg-white border-t border-gray-100" aria-labelledby="spansk-alicante-teaser-heading">
@@ -63,7 +64,7 @@ export default function SpanskAlicanteTeaser() {
                 onClick={() => trackEvent('cta_click', { location: 'landing_spansk_alicante', cta: 'les_hvorfor' })}
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors duration-200 cursor-pointer"
               >
-                Les hvorfor det finnes
+                {extra.secondaryCtaLabel}
               </a>
             </div>
           </AnimateIn>
@@ -80,10 +81,10 @@ export default function SpanskAlicanteTeaser() {
               </div>
               <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-lg border border-gray-100 px-5 py-4 max-w-[220px]">
                 <span className="block text-xs uppercase tracking-[0.18em] font-semibold text-primary-600 mb-1">
-                  Alicante
+                  {extra.cardLabel}
                 </span>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Gratis bolig, sosialt miljø og en hverdag med struktur fra første dag.
+                  {extra.cardText}
                 </p>
               </div>
             </div>

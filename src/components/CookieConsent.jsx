@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { initAnalyticsWithConsent, trackEvent, trackPageView } from '../lib/analytics'
+import useContent from '../hooks/useContent'
 
 export default function CookieConsent() {
+  const cookie = useContent('cookieConsent')
   const [show, setShow] = useState(false)
 
   useEffect(() => {
@@ -38,9 +40,9 @@ export default function CookieConsent() {
       <div className="container-xl">
         <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="flex-1">
-            <p className="font-heading font-semibold text-ink text-sm mb-1">Vi bruker informasjonskapsler</p>
+            <p className="font-heading font-semibold text-ink text-sm mb-1">{cookie.title}</p>
             <p className="text-gray-500 text-xs leading-relaxed">
-              Vi bruker informasjonskapsler for å forbedre opplevelsen på nettsiden vår. Ved å godta samtykker du til bruk av informasjonskapsler i samsvar med vår personvernerklæring.
+              {cookie.description}
             </p>
           </div>
           <div className="flex gap-2 shrink-0">
@@ -48,13 +50,13 @@ export default function CookieConsent() {
               onClick={decline}
               className="px-4 py-2.5 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
             >
-              Avslå
+              {cookie.declineLabel}
             </button>
             <button
               onClick={accept}
               className="px-5 py-2.5 bg-primary-600 text-white text-sm font-semibold rounded-lg hover:bg-primary-700 transition-colors shadow-sm cursor-pointer"
             >
-              Godta alle
+              {cookie.acceptLabel}
             </button>
           </div>
         </div>

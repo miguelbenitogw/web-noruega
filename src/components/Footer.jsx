@@ -1,5 +1,6 @@
 import useContent from '../hooks/useContent'
 import { IMAGES } from '../assets/images'
+import EditableText, { createArrayItemCommitter } from './editable/EditableText'
 
 const socialIcons = {
   LinkedIn: (
@@ -35,7 +36,13 @@ export default function Footer() {
                 Global Working <span className="text-primary-400">Norge</span>
               </span>
             </div>
-            <p className="text-blue-200 text-sm leading-relaxed mb-6">{c.description}</p>
+            <EditableText
+              as="p"
+              path="footer.description"
+              value={c.description}
+              multiline
+              className="text-blue-200 text-sm leading-relaxed mb-6"
+            />
             <div className="flex gap-3">
               {(c.social || []).map((s) => (
                 <a
@@ -54,20 +61,44 @@ export default function Footer() {
 
           {Object.entries(links).map(([title, items]) => (
             <div key={title}>
-              <h3 className="font-heading font-semibold text-white text-sm uppercase tracking-wide mb-5">{title}</h3>
+              <h3 className="font-heading font-semibold text-white text-sm uppercase tracking-wide mb-5">
+                <EditableText
+                  as="span"
+                  path={`footer.links.${title}`}
+                  value={title}
+                  className="inline"
+                />
+              </h3>
               <ul className="space-y-3" role="list">
-                {(items || []).map((item) => (
-                  <li key={item.label}>
-                    <a
-                      href={item.href}
-                      className="text-blue-200 text-sm hover:text-white transition-colors duration-200"
-                      rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      target={item.href.startsWith('http') ? '_blank' : undefined}
-                    >
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
+                {(items || []).map((item, itemIndex) => {
+                  const isFunctionalLink = item.href.startsWith('mailto:') || item.href.startsWith('tel:')
+                  const commitItemLabel = createArrayItemCommitter({
+                    basePath: `footer.links.${title}`,
+                    fallbackItems: items,
+                    index: itemIndex,
+                    field: 'label',
+                  })
+                  return (
+                    <li key={item.label}>
+                      <a
+                        href={item.href}
+                        className="text-blue-200 text-sm hover:text-white transition-colors duration-200"
+                        rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        target={item.href.startsWith('http') ? '_blank' : undefined}
+                      >
+                        {isFunctionalLink ? item.label : (
+                          <EditableText
+                            as="span"
+                            path={`footer.links.${title}.${itemIndex}.label`}
+                            value={item.label}
+                            onCommit={commitItemLabel}
+                            className="inline"
+                          />
+                        )}
+                      </a>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
           ))}

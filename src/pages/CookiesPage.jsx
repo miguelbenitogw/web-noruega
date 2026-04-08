@@ -1,5 +1,6 @@
 ﻿import AnimateIn from '../components/AnimateIn'
 import useContent from '../hooks/useContent'
+import EditableText, { createArrayItemCommitter } from '../components/editable/EditableText'
 
 export default function CookiesPage() {
   const c = useContent('legalCookies')
@@ -15,10 +16,19 @@ export default function CookiesPage() {
               <span className="mx-2">/</span>
               <span className="text-white">{c.breadcrumb}</span>
             </nav>
-            <h1 className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-              {c.title}
-            </h1>
-            <p className="text-blue-100 text-lg max-w-3xl leading-relaxed">{c.intro}</p>
+            <EditableText
+              as="h1"
+              path="legalCookies.title"
+              value={c.title}
+              className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight"
+            />
+            <EditableText
+              as="p"
+              path="legalCookies.intro"
+              value={c.intro}
+              multiline
+              className="text-blue-100 text-lg max-w-3xl leading-relaxed"
+            />
           </AnimateIn>
         </div>
       </section>
@@ -26,12 +36,40 @@ export default function CookiesPage() {
       <section className="py-16 bg-surface">
         <div className="container-xl">
           <div className="max-w-4xl bg-white rounded-2xl border border-gray-100 shadow-sm p-8 lg:p-10 space-y-8">
-            {(c.blocks || []).map((block, index) => (
-              <div key={`${block.heading}-${index}`}>
-                <h2 className="font-heading text-2xl font-bold text-ink mb-3">{block.heading}</h2>
-                <p className="text-gray-700 leading-relaxed">{block.body}</p>
-              </div>
-            ))}
+            {(c.blocks || []).map((block, index) => {
+              const commitHeading = createArrayItemCommitter({
+                basePath: 'legalCookies.blocks',
+                fallbackItems: c.blocks || [],
+                index,
+                field: 'heading',
+              })
+              const commitBody = createArrayItemCommitter({
+                basePath: 'legalCookies.blocks',
+                fallbackItems: c.blocks || [],
+                index,
+                field: 'body',
+              })
+
+              return (
+                <div key={`${block.heading}-${index}`}>
+                  <EditableText
+                    as="h2"
+                    path={`legalCookies.blocks.${index}.heading`}
+                    value={block.heading}
+                    onCommit={commitHeading}
+                    className="font-heading text-2xl font-bold text-ink mb-3"
+                  />
+                  <EditableText
+                    as="p"
+                    path={`legalCookies.blocks.${index}.body`}
+                    value={block.body}
+                    onCommit={commitBody}
+                    multiline
+                    className="text-gray-700 leading-relaxed"
+                  />
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>

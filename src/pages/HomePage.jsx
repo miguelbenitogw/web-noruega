@@ -73,6 +73,7 @@ export default function HomePage() {
   const hHealth = useContent('homeHealth')
   const hContact = useContent('homeContact')
   const contacts = useContent('contacts')
+  const nyheter = useContent('nyheterSection')
 
   const tagColors = {
     Plattform: 'bg-primary-50 text-primary-700',
@@ -220,10 +221,10 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
                 <div>
                   <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                    Nyheter & artikler
+                    {nyheter.label}
                   </span>
                   <h2 id="nyheter-preview-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink leading-tight">
-                    Siste nytt
+                    {nyheter.headingPreview}
                   </h2>
                 </div>
                 <a
@@ -231,7 +232,7 @@ export default function HomePage() {
                   onClick={() => trackEvent('cta_click', { location: 'landing_news', cta: 'se_alle' })}
                   className="shrink-0 inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
                 >
-                  Se alle nyheter
+                  {nyheter.ctaLabel}
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                     <path d="M5 12h14M12 5l7 7-7 7"/>
                   </svg>

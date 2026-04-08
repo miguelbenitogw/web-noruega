@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { IMAGES } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
+import EditableText, { createArrayItemCommitter } from './editable/EditableText'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -36,25 +37,39 @@ export default function Navbar() {
           </a>
 
           <nav className="hidden lg:flex items-center gap-1" aria-label="Primær navigasjon">
-            {navLinks.map(link => (
-              <a
-                key={link.href}
-                href={link.href}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                  scrolled
-                    ? 'text-ink hover:bg-primary-50 hover:text-primary-700'
-                    : 'text-white/90 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link, index) => {
+              const commitLabel = createArrayItemCommitter({
+                basePath: 'navbar.links',
+                fallbackItems: navLinks,
+                index,
+                field: 'label',
+              })
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                    scrolled
+                      ? 'text-ink hover:bg-primary-50 hover:text-primary-700'
+                      : 'text-white/90 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <EditableText
+                    as="span"
+                    path={`navbar.links.${index}.label`}
+                    value={link.label}
+                    onCommit={commitLabel}
+                    className="inline"
+                  />
+                </a>
+              )
+            })}
             <a
               href="/kontakt"
               onClick={() => trackEvent('cta_click', { location: 'navbar', cta: 'kom_i_gang' })}
               className="ml-3 px-5 py-2.5 bg-cta text-white rounded-lg text-sm font-semibold hover:bg-cta-600 transition-colors duration-200 shadow-sm cursor-pointer"
             >
-              {ctaLabel}
+              <EditableText as="span" path="navbar.ctaLabel" value={ctaLabel} className="inline" />
             </a>
           </nav>
 
@@ -77,16 +92,30 @@ export default function Navbar() {
       {menuOpen && (
         <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg">
           <nav className="container-xl py-4 flex flex-col gap-1" aria-label="Mobil navigasjon">
-            {navLinks.map(link => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="px-4 py-3 text-ink font-medium rounded-md hover:bg-primary-50 hover:text-primary-700 transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link, index) => {
+              const commitLabel = createArrayItemCommitter({
+                basePath: 'navbar.links',
+                fallbackItems: navLinks,
+                index,
+                field: 'label',
+              })
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="px-4 py-3 text-ink font-medium rounded-md hover:bg-primary-50 hover:text-primary-700 transition-colors"
+                >
+                  <EditableText
+                    as="span"
+                    path={`navbar.links.${index}.label`}
+                    value={link.label}
+                    onCommit={commitLabel}
+                    className="inline"
+                  />
+                </a>
+              )
+            })}
             <a
               href="/kontakt"
               onClick={() => {
@@ -95,7 +124,7 @@ export default function Navbar() {
               }}
               className="mt-2 px-5 py-3 bg-cta text-white rounded-lg font-semibold text-center hover:bg-cta-600 transition-colors"
             >
-              {ctaLabel}
+              <EditableText as="span" path="navbar.ctaLabel" value={ctaLabel} className="inline" />
             </a>
           </nav>
         </div>

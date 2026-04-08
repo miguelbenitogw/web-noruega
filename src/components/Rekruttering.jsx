@@ -1,6 +1,13 @@
 import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
+import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import {
+  readContentOverrides,
+  getByPath,
+  setByPath,
+  writeContentOverrides,
+} from '../lib/contentOverrides'
 
 const stepIcons = [
   <svg key="s1" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
@@ -18,6 +25,18 @@ const stepIcons = [
   </svg>,
 ]
 
+function makeSectorCommitter(fallbackSectors, index) {
+  return (nextValue) => {
+    const overrides = readContentOverrides()
+    const current = getByPath(overrides, 'rekrutteringComp.sectors')
+    const items = Array.isArray(current) ? [...current] : [...(fallbackSectors || [])]
+    items[index] = nextValue
+    setByPath(overrides, 'rekrutteringComp.sectors', items)
+    writeContentOverrides(overrides)
+    return nextValue
+  }
+}
+
 export default function Rekruttering() {
   const c = useContent('rekrutteringComp')
 
@@ -27,19 +46,43 @@ export default function Rekruttering() {
         <div className="grid lg:grid-cols-2 gap-14 items-center mb-20">
           <AnimateIn variant="fadeRight">
             <div>
-              <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                {c.label}
-              </span>
-              <h2 id="rekruttering-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight">
-                {c.heading}
-              </h2>
-              <p className="text-gray-600 text-lg leading-relaxed mb-8">{c.p1}</p>
-              <p className="text-gray-600 text-base leading-relaxed mb-8">{c.p2}</p>
+              <EditableText
+                as="span"
+                path="rekrutteringComp.label"
+                value={c.label}
+                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+              />
+              <EditableText
+                id="rekruttering-heading"
+                as="h2"
+                path="rekrutteringComp.heading"
+                value={c.heading}
+                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
+              />
+              <EditableText
+                as="p"
+                path="rekrutteringComp.p1"
+                value={c.p1}
+                multiline
+                className="text-gray-600 text-lg leading-relaxed mb-8"
+              />
+              <EditableText
+                as="p"
+                path="rekrutteringComp.p2"
+                value={c.p2}
+                multiline
+                className="text-gray-600 text-base leading-relaxed mb-8"
+              />
               <div className="flex flex-wrap gap-3">
-                {(c.sectors || []).map((s) => (
-                  <span key={s} className="px-4 py-2 bg-primary-50 border border-primary-100 text-primary-700 rounded-full text-sm font-medium">
-                    {s}
-                  </span>
+                {(c.sectors || []).map((s, index) => (
+                  <EditableText
+                    key={index}
+                    as="span"
+                    path={`rekrutteringComp.sectors.${index}`}
+                    value={s}
+                    onCommit={makeSectorCommitter(c.sectors, index)}
+                    className="px-4 py-2 bg-primary-50 border border-primary-100 text-primary-700 rounded-full text-sm font-medium"
+                  />
                 ))}
               </div>
             </div>
@@ -69,22 +112,50 @@ export default function Rekruttering() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {(c.steps || []).map((s, i) => (
-            <AnimateIn key={s.title} variant="fadeUp" delay={i * 120}>
-              <div className="group bg-surface rounded-2xl p-7 border border-gray-100 hover:border-primary-200 hover:shadow-lg transition-all duration-300">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-12 h-12 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center group-hover:bg-primary-600 group-hover:text-white transition-colors duration-300">
-                    {stepIcons[i] || stepIcons[0]}
+          {(c.steps || []).map((s, i) => {
+            const commitTitle = createArrayItemCommitter({
+              basePath: 'rekrutteringComp.steps',
+              fallbackItems: c.steps || [],
+              index: i,
+              field: 'title',
+            })
+            const commitDescription = createArrayItemCommitter({
+              basePath: 'rekrutteringComp.steps',
+              fallbackItems: c.steps || [],
+              index: i,
+              field: 'description',
+            })
+
+            return (
+              <AnimateIn key={s.title} variant="fadeUp" delay={i * 120}>
+                <div className="group bg-surface rounded-2xl p-7 border border-gray-100 hover:border-primary-200 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-12 h-12 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center group-hover:bg-primary-600 group-hover:text-white transition-colors duration-300">
+                      {stepIcons[i] || stepIcons[0]}
+                    </div>
+                    <span className="font-heading text-3xl font-bold text-gray-100 group-hover:text-primary-100 transition-colors select-none">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
                   </div>
-                  <span className="font-heading text-3xl font-bold text-gray-100 group-hover:text-primary-100 transition-colors select-none">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
+                  <EditableText
+                    as="h3"
+                    path={`rekrutteringComp.steps.${i}.title`}
+                    value={s.title}
+                    onCommit={commitTitle}
+                    className="font-heading text-base font-semibold text-ink mb-2"
+                  />
+                  <EditableText
+                    as="p"
+                    path={`rekrutteringComp.steps.${i}.description`}
+                    value={s.description}
+                    onCommit={commitDescription}
+                    multiline
+                    className="text-gray-500 text-sm leading-relaxed"
+                  />
                 </div>
-                <h3 className="font-heading text-base font-semibold text-ink mb-2">{s.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{s.description}</p>
-              </div>
-            </AnimateIn>
-          ))}
+              </AnimateIn>
+            )
+          })}
         </div>
       </div>
     </section>

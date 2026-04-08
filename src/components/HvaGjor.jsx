@@ -1,5 +1,6 @@
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
+import EditableText, { createArrayItemCommitter } from './editable/EditableText'
 
 const serviceIcons = [
   <svg key="i1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -24,37 +25,76 @@ export default function HvaGjor() {
 
       <div className="container-xl relative z-10">
         <AnimateIn className="text-center max-w-3xl mx-auto mb-20">
-          <span className="inline-block text-primary-600 font-bold text-xs uppercase tracking-[0.2em] mb-4">
-            {c.label}
-          </span>
-          <h2 id="hvagjor-heading" className="font-heading text-3xl lg:text-4xl xl:text-5xl font-bold text-ink mb-6 leading-tight">
-            {c.heading}
-          </h2>
-          <p className="text-gray-600 text-lg leading-relaxed">{c.description}</p>
+          <EditableText
+            as="span"
+            path="hvaGjor.label"
+            value={c.label}
+            className="inline-block text-primary-600 font-bold text-xs uppercase tracking-[0.2em] mb-4"
+          />
+          <EditableText
+            id="hvagjor-heading"
+            as="h2"
+            path="hvaGjor.heading"
+            value={c.heading}
+            className="font-heading text-3xl lg:text-4xl xl:text-5xl font-bold text-ink mb-6 leading-tight"
+          />
+          <EditableText
+            as="p"
+            path="hvaGjor.description"
+            value={c.description}
+            multiline
+            className="text-gray-600 text-lg leading-relaxed"
+          />
         </AnimateIn>
 
         <div className="grid lg:grid-cols-3 gap-8 mb-16 px-4">
-          {(c.services || []).map((s, i) => (
-            <AnimateIn key={s.title} variant="fadeUp" delay={i * 150} className="h-full">
-              <div className="group h-full bg-white rounded-[2rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:border-primary-100 transition-all duration-500 overflow-hidden">
-                <div className="p-8 h-full flex flex-col">
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="w-14 h-14 bg-primary-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary-200 group-hover:scale-110 transition-transform duration-300">
-                      {serviceIcons[i] || serviceIcons[0]}
+          {(c.services || []).map((s, i) => {
+            const commitTitle = createArrayItemCommitter({
+              basePath: 'hvaGjor.services',
+              fallbackItems: c.services || [],
+              index: i,
+              field: 'title',
+            })
+            const commitDescription = createArrayItemCommitter({
+              basePath: 'hvaGjor.services',
+              fallbackItems: c.services || [],
+              index: i,
+              field: 'description',
+            })
+
+            return (
+              <AnimateIn key={s.title} variant="fadeUp" delay={i * 150} className="h-full">
+                <div className="group h-full bg-white rounded-[2rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:border-primary-100 transition-all duration-500 overflow-hidden">
+                  <div className="p-8 h-full flex flex-col">
+                    <div className="flex items-center justify-between mb-8">
+                      <div className="w-14 h-14 bg-primary-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary-200 group-hover:scale-110 transition-transform duration-300">
+                        {serviceIcons[i] || serviceIcons[0]}
+                      </div>
+                      <span className="font-heading text-4xl font-bold text-primary-50 group-hover:text-primary-100 transition-colors">
+                        0{i + 1}
+                      </span>
                     </div>
-                    <span className="font-heading text-4xl font-bold text-primary-50 group-hover:text-primary-100 transition-colors">
-                      0{i + 1}
-                    </span>
+                    <EditableText
+                      as="h3"
+                      path={`hvaGjor.services.${i}.title`}
+                      value={s.title}
+                      onCommit={commitTitle}
+                      className="font-heading text-xl font-bold text-ink mb-4 group-hover:text-primary-600 transition-colors"
+                    />
+                    <EditableText
+                      as="p"
+                      path={`hvaGjor.services.${i}.description`}
+                      value={s.description}
+                      onCommit={commitDescription}
+                      multiline
+                      className="text-gray-500 leading-relaxed mb-8 flex-1"
+                    />
+                    <div className="w-12 h-1 bg-primary-100 group-hover:w-full transition-all duration-500 rounded-full" />
                   </div>
-                  <h3 className="font-heading text-xl font-bold text-ink mb-4 group-hover:text-primary-600 transition-colors">
-                    {s.title}
-                  </h3>
-                  <p className="text-gray-500 leading-relaxed mb-8 flex-1">{s.description}</p>
-                  <div className="w-12 h-1 bg-primary-100 group-hover:w-full transition-all duration-500 rounded-full" />
                 </div>
-              </div>
-            </AnimateIn>
-          ))}
+              </AnimateIn>
+            )
+          })}
         </div>
 
         <AnimateIn className="text-center">
@@ -63,7 +103,7 @@ export default function HvaGjor() {
               href="/kontakt"
               className="group inline-flex items-center gap-3 px-10 py-5 bg-primary-600 text-white font-bold rounded-2xl hover:bg-navy transition-all duration-300 shadow-xl shadow-primary-100 hover:shadow-navy/20 cursor-pointer active:scale-95"
             >
-              {c.ctaLabel}
+              <EditableText as="span" path="hvaGjor.ctaLabel" value={c.ctaLabel} className="inline" />
               <svg
                 width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"
                 className="group-hover:translate-x-1 transition-transform"

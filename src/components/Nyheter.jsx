@@ -7,6 +7,7 @@ import { useNewsCollection } from '../hooks/useNews'
 import { CONTENT_OVERRIDE_EVENT, getByPath, readContentOverrides } from '../lib/contentOverrides'
 import { upsertNews } from '../lib/contentServices'
 import { registerVisualEditPersistor } from '../lib/visualEditSession'
+import useContent from '../hooks/useContent'
 
 const tagColors = {
   Plattform: 'bg-primary-50 text-primary-700',
@@ -110,6 +111,7 @@ const buildNewsPayload = (article, mode = 'draft') => {
 
 export default function Nyheter() {
   const { articles: news, loading } = useNewsCollection()
+  const nyheter = useContent('nyheterSection')
   useOverrideRefresh()
 
   const orderedNews = useMemo(() => sortNewsForDisplay(news), [news])
@@ -169,10 +171,10 @@ export default function Nyheter() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
             <div className="max-w-xl">
               <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                Nyheter & artikler
+                {nyheter.label}
               </span>
               <h2 id="nyheter-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink leading-tight">
-                Siste nytt fra Global Working
+                {nyheter.heading}
               </h2>
             </div>
             <a
@@ -180,7 +182,7 @@ export default function Nyheter() {
               onClick={() => trackEvent('cta_click', { location: 'nyheter', cta: 'se_alle_nyheter' })}
               className="shrink-0 inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
             >
-              Se alle nyheter
+              {nyheter.ctaLabel}
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>

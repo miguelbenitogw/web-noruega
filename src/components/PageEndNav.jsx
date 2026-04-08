@@ -1,5 +1,6 @@
 ﻿import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
+import useContent from '../hooks/useContent'
 
 const allSections = [
   { label: 'Rekrutteringsmodell', href: '/vr-rekrutteringsmodell' },
@@ -11,6 +12,7 @@ const allSections = [
 ]
 
 export default function PageEndNav({ current }) {
+  const nav = useContent('pageEndNav')
   const otherSections = allSections.filter(s => s.href !== current)
 
   return (
@@ -28,7 +30,7 @@ export default function PageEndNav({ current }) {
                   <path d="M19 12H5M12 19l-7-7 7-7"/>
                 </svg>
               </span>
-              Tilbake til forsiden
+              {nav.backLabel}
             </a>
 
             {/* Explore other sections */}
@@ -51,7 +53,7 @@ export default function PageEndNav({ current }) {
               onClick={() => trackEvent('cta_click', { location: 'page_end_nav', cta: 'kontakt' })}
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-sm shrink-0 cursor-pointer"
             >
-              Kontakt oss
+              {nav.contactLabel}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>

@@ -4,6 +4,7 @@ import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
 import { IMAGES, img } from '../assets/images'
 import useContent from '../hooks/useContent'
+import EditableText, { createArrayItemCommitter } from './editable/EditableText'
 
 const EMAILJS_SERVICE = import.meta.env.VITE_EMAILJS_SERVICE_ID
 const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
@@ -116,37 +117,76 @@ export default function Kontakt() {
           <AnimateIn variant="fadeRight">
             <div className="space-y-12">
               <div>
-                <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                  {c.label}
-                </span>
-                <h2 id="kontakt-heading" className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight">
-                  {c.heading}
-                </h2>
-                <p className="text-gray-600 text-lg leading-relaxed">{c.description}</p>
+                <EditableText
+                  as="span"
+                  path="kontaktComp.label"
+                  value={c.label}
+                  className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+                />
+                <EditableText
+                  as="h2"
+                  path="kontaktComp.heading"
+                  value={c.heading}
+                  id="kontakt-heading"
+                  className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
+                />
+                <EditableText
+                  as="p"
+                  path="kontaktComp.description"
+                  value={c.description}
+                  multiline
+                  className="text-gray-600 text-lg leading-relaxed"
+                />
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
-                {contacts.map(c => (
-                  <div key={c.name} className="glass-card bg-white/70 backdrop-blur-md rounded-2xl p-6 border border-white/50 shadow-sm hover:shadow-lg transition-all duration-300">
-                    <div className="flex flex-col gap-4">
-                      <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary-200">
-                        <span className="font-heading font-bold text-white text-lg">{c.name.charAt(0)}</span>
-                      </div>
-                      <div>
-                        <div className="font-heading font-bold text-ink text-sm mb-0.5">{c.name}</div>
-                        <div className="text-gray-400 text-[10px] uppercase font-bold tracking-wider mb-2">{c.role}</div>
-                        <div className="space-y-1">
-                          <a href={`mailto:${c.email}`} className="text-primary-600 text-xs hover:underline flex items-center gap-2">
-                            {c.email}
-                          </a>
-                          <a href={`tel:${c.phone.replace(/\s/g, '')}`} className="text-gray-500 text-xs hover:text-primary-600 transition-colors flex items-center gap-2">
-                            {c.phone}
-                          </a>
+                {contacts.map((contact, i) => {
+                  const commitName = createArrayItemCommitter({
+                    basePath: 'contacts',
+                    fallbackItems: contacts,
+                    index: i,
+                    field: 'name',
+                  })
+                  const commitRole = createArrayItemCommitter({
+                    basePath: 'contacts',
+                    fallbackItems: contacts,
+                    index: i,
+                    field: 'role',
+                  })
+                  return (
+                    <div key={contact.name} className="glass-card bg-white/70 backdrop-blur-md rounded-2xl p-6 border border-white/50 shadow-sm hover:shadow-lg transition-all duration-300">
+                      <div className="flex flex-col gap-4">
+                        <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary-200">
+                          <span className="font-heading font-bold text-white text-lg">{contact.name.charAt(0)}</span>
+                        </div>
+                        <div>
+                          <EditableText
+                            as="div"
+                            path={`contacts.${i}.name`}
+                            value={contact.name}
+                            onCommit={commitName}
+                            className="font-heading font-bold text-ink text-sm mb-0.5"
+                          />
+                          <EditableText
+                            as="div"
+                            path={`contacts.${i}.role`}
+                            value={contact.role}
+                            onCommit={commitRole}
+                            className="text-gray-400 text-[10px] uppercase font-bold tracking-wider mb-2"
+                          />
+                          <div className="space-y-1">
+                            <a href={`mailto:${contact.email}`} className="text-primary-600 text-xs hover:underline flex items-center gap-2">
+                              {contact.email}
+                            </a>
+                            <a href={`tel:${contact.phone.replace(/\s/g, '')}`} className="text-gray-500 text-xs hover:text-primary-600 transition-colors flex items-center gap-2">
+                              {contact.phone}
+                            </a>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
 
               <div className="group relative rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
@@ -157,10 +197,19 @@ export default function Kontakt() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent flex flex-col justify-end p-8">
                   <div className="text-white">
-                    <h4 className="font-heading font-bold text-xl mb-1">{c.officeTitle}</h4>
-                    <p className="text-blue-100 text-sm leading-relaxed max-w-xs">
-                      {c.officeAddress}
-                    </p>
+                    <EditableText
+                      as="h4"
+                      path="kontaktComp.officeTitle"
+                      value={c.officeTitle}
+                      className="font-heading font-bold text-xl mb-1"
+                    />
+                    <EditableText
+                      as="p"
+                      path="kontaktComp.officeAddress"
+                      value={c.officeAddress}
+                      multiline
+                      className="text-blue-100 text-sm leading-relaxed max-w-xs"
+                    />
                     <a
                       href="https://maps.google.com/?q=Global+Working+Alicante"
                       target="_blank"
