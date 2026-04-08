@@ -64,7 +64,7 @@ export default function Footer() {
               <h3 className="font-heading font-semibold text-white text-sm uppercase tracking-wide mb-5">
                 <EditableText
                   as="span"
-                  path={`footer.links.${title}`}
+                  path={`footer.linkHeadings.${title}`}
                   value={title}
                   className="inline"
                 />
