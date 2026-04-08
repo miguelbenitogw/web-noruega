@@ -5,6 +5,15 @@ import { trackEvent } from '../lib/analytics'
 import { IMAGES, img } from '../assets/images'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
+import groPhoto from '../assets/team/gro-anette.jpg'
+
+const resolveContactPhoto = (name = '') => {
+  const lower = name.toLowerCase()
+  if (lower.includes('miriam')) return miriamPhoto
+  if (lower.includes('gro')) return groPhoto
+  return null
+}
 
 const EMAILJS_SERVICE = import.meta.env.VITE_EMAILJS_SERVICE_ID
 const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
@@ -156,9 +165,17 @@ export default function Kontakt() {
                   return (
                     <div key={contact.name} className="glass-card bg-white/70 backdrop-blur-md rounded-2xl p-6 border border-white/50 shadow-sm hover:shadow-lg transition-all duration-300">
                       <div className="flex flex-col gap-4">
-                        <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary-200">
-                          <span className="font-heading font-bold text-white text-lg">{contact.name.charAt(0)}</span>
-                        </div>
+                        {resolveContactPhoto(contact.name) ? (
+                          <img
+                            src={resolveContactPhoto(contact.name)}
+                            alt={contact.name}
+                            className="w-12 h-12 rounded-xl object-cover shrink-0 shadow-lg shadow-primary-200"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary-200">
+                            <span className="font-heading font-bold text-white text-lg">{contact.name.charAt(0)}</span>
+                          </div>
+                        )}
                         <div>
                           <EditableText
                             as="div"
