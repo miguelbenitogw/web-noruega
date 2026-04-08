@@ -1,4 +1,4 @@
-﻿import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
+﻿import React, { Suspense, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import './index.css'
 import Navbar from './components/Navbar'
 import ScrollProgress from './components/ScrollProgress'
@@ -27,7 +27,7 @@ import PersonvernPage from './pages/PersonvernPage'
 import VilkarPage from './pages/VilkarPage'
 import CookiesPage from './pages/CookiesPage'
 import NewsArticlePage from './pages/NewsArticlePage'
-import AdminPage from './pages/AdminPage'
+const AdminPage = React.lazy(() => import('./pages/AdminPage'))
 
 const getCurrentPath = () => `${window.location.pathname}${window.location.search}`
 
@@ -242,7 +242,9 @@ export default function App() {
     return (
       <AdminErrorBoundary key={currentPathname}>
         <div className="notranslate" translate="no">
-          <AdminPage />
+          <Suspense fallback={<div />}>
+            <AdminPage />
+          </Suspense>
         </div>
       </AdminErrorBoundary>
     )

@@ -265,18 +265,32 @@ export default function SpanskAlicantePage() {
                   className="font-heading text-xl font-bold text-ink mb-4"
                 />
                 <div className="flex flex-col gap-3">
-                  <EditableText
-                    as="div"
-                    path="spanskAlicantePage.socialInstagram"
-                    value={page.socialInstagram}
-                    className="text-gray-600"
-                  />
-                  <EditableText
-                    as="div"
-                    path="spanskAlicantePage.socialTikTok"
-                    value={page.socialTikTok}
-                    className="text-gray-600"
-                  />
+                  <a
+                    href={page.instagramUrl || 'https://www.instagram.com/globalworking'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-600 hover:text-primary-600 transition-colors"
+                  >
+                    <EditableText
+                      as="span"
+                      path="spanskAlicantePage.socialInstagram"
+                      value={page.socialInstagram}
+                      className="inline"
+                    />
+                  </a>
+                  <a
+                    href={page.tiktokUrl || 'https://www.tiktok.com/@globalworking'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-600 hover:text-primary-600 transition-colors"
+                  >
+                    <EditableText
+                      as="span"
+                      path="spanskAlicantePage.socialTikTok"
+                      value={page.socialTikTok}
+                      className="inline"
+                    />
+                  </a>
                 </div>
               </div>
             </AnimateIn>

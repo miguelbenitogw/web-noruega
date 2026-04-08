@@ -110,6 +110,8 @@ const siteContent = {
     socialTitle: 'Følg hverdagen',
     socialInstagram: 'Instagram: Spansk i Alicante',
     socialTikTok: 'TikTok: Spansk i Alicante',
+    instagramUrl: 'https://www.instagram.com/globalworking',
+    tiktokUrl: 'https://www.tiktok.com/@globalworking',
     processTitle: 'Klar for å teste livet i Spania?',
     processSteps: [
       'Send inn interesse',
@@ -318,12 +320,6 @@ const siteContent = {
       { title: 'Strukturert overgang til arbeidsgiver', description: 'Intervju skjer 1–4 uker etter avsluttet opplæring. Vi koordinerer oppstart og avreisedato med begge parter.' },
       { title: 'Ekstra oppfølging ved behov', description: 'Vi kan tilrettelegge individuell språktrening før og etter avreise for å redusere usikkerhet i oppstarten.' },
     ],
-    blockquote: {
-      text: 'Vi ønsket å tilby 6 sykepleiere fast stilling gjennom samarbeid med Global Working. For oss ble dette en god løsning på bemanningskrisen vi hadde.',
-      author: 'Kristina S, Vågå kommune',
-      ctaLabel: 'Les hele intervjuet',
-      ctaHref: '/nyheter',
-    },
     groupsValue: '17–20',
     groupsLabel: 'grupper årlig',
     ctaLabel: 'Be om kandidater',
