@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components, no-unused-vars */
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   CONTENT_OVERRIDE_EVENT,
   getByPath,
@@ -7,6 +7,9 @@ import {
   setByPath,
   writeContentOverrides,
 } from '../../lib/contentOverrides'
+import LinkInsertPopover from './LinkInsertPopover'
+import { isValidInternalDestination } from '../../lib/linkableAnchors'
+import { sanitizeInlineLinkMarkdown } from '../../utils/inlineLinkParser'
 
 const VISUAL_EDIT_EVENTS = ['gw-visual-edit-change', 'gw-visual-edit-state']
 
@@ -34,6 +37,22 @@ const readVisualEditState = () => {
   if (bodyMode === 'true') return true
 
   return false
+}
+
+const readVisualEditContext = () => {
+  if (!isBrowser()) {
+    return {
+      enabled: false,
+      routeKey: null,
+      routeLabel: null,
+    }
+  }
+
+  return {
+    enabled: readVisualEditState(),
+    routeKey: window.__GW_VISUAL_EDIT__?.routeKey ?? null,
+    routeLabel: window.__GW_VISUAL_EDIT__?.routeLabel ?? null,
+  }
 }
 
 export const readOverrideValue = (path, fallbackValue) => {
@@ -88,6 +107,24 @@ export function useVisualEditEnabled() {
   return enabled
 }
 
+export function useVisualEditContext() {
+  const [context, setContext] = useState(() => readVisualEditContext())
+
+  useEffect(() => {
+    if (!isBrowser()) return undefined
+    const sync = () => setContext(readVisualEditContext())
+    VISUAL_EDIT_EVENTS.forEach((eventName) => window.addEventListener(eventName, sync))
+    window.addEventListener('storage', sync)
+
+    return () => {
+      VISUAL_EDIT_EVENTS.forEach((eventName) => window.removeEventListener(eventName, sync))
+      window.removeEventListener('storage', sync)
+    }
+  }, [])
+
+  return context
+}
+
 export default function EditableText({
   path,
   value,
@@ -100,11 +137,17 @@ export default function EditableText({
   disabled = false,
   ...rest
 }) {
-  const visualEditEnabled = useVisualEditEnabled()
+  const visualEditContext = useVisualEditContext()
+  const visualEditEnabled = visualEditContext.enabled
   const enabled = visualEditEnabled && !disabled
   const [editing, setEditing] = useState(false)
+  const [linkPopoverOpen, setLinkPopoverOpen] = useState(false)
+  const [linkPopoverInitialText, setLinkPopoverInitialText] = useState('')
   const [draft, setDraft] = useState(() => `${readOverrideValue(path, value) ?? ''}`)
   const [resolvedValue, setResolvedValue] = useState(() => readOverrideValue(path, value) ?? '')
+  const editingContainerRef = useRef(null)
+  const textareaRef = useRef(null)
+  const selectionRangeRef = useRef({ start: 0, end: 0 })
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -125,15 +168,26 @@ export default function EditableText({
     return () => window.removeEventListener(CONTENT_OVERRIDE_EVENT, sync)
   }, [path, value])
 
+  const sanitizeDraftBeforeSave = useCallback((nextValue) => {
+    if (!multiline) return nextValue
+
+    return sanitizeInlineLinkMarkdown(
+      nextValue,
+      (destination) => isValidInternalDestination(destination, { routeKey: visualEditContext.routeKey }),
+    )
+  }, [multiline, visualEditContext.routeKey])
+
   const saveDraft = useCallback(() => {
-    const nextValue = draft.trimEnd()
+    const nextValue = sanitizeDraftBeforeSave(draft.trimEnd())
     const persistedValue = onCommit ? onCommit(nextValue, path) : commitOverrideValue(path, nextValue)
     setResolvedValue(persistedValue)
+    setLinkPopoverOpen(false)
     setEditing(false)
-  }, [draft, onCommit, path])
+  }, [draft, onCommit, path, sanitizeDraftBeforeSave])
 
   const cancelEditing = useCallback(() => {
     setDraft(`${resolvedValue ?? ''}`)
+    setLinkPopoverOpen(false)
     setEditing(false)
   }, [resolvedValue])
 
@@ -142,8 +196,70 @@ export default function EditableText({
     event?.preventDefault?.()
     event?.stopPropagation?.()
     setDraft(`${resolvedValue ?? ''}`)
+    setLinkPopoverOpen(false)
     setEditing(true)
   }, [enabled, resolvedValue])
+
+  const syncSelection = useCallback(() => {
+    const textarea = textareaRef.current
+    if (!textarea) return
+
+    const start = typeof textarea.selectionStart === 'number' ? textarea.selectionStart : draft.length
+    const end = typeof textarea.selectionEnd === 'number' ? textarea.selectionEnd : start
+    selectionRangeRef.current = { start, end }
+  }, [draft.length])
+
+  const getSelectionRange = useCallback(() => {
+    const textarea = textareaRef.current
+    const fallbackRange = selectionRangeRef.current
+    const draftLength = draft.length
+    const start = typeof textarea?.selectionStart === 'number' ? textarea.selectionStart : fallbackRange.start
+    const end = typeof textarea?.selectionEnd === 'number' ? textarea.selectionEnd : fallbackRange.end
+    const safeStart = Math.max(0, Math.min(draftLength, Math.min(start, end)))
+    const safeEnd = Math.max(0, Math.min(draftLength, Math.max(start, end)))
+    return { start: safeStart, end: safeEnd }
+  }, [draft.length])
+
+  const insertMarkdownLink = useCallback(({ text, destination }) => {
+    const normalizedText = `${text ?? ''}`.trim()
+    const normalizedDestination = `${destination ?? ''}`.trim()
+
+    if (!normalizedText || !isValidInternalDestination(normalizedDestination, { routeKey: visualEditContext.routeKey })) {
+      return
+    }
+
+    const { start, end } = getSelectionRange()
+    const snippet = `[${normalizedText}](${normalizedDestination})`
+    const nextValue = `${draft.slice(0, start)}${snippet}${draft.slice(end)}`
+
+    setDraft(nextValue)
+    setLinkPopoverOpen(false)
+
+    window.requestAnimationFrame(() => {
+      const textarea = textareaRef.current
+      if (!textarea) return
+      const caretPosition = start + snippet.length
+      textarea.focus()
+      textarea.setSelectionRange(caretPosition, caretPosition)
+      selectionRangeRef.current = { start: caretPosition, end: caretPosition }
+    })
+  }, [draft, getSelectionRange, visualEditContext.routeKey])
+
+  const handleTextareaBlur = useCallback((event) => {
+    if (!multiline) {
+      saveDraft()
+      return
+    }
+
+    const nextTarget = event.relatedTarget
+    if (nextTarget && editingContainerRef.current?.contains(nextTarget)) return
+
+    window.requestAnimationFrame(() => {
+      const activeElement = window.document?.activeElement
+      if (activeElement && editingContainerRef.current?.contains(activeElement)) return
+      saveDraft()
+    })
+  }, [multiline, saveDraft])
 
   const interactiveClassName = enabled
     ? 'cursor-text rounded-lg outline outline-1 outline-transparent hover:outline-primary-300/70 hover:bg-primary-50/40 focus-within:outline-primary-400/80 transition-all duration-150'
@@ -152,22 +268,70 @@ export default function EditableText({
   if (editing) {
     const EditingTag = multiline ? 'div' : 'span'
     return (
-      <EditingTag className={`relative block ${className}`} {...rest}>
+      <EditingTag
+        ref={multiline ? editingContainerRef : undefined}
+        className={`relative block ${className}`}
+        {...rest}
+      >
         {multiline ? (
-          <textarea
-            autoFocus
-            value={draft}
-            onChange={(event) => setDraft(event.target.value)}
-            onBlur={saveDraft}
-            onKeyDown={(event) => {
-              if (event.key === 'Escape') {
-                event.preventDefault()
-                cancelEditing()
-              }
-            }}
-            className={`w-full min-h-[140px] rounded-2xl border border-primary-300 bg-white px-4 py-3 text-ink shadow-sm outline-none ring-0 focus:border-primary-500 focus:shadow-md ${inputClassName}`}
-            placeholder={placeholder}
-          />
+          <>
+            <textarea
+              ref={textareaRef}
+              autoFocus
+              value={draft}
+              onChange={(event) => {
+                setDraft(event.target.value)
+                syncSelection()
+              }}
+              onBlur={handleTextareaBlur}
+              onSelect={syncSelection}
+              onMouseUp={syncSelection}
+              onKeyUp={syncSelection}
+              onFocus={syncSelection}
+              onKeyDown={(event) => {
+                if (event.key === 'Escape') {
+                  event.preventDefault()
+                  cancelEditing()
+                }
+              }}
+              className={`w-full min-h-[140px] rounded-2xl border border-primary-300 bg-white px-4 py-3 text-ink shadow-sm outline-none ring-0 focus:border-primary-500 focus:shadow-md ${inputClassName}`}
+              placeholder={placeholder}
+            />
+
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onMouseDown={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  syncSelection()
+                }}
+                onClick={() => {
+                  const selection = getSelectionRange()
+                  setLinkPopoverInitialText(draft.slice(selection.start, selection.end).trim())
+                  setLinkPopoverOpen((current) => !current)
+                }}
+                className="rounded-full border border-primary-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700 shadow-sm transition-colors hover:border-primary-300 hover:bg-primary-50"
+              >
+                Insert link
+              </button>
+              <p className="text-xs text-gray-500">Bruk [tekst](#anker) eller [tekst](/ruta#anker).</p>
+            </div>
+
+            {linkPopoverOpen && (
+              <LinkInsertPopover
+                initialText={linkPopoverInitialText}
+                routeKey={visualEditContext.routeKey}
+                onClose={() => {
+                  setLinkPopoverOpen(false)
+                  window.requestAnimationFrame(() => {
+                    textareaRef.current?.focus()
+                  })
+                }}
+                onInsert={insertMarkdownLink}
+              />
+            )}
+          </>
         ) : (
           <input
             autoFocus

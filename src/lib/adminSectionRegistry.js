@@ -161,6 +161,7 @@ const buildHelseSections = () => [
   }),
   section('helse-sector', 'Sektorargument', {
     anchorId: 'helsesektor-heading',
+    description: 'Anker i siden: #helsesektor. Brukes av interne lenker i helseseksjonens brødtekst.',
     fields: [
       field('helsesektorComp.label', 'Fortekst'),
       field('helsesektorComp.heading', 'Tittel'),
@@ -172,6 +173,7 @@ const buildHelseSections = () => [
   }),
   section('helse-phases', 'Faser', {
     anchorId: 'faser-heading',
+    description: 'Anker i siden: #faser-heading. Brukes av interne lenker i prosessbeskrivelsen.',
     fields: [
       field('helsePhases.label', 'Fortekst'),
       field('helsePhases.heading', 'Tittel'),
@@ -281,6 +283,8 @@ const buildRekrutteringSections = () => [
   }),
   section('rekruttering-hva-gjor', 'Hva gjør vi', {
     sectionIndex: 1,
+    anchorId: 'hvagjor',
+    description: 'Anker i siden: #hvagjor. Brukes av interne lenker i introduksjonsdelen.',
     fields: [
       field('hvaGjor.label', 'Fortekst'),
       field('hvaGjor.heading', 'Tittel'),

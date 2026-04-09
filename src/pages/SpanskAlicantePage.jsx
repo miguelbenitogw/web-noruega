@@ -1,11 +1,47 @@
 import AnimateIn from '../components/AnimateIn'
-import EditableText from '../components/editable/EditableText'
+import EditableText, { useVisualEditEnabled } from '../components/editable/EditableText'
+import InlineRichText from '../components/editable/InlineRichText'
 import PageEndNav from '../components/PageEndNav'
 import beachPalms from '../assets/alicante/beach-palms.jpeg'
 import promenadeLifestyle from '../assets/alicante/promenade-lifestyle.jpg'
 import cityView from '../assets/alicante/city-view.jpeg'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
+
+function InlineEditableParagraph({
+  path,
+  value,
+  className,
+  linkClassName,
+  as = 'p',
+  ...rest
+}) {
+  const visualEditEnabled = useVisualEditEnabled()
+
+  if (visualEditEnabled) {
+    return (
+      <EditableText
+        as={as}
+        path={path}
+        value={value}
+        multiline
+        inputClassName="min-h-[220px] resize-y leading-relaxed"
+        className={className}
+        {...rest}
+      />
+    )
+  }
+
+  return (
+    <InlineRichText
+      as={as}
+      value={value}
+      className={className}
+      linkClassName={linkClassName}
+      {...rest}
+    />
+  )
+}
 
 function SimpleBulletList({ items, basePath }) {
   return (
@@ -121,12 +157,11 @@ export default function SpanskAlicantePage() {
         <div className="container-xl">
           <AnimateIn>
             <div className="bg-surface border border-gray-100 rounded-[2rem] p-8 lg:p-10 max-w-4xl">
-              <EditableText
+              <InlineEditableParagraph
                 as="p"
                 path="spanskAlicantePage.exchangeNote"
                 value={page.exchangeNote}
-                multiline
-                className="text-lg text-gray-700 leading-relaxed"
+                className="text-lg text-gray-700 leading-relaxed break-words"
               />
             </div>
           </AnimateIn>

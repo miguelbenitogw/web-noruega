@@ -1,6 +1,43 @@
 import { IMAGES, img } from '../assets/images'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from './editable/EditableText'
+import InlineRichText from './editable/InlineRichText'
+
+function InlineEditableParagraph({
+  path,
+  value,
+  onCommit,
+  className,
+  linkClassName,
+  as = 'p',
+  ...rest
+}) {
+  const visualEditEnabled = useVisualEditEnabled()
+
+  if (visualEditEnabled) {
+    return (
+      <EditableText
+        as={as}
+        path={path}
+        value={value}
+        onCommit={onCommit}
+        multiline
+        className={className}
+        {...rest}
+      />
+    )
+  }
+
+  return (
+    <InlineRichText
+      as={as}
+      value={value}
+      className={className}
+      linkClassName={linkClassName}
+      {...rest}
+    />
+  )
+}
 
 export default function OmOss() {
   const c = useContent('omOssComp')
@@ -22,19 +59,17 @@ export default function OmOss() {
               value={c.heading}
               className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
             />
-            <EditableText
+            <InlineEditableParagraph
               as="p"
               path="omOssComp.p1"
               value={c.p1}
-              multiline
-              className="text-gray-600 text-lg leading-relaxed mb-6"
+              className="!text-gray-600 text-lg leading-relaxed mb-6"
             />
-            <EditableText
+            <InlineEditableParagraph
               as="p"
               path="omOssComp.p2"
               value={c.p2}
-              multiline
-              className="text-gray-600 leading-relaxed mb-8"
+              className="!text-gray-600 leading-relaxed mb-8"
             />
 
             {c.blockquote && (
@@ -157,13 +192,12 @@ export default function OmOss() {
                   onCommit={commitValueTitle}
                   className="font-heading text-lg font-bold text-ink mb-2"
                 />
-                <EditableText
+                <InlineEditableParagraph
                   as="p"
                   path={`omOssComp.values.${i}.desc`}
                   value={v.desc}
                   onCommit={commitValueDesc}
-                  multiline
-                  className="text-gray-500 leading-relaxed text-sm"
+                  className="!text-gray-500 leading-relaxed text-sm"
                 />
               </div>
             )

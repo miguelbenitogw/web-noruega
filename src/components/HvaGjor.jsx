@@ -1,6 +1,7 @@
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from './editable/EditableText'
+import InlineRichText from './editable/InlineRichText'
 
 const serviceIcons = [
   <svg key="i1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -14,6 +15,42 @@ const serviceIcons = [
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
   </svg>,
 ]
+
+function InlineEditableParagraph({
+  path,
+  value,
+  onCommit,
+  className,
+  linkClassName,
+  as = 'p',
+  ...rest
+}) {
+  const visualEditEnabled = useVisualEditEnabled()
+
+  if (visualEditEnabled) {
+    return (
+      <EditableText
+        as={as}
+        path={path}
+        value={value}
+        onCommit={onCommit}
+        multiline
+        className={className}
+        {...rest}
+      />
+    )
+  }
+
+  return (
+    <InlineRichText
+      as={as}
+      value={value}
+      className={className}
+      linkClassName={linkClassName}
+      {...rest}
+    />
+  )
+}
 
 export default function HvaGjor() {
   const c = useContent('hvaGjor')
@@ -38,12 +75,11 @@ export default function HvaGjor() {
             value={c.heading}
             className="font-heading text-3xl lg:text-4xl xl:text-5xl font-bold text-ink mb-6 leading-tight"
           />
-          <EditableText
+          <InlineEditableParagraph
             as="p"
             path="hvaGjor.description"
             value={c.description}
-            multiline
-            className="text-gray-600 text-lg leading-relaxed"
+            className="!text-gray-600 text-lg leading-relaxed"
           />
         </AnimateIn>
 
@@ -81,13 +117,12 @@ export default function HvaGjor() {
                       onCommit={commitTitle}
                       className="font-heading text-xl font-bold text-ink mb-4 group-hover:text-primary-600 transition-colors"
                     />
-                    <EditableText
+                    <InlineEditableParagraph
                       as="p"
                       path={`hvaGjor.services.${i}.description`}
                       value={s.description}
                       onCommit={commitDescription}
-                      multiline
-                      className="text-gray-500 leading-relaxed mb-8 flex-1"
+                      className="!text-gray-500 leading-relaxed mb-8 flex-1"
                     />
                     <div className="w-12 h-1 bg-primary-100 group-hover:w-full transition-all duration-500 rounded-full" />
                   </div>

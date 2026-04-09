@@ -2,13 +2,50 @@ import Hero from '../components/Hero'
 import CTABanner from '../components/CTABanner'
 import AnimateIn from '../components/AnimateIn'
 import SpanskAlicanteTeaser from '../components/SpanskAlicanteTeaser'
-import EditableText, { createArrayItemCommitter } from '../components/editable/EditableText'
+import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from '../components/editable/EditableText'
+import InlineRichText from '../components/editable/InlineRichText'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import { useNewsCollection } from '../hooks/useNews'
 import metricsTeamPhoto from '../assets/home/metrics-team.jpg'
 import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
 import groPhoto from '../assets/team/gro-anette.jpg'
+
+function InlineEditableParagraph({
+  path,
+  value,
+  onCommit,
+  className,
+  linkClassName,
+  as = 'p',
+  ...rest
+}) {
+  const visualEditEnabled = useVisualEditEnabled()
+
+  if (visualEditEnabled) {
+    return (
+      <EditableText
+        as={as}
+        path={path}
+        value={value}
+        onCommit={onCommit}
+        multiline
+        className={className}
+        {...rest}
+      />
+    )
+  }
+
+  return (
+    <InlineRichText
+      as={as}
+      value={value}
+      className={className}
+      linkClassName={linkClassName}
+      {...rest}
+    />
+  )
+}
 
 function SummaryCard({ section, delay, index, sections, readMoreLabel }) {
   const titleCommitter = createArrayItemCommitter({
@@ -123,12 +160,11 @@ export default function HomePage() {
               value={hs.heading}
               className="font-heading text-3xl lg:text-4xl xl:text-5xl font-bold text-ink mb-5 leading-tight"
             />
-            <EditableText
+            <InlineEditableParagraph
               as="p"
               path="homeServices.description"
               value={hs.description}
-              multiline
-              className="text-gray-600 text-lg leading-relaxed"
+              className="!text-gray-600 text-lg leading-relaxed"
             />
           </AnimateIn>
 
@@ -158,12 +194,12 @@ export default function HomePage() {
                 value={hHealth.heading}
                 className="font-heading text-3xl lg:text-4xl font-bold text-white mb-5 leading-tight"
               />
-              <EditableText
+              <InlineEditableParagraph
                 as="p"
                 path="homeHealth.description"
                 value={hHealth.description}
-                multiline
-                className="text-blue-100 text-lg leading-relaxed mb-8"
+                className="!text-blue-100 text-lg leading-relaxed mb-8"
+                linkClassName="!text-blue-50 underline decoration-blue-200 underline-offset-2 transition-colors hover:!text-white hover:!decoration-blue-100"
               />
               <a
                 href="/helse"
@@ -256,12 +292,11 @@ export default function HomePage() {
                       value={article.title}
                       className="font-heading text-lg font-bold text-ink mb-2 leading-snug"
                     />
-                    <EditableText
+                    <InlineEditableParagraph
                       as="p"
                       path={`news.${article.slug}.excerpt`}
                       value={article.excerpt}
-                      multiline
-                      className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-4"
+                      className="!text-gray-500 text-sm leading-relaxed line-clamp-2 mb-4"
                     />
                     <a
                       href={`/nyheter/${article.slug}`}
@@ -302,12 +337,11 @@ export default function HomePage() {
                 value={hContact.heading}
                 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
               />
-              <EditableText
+              <InlineEditableParagraph
                 as="p"
                 path="homeContact.description"
                 value={hContact.description}
-                multiline
-                className="text-gray-600 text-lg leading-relaxed mb-12"
+                className="!text-gray-600 text-lg leading-relaxed mb-12"
               />
             </AnimateIn>
 

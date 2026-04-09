@@ -5,7 +5,44 @@ import Nyheter from '../components/Nyheter'
 import PageEndNav from '../components/PageEndNav'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter } from '../components/editable/EditableText'
+import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from '../components/editable/EditableText'
+import InlineRichText from '../components/editable/InlineRichText'
+
+function InlineEditableParagraph({
+  path,
+  value,
+  onCommit,
+  className,
+  linkClassName,
+  as = 'p',
+  ...rest
+}) {
+  const visualEditEnabled = useVisualEditEnabled()
+
+  if (visualEditEnabled) {
+    return (
+      <EditableText
+        as={as}
+        path={path}
+        value={value}
+        onCommit={onCommit}
+        multiline
+        className={className}
+        {...rest}
+      />
+    )
+  }
+
+  return (
+    <InlineRichText
+      as={as}
+      value={value}
+      className={className}
+      linkClassName={linkClassName}
+      {...rest}
+    />
+  )
+}
 
 export default function HelsePage() {
   const hero = useContent('helseHero')
@@ -30,12 +67,12 @@ export default function HelsePage() {
               value={hero.h1}
               className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight"
             />
-            <EditableText
+            <InlineEditableParagraph
               as="p"
               path="helseHero.description"
               value={hero.description}
-              multiline
-              className="text-blue-100 text-lg max-w-2xl leading-relaxed"
+              className="!text-blue-100 text-lg max-w-2xl leading-relaxed"
+              linkClassName="!text-blue-50 underline decoration-blue-200 underline-offset-2 transition-colors hover:!text-white hover:!decoration-blue-100"
             />
           </AnimateIn>
         </div>
@@ -60,12 +97,11 @@ export default function HelsePage() {
                 value={phases.heading}
                 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
               />
-              <EditableText
+              <InlineEditableParagraph
                 as="p"
                 path="helsePhases.description"
                 value={phases.description}
-                multiline
-                className="text-gray-600 text-lg leading-relaxed"
+                className="!text-gray-600 text-lg leading-relaxed"
               />
             </div>
           </AnimateIn>
@@ -97,7 +133,6 @@ export default function HelsePage() {
 
                     <div className="bg-surface rounded-2xl border border-gray-100 p-7 lg:p-8">
                       <h3 className="font-heading text-xl font-bold text-ink mb-3">
-                        Fase {phase.number}{' '}
                         <EditableText
                           as="span"
                           path={`helsePhases.phases.${i}.title`}
@@ -106,13 +141,12 @@ export default function HelsePage() {
                           className="inline"
                         />
                       </h3>
-                      <EditableText
+                      <InlineEditableParagraph
                         as="p"
                         path={`helsePhases.phases.${i}.description`}
                         value={phase.description}
                         onCommit={commitPhaseDescription}
-                        multiline
-                        className="text-gray-600 leading-relaxed mb-4"
+                        className="!text-gray-600 leading-relaxed mb-4"
                       />
 
                       {phase.formats && (
@@ -152,17 +186,17 @@ export default function HelsePage() {
                 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight"
               />
               <div className="space-y-4 text-gray-600 text-lg leading-relaxed mb-10">
-                <EditableText
+                <InlineEditableParagraph
                   as="p"
                   path="helsePartnership.p1"
                   value={partnership.p1}
-                  multiline
+                  className="!text-gray-600"
                 />
-                <EditableText
+                <InlineEditableParagraph
                   as="p"
                   path="helsePartnership.p2"
                   value={partnership.p2}
-                  multiline
+                  className="!text-gray-600"
                 />
               </div>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

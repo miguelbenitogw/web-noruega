@@ -1,7 +1,44 @@
 import { useState } from 'react'
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from './editable/EditableText'
+import InlineRichText from './editable/InlineRichText'
+
+function InlineEditableParagraph({
+  path,
+  value,
+  onCommit,
+  className,
+  linkClassName,
+  as = 'p',
+  ...rest
+}) {
+  const visualEditEnabled = useVisualEditEnabled()
+
+  if (visualEditEnabled) {
+    return (
+      <EditableText
+        as={as}
+        path={path}
+        value={value}
+        onCommit={onCommit}
+        multiline
+        className={className}
+        {...rest}
+      />
+    )
+  }
+
+  return (
+    <InlineRichText
+      as={as}
+      value={value}
+      className={className}
+      linkClassName={linkClassName}
+      {...rest}
+    />
+  )
+}
 
 function AccordionItem({ faq, index, basePath, isOpen, onToggle, allItems }) {
   const commitQ = createArrayItemCommitter({
@@ -38,13 +75,12 @@ function AccordionItem({ faq, index, basePath, isOpen, onToggle, allItems }) {
         </div>
       </button>
       <div className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'}`}>
-        <EditableText
+        <InlineEditableParagraph
           as="p"
           path={`${basePath}.${index}.a`}
           value={faq.a}
           onCommit={commitA}
-          multiline
-          className="px-6 pb-5 text-gray-500 text-sm leading-relaxed"
+          className="px-6 pb-5 !text-gray-500 text-sm leading-relaxed"
         />
       </div>
     </div>
@@ -73,12 +109,11 @@ export default function FAQ() {
                 value={c.heading}
                 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
               />
-              <EditableText
+              <InlineEditableParagraph
                 as="p"
                 path="faq.description"
                 value={c.description}
-                multiline
-                className="text-gray-600 leading-relaxed mb-8"
+                className="!text-gray-600 leading-relaxed mb-8"
               />
               <a
                 href="/kontakt"

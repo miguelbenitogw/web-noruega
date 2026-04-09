@@ -4,9 +4,46 @@ import OmOss from '../components/OmOss'
 import FAQ from '../components/FAQ'
 import PageEndNav from '../components/PageEndNav'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter } from '../components/editable/EditableText'
+import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from '../components/editable/EditableText'
+import InlineRichText from '../components/editable/InlineRichText'
 import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
 import groPhoto from '../assets/team/gro-anette.jpg'
+
+function InlineEditableParagraph({
+  path,
+  value,
+  onCommit,
+  className,
+  linkClassName,
+  as = 'p',
+  ...rest
+}) {
+  const visualEditEnabled = useVisualEditEnabled()
+
+  if (visualEditEnabled) {
+    return (
+      <EditableText
+        as={as}
+        path={path}
+        value={value}
+        onCommit={onCommit}
+        multiline
+        className={className}
+        {...rest}
+      />
+    )
+  }
+
+  return (
+    <InlineRichText
+      as={as}
+      value={value}
+      className={className}
+      linkClassName={linkClassName}
+      {...rest}
+    />
+  )
+}
 
 function TeamCard({ member, index, basePath, delay, members }) {
   const normalizedName = (member.name || '').toLowerCase()
@@ -86,12 +123,12 @@ export default function OmOssPage() {
               value={hero.h1}
               className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight"
             />
-            <EditableText
+            <InlineEditableParagraph
               as="p"
               path="omOssHero.description"
               value={hero.description}
-              multiline
-              className="text-blue-100 text-lg max-w-2xl leading-relaxed"
+              className="!text-blue-100 text-lg max-w-2xl leading-relaxed"
+              linkClassName="!text-blue-50 underline decoration-blue-200 underline-offset-2 transition-colors hover:!text-white hover:!decoration-blue-100"
             />
           </AnimateIn>
         </div>
@@ -116,12 +153,11 @@ export default function OmOssPage() {
                 value={teamSection.heading}
                 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-4"
               />
-              <EditableText
+              <InlineEditableParagraph
                 as="p"
                 path="omOssTeam.description"
                 value={teamSection.description}
-                multiline
-                className="text-gray-600 leading-relaxed"
+                className="!text-gray-600 leading-relaxed"
               />
             </div>
           </AnimateIn>
@@ -151,12 +187,11 @@ export default function OmOssPage() {
                 value={offices.heading}
                 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-4"
               />
-              <EditableText
+              <InlineEditableParagraph
                 as="p"
                 path="omOssOffices.description"
                 value={offices.description}
-                multiline
-                className="text-gray-600 leading-relaxed"
+                className="!text-gray-600 leading-relaxed"
               />
             </div>
           </AnimateIn>

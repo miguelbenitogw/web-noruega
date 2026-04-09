@@ -1,8 +1,45 @@
 import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import EditableText, { useVisualEditEnabled } from './editable/EditableText'
+import InlineRichText from './editable/InlineRichText'
 import { IMAGES } from '../assets/images'
+
+function InlineEditableParagraph({
+  path,
+  value,
+  onCommit,
+  className,
+  linkClassName,
+  as = 'p',
+  ...rest
+}) {
+  const visualEditEnabled = useVisualEditEnabled()
+
+  if (visualEditEnabled) {
+    return (
+      <EditableText
+        as={as}
+        path={path}
+        value={value}
+        onCommit={onCommit}
+        multiline
+        className={className}
+        {...rest}
+      />
+    )
+  }
+
+  return (
+    <InlineRichText
+      as={as}
+      value={value}
+      className={className}
+      linkClassName={linkClassName}
+      {...rest}
+    />
+  )
+}
 
 export default function Helsesektor() {
   const c = useContent('helsesektorComp')
@@ -26,49 +63,12 @@ export default function Helsesektor() {
                 value={c.heading}
                 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight"
               />
-              <EditableText
+              <InlineEditableParagraph
                 as="p"
                 path="helsesektorComp.description"
                 value={c.description}
-                multiline
-                className="text-gray-600 text-lg leading-relaxed mb-8"
+                className="!text-gray-600 text-lg leading-relaxed mb-8"
               />
-
-              <div className="grid sm:grid-cols-3 gap-4 mb-8">
-                {(c.stats || []).map((s, index) => {
-                  const commitValue = createArrayItemCommitter({
-                    basePath: 'helsesektorComp.stats',
-                    fallbackItems: c.stats || [],
-                    index,
-                    field: 'value',
-                  })
-                  const commitLabel = createArrayItemCommitter({
-                    basePath: 'helsesektorComp.stats',
-                    fallbackItems: c.stats || [],
-                    index,
-                    field: 'label',
-                  })
-
-                  return (
-                    <div key={s.label} className="bg-white border border-gray-100 rounded-xl p-4">
-                      <EditableText
-                        as="p"
-                        path={`helsesektorComp.stats.${index}.value`}
-                        value={s.value}
-                        onCommit={commitValue}
-                        className="font-heading text-2xl font-bold text-primary-700"
-                      />
-                      <EditableText
-                        as="p"
-                        path={`helsesektorComp.stats.${index}.label`}
-                        value={s.label}
-                        onCommit={commitLabel}
-                        className="text-xs text-gray-500"
-                      />
-                    </div>
-                  )
-                })}
-              </div>
 
               <a
                 href="/kontakt"
