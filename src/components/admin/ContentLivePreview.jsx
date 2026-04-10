@@ -24,14 +24,14 @@ function PreviewMeta({ label, value }) {
   return (
     <div className="rounded-[24px] border border-slate-200 bg-slate-50 px-3 py-2">
       <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{label}</p>
-      <p className="mt-1 break-words text-sm font-medium text-slate-700">{value || '—'}</p>
+      <p className="mt-1 break-words text-sm font-medium text-slate-700">{value || '---'}</p>
     </div>
   )
 }
 
 function renderBodyPreview(body) {
   if (!body?.trim()) {
-    return <p className="text-sm text-slate-400">Ingen brødtekst ennå.</p>
+    return <p className="text-sm text-slate-400">Ingen brodtekst ennå.</p>
   }
 
   return body
@@ -53,21 +53,29 @@ export default function ContentLivePreview({
   templateIssues,
   currentItem,
   previewPayload,
+  assetDataset = [],
 }) {
   const [activeTab, setActiveTab] = useState('preview')
 
   const payloadJson = useMemo(() => JSON.stringify(previewPayload, null, 2), [previewPayload])
   const contentJson = useMemo(() => JSON.stringify(resolvedContent ?? {}, null, 2), [resolvedContent])
+  const resolvedCoverAsset = useMemo(
+    () => assetDataset.find((asset) => asset?.id === draft.coverImageAssetId) || null,
+    [assetDataset, draft.coverImageAssetId],
+  )
+  const resolvedAssetImageUrl = resolvedCoverAsset?.publicUrl || ''
+  const previewImageUrl = resolvedAssetImageUrl || draft.coverImage
+  const previewImageAlt = resolvedCoverAsset?.alt || draft.title || 'Forhandsvisningsbilde'
 
   return (
     <div className="space-y-4 rounded-[28px] border border-slate-200 bg-gradient-to-b from-white via-slate-50 to-white p-4 shadow-[0_12px_48px_-24px_rgba(15,23,42,0.35)]">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-600">
-            Forhåndsvisning
+            Forhandsvisning
           </p>
           <h2 className="mt-1 font-heading text-lg font-bold text-slate-950">
-            {entityType === 'news' ? 'Forhåndsvisning av nyhet' : 'Forhåndsvisning av side'}
+            {entityType === 'news' ? 'Forhandsvisning av nyhet' : 'Forhandsvisning av side'}
           </h2>
         </div>
 
@@ -111,15 +119,20 @@ export default function ContentLivePreview({
                     Fremhevet
                   </span>
                 ) : null}
+                {resolvedCoverAsset ? (
+                  <span className="inline-flex rounded-full border border-primary-200 bg-white px-2.5 py-1 text-[11px] font-medium text-primary-700">
+                    Cover via asset
+                  </span>
+                ) : null}
               </div>
 
-              {draft.coverImage ? (
+              {previewImageUrl ? (
                 <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-slate-100">
-                  <img src={draft.coverImage} alt={draft.title || 'Forhåndsvisningsbilde'} className="h-44 w-full object-cover" />
+                  <img src={previewImageUrl} alt={previewImageAlt} className="h-44 w-full object-cover" />
                 </div>
               ) : (
                 <div className="flex h-32 items-center justify-center rounded-[24px] border border-dashed border-slate-300 bg-white text-center text-sm text-slate-400">
-                  Forsidebildet vises her når du legger inn en URL.
+                  Forsidebildet vises her når du legger inn en URL eller asociás un asset con URL resolvible.
                 </div>
               )}
 

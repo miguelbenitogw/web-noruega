@@ -106,7 +106,6 @@ export default function HomePage() {
   const { articles: news } = useNewsCollection()
   const latestNews = news.slice(0, 2)
   const hs = useContent('homeServices')
-  const hStats = useContent('homeStats')
   const hHealth = useContent('homeHealth')
   const hContact = useContent('homeContact')
   const contacts = useContent('contacts')
@@ -122,13 +121,6 @@ export default function HomePage() {
   const createContactCommitter = (index, field) => createArrayItemCommitter({
     basePath: 'contacts',
     fallbackItems: contacts,
-    index,
-    field,
-  })
-
-  const createStatCommitter = (index, field) => createArrayItemCommitter({
-    basePath: 'homeStats',
-    fallbackItems: hStats,
     index,
     field,
   })
@@ -214,35 +206,13 @@ export default function HomePage() {
             </AnimateIn>
 
             <AnimateIn variant="fadeLeft" delay={150}>
-              <div className="space-y-4">
-                <div className="rounded-2xl overflow-hidden border border-white/15 bg-white/5">
-                  <img
-                    src={metricsTeamPhoto}
-                    alt="Global Working team i samarbeid med norske arbeidsgivere"
-                    className="w-full h-44 object-cover"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="grid grid-cols-3 gap-4">
-                  {(hStats || []).map((stat, index) => (
-                    <div key={`${stat.label}-${index}`} className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-5 text-center">
-                      <EditableText
-                        as="div"
-                        path={`homeStats.${index}.value`}
-                        value={stat.value}
-                        onCommit={createStatCommitter(index, 'value')}
-                        className="font-heading text-2xl lg:text-3xl font-bold text-white mb-1"
-                      />
-                      <EditableText
-                        as="div"
-                        path={`homeStats.${index}.label`}
-                        value={stat.label}
-                        onCommit={createStatCommitter(index, 'label')}
-                        className="text-blue-200 text-xs font-medium"
-                      />
-                    </div>
-                  ))}
-                </div>
+              <div className="rounded-2xl overflow-hidden border border-white/15 bg-white/5">
+                <img
+                  src={metricsTeamPhoto}
+                  alt="Global Working team i samarbeid med norske arbeidsgivere"
+                  className="w-full h-[360px] lg:h-[420px] object-cover"
+                  loading="lazy"
+                />
               </div>
             </AnimateIn>
           </div>

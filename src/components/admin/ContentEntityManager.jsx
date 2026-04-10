@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import AdminEntityEditorShell from './AdminEntityEditorShell'
 import AdminNewsBodyEditor from './AdminNewsBodyEditor'
+import AssetPicker from './AssetPicker'
 import ContentLivePreview from './ContentLivePreview'
 import TemplateFieldRenderer from './TemplateFieldRenderer'
 import useTemplates from '../../hooks/useTemplates'
 import useTemplateContent from '../../hooks/useTemplateContent'
 import { cloneValue, deepMergeContent } from '../../lib/contentMappers'
 import { isStructuredAdminEditorEnabled } from './fields/helpers'
+import { getAssetById } from '../../lib/contentAssetsService.js'
 import {
   getNewsBySlug,
   getPageBySlug,
@@ -71,6 +73,20 @@ const entityConfig = {
 
 const getNowIso = () => new Date().toISOString()
 
+const getContentLevelAssetId = (value) => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return ''
+  const assetId = value.coverImageAssetId
+  return typeof assetId === 'string' ? assetId : ''
+}
+
+const stripSystemContentFields = (value) => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
+
+  const next = { ...value }
+  delete next.coverImageAssetId
+  return next
+}
+
 const resolveSchemaNode = (schema, fieldKey) => {
   if (!schema || typeof schema !== 'object') return null
 
@@ -93,7 +109,8 @@ const isFeaturedNews = (item) => Boolean(item?.featured || item?.content?.featur
 
 const createInitialDraft = (entityType, template, existing = {}) => {
   const defaults = template?.defaults ?? template?.frontmatter_example ?? {}
-  const resolvedContent = deepMergeContent(defaults, existing.content ?? {})
+  const contentAssetId = existing.coverImageAssetId ?? getContentLevelAssetId(existing.content) ?? ''
+  const resolvedContent = deepMergeContent(defaults, stripSystemContentFields(existing.content ?? {}))
   const featured = entityType === 'news' ? Boolean(existing.featured ?? resolvedContent.featured) : false
 
   if (entityType === 'news') {
@@ -111,6 +128,8 @@ const createInitialDraft = (entityType, template, existing = {}) => {
     seoTitle: existing.seoTitle ?? '',
     seoDescription: existing.seoDescription ?? '',
     coverImage: existing.coverImage ?? '',
+    coverImageAssetId: String(contentAssetId || '').trim(),
+    coverImageAsset: existing.coverImageAsset ?? null,
     templateId: template?.id ?? existing.templateId ?? '',
     templateKey: template?.key ?? existing.templateKey ?? '',
     content: cloneValue(resolvedContent),
@@ -126,6 +145,9 @@ const createInitialDraft = (entityType, template, existing = {}) => {
 const normalizeEntityFromRow = (entityType, row) => {
   if (!row) return null
 
+  const normalizedContent = stripSystemContentFields(row.content ?? {})
+  const coverImageAssetId = row.coverImageAssetId ?? getContentLevelAssetId(row.content) ?? ''
+
   return {
     id: row.id,
     slug: row.slug ?? '',
@@ -137,10 +159,12 @@ const normalizeEntityFromRow = (entityType, row) => {
     seoTitle: row.seoTitle ?? '',
     seoDescription: row.seoDescription ?? '',
     coverImage: row.coverImage ?? '',
+    coverImageAssetId: String(coverImageAssetId || '').trim(),
+    coverImageAsset: row.coverImageAsset ?? null,
     templateId: row.templateId ?? row.template?.id ?? '',
     templateKey: row.template?.key ?? row.templateKey ?? '',
     template: row.template ?? null,
-    content: row.content ?? {},
+    content: normalizedContent,
     tag: entityType === 'news' ? row.tag ?? 'Nyhet' : undefined,
     readTime: entityType === 'news' ? row.readTime ?? '3 min' : undefined,
     author: entityType === 'news' ? row.author ?? 'Global Working' : undefined,
@@ -284,9 +308,14 @@ export default function ContentEntityManager({ entityType }) {
     seoTitle: draft.seoTitle,
     seoDescription: draft.seoDescription,
     coverImage: draft.coverImage,
+    coverImageAssetId: draft.coverImageAssetId,
     templateId: draft.templateId || activeTemplate?.id || '',
     templateKey: draft.templateKey || activeTemplate?.key || '',
-    content: { ...resolvedContent, ...(entityType === 'news' ? { featured: draft.featured } : {}) },
+    content: {
+      ...resolvedContent,
+      ...(draft.coverImageAssetId ? { coverImageAssetId: draft.coverImageAssetId } : {}),
+      ...(entityType === 'news' ? { featured: draft.featured } : {}),
+    },
     ...(entityType === 'news'
       ? {
           tag: draft.tag,
@@ -387,6 +416,47 @@ export default function ContentEntityManager({ entityType }) {
     }))
   }, [activeTemplate, draft.templateId, selectedSlug, templateMap])
 
+  useEffect(() => {
+    let cancelled = false
+    const assetId = draft.coverImageAssetId?.trim()
+
+    if (!assetId) {
+      setDraft((current) => (current.coverImageAsset ? { ...current, coverImageAsset: null } : current))
+      return () => {
+        cancelled = true
+      }
+    }
+
+    if (draft.coverImageAsset?.id === assetId) {
+      return () => {
+        cancelled = true
+      }
+    }
+
+    const loadAsset = async () => {
+      try {
+        const asset = await getAssetById(assetId)
+        if (!cancelled) {
+          setDraft((current) => (current.coverImageAssetId?.trim() === assetId
+            ? { ...current, coverImageAsset: asset }
+            : current))
+        }
+      } catch {
+        if (!cancelled) {
+          setDraft((current) => (current.coverImageAssetId?.trim() === assetId
+            ? { ...current, coverImageAsset: null }
+            : current))
+        }
+      }
+    }
+
+    void loadAsset()
+
+    return () => {
+      cancelled = true
+    }
+  }, [draft.coverImageAsset?.id, draft.coverImageAssetId])
+
   const handleTemplateChange = useCallback((templateId) => {
     const nextTemplate = templateMap[templateId] || null
     const nextContent = nextTemplate
@@ -409,6 +479,24 @@ export default function ContentEntityManager({ entityType }) {
 
   const updateDraft = useCallback((key, value) => {
     setDraft((current) => ({ ...current, [key]: value }))
+    setSaveState({ kind: 'idle', message: '' })
+  }, [])
+
+  const handleCoverAssetSelect = useCallback(({ assetId, asset }) => {
+    setDraft((current) => ({
+      ...current,
+      coverImageAssetId: assetId || '',
+      coverImageAsset: asset || null,
+    }))
+    setSaveState({ kind: 'idle', message: '' })
+  }, [])
+
+  const handleClearCoverAsset = useCallback(() => {
+    setDraft((current) => ({
+      ...current,
+      coverImageAssetId: '',
+      coverImageAsset: null,
+    }))
     setSaveState({ kind: 'idle', message: '' })
   }, [])
 
@@ -487,12 +575,14 @@ export default function ContentEntityManager({ entityType }) {
       seoTitle: draft.seoTitle.trim(),
       seoDescription: draft.seoDescription.trim(),
       coverImage: draft.coverImage.trim(),
+      coverImageAssetId: draft.coverImageAssetId.trim(),
       publishAt,
       status: nextStatus,
       templateId: draft.templateId || activeTemplate?.id || '',
       templateKey: draft.templateKey || activeTemplate?.key || '',
       content: cloneValue({
         ...(draft.content || {}),
+        ...(draft.coverImageAssetId.trim() ? { coverImageAssetId: draft.coverImageAssetId.trim() } : {}),
         ...(entityType === 'news' ? { featured: draft.featured } : {}),
       }),
       tag: entityType === 'news' ? (draft.tag || '').trim() : undefined,
@@ -616,6 +706,18 @@ export default function ContentEntityManager({ entityType }) {
             placeholder="https://…"
           />
         </Field>
+
+        <div className="lg:col-span-2">
+          <AssetPicker
+            title="Asset administrado para cover"
+            description="Podes mantener la URL legacy y ademas asociar un asset reutilizable para el cover."
+            defaultUsageType="cover-image"
+            selectedAssetId={draft.coverImageAssetId}
+            selectedAsset={draft.coverImageAsset}
+            onSelect={handleCoverAssetSelect}
+            onClear={handleClearCoverAsset}
+          />
+        </div>
 
         <div className="lg:col-span-2">
           <Field label="Ingress">
@@ -774,6 +876,7 @@ export default function ContentEntityManager({ entityType }) {
       templateIssues={templateIssues}
       currentItem={currentItem}
       previewPayload={previewPayload}
+      assetDataset={draft.coverImageAsset ? [draft.coverImageAsset] : []}
     />
   )
 
