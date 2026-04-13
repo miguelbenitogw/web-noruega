@@ -32,6 +32,7 @@ testCase('getLinkableAnchorOptions includes same-page and cross-page destination
   assert.ok(options.some((option) => option.destination === '#hvagjor'))
   assert.ok(options.some((option) => option.destination === '/nyheter#nyheter-arkiv'))
   assert.ok(options.some((option) => option.destination === '/kontakt#phone'))
+  assert.ok(options.some((option) => option.destination === '/#nyheter-preview-heading'))
 })
 
 testCase('isValidInternalDestination accepts only registered internal anchors', () => {
@@ -40,6 +41,7 @@ testCase('isValidInternalDestination accepts only registered internal anchors', 
     '#hvagjor',
     '/nyheter#nyheter-arkiv',
     '/kontakt#phone',
+    '/#nyheter-preview-heading',
   ]
 
   for (const target of validTargets) {
@@ -50,6 +52,7 @@ testCase('isValidInternalDestination accepts only registered internal anchors', 
     '',
     ' ',
     '#missing-anchor',
+    '/#missing-anchor',
     '/helsesektor',
     '/nyheter',
     '/nyheter#missing',

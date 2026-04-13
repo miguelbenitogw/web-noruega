@@ -56,6 +56,8 @@ const sortNewsForDisplay = (articles) => articles.slice().sort((left, right) => 
 })
 
 const getCoverImage = (article) => {
+  if (article.coverImageAssetUrl) return article.coverImageAssetUrl
+  if (article.coverImageAsset?.publicUrl) return article.coverImageAsset.publicUrl
   if (article.coverImage && article.coverImage.startsWith('http')) return article.coverImage
   if (article.coverImage && article.coverImage.startsWith('/')) return article.coverImage
   return IMAGES.platformHero
@@ -85,6 +87,7 @@ const buildNewsPayload = (article, mode = 'draft') => {
   const readTime = resolveNewsField(article, 'readTime')
   const metadata = cloneNewsValue(article.metadata || {})
   const content = cloneNewsValue(article.content || article.metadata?.content || {})
+  const coverImageAssetId = article.coverImageAssetId || article.content?.coverImageAssetId || article.metadata?.content?.coverImageAssetId || ''
   const featured = isFeaturedArticle(article)
 
   return {
@@ -98,6 +101,7 @@ const buildNewsPayload = (article, mode = 'draft') => {
     readTime,
     author: article.author || 'Global Working',
     coverImage: article.coverImage || '',
+    coverImageAssetId: coverImageAssetId || undefined,
     status: mode === 'publish' ? 'published' : 'draft',
     publishAt: article.publishAt || article.date || null,
     seoTitle: article.seoTitle || '',
@@ -105,7 +109,10 @@ const buildNewsPayload = (article, mode = 'draft') => {
     templateId: article.templateId || undefined,
     templateKey: article.templateKey || article.template?.key || undefined,
     metadata,
-    content,
+    content: {
+      ...content,
+      ...(coverImageAssetId ? { coverImageAssetId } : {}),
+    },
     featured,
   }
 }

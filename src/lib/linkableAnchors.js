@@ -202,6 +202,11 @@ export const isValidInternalDestination = (value, { routeKey } = {}) => {
     return false
   }
 
-  return getLinkableAnchorOptions({ routeKey }).some((option) => option.destination === trimmed)
-}
+  const rootFragmentId = trimmed.startsWith('/#') ? trimmed.slice(2) : null
 
+  return getLinkableAnchorOptions({ routeKey }).some((option) => {
+    if (option.destination === trimmed) return true
+    if (!rootFragmentId) return false
+    return option.pagePath === '/' && option.id === rootFragmentId
+  })
+}

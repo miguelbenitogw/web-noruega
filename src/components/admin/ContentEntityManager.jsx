@@ -37,6 +37,7 @@ const NEWS_TEMPLATE_DEFINITIONS = [
   },
 ]
 const ALLOWED_NEWS_TEMPLATE_KEYS = new Set(NEWS_TEMPLATE_DEFINITIONS.map((template) => template.key))
+const CONTENT_ASSET_FIELD_PATHS = ['coverImageAssetId', 'heroImageAssetId']
 
 const entityConfig = {
   page: {
@@ -79,11 +80,19 @@ const getContentLevelAssetId = (value) => {
   return typeof assetId === 'string' ? assetId : ''
 }
 
+const getContentFieldAssetId = (value, fieldPath = 'coverImageAssetId') => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return ''
+  const assetId = value[fieldPath]
+  return typeof assetId === 'string' ? assetId.trim() : ''
+}
+
 const stripSystemContentFields = (value) => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
 
   const next = { ...value }
-  delete next.coverImageAssetId
+  for (const fieldPath of CONTENT_ASSET_FIELD_PATHS) {
+    delete next[fieldPath]
+  }
   return next
 }
 
@@ -110,6 +119,7 @@ const isFeaturedNews = (item) => Boolean(item?.featured || item?.content?.featur
 const createInitialDraft = (entityType, template, existing = {}) => {
   const defaults = template?.defaults ?? template?.frontmatter_example ?? {}
   const contentAssetId = existing.coverImageAssetId ?? getContentLevelAssetId(existing.content) ?? ''
+  const heroImageAssetId = existing.heroImageAssetId ?? getContentFieldAssetId(existing.content, 'heroImageAssetId') ?? ''
   const resolvedContent = deepMergeContent(defaults, stripSystemContentFields(existing.content ?? {}))
   const featured = entityType === 'news' ? Boolean(existing.featured ?? resolvedContent.featured) : false
 
@@ -130,6 +140,8 @@ const createInitialDraft = (entityType, template, existing = {}) => {
     coverImage: existing.coverImage ?? '',
     coverImageAssetId: String(contentAssetId || '').trim(),
     coverImageAsset: existing.coverImageAsset ?? null,
+    heroImageAssetId: String(heroImageAssetId || '').trim(),
+    heroImageAsset: existing.heroImageAsset ?? null,
     templateId: template?.id ?? existing.templateId ?? '',
     templateKey: template?.key ?? existing.templateKey ?? '',
     content: cloneValue(resolvedContent),
@@ -147,6 +159,7 @@ const normalizeEntityFromRow = (entityType, row) => {
 
   const normalizedContent = stripSystemContentFields(row.content ?? {})
   const coverImageAssetId = row.coverImageAssetId ?? getContentLevelAssetId(row.content) ?? ''
+  const heroImageAssetId = row.heroImageAssetId ?? getContentFieldAssetId(row.content, 'heroImageAssetId') ?? ''
 
   return {
     id: row.id,
@@ -161,6 +174,8 @@ const normalizeEntityFromRow = (entityType, row) => {
     coverImage: row.coverImage ?? '',
     coverImageAssetId: String(coverImageAssetId || '').trim(),
     coverImageAsset: row.coverImageAsset ?? null,
+    heroImageAssetId: String(heroImageAssetId || '').trim(),
+    heroImageAsset: row.heroImageAsset ?? null,
     templateId: row.templateId ?? row.template?.id ?? '',
     templateKey: row.template?.key ?? row.templateKey ?? '',
     template: row.template ?? null,
@@ -457,6 +472,47 @@ export default function ContentEntityManager({ entityType }) {
     }
   }, [draft.coverImageAsset?.id, draft.coverImageAssetId])
 
+  useEffect(() => {
+    let cancelled = false
+    const assetId = draft.heroImageAssetId?.trim()
+
+    if (!assetId) {
+      setDraft((current) => (current.heroImageAsset ? { ...current, heroImageAsset: null } : current))
+      return () => {
+        cancelled = true
+      }
+    }
+
+    if (draft.heroImageAsset?.id === assetId) {
+      return () => {
+        cancelled = true
+      }
+    }
+
+    const loadAsset = async () => {
+      try {
+        const asset = await getAssetById(assetId)
+        if (!cancelled) {
+          setDraft((current) => (current.heroImageAssetId?.trim() === assetId
+            ? { ...current, heroImageAsset: asset }
+            : current))
+        }
+      } catch {
+        if (!cancelled) {
+          setDraft((current) => (current.heroImageAssetId?.trim() === assetId
+            ? { ...current, heroImageAsset: null }
+            : current))
+        }
+      }
+    }
+
+    void loadAsset()
+
+    return () => {
+      cancelled = true
+    }
+  }, [draft.heroImageAsset?.id, draft.heroImageAssetId])
+
   const handleTemplateChange = useCallback((templateId) => {
     const nextTemplate = templateMap[templateId] || null
     const nextContent = nextTemplate
@@ -491,11 +547,29 @@ export default function ContentEntityManager({ entityType }) {
     setSaveState({ kind: 'idle', message: '' })
   }, [])
 
+  const handleHeroAssetSelect = useCallback(({ assetId, asset }) => {
+    setDraft((current) => ({
+      ...current,
+      heroImageAssetId: assetId || '',
+      heroImageAsset: asset || null,
+    }))
+    setSaveState({ kind: 'idle', message: '' })
+  }, [])
+
   const handleClearCoverAsset = useCallback(() => {
     setDraft((current) => ({
       ...current,
       coverImageAssetId: '',
       coverImageAsset: null,
+    }))
+    setSaveState({ kind: 'idle', message: '' })
+  }, [])
+
+  const handleClearHeroAsset = useCallback(() => {
+    setDraft((current) => ({
+      ...current,
+      heroImageAssetId: '',
+      heroImageAsset: null,
     }))
     setSaveState({ kind: 'idle', message: '' })
   }, [])
@@ -574,8 +648,9 @@ export default function ContentEntityManager({ entityType }) {
       body: draft.body,
       seoTitle: draft.seoTitle.trim(),
       seoDescription: draft.seoDescription.trim(),
-      coverImage: draft.coverImage.trim(),
+      coverImage: draft.coverImageAssetId.trim() ? '' : draft.coverImage.trim(),
       coverImageAssetId: draft.coverImageAssetId.trim(),
+      heroImageAssetId: draft.heroImageAssetId.trim(),
       publishAt,
       status: nextStatus,
       templateId: draft.templateId || activeTemplate?.id || '',
@@ -583,8 +658,13 @@ export default function ContentEntityManager({ entityType }) {
       content: cloneValue({
         ...(draft.content || {}),
         ...(draft.coverImageAssetId.trim() ? { coverImageAssetId: draft.coverImageAssetId.trim() } : {}),
+        ...(draft.heroImageAssetId.trim() ? { heroImageAssetId: draft.heroImageAssetId.trim() } : { heroImageAssetId: '' }),
         ...(entityType === 'news' ? { featured: draft.featured } : {}),
       }),
+      assetAssociations: [
+        { fieldPath: 'coverImageAssetId', assetId: draft.coverImageAssetId.trim() || null },
+        { fieldPath: 'heroImageAssetId', assetId: draft.heroImageAssetId.trim() || null },
+      ],
       tag: entityType === 'news' ? (draft.tag || '').trim() : undefined,
       readTime: entityType === 'news' ? (draft.readTime || '').trim() : undefined,
       author: entityType === 'news' ? (draft.author || '').trim() : undefined,
@@ -716,6 +796,18 @@ export default function ContentEntityManager({ entityType }) {
             selectedAsset={draft.coverImageAsset}
             onSelect={handleCoverAssetSelect}
             onClear={handleClearCoverAsset}
+          />
+        </div>
+
+        <div className="lg:col-span-2">
+          <AssetPicker
+            title="Asset para hero"
+            description="Opcional: asociá un segundo asset reutilizable para el hero de la pieza."
+            defaultUsageType="hero-image"
+            selectedAssetId={draft.heroImageAssetId}
+            selectedAsset={draft.heroImageAsset}
+            onSelect={handleHeroAssetSelect}
+            onClear={handleClearHeroAsset}
           />
         </div>
 

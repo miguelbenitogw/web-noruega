@@ -35,13 +35,15 @@ testCase('parseInlineLinkTokens preserves plain text when no markdown links exis
 })
 
 testCase('parseInlineLinkTokens accepts internal anchors and routes only', () => {
-  assert.deepEqual(parseInlineLinkTokens('Ir a [sección](#contacto) o [perfil](/equipo) y [detalle](/equipo#bio).'), [
+  assert.deepEqual(parseInlineLinkTokens('Ir a [sección](#contacto) o [perfil](/equipo) y [detalle](/equipo#bio) o [home](/#inicio).'), [
     { type: 'text', value: 'Ir a ' },
     { type: 'link', value: 'sección', href: '#contacto' },
     { type: 'text', value: ' o ' },
     { type: 'link', value: 'perfil', href: '/equipo' },
     { type: 'text', value: ' y ' },
     { type: 'link', value: 'detalle', href: '/equipo#bio' },
+    { type: 'text', value: ' o ' },
+    { type: 'link', value: 'home', href: '/#inicio' },
     { type: 'text', value: '.' },
   ])
 })
@@ -78,17 +80,19 @@ testCase('parseInlineLinkTokens leaves escaped and image-like syntax untouched',
 })
 
 testCase('parseInlineLinkTokens accepts safe anchors with punctuation and renderTokens keeps anchors explicit', () => {
-  const tokens = parseInlineLinkTokens('Ir a [faq 2.0](#faq.2) o [bio-1](/equipo-1#bio-2).')
+  const tokens = parseInlineLinkTokens('Ir a [faq 2.0](#faq.2) o [bio-1](/equipo-1#bio-2) o [inicio](/#faq.2).')
 
   assert.deepEqual(tokens, [
     { type: 'text', value: 'Ir a ' },
     { type: 'link', value: 'faq 2.0', href: '#faq.2' },
     { type: 'text', value: ' o ' },
     { type: 'link', value: 'bio-1', href: '/equipo-1#bio-2' },
+    { type: 'text', value: ' o ' },
+    { type: 'link', value: 'inicio', href: '/#faq.2' },
     { type: 'text', value: '.' },
   ])
 
-  assert.equal(renderTokens(tokens), 'Ir a <a href="#faq.2">faq 2.0</a> o <a href="/equipo-1#bio-2">bio-1</a>.')
+  assert.equal(renderTokens(tokens), 'Ir a <a href="#faq.2">faq 2.0</a> o <a href="/equipo-1#bio-2">bio-1</a> o <a href="/#faq.2">inicio</a>.')
 })
 
 testCase('parseInlineLinkTokens keeps manually typed safe internal markdown while blocking unsafe fallbacks', () => {
@@ -114,11 +118,11 @@ testCase('parseInlineLinkTokens keeps nullish input safe and rejects whitespace 
 
 testCase('sanitizeInlineLinkMarkdown keeps catalogued destinations and degrades uncatalogued ones to plain text', () => {
   const result = sanitizeInlineLinkMarkdown(
-    'Ir a [sección](#faq) y [detalle](/equipo#bio) pero [otro](#nope).',
-    (href) => href === '#faq' || href === '/equipo#bio',
+    'Ir a [sección](#faq) y [detalle](/equipo#bio) pero [home](/#inicio) y [otro](#nope).',
+    (href) => href === '#faq' || href === '/equipo#bio' || href === '/#inicio',
   )
 
-  assert.equal(result, 'Ir a [sección](#faq) y [detalle](/equipo#bio) pero otro.')
+  assert.equal(result, 'Ir a [sección](#faq) y [detalle](/equipo#bio) pero [home](/#inicio) y otro.')
 })
 
 testCase('sanitizeInlineLinkMarkdown also degrades unsafe manual markdown without touching normal text', () => {

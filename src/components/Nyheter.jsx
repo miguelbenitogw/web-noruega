@@ -84,6 +84,7 @@ const buildNewsPayload = (article, mode = 'draft') => {
   const readTime = resolveNewsField(article, 'readTime')
   const metadata = cloneNewsValue(article.metadata || {})
   const content = cloneNewsValue(article.content || article.metadata?.content || {})
+  const coverImageAssetId = article.coverImageAssetId || article.content?.coverImageAssetId || article.metadata?.content?.coverImageAssetId || ''
   const featured = isFeaturedArticle(article)
 
   return {
@@ -97,6 +98,7 @@ const buildNewsPayload = (article, mode = 'draft') => {
     readTime,
     author: article.author || 'Global Working',
     coverImage: article.coverImage || '',
+    coverImageAssetId: coverImageAssetId || undefined,
     status: mode === 'publish' ? 'published' : 'draft',
     publishAt: article.publishAt || article.date || null,
     seoTitle: article.seoTitle || '',
@@ -104,7 +106,10 @@ const buildNewsPayload = (article, mode = 'draft') => {
     templateId: article.templateId || undefined,
     templateKey: article.templateKey || article.template?.key || undefined,
     metadata,
-    content,
+    content: {
+      ...content,
+      ...(coverImageAssetId ? { coverImageAssetId } : {}),
+    },
     featured,
   }
 }
@@ -194,7 +199,7 @@ export default function Nyheter() {
           <article className="lg:col-span-3 bg-surface rounded-3xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
             <div className="relative h-60 overflow-hidden">
               <img
-                src={img(featured.coverImage || IMAGES.platformHero, 900)}
+                src={img(featured.coverImageAssetUrl || featured.coverImage || IMAGES.platformHero, 900)}
                 alt={featuredTitle}
                 className="w-full h-full object-cover"
                 loading="lazy"

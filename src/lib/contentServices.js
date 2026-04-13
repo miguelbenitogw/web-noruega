@@ -5,6 +5,7 @@ import {
   normalizeTemplateBlueprint,
   validateTemplateShape,
 } from './contentMappers.js'
+import { syncContentAssetUsage } from './contentAssetsService.js'
 
 const TEMPLATES_TABLE = 'content_templates'
 const PAGES_TABLE = 'content_pages'
@@ -178,8 +179,77 @@ const normalizeMetadataContent = (metadata) => {
   return isPlainObject(content) || Array.isArray(content) ? cloneValue(content) : {}
 }
 
+const logContentAssetUsageSync = (level, message, context = {}) => {
+  const entry = {
+    timestamp: new Date().toISOString(),
+    level,
+    message,
+    ...context,
+  }
+
+  const logger = level === 'error' ? console.error : console.warn
+  logger(JSON.stringify(entry))
+}
+
+const CONTENT_ASSET_FIELD_PATHS = ['coverImageAssetId', 'heroImageAssetId']
+
+const getContentLevelAssetId = (value, fieldPath = 'coverImageAssetId') => {
+  if (!isPlainObject(value) || Array.isArray(value)) return ''
+
+  const assetId = value[fieldPath]
+  return typeof assetId === 'string' ? assetId.trim() : ''
+}
+
+const resolvePayloadAssetId = (payload = {}, fieldPath = 'coverImageAssetId') => {
+  const topLevel = typeof payload[fieldPath] === 'string' ? payload[fieldPath].trim() : ''
+  if (topLevel) return topLevel
+
+  const contentAssetId = getContentLevelAssetId(payload.content, fieldPath)
+  if (contentAssetId) return contentAssetId
+
+  const metadata = isPlainObject(payload.metadata) ? payload.metadata : {}
+  return getContentLevelAssetId(normalizeMetadataContent(metadata), fieldPath)
+}
+
+const normalizeAssetAssociations = (payload = {}) => {
+  const associationMap = new Map()
+
+  for (const fieldPath of CONTENT_ASSET_FIELD_PATHS) {
+    associationMap.set(fieldPath, resolvePayloadAssetId(payload, fieldPath) || null)
+  }
+
+  const providedAssociations = Array.isArray(payload.assetAssociations) ? payload.assetAssociations : []
+
+  for (const association of providedAssociations) {
+    if (!isPlainObject(association)) continue
+
+    const fieldPath = typeof association.fieldPath === 'string' ? association.fieldPath.trim() : ''
+    if (!fieldPath) continue
+
+    const assetId = typeof association.assetId === 'string'
+      ? association.assetId.trim() || null
+      : association.assetId == null
+        ? null
+        : String(association.assetId).trim() || null
+
+    associationMap.set(fieldPath, assetId)
+  }
+
+  if (associationMap.size === 0) {
+    const assetId = resolvePayloadAssetId(payload, 'coverImageAssetId') || null
+    if (assetId !== null) {
+      associationMap.set('coverImageAssetId', assetId)
+    }
+  }
+
+  return Array.from(associationMap.entries()).map(([fieldPath, assetId]) => ({ fieldPath, assetId }))
+}
+
 const normalizePage = (row) => {
   if (!row) return null
+
+  const metadata = isPlainObject(row.metadata) ? cloneValue(row.metadata) : {}
+  const content = normalizeMetadataContent(metadata)
 
   return {
     id: row.id,
@@ -196,8 +266,10 @@ const normalizePage = (row) => {
     seoTitle: row.seo_title || '',
     seoDescription: row.seo_description || '',
     coverImage: row.cover_image || '',
-    metadata: isPlainObject(row.metadata) ? cloneValue(row.metadata) : {},
-    content: normalizeMetadataContent(row.metadata),
+    coverImageAssetId: getContentLevelAssetId(content),
+    heroImageAssetId: getContentLevelAssetId(content, 'heroImageAssetId'),
+    metadata,
+    content,
     createdAt: row.created_at || null,
     updatedAt: row.updated_at || null,
   }
@@ -207,6 +279,7 @@ const normalizeNews = (row) => {
   if (!row) return null
 
   const metadata = isPlainObject(row.metadata) ? cloneValue(row.metadata) : {}
+  const content = normalizeMetadataContent(metadata)
 
   return {
     id: row.id,
@@ -226,8 +299,10 @@ const normalizeNews = (row) => {
     publishedBy: row.published_by || null,
     seoTitle: row.seo_title || '',
     seoDescription: row.seo_description || '',
+    coverImageAssetId: getContentLevelAssetId(content),
+    heroImageAssetId: getContentLevelAssetId(content, 'heroImageAssetId'),
     metadata,
-    content: normalizeMetadataContent(metadata),
+    content,
     featured: resolveFeaturedFlag(row),
     createdAt: row.created_at || null,
     updatedAt: row.updated_at || null,
@@ -260,9 +335,17 @@ const prepareMetadata = (payload) => {
   const metadataContent = isPlainObject(metadata.content) ? cloneValue(metadata.content) : {}
   const providedContent = payload.content !== undefined ? cloneValue(payload.content) : metadataContent
   const content = isPlainObject(providedContent) ? providedContent : metadataContent
+  const assetAssociations = normalizeAssetAssociations(payload)
 
   if (content !== undefined) {
     metadata.content = content
+  }
+
+  if (assetAssociations.length > 0) {
+    metadata.content = {
+      ...(isPlainObject(metadata.content) ? metadata.content : {}),
+      ...Object.fromEntries(assetAssociations.map(({ fieldPath, assetId }) => [fieldPath, assetId])),
+    }
   }
 
   if (payload.featured !== undefined) {
@@ -277,10 +360,64 @@ const prepareMetadata = (payload) => {
   return metadata
 }
 
+const syncCoverImageUsage = async (entityType, row, payload) => {
+  if (!row?.id) return
+
+  const associations = normalizeAssetAssociations(payload)
+  const resolvedLocale = row.locale || getContentLocale(payload.locale)
+
+  if (associations.length === 0) {
+    try {
+      await syncContentAssetUsage({
+        assetId: null,
+        entityType,
+        entityId: String(row.id),
+        fieldPath: 'coverImageAssetId',
+        locale: resolvedLocale,
+        notes: `${entityType}:coverImageAssetId`,
+      })
+    } catch (error) {
+      logContentAssetUsageSync('error', 'content_asset_usages sync failed after save', {
+        entityType,
+        entityId: String(row.id),
+        fieldPath: 'coverImageAssetId',
+        locale: resolvedLocale,
+        assetId: null,
+        message: error instanceof Error ? error.message : String(error),
+      })
+    }
+
+    return
+  }
+
+  for (const association of associations) {
+    try {
+      await syncContentAssetUsage({
+        assetId: association.assetId || null,
+        entityType,
+        entityId: String(row.id),
+        fieldPath: association.fieldPath,
+        locale: resolvedLocale,
+        notes: `${entityType}:${association.fieldPath}`,
+      })
+    } catch (error) {
+      logContentAssetUsageSync('error', 'content_asset_usages sync failed after save', {
+        entityType,
+        entityId: String(row.id),
+        fieldPath: association.fieldPath,
+        locale: resolvedLocale,
+        assetId: association.assetId || null,
+        message: error instanceof Error ? error.message : String(error),
+      })
+    }
+  }
+}
+
 const prepareUpsertPayload = async (client, payload, entityType) => {
   const locale = getContentLocale(payload.locale)
   const status = normalizeStatus(payload.status)
   const templateId = await resolveTemplateId(payload)
+  const coverImageAssetId = resolvePayloadAssetId(payload, 'coverImageAssetId')
   const common = {
     template_id: templateId,
     locale,
@@ -292,7 +429,9 @@ const prepareUpsertPayload = async (client, payload, entityType) => {
     publish_at: payload.publishAt ?? payload.publish_at ?? (status === 'published' ? new Date().toISOString() : null),
     seo_title: payload.seoTitle ?? payload.seo_title ?? null,
     seo_description: payload.seoDescription ?? payload.seo_description ?? null,
-    cover_image: payload.coverImage ?? payload.cover_image ?? null,
+    cover_image: coverImageAssetId
+      ? ''
+      : (payload.coverImage ?? payload.cover_image ?? null),
     metadata: prepareMetadata(payload),
   }
 
@@ -463,6 +602,7 @@ export async function upsertPage(payload = {}) {
   if (page.templateId) {
     page.template = await hydrateTemplateById(client, page.templateId)
   }
+  await syncCoverImageUsage('page', page, payload)
   return page
 }
 
@@ -505,6 +645,7 @@ export async function upsertNews(payload = {}) {
   if (news.templateId) {
     news.template = await hydrateTemplateById(client, news.templateId)
   }
+  await syncCoverImageUsage('news', news, payload)
   return news
 }
 

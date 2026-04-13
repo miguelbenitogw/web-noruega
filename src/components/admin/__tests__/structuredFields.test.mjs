@@ -7,6 +7,7 @@ import {
   parseStructuredAdminEditorFlag,
   validateStructuredValue,
 } from '../fields/helpers.js'
+import { clampPageToTotalPages } from '../assetLibraryPagination.js'
 
 const cases = []
 
@@ -95,6 +96,12 @@ testCase('canRenderStructuredField and canRenderObjectListField accept supported
 testCase('canRenderStructuredField rejects empty object contracts', () => {
   assert.equal(canRenderStructuredField({ type: 'object', properties: {} }, {}), false)
   assert.equal(canRenderObjectListField({ type: 'array', items: { type: 'object', properties: {} } }, [{}]), false)
+})
+
+testCase('clampPageToTotalPages corrige páginas fuera de rango sin romper totalPages vacío', () => {
+  assert.equal(clampPageToTotalPages(5, 3), 3)
+  assert.equal(clampPageToTotalPages(2, 3), 2)
+  assert.equal(clampPageToTotalPages(4, 0), 4)
 })
 
 let failed = false

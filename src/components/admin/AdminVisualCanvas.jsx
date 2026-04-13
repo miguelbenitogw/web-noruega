@@ -38,7 +38,7 @@ function GlobalPreviewChrome() {
       <section className="border-b border-slate-200 bg-white">
         <Navbar />
         <div className="border-t border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center text-sm text-slate-500">
-          Endringer i navigasjonen vises her. Bruk seksjonspanelet for å hoppe mellom navbar og footer.
+          Endringer i navigasjonen vises her. Bruk seksjonspanelet for Ã¥ hoppe mellom navbar og footer.
         </div>
       </section>
 
@@ -115,7 +115,7 @@ export default function AdminVisualCanvas({ activeSection, article, previewConfi
             <div className="container-xl">
               <h2 className="font-heading text-3xl font-bold text-slate-950">Velg en artikkel</h2>
               <p className="mt-4 max-w-2xl leading-relaxed text-slate-600">
-                Forhåndsvisningen trenger en konkret nyhet for å vise artikkelen. Velg en artikkel i topplinjen, så fortsetter vi.
+                ForhÃ¥ndsvisningen trenger en konkret nyhet for Ã¥ vise artikkelen. Velg en artikkel i topplinjen, sÃ¥ fortsetter vi.
               </p>
             </div>
           </section>
@@ -133,9 +133,9 @@ export default function AdminVisualCanvas({ activeSection, article, previewConfi
     return (
       <section className="bg-white py-24">
         <div className="container-xl">
-          <h2 className="font-heading text-3xl font-bold text-slate-950">Forhåndsvisning mangler</h2>
+          <h2 className="font-heading text-3xl font-bold text-slate-950">ForhÃ¥ndsvisning mangler</h2>
           <p className="mt-4 max-w-2xl leading-relaxed text-slate-600">
-            Det finnes ingen registrert canvas-renderer for denne modusen ennå.
+            Det finnes ingen registrert canvas-renderer for denne modusen ennÃ¥.
           </p>
         </div>
       </section>
@@ -178,7 +178,7 @@ export default function AdminVisualCanvas({ activeSection, article, previewConfi
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                {previewConfig.id === 'news-manager' ? 'Nyhetsstudio' : 'Forhåndsvisning'}
+                {previewConfig.id === 'news-manager' ? 'Nyhetsstudio' : 'ForhÃ¥ndsvisning'}
               </p>
               <h2 className="mt-1 font-heading text-xl font-bold text-slate-950">{previewConfig.label}</h2>
             </div>
@@ -197,8 +197,8 @@ export default function AdminVisualCanvas({ activeSection, article, previewConfi
                 <span className="h-3 w-3 rounded-full bg-emerald-400" />
                 <div className="ml-3 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-500">
                   {previewConfig.id === 'news-manager'
-                    ? 'Administrasjon med skjema og forhåndsvisning'
-                    : 'Ekte forhåndsvisning · navigasjon låst'}
+                    ? 'Administrasjon med skjema og forhÃ¥ndsvisning'
+                    : 'Ekte forhÃ¥ndsvisning Â· navigasjon lÃ¥st'}
                 </div>
               </div>
 

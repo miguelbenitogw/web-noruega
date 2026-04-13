@@ -5,12 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "npm run test:anchors && npm run test:admin-editor && npm run test:news-mvp",
+    "test": "npm run test:anchors && npm run test:admin-editor && npm run test:news-mvp && npm run test:inline-links && npm run test:linkable-anchors && npm run test:content-assets && npm run test:news-assets",
     "test:anchors": "node scripts/check-anchors.mjs",
     "test:admin-editor": "node src/components/admin/__tests__/structuredFields.test.mjs",
     "test:news-mvp": "node --experimental-specifier-resolution=node src/lib/__tests__/newsMvpContracts.test.mjs",
+    "test:inline-links": "node --experimental-specifier-resolution=node src/utils/__tests__/inlineLinkParser.test.js",
+    "test:linkable-anchors": "node --experimental-specifier-resolution=node src/lib/__tests__/linkableAnchors.test.mjs",
+    "test:content-assets": "node --experimental-specifier-resolution=node src/lib/__tests__/contentAssetsService.test.mjs",
+    "test:news-assets": "node --experimental-specifier-resolution=node src/lib/__tests__/newsAssetResolution.test.mjs",
     "prebuild": "node scripts/generate-sitemap.mjs",
     "build": "vite build",
+    "check": "npm test && npm run lint",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -69,13 +69,16 @@ testCase('prepareMetadata preserva metadata/content y persiste featured boolean'
     content: {
       blocks: ['dos'],
       locale: 'no',
+      coverImageAssetId: 'asset-123',
     },
     featured: true,
+    coverImageAssetId: ' asset-456 ',
   })
 
   assert.equal(metadata.source, 'legacy')
   assert.deepEqual(metadata.content.blocks, ['dos'])
   assert.equal(metadata.content.locale, 'no')
+  assert.equal(metadata.content.coverImageAssetId, 'asset-456')
   assert.equal(metadata.featured, true)
   assert.equal(metadata.content.featured, true)
 })
@@ -89,6 +92,7 @@ testCase('prepareUpsertPayload aplica publish inmediato al publicar sin publishA
     seoDescription: 'SEO description',
     metadata: { source: 'admin' },
     content: { body: 'ok' },
+    coverImageAssetId: ' asset-789 ',
     featured: true,
   }, 'news')
 
@@ -99,6 +103,7 @@ testCase('prepareUpsertPayload aplica publish inmediato al publicar sin publishA
   assert.equal(payload.metadata.featured, true)
   assert.equal(payload.metadata.content.featured, true)
   assert.equal(payload.metadata.content.body, 'ok')
+  assert.equal(payload.metadata.content.coverImageAssetId, 'asset-789')
 })
 
 let failed = false

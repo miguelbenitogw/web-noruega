@@ -6,6 +6,7 @@ import {
   archiveAsset,
   getAssetById,
   listAssets,
+  syncContentAssetUsage,
   updateAssetMeta,
   uploadAsset,
 } from '../contentAssetsService.js'
@@ -26,6 +27,7 @@ const createTableMock = (config = {}) => {
     orArgs: [],
     insertPayload: null,
     updatePayload: null,
+    deleteCalled: false,
     rangeArgs: null,
   }
 
@@ -40,6 +42,10 @@ const createTableMock = (config = {}) => {
     },
     update(payload) {
       state.updatePayload = payload
+      return builder
+    },
+    delete() {
+      state.deleteCalled = true
       return builder
     },
     eq(column, value) {
@@ -75,6 +81,7 @@ const createClientMock = ({ tableMock, uploadResult, removeResult } = {}) => {
     storageBuckets: [],
     uploadCalls: [],
     removeCalls: [],
+    signedUrlCalls: [],
   }
 
   return {
@@ -91,6 +98,15 @@ const createClientMock = ({ tableMock, uploadResult, removeResult } = {}) => {
             upload(path, file, options) {
               state.uploadCalls.push([path, file, options])
               return Promise.resolve(uploadResult ?? { data: { path }, error: null })
+            },
+            createSignedUrl(path, expiresIn) {
+              state.signedUrlCalls.push([path, expiresIn])
+              return Promise.resolve({
+                data: {
+                  signedUrl: `https://signed.example/${path}?expires=${expiresIn}`,
+                },
+                error: null,
+              })
             },
             remove(paths) {
               state.removeCalls.push(paths)
@@ -262,6 +278,70 @@ testCase('getAssetById devuelve null cuando no existe', async () => {
 
   assert.equal(asset, null)
   assert.deepEqual(tableMock.state.eqArgs, [['id', CONTENT_ASSET_ID]])
+})
+
+testCase('getAssetById hidrata publicUrl con signed URL cuando el bucket es privado', async () => {
+  const tableMock = createTableMock({
+    maybeSingleResult: {
+      data: createAssetRow({ public_url: null, storage_path: '2026/04/09/signed.png' }),
+      error: null,
+    },
+  })
+  const { client, state } = createClientMock({ tableMock })
+  __setContentAssetsServiceClientResolver(() => client)
+
+  const asset = await getAssetById(CONTENT_ASSET_ID)
+
+  assert.equal(state.signedUrlCalls.length, 1)
+  assert.deepEqual(state.signedUrlCalls[0], ['2026/04/09/signed.png', 3600])
+  assert.equal(asset.publicUrl, 'https://signed.example/2026/04/09/signed.png?expires=3600')
+})
+
+testCase('syncContentAssetUsage limpia y reemplaza el registro del asset asociado', async () => {
+  const tableMock = createTableMock({
+    maybeSingleResult: {
+      data: {
+        id: 'usage-1',
+        asset_id: CONTENT_ASSET_ID,
+        entity_type: 'news',
+        entity_id: 'news-1',
+        field_path: 'coverImageAssetId',
+        locale: 'nb',
+        notes: 'Nyhetsartikkel',
+      },
+      error: null,
+    },
+    singleResult: {
+      data: {
+        id: 'usage-2',
+        asset_id: CONTENT_ASSET_ID,
+        entity_type: 'news',
+        entity_id: 'news-1',
+        field_path: 'coverImageAssetId',
+        locale: 'nb',
+        notes: 'Nyhetsartikkel',
+      },
+      error: null,
+    },
+  })
+  const { client } = createClientMock({ tableMock })
+  __setContentAssetsServiceClientResolver(() => client)
+
+  const usage = await syncContentAssetUsage({
+    assetId: CONTENT_ASSET_ID,
+    entityType: 'news',
+    entityId: 'news-1',
+    fieldPath: 'coverImageAssetId',
+    locale: 'nb',
+    notes: 'Nyhetsartikkel',
+  })
+
+  assert.equal(tableMock.state.deleteCalled, true)
+  assert.equal(usage.assetId, CONTENT_ASSET_ID)
+  assert.equal(usage.entityType, 'news')
+  assert.equal(usage.entityId, 'news-1')
+  assert.equal(usage.fieldPath, 'coverImageAssetId')
+  assert.equal(usage.locale, 'nb')
 })
 
 testCase('updateAssetMeta actualiza metadata saneada', async () => {

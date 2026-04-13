@@ -1,6 +1,7 @@
 const WHITESPACE_RE = /\s/
 const BLOCKED_PROTOCOL_RE = /^(?:javascript|data|vbscript)\s*:/i
 const SAFE_FRAGMENT_RE = /^#[A-Za-z0-9._:-]+$/
+const SAFE_ROOT_FRAGMENT_RE = /^\/#?[A-Za-z0-9._:-]+$/
 const SAFE_PATH_RE = /^\/(?!\/)[A-Za-z0-9._~%-]+(?:\/[A-Za-z0-9._~%-]+)*(?:#[A-Za-z0-9._:-]+)?$/
 
 const isValidMarkdownLinkText = (text) => typeof text === 'string' && text.length > 0
@@ -22,7 +23,7 @@ export function isSafeInlineLinkTarget(target) {
   if (BLOCKED_PROTOCOL_RE.test(target)) return false
   if (target.startsWith('//')) return false
 
-  return SAFE_FRAGMENT_RE.test(target) || SAFE_PATH_RE.test(target)
+  return SAFE_FRAGMENT_RE.test(target) || SAFE_ROOT_FRAGMENT_RE.test(target) || SAFE_PATH_RE.test(target)
 }
 
 function parseInlineLinkCandidateAtIndex(source, startIndex) {
