@@ -9,7 +9,6 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const c = useContent('navbar')
   const navLinks = c.links || []
-  const ctaLabel = c.ctaLabel || 'Kom i gang'
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -64,13 +63,6 @@ export default function Navbar() {
                 </a>
               )
             })}
-            <a
-              href="/kontakt"
-              onClick={() => trackEvent('cta_click', { location: 'navbar', cta: 'kom_i_gang' })}
-              className="ml-3 px-5 py-2.5 bg-cta text-white rounded-lg text-sm font-semibold hover:bg-cta-600 transition-colors duration-200 shadow-sm cursor-pointer"
-            >
-              <EditableText as="span" path="navbar.ctaLabel" value={ctaLabel} className="inline" />
-            </a>
           </nav>
 
           <button
@@ -116,16 +108,6 @@ export default function Navbar() {
                 </a>
               )
             })}
-            <a
-              href="/kontakt"
-              onClick={() => {
-                trackEvent('cta_click', { location: 'mobile_nav', cta: 'kom_i_gang' })
-                setMenuOpen(false)
-              }}
-              className="mt-2 px-5 py-3 bg-cta text-white rounded-lg font-semibold text-center hover:bg-cta-600 transition-colors"
-            >
-              <EditableText as="span" path="navbar.ctaLabel" value={ctaLabel} className="inline" />
-            </a>
           </nav>
         </div>
       )}
