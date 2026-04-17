@@ -292,7 +292,7 @@ export default function AssetLibraryPanel({
   }, [editDraft, editingId])
 
   const handleArchive = useCallback(async (asset) => {
-    const shouldProceed = typeof window === 'undefined' ? true : window.confirm(`¿Archivar asset ${asset.id}?`)
+    const shouldProceed = typeof window === 'undefined' ? true : window.confirm(`Arkiver dette bildet?`)
     if (!shouldProceed) return
 
     setBusyAssetAction({ id: asset.id, type: 'archive' })
@@ -343,7 +343,7 @@ export default function AssetLibraryPanel({
               setPage(1)
             }}
           >
-            <option value="">Todos los usage</option>
+            <option value="">Alle typer</option>
             {usageSuggestions.map((suggestion) => (
               <option key={suggestion} value={suggestion}>
                 {suggestion}
@@ -360,7 +360,7 @@ export default function AssetLibraryPanel({
             setPage(1)
           }}
         >
-          <option value="">Todos los estados</option>
+          <option value="">Alle statuser</option>
           <option value="active">active</option>
           <option value="inactive">inactive</option>
           <option value="archived">archived</option>
@@ -369,7 +369,7 @@ export default function AssetLibraryPanel({
         <select className={inputClass} value={pageSize} onChange={handlePageSizeChange}>
           {pageSizeOptions.map((option) => (
             <option key={option} value={option}>
-              {option}/pag
+              {option} / side
             </option>
           ))}
         </select>
@@ -389,7 +389,7 @@ export default function AssetLibraryPanel({
 
       {!items.length && libraryState.kind !== 'loading' ? (
         <div className="rounded-[24px] border border-dashed border-slate-300 bg-slate-50 px-4 py-10 text-center text-sm text-slate-500">
-          No hay assets que coincidan con los filtros actuales.
+          Ingen bilder samsvarer med gjeldende filtre.
         </div>
       ) : (
         <div className="grid gap-4 xl:grid-cols-2">
@@ -414,7 +414,7 @@ export default function AssetLibraryPanel({
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4 text-sm text-slate-500">
         <div>
-          Página {displayPage} de {totalPages || 1} · {response.total || 0} assets
+          Side {displayPage} av {totalPages || 1} · {response.total || 0} bilder
         </div>
 
         <div className="flex items-center gap-2">
@@ -424,7 +424,7 @@ export default function AssetLibraryPanel({
             disabled={displayPage <= 1}
             className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Anterior
+            Forrige
           </button>
           <button
             type="button"
@@ -432,7 +432,7 @@ export default function AssetLibraryPanel({
             disabled={!totalPages || displayPage >= totalPages}
             className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Siguiente
+            Neste
           </button>
         </div>
       </div>
