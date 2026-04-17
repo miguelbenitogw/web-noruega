@@ -133,21 +133,18 @@ export default function HvaGjor() {
         </div>
 
         <AnimateIn className="text-center">
-          <div className="inline-flex flex-col sm:flex-row items-center gap-6">
-            <a
-              href="/kontakt"
-              className="group inline-flex items-center gap-3 px-10 py-5 bg-primary-600 text-white font-bold rounded-2xl hover:bg-navy transition-all duration-300 shadow-xl shadow-primary-100 hover:shadow-navy/20 cursor-pointer active:scale-95"
+          <a
+            href="/kontakt"
+            className="group inline-flex items-center gap-3 px-10 py-5 bg-primary-600 text-white font-bold rounded-2xl hover:bg-navy transition-all duration-300 shadow-xl shadow-primary-100 hover:shadow-navy/20 cursor-pointer active:scale-95"
+          >
+            <EditableText as="span" path="hvaGjor.ctaLabel" value={c.ctaLabel} className="inline" />
+            <svg
+              width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"
+              className="group-hover:translate-x-1 transition-transform"
             >
-              <EditableText as="span" path="hvaGjor.ctaLabel" value={c.ctaLabel} className="inline" />
-              <svg
-                width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"
-                className="group-hover:translate-x-1 transition-transform"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </a>
-            <p className="text-gray-400 text-sm font-medium">{c.ctaNote}</p>
-          </div>
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
         </AnimateIn>
       </div>
     </section>
