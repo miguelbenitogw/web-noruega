@@ -41,26 +41,29 @@ export default function Rekruttering() {
             />
             <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm space-y-4">
               <EditableText
-                as="p"
+                as="div"
                 path="rekrutteringComp.p1"
                 value={c.p1}
                 multiline
+                richText
                 inputClassName="min-h-[120px]"
                 className="text-gray-600 text-lg leading-relaxed"
               />
               <EditableText
-                as="p"
+                as="div"
                 path="rekrutteringComp.p2"
                 value={c.p2}
                 multiline
+                richText
                 inputClassName="min-h-[120px]"
                 className="text-gray-600 text-base leading-relaxed"
               />
               <EditableText
-                as="p"
+                as="div"
                 path="rekrutteringComp.p3"
                 value={c.p3 || ''}
                 multiline
+                richText
                 inputClassName="min-h-[120px]"
                 className="text-gray-600 text-base leading-relaxed"
               />

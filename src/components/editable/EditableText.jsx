@@ -125,6 +125,38 @@ export function useVisualEditContext() {
   return context
 }
 
+const renderMarkdown = (text) => {
+  if (!text) return null
+  const lines = text.split('\n')
+  const result = []
+  let listItems = []
+  let k = 0
+
+  const flushList = () => {
+    if (listItems.length === 0) return
+    result.push(<ul key={k++} className="list-disc pl-5 space-y-1 mb-3">{listItems.splice(0)}</ul>)
+  }
+
+  for (const line of lines) {
+    if (line.startsWith('## ')) {
+      flushList()
+      result.push(<h2 key={k++} className="font-heading text-xl font-bold text-ink mt-5 mb-2">{line.slice(3)}</h2>)
+    } else if (line.startsWith('### ')) {
+      flushList()
+      result.push(<h3 key={k++} className="font-heading text-lg font-semibold text-ink mt-4 mb-1">{line.slice(4)}</h3>)
+    } else if (line.startsWith('- ') || line.startsWith('* ')) {
+      listItems.push(<li key={k++} className="leading-relaxed">{line.slice(2)}</li>)
+    } else if (line.trim() === '') {
+      flushList()
+    } else {
+      flushList()
+      result.push(<p key={k++} className="mb-3 leading-relaxed">{line}</p>)
+    }
+  }
+  flushList()
+  return result.length > 0 ? result : null
+}
+
 export default function EditableText({
   path,
   value,
@@ -132,6 +164,7 @@ export default function EditableText({
   className = '',
   inputClassName = '',
   multiline = false,
+  richText = false,
   placeholder = 'Klikk for å redigere',
   onCommit,
   disabled = false,
@@ -275,6 +308,13 @@ export default function EditableText({
       >
         {multiline ? (
           <>
+            {richText && (
+              <p className="mb-1.5 text-xs text-gray-400">
+                Markdown: <code className="rounded bg-gray-100 px-1">## Overskrift</code>{' '}
+                <code className="rounded bg-gray-100 px-1">### Underoverskrift</code>{' '}
+                <code className="rounded bg-gray-100 px-1">- Punkt</code>
+              </p>
+            )}
             <textarea
               ref={textareaRef}
               autoFocus
@@ -357,10 +397,15 @@ export default function EditableText({
   }
 
   const isEmpty = resolvedValue === undefined || resolvedValue === null || resolvedValue === ''
-  const displayValue = isEmpty ? placeholder : resolvedValue
+  // Placeholder only shown in edit mode — never leaks into the published page
+  const displayValue = isEmpty ? (enabled ? placeholder : '') : resolvedValue
 
   const renderDisplayValue = () => {
-    if (isEmpty || !multiline || typeof displayValue !== 'string') return displayValue
+    if (isEmpty && !enabled) return null
+    if (richText && multiline && typeof displayValue === 'string' && !isEmpty) {
+      return renderMarkdown(displayValue)
+    }
+    if (!multiline || typeof displayValue !== 'string') return displayValue
     const lines = displayValue.split('\n')
     if (lines.length <= 1) return displayValue
     return lines.map((line, i) => (
