@@ -44,6 +44,37 @@ function InlineEditableParagraph({
   )
 }
 
+function PhaseDescription({ index, description, onCommit, phases }) {
+  const visualEditEnabled = useVisualEditEnabled()
+  const commitPhaseDescription = onCommit || createArrayItemCommitter({
+    basePath: 'helsePhases.phases',
+    fallbackItems: phases || [],
+    index,
+    field: 'description',
+  })
+  const paragraphs = (description || '').split('\n\n').filter(Boolean)
+
+  if (visualEditEnabled || paragraphs.length <= 1) {
+    return (
+      <InlineEditableParagraph
+        as="p"
+        path={`helsePhases.phases.${index}.description`}
+        value={description}
+        onCommit={commitPhaseDescription}
+        className="!text-gray-600 leading-relaxed mb-4"
+      />
+    )
+  }
+
+  return (
+    <>
+      {paragraphs.map((para, pi) => (
+        <p key={pi} className="text-gray-600 leading-relaxed mb-3 last:mb-4">{para}</p>
+      ))}
+    </>
+  )
+}
+
 export default function HelsePage() {
   const hero = useContent('helseHero')
   const phases = useContent('helsePhases')
@@ -141,12 +172,11 @@ export default function HelsePage() {
                           className="inline"
                         />
                       </h3>
-                      <InlineEditableParagraph
-                        as="p"
-                        path={`helsePhases.phases.${i}.description`}
-                        value={phase.description}
+                      <PhaseDescription
+                        index={i}
+                        description={phase.description}
                         onCommit={commitPhaseDescription}
-                        className="!text-gray-600 leading-relaxed mb-4"
+                        phases={phases.phases}
                       />
 
                       {phase.formats && (

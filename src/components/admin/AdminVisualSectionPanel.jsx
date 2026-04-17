@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { CONTENT_OVERRIDE_EVENT, getByPath, readContentOverrides } from '../../lib/contentOverrides'
+import { CONTENT_OVERRIDE_EVENT, deleteByPath, getByPath, readContentOverrides, setByPath, writeContentOverrides } from '../../lib/contentOverrides'
+import AssetPicker from './AssetPicker'
+import { getAssetById } from '../../lib/contentAssetsService'
 
 function TabButton({ active, children, onClick }) {
   return (
@@ -43,6 +45,144 @@ function NewsManagerPanel() {
           Sletting er ikke eksponert i dagens content API. Derfor håndterer studioet kladd og publisering, men ikke hard delete.
         </p>
       </div>
+    </div>
+  )
+}
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+
+function isImageUrlPath(path) {
+  if (!path) return false
+  return path.endsWith('.imageUrl') || path.endsWith('.heroImageUrl') || path.endsWith('.roleImageUrl') || path.endsWith('.cityImageUrl') || path.endsWith('.teamImageUrl') || path.endsWith('.officeImageUrl')
+}
+
+function commitOverride(path, value) {
+  const current = readContentOverrides()
+  setByPath(current, path, value)
+  writeContentOverrides(current)
+}
+
+function clearOverride(path) {
+  const current = readContentOverrides()
+  deleteByPath(current, path)
+  writeContentOverrides(current)
+}
+
+function ImageFieldEditor({ path, currentValue }) {
+  // Derive initial mode and values directly from currentValue — avoids setState-in-effect lint error.
+  // The component is reset via `key` at the call site when currentValue changes externally.
+  const isInitialUUID = Boolean(currentValue && typeof currentValue === 'string' && UUID_PATTERN.test(currentValue.trim()))
+  const [selectedAssetId, setSelectedAssetId] = useState(() => isInitialUUID ? currentValue.trim() : '')
+  const [selectedAsset, setSelectedAsset] = useState(null)
+  const [textValue, setTextValue] = useState(() => isInitialUUID ? '' : (currentValue || ''))
+  const [mode, setMode] = useState(() => isInitialUUID ? 'asset' : 'url')
+
+  // Only the async side-effect: fetch asset details when assetId is known.
+  // selectedAsset is reset to null via event handlers (handleAssetClear) — not here.
+  useEffect(() => {
+    if (!selectedAssetId) return
+    let cancelled = false
+    getAssetById(selectedAssetId)
+      .then((asset) => { if (!cancelled) setSelectedAsset(asset) })
+      .catch(() => { if (!cancelled) setSelectedAsset(null) })
+    return () => { cancelled = true }
+  }, [selectedAssetId])
+
+  const handleAssetSelect = ({ assetId, asset }) => {
+    setSelectedAssetId(assetId)
+    setSelectedAsset(asset)
+    // Store publicUrl as the override value so all current consumers work immediately
+    const urlToStore = asset?.publicUrl || assetId
+    commitOverride(path, urlToStore)
+  }
+
+  const handleAssetClear = () => {
+    setSelectedAssetId('')
+    setSelectedAsset(null)
+    clearOverride(path)
+  }
+
+  const handleUrlCommit = (value) => {
+    setTextValue(value)
+    if (value.trim()) {
+      commitOverride(path, value.trim())
+    } else {
+      clearOverride(path)
+    }
+  }
+
+  return (
+    <div className="mt-3 space-y-3">
+      <div className="flex gap-1.5">
+        <button
+          type="button"
+          onClick={() => setMode('asset')}
+          className={`rounded-full px-3 py-1 text-[11px] font-semibold transition ${mode === 'asset' ? 'bg-primary-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+        >
+          Asset
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode('url')}
+          className={`rounded-full px-3 py-1 text-[11px] font-semibold transition ${mode === 'url' ? 'bg-primary-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+        >
+          URL direkte
+        </button>
+      </div>
+
+      {mode === 'asset' ? (
+        <AssetPicker
+          selectedAssetId={selectedAssetId}
+          selectedAsset={selectedAsset}
+          onSelect={handleAssetSelect}
+          onClear={handleAssetClear}
+          title="Velg bilde"
+          description="Velg fra mediebiblioteket eller last opp nytt bilde."
+        />
+      ) : (
+        <label className="block space-y-1.5">
+          <span className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500">URL</span>
+          <input
+            type="text"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-300"
+            value={textValue}
+            placeholder="https://… eller /path/to/image.jpg"
+            onChange={(e) => setTextValue(e.target.value)}
+            onBlur={(e) => handleUrlCommit(e.target.value)}
+          />
+          {textValue && (
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+              <img src={textValue} alt="" className="h-28 w-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none' }} />
+            </div>
+          )}
+        </label>
+      )}
+    </div>
+  )
+}
+
+function TextFieldEditor({ path, currentValue }) {
+  // No useEffect needed — component is reset via `key` at the call site when currentValue changes externally.
+  const [value, setValue] = useState(currentValue ?? '')
+
+  const handleBlur = () => {
+    if (value.trim()) {
+      commitOverride(path, value)
+    } else {
+      clearOverride(path)
+    }
+  }
+
+  return (
+    <div className="mt-3">
+      <input
+        type="text"
+        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-300"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={handleBlur}
+        placeholder="Skriv inn verdi…"
+      />
     </div>
   )
 }
@@ -151,7 +291,9 @@ export default function AdminVisualSectionPanel({
                     </div>
                   ) : (
                     selectedSection.fields.map((entry) => {
-                      const hasOverride = entry.path ? getByPath(overrides, entry.path) !== undefined : false
+                      const currentOverride = entry.path ? getByPath(overrides, entry.path) : undefined
+                      const hasOverride = currentOverride !== undefined
+                      const isImage = isImageUrlPath(entry.path)
 
                       return (
                         <div key={`${selectedSection.id}-${entry.path}-${entry.label}`} className="rounded-[24px] border border-slate-200 bg-white px-4 py-4">
@@ -174,6 +316,22 @@ export default function AdminVisualSectionPanel({
                           <code className="mt-3 block break-all rounded-2xl bg-slate-950 px-3 py-2 text-xs leading-relaxed text-slate-100">
                             {entry.path}
                           </code>
+
+                          {entry.path ? (
+                            isImage ? (
+                              <ImageFieldEditor
+                                key={`${entry.path}::${typeof currentOverride === 'string' ? currentOverride : ''}`}
+                                path={entry.path}
+                                currentValue={typeof currentOverride === 'string' ? currentOverride : ''}
+                              />
+                            ) : (
+                              <TextFieldEditor
+                                key={`${entry.path}::${currentOverride != null ? String(currentOverride) : ''}`}
+                                path={entry.path}
+                                currentValue={currentOverride != null ? String(currentOverride) : ''}
+                              />
+                            )
+                          ) : null}
                         </div>
                       )
                     })
