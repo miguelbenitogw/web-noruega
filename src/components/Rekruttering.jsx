@@ -2,12 +2,6 @@ import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter } from './editable/EditableText'
-import {
-  readContentOverrides,
-  getByPath,
-  setByPath,
-  writeContentOverrides,
-} from '../lib/contentOverrides'
 
 const stepIcons = [
   <svg key="s1" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
@@ -24,18 +18,6 @@ const stepIcons = [
     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
   </svg>,
 ]
-
-function makeSectorCommitter(fallbackSectors, index) {
-  return (nextValue) => {
-    const overrides = readContentOverrides()
-    const current = getByPath(overrides, 'rekrutteringComp.sectors')
-    const items = Array.isArray(current) ? [...current] : [...(fallbackSectors || [])]
-    items[index] = nextValue
-    setByPath(overrides, 'rekrutteringComp.sectors', items)
-    writeContentOverrides(overrides)
-    return nextValue
-  }
-}
 
 export default function Rekruttering() {
   const c = useContent('rekrutteringComp')
@@ -76,18 +58,6 @@ export default function Rekruttering() {
                   inputClassName="min-h-[180px]"
                   className="mt-4 text-gray-600 text-base leading-relaxed"
                 />
-              </div>
-              <div className="flex flex-wrap gap-3">
-                {(c.sectors || []).map((s, index) => (
-                  <EditableText
-                    key={index}
-                    as="span"
-                    path={`rekrutteringComp.sectors.${index}`}
-                    value={s}
-                    onCommit={makeSectorCommitter(c.sectors, index)}
-                    className="px-4 py-2 bg-primary-50 border border-primary-100 text-primary-700 rounded-full text-sm font-medium"
-                  />
-                ))}
               </div>
             </div>
           </AnimateIn>

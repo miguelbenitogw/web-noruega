@@ -97,29 +97,6 @@ export default function Helsesektor() {
                 <div className="absolute inset-0 bg-gradient-to-t from-primary-900/40 via-transparent to-transparent" aria-hidden="true" />
               </div>
 
-              <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-xl p-5 border border-gray-100">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center shrink-0">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                    </svg>
-                  </div>
-                  <div>
-                    <EditableText
-                      as="div"
-                      path="helsesektorComp.groupsValue"
-                      value={c.groupsValue}
-                      className="font-heading font-bold text-2xl text-ink"
-                    />
-                    <EditableText
-                      as="div"
-                      path="helsesektorComp.groupsLabel"
-                      value={c.groupsLabel}
-                      className="text-gray-400 text-xs"
-                    />
-                  </div>
-                </div>
-              </div>
             </div>
           </AnimateIn>
         </div>
