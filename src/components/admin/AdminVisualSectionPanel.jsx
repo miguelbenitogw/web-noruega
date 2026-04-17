@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { CONTENT_OVERRIDE_EVENT, deleteByPath, getByPath, readContentOverrides, setByPath, writeContentOverrides } from '../../lib/contentOverrides'
-import AssetPicker from './AssetPicker'
-import { getAssetById } from '../../lib/contentAssetsService'
+import { getAssetById, listAssets, uploadAsset, CONTENT_ASSET_ALLOWED_MIME_TYPES, CONTENT_ASSET_MAX_SIZE_BYTES } from '../../lib/contentAssetsService'
 
 function TabButton({ active, children, onClick }) {
   return (
@@ -68,6 +67,128 @@ function clearOverride(path) {
   writeContentOverrides(current)
 }
 
+function CompactAssetLibrary({ selectedAssetId, onSelect }) {
+  const [search, setSearch] = useState('')
+  const [assets, setAssets] = useState([])
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+    listAssets({ page: 1, pageSize: 18, search, status: 'active' })
+      .then((result) => {
+        if (!cancelled) {
+          setAssets(result?.items ?? result ?? [])
+          setError(null)
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err?.message ?? 'Kunne ikke laste bilder')
+      })
+    return () => { cancelled = true }
+  }, [search])
+
+  return (
+    <div className="space-y-2">
+      <input
+        type="search"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Søk i bibliotek…"
+        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-300"
+      />
+      {error ? (
+        <p className="py-2 text-xs text-red-500">{error}</p>
+      ) : assets.length === 0 ? (
+        <p className="py-4 text-center text-xs text-slate-400">Ingen bilder funnet</p>
+      ) : (
+        <div className="grid grid-cols-3 gap-1.5">
+          {assets.map((asset) => {
+            const isSelected = asset.id === selectedAssetId
+            return (
+              <button
+                key={asset.id}
+                type="button"
+                onClick={() => onSelect({ assetId: asset.id, asset })}
+                className={`rounded-xl overflow-hidden border cursor-pointer transition ${
+                  isSelected
+                    ? 'border-primary-500 ring-2 ring-primary-500'
+                    : 'border-slate-200 hover:border-primary-400'
+                }`}
+              >
+                <img
+                  src={asset.publicUrl}
+                  alt={asset.altText ?? ''}
+                  className="h-16 w-full object-cover"
+                  loading="lazy"
+                  onError={(e) => { e.currentTarget.style.opacity = '0.3' }}
+                />
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function CompactAssetUpload({ onUploaded }) {
+  const [file, setFile] = useState(null)
+  const [altText, setAltText] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!file) return
+    if (!CONTENT_ASSET_ALLOWED_MIME_TYPES.includes(file.type)) {
+      setError('Ugyldig filtype. Tillatt: JPEG, PNG, WebP')
+      return
+    }
+    if (file.size > CONTENT_ASSET_MAX_SIZE_BYTES) {
+      setError(`Filen er for stor. Maks ${Math.round(CONTENT_ASSET_MAX_SIZE_BYTES / 1024 / 1024)} MB`)
+      return
+    }
+    setError(null)
+    setUploading(true)
+    try {
+      const asset = await uploadAsset(file, { altText: altText.trim() || undefined })
+      onUploaded({ assetId: asset.id, asset })
+    } catch (err) {
+      setError(err?.message ?? 'Opplasting mislyktes')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-2">
+      <div>
+        <input
+          type="file"
+          accept={CONTENT_ASSET_ALLOWED_MIME_TYPES.join(',')}
+          onChange={(e) => { setFile(e.target.files?.[0] ?? null); setError(null) }}
+          className="w-full text-xs text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-slate-700 hover:file:bg-slate-200"
+        />
+      </div>
+      <input
+        type="text"
+        value={altText}
+        onChange={(e) => setAltText(e.target.value)}
+        placeholder="Alternativ tekst (valgfritt)"
+        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-300"
+      />
+      {error && <p className="text-xs text-red-500">{error}</p>}
+      <button
+        type="submit"
+        disabled={!file || uploading}
+        className="w-full rounded-xl bg-primary-600 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {uploading ? 'Laster opp…' : 'Last opp'}
+      </button>
+    </form>
+  )
+}
+
 function ImageFieldEditor({ path, currentValue }) {
   // Derive initial mode and values directly from currentValue — avoids setState-in-effect lint error.
   // The component is reset via `key` at the call site when currentValue changes externally.
@@ -76,6 +197,7 @@ function ImageFieldEditor({ path, currentValue }) {
   const [selectedAsset, setSelectedAsset] = useState(null)
   const [textValue, setTextValue] = useState(() => isInitialUUID ? '' : (currentValue || ''))
   const [mode, setMode] = useState(() => isInitialUUID ? 'asset' : 'url')
+  const [assetTab, setAssetTab] = useState('bibliotek')
 
   // Only the async side-effect: fetch asset details when assetId is known.
   // selectedAsset is reset to null via event handlers (handleAssetClear) — not here.
@@ -111,15 +233,23 @@ function ImageFieldEditor({ path, currentValue }) {
     }
   }
 
+  const handleUploaded = ({ assetId, asset }) => {
+    handleAssetSelect({ assetId, asset })
+    setAssetTab('bibliotek')
+  }
+
+  const previewUrl = selectedAsset?.publicUrl || (!isInitialUUID && currentValue ? currentValue : null)
+
   return (
     <div className="mt-3 space-y-3">
+      {/* Mode toggle */}
       <div className="flex gap-1.5">
         <button
           type="button"
           onClick={() => setMode('asset')}
           className={`rounded-full px-3 py-1 text-[11px] font-semibold transition ${mode === 'asset' ? 'bg-primary-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
         >
-          Asset
+          Bibliotek
         </button>
         <button
           type="button"
@@ -131,14 +261,39 @@ function ImageFieldEditor({ path, currentValue }) {
       </div>
 
       {mode === 'asset' ? (
-        <AssetPicker
-          selectedAssetId={selectedAssetId}
-          selectedAsset={selectedAsset}
-          onSelect={handleAssetSelect}
-          onClear={handleAssetClear}
-          title="Velg bilde"
-          description="Velg fra mediebiblioteket eller last opp nytt bilde."
-        />
+        <div className="space-y-3">
+          {/* Current image preview */}
+          {previewUrl && (
+            <div className="flex items-center gap-2">
+              <div className="h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+                <img src={previewUrl} alt="" className="h-full w-full object-cover" />
+              </div>
+              <button
+                type="button"
+                onClick={handleAssetClear}
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-50 transition"
+              >
+                Fjern
+              </button>
+            </div>
+          )}
+
+          {/* Inner tabs: Bibliotek / Last opp */}
+          <div className="flex gap-2 rounded-[20px] bg-slate-100 p-1">
+            <TabButton active={assetTab === 'bibliotek'} onClick={() => setAssetTab('bibliotek')}>
+              Bibliotek
+            </TabButton>
+            <TabButton active={assetTab === 'upload'} onClick={() => setAssetTab('upload')}>
+              Last opp
+            </TabButton>
+          </div>
+
+          {assetTab === 'bibliotek' ? (
+            <CompactAssetLibrary selectedAssetId={selectedAssetId} onSelect={handleAssetSelect} />
+          ) : (
+            <CompactAssetUpload onUploaded={handleUploaded} />
+          )}
+        </div>
       ) : (
         <label className="block space-y-1.5">
           <span className="block text-[11px] font-semibold uppercase tracking-wide text-slate-500">URL</span>
