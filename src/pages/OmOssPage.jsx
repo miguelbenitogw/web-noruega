@@ -5,6 +5,7 @@ import FAQ from '../components/FAQ'
 import PageEndNav from '../components/PageEndNav'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from '../components/editable/EditableText'
+import EditableImage from '../components/editable/EditableImage'
 import InlineRichText from '../components/editable/InlineRichText'
 import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
 import groPhoto from '../assets/team/gro-anette.jpg'
@@ -198,7 +199,8 @@ export default function OmOssPage() {
 
           <AnimateIn variant="scale" delay={100}>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl max-w-4xl mx-auto">
-              <img
+              <EditableImage
+                path="omOssOffices.imageUrl"
                 src={img(offices.imageUrl || IMAGES.alicanteOffice, 1200)}
                 alt={offices.imageAlt || 'Global Working kontorer i Alicante'}
                 className="w-full h-[360px] md:h-[480px] object-cover"

@@ -1,5 +1,6 @@
 import AnimateIn from './AnimateIn'
 import EditableText from './editable/EditableText'
+import EditableImage from './editable/EditableImage'
 import spanskAlicanteLogo from '../assets/alicante/spansk-i-alicante-logo.png'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
@@ -72,7 +73,8 @@ export default function SpanskAlicanteTeaser() {
           <AnimateIn variant="fadeLeft" delay={150}>
             <div className="relative">
               <div className="rounded-[2rem] overflow-hidden border border-gray-100 shadow-xl bg-surface">
-                <img
+                <EditableImage
+                  path="spanskAlicanteTeaser.imageUrl"
                   src={img(teaser.imageUrl || IMAGES.spanskAlicanteHeroSunset, 1200)}
                   alt={teaser.imageAlt || 'Solnedgang ved stranden i Alicante'}
                   className="w-full h-[320px] lg:h-[420px] object-cover"

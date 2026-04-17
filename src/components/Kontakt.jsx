@@ -5,6 +5,7 @@ import { trackEvent } from '../lib/analytics'
 import { IMAGES, img } from '../assets/images'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import EditableImage from './editable/EditableImage'
 import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
 import groPhoto from '../assets/team/gro-anette.jpg'
 
@@ -214,7 +215,8 @@ export default function Kontakt() {
               </div>
 
               <div className="group relative rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
-                <img
+                <EditableImage
+                  path="kontaktComp.imageUrl"
                   src={img(c.imageUrl || IMAGES.alicanteOffice, 1200)}
                   alt={c.imageAlt || 'Global Working-kontoret i Alicante'}
                   className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"

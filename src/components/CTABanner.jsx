@@ -2,6 +2,7 @@ import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import EditableText from './editable/EditableText'
+import EditableImage from './editable/EditableImage'
 
 export default function CTABanner() {
   const c = useContent('ctaBanner')
@@ -12,7 +13,8 @@ export default function CTABanner() {
       aria-label="Kom i gang med Global Working Norge"
     >
       <div className="absolute inset-0" aria-hidden="true">
-        <img
+        <EditableImage
+          path="ctaBanner.imageUrl"
           src={img(c.imageUrl || IMAGES.peopleTeam2, 1600)}
           alt={c.imageAlt || ''}
           className="w-full h-full object-cover object-center"

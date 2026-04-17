@@ -4,6 +4,7 @@ import CTABanner from '../components/CTABanner'
 import AnimateIn from '../components/AnimateIn'
 import SpanskAlicanteTeaser from '../components/SpanskAlicanteTeaser'
 import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from '../components/editable/EditableText'
+import EditableImage from '../components/editable/EditableImage'
 import InlineRichText from '../components/editable/InlineRichText'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
@@ -196,7 +197,8 @@ export default function HomePage() {
 
             <AnimateIn variant="fadeLeft" delay={150}>
               <div className="rounded-2xl overflow-hidden border border-white/15 bg-white/5">
-                  <img
+                  <EditableImage
+                    path="homeHealth.imageUrl"
                     src={img(hHealth.imageUrl || IMAGES.homeMetricsTeam, 1200)}
                     alt={hHealth.imageAlt || 'Global Working team i samarbeid med norske arbeidsgivere'}
                     className="w-full h-[360px] lg:h-[420px] object-cover"

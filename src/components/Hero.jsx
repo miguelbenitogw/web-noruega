@@ -4,6 +4,7 @@ import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import { IMAGES, img } from '../assets/images'
 import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import EditableImage from './editable/EditableImage'
 
 function StatCard({ stat, active, delay, index, allStats }) {
   const animatedValue = useCounter(stat.value, active && stat.animate, 2000)
@@ -59,7 +60,8 @@ export default function Hero() {
       aria-label="Hovedseksjon – Global Working Norge"
     >
       <div className="absolute inset-0" aria-hidden="true">
-        <img
+        <EditableImage
+          path="hero.imageUrl"
           src={img(c.imageUrl || IMAGES.teamHero, 1600)}
           alt={c.imageAlt || ''}
           className="w-full h-full object-cover object-top scale-105"
