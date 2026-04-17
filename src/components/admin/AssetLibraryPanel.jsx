@@ -5,10 +5,10 @@ import { clampPageToTotalPages } from './assetLibraryPagination.js'
 const inputClass = 'w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-100'
 
 const formatDate = (value) => {
-  if (!value) return 'Sin fecha'
+  if (!value) return 'Ingen dato'
 
   const parsed = new Date(value)
-  if (Number.isNaN(parsed.getTime())) return 'Sin fecha'
+  if (Number.isNaN(parsed.getTime())) return 'Ingen dato'
 
   return new Intl.DateTimeFormat('nb-NO', { dateStyle: 'medium', timeStyle: 'short' }).format(parsed)
 }
@@ -73,14 +73,14 @@ function AssetCard({
                 : 'border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
             }`}
           >
-            {selected ? 'Seleccionado' : 'Seleccionar'}
+            {selected ? 'Valgt' : 'Velg'}
           </button>
         ) : null}
       </div>
 
       <div className="mt-4 overflow-hidden rounded-[24px] border border-slate-200 bg-slate-100">
         {imageUrl ? (
-          <img src={imageUrl} alt={asset.alt || 'Asset preview'} className="h-40 w-full object-cover" />
+          <img src={imageUrl} alt={asset.alt || 'Forhåndsvisning'} className="h-40 w-full object-cover" />
         ) : (
           <div className="flex h-40 items-center justify-center px-4 text-center text-sm text-slate-400">
             Asset sin URL renderizable todavía.
@@ -90,7 +90,7 @@ function AssetCard({
 
       <div className="mt-4 space-y-2 text-sm text-slate-600">
         <p className="break-all font-mono text-[11px] text-slate-400">{asset.id}</p>
-        <p>{asset.caption || asset.alt || 'Sin metadata todavía.'}</p>
+        <p>{asset.caption || asset.alt || 'Ingen metadata ennå.'}</p>
         <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
           <span>{asset.mimeType || 'mime n/a'}</span>
           <span>{formatFileSize(asset.sizeBytes)}</span>
@@ -145,7 +145,7 @@ function AssetCard({
               disabled={busyAction === 'save'}
               className="inline-flex items-center justify-center rounded-2xl bg-primary-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {busyAction === 'save' ? 'Guardando…' : 'Guardar metadata'}
+              {busyAction === 'save' ? 'Lagrer…' : 'Lagre metadata'}
             </button>
           </div>
         </div>
@@ -165,7 +165,7 @@ function AssetCard({
               disabled={busyAction === 'archive'}
               className="inline-flex items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 transition hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {busyAction === 'archive' ? 'Archivando…' : 'Archivar'}
+              {busyAction === 'archive' ? 'Arkiverer…' : 'Arkiver'}
             </button>
           ) : null}
         </div>
@@ -178,8 +178,8 @@ export default function AssetLibraryPanel({
   onSelect,
   selectedAssetId = '',
   pageSizeOptions = [6, 12, 24],
-  title = 'Librería de assets',
-  description = 'Buscá, filtrá y administrá assets existentes.',
+  title = 'Bildebibliotek',
+  description = 'Søk, filtrer og administrer eksisterende bilder.',
 }) {
   const [search, setSearch] = useState('')
   const [usageType, setUsageType] = useState('')
@@ -197,7 +197,7 @@ export default function AssetLibraryPanel({
     let cancelled = false
 
     const run = async () => {
-      setLibraryState({ kind: 'loading', message: 'Cargando assets…' })
+      setLibraryState({ kind: 'loading', message: 'Laster bilder…' })
 
       try {
         const result = await listAssets({
@@ -229,7 +229,7 @@ export default function AssetLibraryPanel({
           setResponse((current) => ({ ...current, items: [] }))
           setLibraryState({
             kind: 'error',
-            message: error instanceof Error ? error.message : 'No se pudo cargar la librería.',
+            message: error instanceof Error ? error.message : 'Kunne ikke laste biblioteket.',
           })
         }
       }
@@ -279,12 +279,12 @@ export default function AssetLibraryPanel({
       await updateAssetMeta(editingId, editDraft)
       setEditingId('')
       setEditDraft(createEditDraft(null))
-      setLibraryState({ kind: 'success', message: 'Metadata actualizada.' })
+      setLibraryState({ kind: 'success', message: 'Metadata oppdatert.' })
       setReloadTick((value) => value + 1)
     } catch (error) {
       setLibraryState({
         kind: 'error',
-        message: error instanceof Error ? error.message : 'No se pudo actualizar el asset.',
+        message: error instanceof Error ? error.message : 'Kunne ikke oppdatere bildet.',
       })
     } finally {
       setBusyAssetAction({ id: '', type: '' })
@@ -299,12 +299,12 @@ export default function AssetLibraryPanel({
 
     try {
       await archiveAsset(asset.id)
-      setLibraryState({ kind: 'success', message: 'Asset archivado.' })
+      setLibraryState({ kind: 'success', message: 'Bilde arkivert.' })
       setReloadTick((value) => value + 1)
     } catch (error) {
       setLibraryState({
         kind: 'error',
-        message: error instanceof Error ? error.message : 'No se pudo archivar el asset.',
+        message: error instanceof Error ? error.message : 'Kunne ikke arkivere bildet.',
       })
     } finally {
       setBusyAssetAction({ id: '', type: '' })
@@ -331,7 +331,7 @@ export default function AssetLibraryPanel({
             setSearch(event.target.value)
             setPage(1)
           }}
-          placeholder="Buscar por alt, caption, path o usage"
+          placeholder="Søk etter alt, tittel, sti eller brukstype"
         />
 
         <div className="space-y-2">
@@ -384,7 +384,7 @@ export default function AssetLibraryPanel({
       ) : null}
 
       {libraryState.kind === 'loading' ? (
-        <p className="text-sm text-slate-500">Cargando assets…</p>
+        <p className="text-sm text-slate-500">Laster bilder…</p>
       ) : null}
 
       {!items.length && libraryState.kind !== 'loading' ? (

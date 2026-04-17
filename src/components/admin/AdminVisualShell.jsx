@@ -71,6 +71,24 @@ export default function AdminVisualShell({ onSignOut }) {
 
   useEffect(() => () => resetVisualEditState(), [])
 
+  // When EditableImage dispatches gw-image-field-focus, switch the right panel
+  // to the "Felter" tab and activate the section that owns that field path.
+  useEffect(() => {
+    const handler = (event) => {
+      const { path } = event.detail || {}
+      if (!path) return
+      const ownerSection = previewConfig.sections.find((section) =>
+        section.fields.some((field) => field.path === path),
+      )
+      if (ownerSection) {
+        setSelectedSectionId(ownerSection.id)
+        setActiveTab('fields')
+      }
+    }
+    window.addEventListener('gw-image-field-focus', handler)
+    return () => window.removeEventListener('gw-image-field-focus', handler)
+  }, [previewConfig.sections])
+
   const handleExit = () => {
     window.location.assign(previewConfig.path || '/')
   }

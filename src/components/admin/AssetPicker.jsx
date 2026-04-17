@@ -12,8 +12,8 @@ export default function AssetPicker({
   defaultUsageType = '',
   onSelect,
   onClear,
-  title = 'Asset picker',
-  description = 'Seleccioná un asset existente o subí uno nuevo.',
+  title = 'Bildebibliotek',
+  description = 'Velg et eksisterende bilde eller last opp et nytt.',
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState('library')
@@ -21,8 +21,8 @@ export default function AssetPicker({
   const hasSelection = Boolean(selectedAssetId)
 
   const selectedSummary = useMemo(() => {
-    if (!selectedAssetId) return 'Ningún asset seleccionado.'
-    if (!selectedAsset) return `Asset seleccionado: ${selectedAssetId}`
+    if (!selectedAssetId) return 'Ingen fil valgt.'
+    if (!selectedAsset) return `Valgt: ${selectedAssetId}`
 
     return selectedAsset.alt || selectedAsset.caption || selectedAsset.usageType || selectedAssetId
   }, [selectedAsset, selectedAssetId])
@@ -53,7 +53,7 @@ export default function AssetPicker({
             onClick={() => setIsOpen((current) => !current)}
             className="inline-flex items-center justify-center rounded-2xl bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700"
           >
-            {isOpen ? 'Ocultar picker' : hasSelection ? 'Cambiar asset' : 'Elegir asset'}
+            {isOpen ? 'Skjul velger' : hasSelection ? 'Bytt bilde' : 'Velg bilde'}
           </button>
 
           {hasSelection ? (
@@ -62,7 +62,7 @@ export default function AssetPicker({
               onClick={() => onClear?.()}
               className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
             >
-              Limpiar selección
+              Fjern valg
             </button>
           ) : null}
         </div>
@@ -72,7 +72,7 @@ export default function AssetPicker({
         <p className="font-semibold">{selectedSummary}</p>
         {selectedAsset?.publicUrl ? (
           <div className="mt-3 overflow-hidden rounded-[20px] border border-white/60 bg-white">
-            <img src={selectedAsset.publicUrl} alt={selectedAsset.alt || 'Selected asset preview'} className="h-36 w-full object-cover" />
+            <img src={selectedAsset.publicUrl} alt={selectedAsset.alt || 'Forhåndsvisning av valgt bilde'} className="h-36 w-full object-cover" />
           </div>
         ) : null}
       </div>
@@ -81,10 +81,10 @@ export default function AssetPicker({
         <div className="space-y-4 rounded-[24px] border border-slate-200 bg-slate-50 p-4">
           <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 p-1">
             <button type="button" className={tabClass(activeTab === 'library')} onClick={() => setActiveTab('library')}>
-              Librería
+              Bibliotek
             </button>
             <button type="button" className={tabClass(activeTab === 'upload')} onClick={() => setActiveTab('upload')}>
-              Upload
+              Last opp
             </button>
           </div>
 
@@ -92,15 +92,15 @@ export default function AssetPicker({
             <AssetLibraryPanel
               onSelect={handleSelectAsset}
               selectedAssetId={selectedAssetId}
-              title="Seleccionar desde librería"
-              description="Elegí un asset ya cargado para reutilizarlo."
+              title="Velg fra bibliotek"
+              description="Velg et allerede opplastet bilde for å gjenbruke det."
             />
           ) : (
             <AssetUploader
               defaultUsageType={defaultUsageType}
               onUploaded={handleUploadAsset}
-              submitLabel="Subir y seleccionar"
-              title="Subir nuevo asset"
+              submitLabel="Last opp og velg"
+              title="Last opp nytt bilde"
             />
           )}
         </div>

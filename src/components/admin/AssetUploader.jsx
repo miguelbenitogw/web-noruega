@@ -21,8 +21,8 @@ const getAcceptedMimeLabel = () => CONTENT_ASSET_ALLOWED_MIME_TYPES.join(', ')
 export default function AssetUploader({
   defaultUsageType = '',
   onUploaded,
-  submitLabel = 'Last opp asset',
-  title = 'Last opp nytt asset',
+  submitLabel = 'Last opp bilde',
+  title = 'Last opp nytt bilde',
   compact = false,
 }) {
   const fileInputId = useId()
@@ -44,21 +44,21 @@ export default function AssetUploader({
     event.preventDefault()
 
     if (!selectedFile) {
-      setUploadState({ kind: 'error', message: 'Elegí un archivo antes de subirlo.', progress: 0 })
+      setUploadState({ kind: 'error', message: 'Velg en fil før du laster opp.', progress: 0 })
       return
     }
 
-    setUploadState({ kind: 'uploading', message: 'Validando archivo…', progress: 15 })
+    setUploadState({ kind: 'uploading', message: 'Validerer fil…', progress: 15 })
 
     try {
-      setUploadState({ kind: 'uploading', message: 'Subiendo asset…', progress: 55 })
+      setUploadState({ kind: 'uploading', message: 'Laster opp bilde…', progress: 55 })
 
       const asset = await uploadAsset(selectedFile, {
         alt,
         usage: usageType,
       })
 
-      setUploadState({ kind: 'success', message: 'Asset subido correctamente.', progress: 100 })
+      setUploadState({ kind: 'success', message: 'Bilde lastet opp.', progress: 100 })
       setSelectedFile(null)
       setAlt('')
       setUsageType(defaultUsageType)
@@ -72,7 +72,7 @@ export default function AssetUploader({
     } catch (error) {
       setUploadState({
         kind: 'error',
-        message: error instanceof Error ? error.message : 'No se pudo subir el asset.',
+        message: error instanceof Error ? error.message : 'Kunne ikke laste opp bildet.',
         progress: 0,
       })
     }
@@ -83,13 +83,13 @@ export default function AssetUploader({
       <div className="space-y-1">
         <h3 className="text-sm font-semibold text-slate-950">{title}</h3>
         <p className={helperTextClass}>
-          Permitidos: {acceptedMimeLabel}. Máximo: {formatFileSize(CONTENT_ASSET_MAX_SIZE_BYTES)}.
+          Tillatte formater: {acceptedMimeLabel}. Maks størrelse: {formatFileSize(CONTENT_ASSET_MAX_SIZE_BYTES)}.
         </p>
       </div>
 
       <div className="space-y-2">
         <label htmlFor={fileInputId} className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-          Archivo
+          Fil
         </label>
         <input
           id={fileInputId}
@@ -108,18 +108,18 @@ export default function AssetUploader({
 
       <div className={`grid gap-4 ${compact ? '' : 'md:grid-cols-2'}`}>
         <label className="block space-y-2">
-          <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Alt (opcional)</span>
+          <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Alt-tekst (valgfri)</span>
           <input
             className={inputClass}
             value={alt}
             onChange={(event) => setAlt(event.target.value)}
-            placeholder="Descripción accesible"
+            placeholder="Tilgjengelig beskrivelse"
             disabled={isUploading}
           />
         </label>
 
         <label className="block space-y-2">
-          <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Usage (opcional)</span>
+          <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Brukstype (valgfri)</span>
           <input
             className={inputClass}
             value={usageType}
@@ -165,7 +165,7 @@ export default function AssetUploader({
           disabled={isUploading}
           className="inline-flex items-center justify-center rounded-2xl bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isUploading ? 'Subiendo…' : submitLabel}
+          {isUploading ? 'Laster opp…' : submitLabel}
         </button>
       </div>
     </form>
