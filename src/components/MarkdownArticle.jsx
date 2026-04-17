@@ -1,4 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
+export const ARTICLE_BODY_MEASURE_CLASS = 'max-w-[68ch] text-[1.0625rem] leading-[1.85]'
+
 const slugifyHeading = (value) =>
   value
     .toLowerCase()
@@ -24,7 +26,7 @@ const flushParagraph = (buffer, key) => {
   buffer.length = 0
   if (!text) return null
   return (
-    <p key={key} className="text-gray-700 leading-relaxed mb-4">
+    <p key={key} className={`${ARTICLE_BODY_MEASURE_CLASS} mb-5 text-gray-700`}>
       {text}
     </p>
   )
@@ -54,7 +56,7 @@ export default function MarkdownArticle({ markdown }) {
   const flushList = () => {
     if (!listItems.length) return
     nodes.push(
-      <ul key={`ul-${keyIndex++}`} className="list-disc pl-6 mb-4 space-y-1 text-gray-700">
+      <ul key={`ul-${keyIndex++}`} className={`${ARTICLE_BODY_MEASURE_CLASS} list-disc pl-6 mb-5 space-y-1 text-gray-700`}>
         {listItems.map(item => <li key={`${keyIndex++}-${item.slice(0, 12)}`}>{item}</li>)}
       </ul>,
     )

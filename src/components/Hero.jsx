@@ -1,4 +1,3 @@
-import { IMAGES, img } from '../assets/images'
 import teamHero from '../assets/team-hero.jpg'
 import useInView from '../hooks/useInView'
 import useCounter from '../hooks/useCounter'
@@ -72,8 +71,8 @@ export default function Hero() {
       </div>
 
       <div className="container-xl relative z-10 py-32 lg:py-40">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div>
+        <div className="grid lg:grid-cols-1 gap-12 items-center">
+          <div className="max-w-3xl">
             <div className="animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
               <EditableText
                 as="div"
@@ -131,29 +130,6 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="hidden lg:flex items-center justify-center animate-[fadeInUp_1s_ease-out_1s_both]">
-            <div className="relative">
-              <div className="absolute -inset-6 bg-primary-500/20 rounded-3xl blur-2xl" aria-hidden="true" />
-              <div className="relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl overflow-hidden shadow-2xl">
-                <div className="bg-white/15 px-4 py-3 flex items-center gap-2 border-b border-white/10">
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-red-400/80" aria-hidden="true"/>
-                    <div className="w-3 h-3 rounded-full bg-yellow-400/80" aria-hidden="true"/>
-                    <div className="w-3 h-3 rounded-full bg-green-400/80" aria-hidden="true"/>
-                  </div>
-                  <div className="flex-1 bg-white/10 rounded px-3 py-1 text-white/60 text-xs">globalworking.no</div>
-                </div>
-                <img
-                  src={img(IMAGES.platformHero, 800)}
-                  alt="Global Working Norge plattform"
-                  className="w-full max-w-lg object-cover"
-                  loading="eager"
-                  width="512"
-                  height="340"
-                />
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 

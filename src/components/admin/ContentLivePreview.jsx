@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { ARTICLE_BODY_MEASURE_CLASS } from '../MarkdownArticle'
 
 const tabClass = (active) => `inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold transition ${
   active ? 'bg-primary-600 text-white shadow-sm' : 'bg-white text-slate-600 hover:bg-slate-100'
@@ -39,7 +40,7 @@ function renderBodyPreview(body) {
     .filter(Boolean)
     .slice(0, 4)
     .map((paragraph, index) => (
-      <p key={`${index}-${paragraph.slice(0, 12)}`} className="text-sm leading-7 text-slate-700">
+      <p key={`${index}-${paragraph.slice(0, 12)}`} className={`${ARTICLE_BODY_MEASURE_CLASS} text-slate-700`}>
         {paragraph.replace(/^#{1,6}\s+/gm, '').replace(/^>\s?/gm, '').trim()}
       </p>
     ))
