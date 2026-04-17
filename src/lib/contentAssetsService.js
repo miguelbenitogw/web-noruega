@@ -437,9 +437,13 @@ export async function uploadAsset(file, metadata = {}) {
 
   const storagePath = uploadData?.path || plannedStoragePath
 
+  const { data: publicUrlData } = client.storage.from(CONTENT_MEDIA_BUCKET).getPublicUrl(storagePath)
+  const resolvedPublicUrl = publicUrlData?.publicUrl ?? null
+
   const insertPayload = {
     bucket: CONTENT_MEDIA_BUCKET,
     storage_path: storagePath,
+    public_url: resolvedPublicUrl,
     mime_type: validatedFile.mimeType,
     size_bytes: validatedFile.sizeBytes,
     width: sanitizedMetadata.width,

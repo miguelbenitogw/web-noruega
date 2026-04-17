@@ -112,6 +112,9 @@ const createClientMock = ({ tableMock, uploadResult, removeResult } = {}) => {
               state.removeCalls.push(paths)
               return Promise.resolve(removeResult ?? { data: paths, error: null })
             },
+            getPublicUrl(path) {
+              return { data: { publicUrl: `https://example.supabase.co/storage/v1/object/public/content-media/${path}` } }
+            },
           }
         },
       },
