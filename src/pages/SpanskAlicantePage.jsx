@@ -151,15 +151,17 @@ export default function SpanskAlicantePage() {
         </div>
       </section>
 
-      <section className="py-24 lg:py-28 bg-white">
+      <section className="py-16 lg:py-20 bg-white">
         <div className="container-xl">
           <AnimateIn>
-            <div className="bg-surface border border-gray-100 rounded-[2rem] p-8 lg:p-10 max-w-4xl">
-              <InlineEditableParagraph
+            <div className="bg-surface border border-gray-100 rounded-[2rem] p-8 lg:p-12 max-w-4xl">
+              <EditableText
                 as="p"
                 path="spanskAlicantePage.exchangeNote"
                 value={page.exchangeNote}
-                className="text-lg text-gray-700 leading-relaxed break-words"
+                multiline
+                inputClassName="min-h-[140px]"
+                className="text-lg text-gray-700 leading-relaxed"
               />
             </div>
           </AnimateIn>
