@@ -2,6 +2,7 @@ import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
 import EditableText from './editable/EditableText'
+import EditableImage from './editable/EditableImage'
 
 export default function GodeGrunner() {
   const c = useContent('godeGrunner')
@@ -12,13 +13,14 @@ export default function GodeGrunner() {
         <div className="grid lg:grid-cols-2 gap-16 items-center mb-14">
           <AnimateIn variant="fadeRight">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-              <img
+              <EditableImage
                 src={img(c.imageUrl || IMAGES.rekruttering, 900)}
                 alt={c.imageAlt || 'Global Working samarbeid med norske kommuner'}
                 className="w-full object-cover"
                 loading="lazy"
                 width="640"
                 height="450"
+                path="godeGrunner.imageUrl"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary-900/30 via-transparent to-transparent" aria-hidden="true" />
             </div>

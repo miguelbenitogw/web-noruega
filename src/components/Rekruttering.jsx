@@ -2,6 +2,7 @@ import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import EditableImage from './editable/EditableImage'
 
 const stepIcons = [
   <svg key="s1" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
@@ -65,13 +66,14 @@ export default function Rekruttering() {
           <AnimateIn variant="fadeLeft" delay={200}>
             <div className="relative">
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
-                <img
+                <EditableImage
                   src={img(c.imageUrl || IMAGES.rekruttering, 900)}
                   alt={c.imageAlt || 'Global Working rekrutteringsmodell'}
                   className="w-full object-cover"
                   loading="lazy"
                   width="640"
                   height="420"
+                  path="rekrutteringComp.imageUrl"
                 />
               </div>
             </div>

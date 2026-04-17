@@ -7,6 +7,7 @@ import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import EditableText from '../components/editable/EditableText'
+import EditableImage from '../components/editable/EditableImage'
 import { useNewsCollection } from '../hooks/useNews'
 
 export default function RekrutteringPage() {
@@ -115,11 +116,12 @@ export default function RekrutteringPage() {
             <AnimateIn variant="fadeLeft" delay={150}>
               <div className="relative">
                 <div className="rounded-3xl overflow-hidden border border-gray-100 shadow-xl">
-                  <img
+                  <EditableImage
                     src={img(collab.imageUrl || IMAGES.rekruttering, 800)}
                     alt={collab.imageAlt || 'Global Working rekrutteringsprosessen'}
                     className="w-full h-auto object-cover"
                     loading="lazy"
+                    path="rekrutteringCollab.imageUrl"
                   />
                 </div>
                 <div className="absolute -bottom-4 -left-4 w-24 h-24 rounded-2xl bg-primary-100/60 -z-10" aria-hidden="true" />

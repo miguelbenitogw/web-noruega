@@ -4,6 +4,7 @@ import useContent from '../hooks/useContent'
 import EditableText, { useVisualEditEnabled } from './editable/EditableText'
 import InlineRichText from './editable/InlineRichText'
 import { IMAGES, img } from '../assets/images'
+import EditableImage from './editable/EditableImage'
 
 function InlineEditableParagraph({
   path,
@@ -86,13 +87,14 @@ export default function Helsesektor() {
           <AnimateIn variant="fadeLeft" delay={200}>
             <div className="relative">
               <div className="rounded-3xl overflow-hidden shadow-2xl">
-                <img
+                <EditableImage
                   src={img(c.imageUrl || IMAGES.enfermeria, 900)}
                   alt={c.imageAlt || 'Helsepersonell i opplæring gjennom Global Working'}
                   className="w-full object-cover"
                   loading="lazy"
                   width="640"
                   height="480"
+                  path="helsesektorComp.imageUrl"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary-900/40 via-transparent to-transparent" aria-hidden="true" />
               </div>

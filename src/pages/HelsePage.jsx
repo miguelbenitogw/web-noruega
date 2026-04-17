@@ -8,6 +8,7 @@ import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from '../components/editable/EditableText'
 import InlineRichText from '../components/editable/InlineRichText'
+import EditableImage from '../components/editable/EditableImage'
 
 function InlineEditableParagraph({
   path,
@@ -110,11 +111,12 @@ export default function HelsePage() {
             </AnimateIn>
             <AnimateIn variant="fadeLeft" delay={150} className="hidden lg:block">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-                <img
+                <EditableImage
                   src={img(hero.imageUrl || IMAGES.enfermeria, 800)}
                   alt={hero.imageAlt || 'Helsepersonell i opplæring gjennom Global Working'}
                   className="w-full h-80 object-cover object-top"
                   loading="eager"
+                  path="helseHero.imageUrl"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy/40 via-transparent to-transparent" aria-hidden="true" />
               </div>
