@@ -1,8 +1,8 @@
-import teamHero from '../assets/team-hero.jpg'
 import useInView from '../hooks/useInView'
 import useCounter from '../hooks/useCounter'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
+import { IMAGES, img } from '../assets/images'
 import EditableText, { createArrayItemCommitter } from './editable/EditableText'
 
 function StatCard({ stat, active, delay, index, allStats }) {
@@ -60,8 +60,8 @@ export default function Hero() {
     >
       <div className="absolute inset-0" aria-hidden="true">
         <img
-          src={teamHero}
-          alt=""
+          src={img(c.imageUrl || IMAGES.teamHero, 1600)}
+          alt={c.imageAlt || ''}
           className="w-full h-full object-cover object-top scale-105"
           loading="eager"
           fetchPriority="high"
@@ -72,15 +72,7 @@ export default function Hero() {
 
       <div className="container-xl relative z-10 py-32 lg:py-40">
         <div className="grid lg:grid-cols-1 gap-12 items-center">
-          <div className="max-w-3xl">
-            <div className="animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
-              <EditableText
-                as="div"
-                path="hero.badge"
-                value={c.badge}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-sm font-medium mb-8 backdrop-blur-sm"
-              />
-            </div>
+          <div className="mx-auto max-w-4xl text-center">
 
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
               <EditableText as="span" path="hero.h1First" value={c.h1First} className="inline" />{' '}
@@ -92,11 +84,11 @@ export default function Hero() {
               path="hero.description"
               value={c.description}
               multiline
-              className="text-lg lg:text-xl text-blue-100 leading-relaxed mb-10 max-w-xl animate-[fadeInUp_0.8s_ease-out_0.6s_both]"
+              className="mx-auto max-w-2xl text-lg lg:text-xl text-blue-100 leading-relaxed mb-10 animate-[fadeInUp_0.8s_ease-out_0.6s_both]"
               inputClassName="min-h-[180px]"
             />
 
-            <div className="flex flex-col sm:flex-row gap-4 animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
+            <div className="flex flex-col sm:flex-row sm:justify-center gap-4 animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
               <a
                 href="/vr-rekrutteringsmodell"
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'slik_jobber_vi' })}
@@ -116,7 +108,7 @@ export default function Hero() {
               </a>
             </div>
 
-            <div ref={statsRef} className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div ref={statsRef} className="mx-auto mt-14 grid max-w-3xl grid-cols-2 sm:grid-cols-4 gap-4">
               {(c.stats || []).map((stat, i) => (
                 <StatCard
                   key={`${stat.label}-${i}`}

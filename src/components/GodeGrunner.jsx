@@ -1,7 +1,7 @@
 import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import EditableText from './editable/EditableText'
 
 export default function GodeGrunner() {
   const c = useContent('godeGrunner')
@@ -13,14 +13,14 @@ export default function GodeGrunner() {
           <AnimateIn variant="fadeRight">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <img
-                src={img(IMAGES.rekruttering, 900)}
-                alt="Global Working samarbeid med norske kommuner"
+                src={img(c.imageUrl || IMAGES.rekruttering, 900)}
+                alt={c.imageAlt || 'Global Working samarbeid med norske kommuner'}
                 className="w-full object-cover"
                 loading="lazy"
                 width="640"
                 height="450"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary-900/30 via-transparent to-transparent" aria-hidden="true"/>
+              <div className="absolute inset-0 bg-gradient-to-t from-primary-900/30 via-transparent to-transparent" aria-hidden="true" />
             </div>
           </AnimateIn>
 
@@ -62,45 +62,6 @@ export default function GodeGrunner() {
               </a>
             </AnimateIn>
           </div>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-5">
-          {(c.testimonials || []).map((t, i) => {
-            const commitQuote = createArrayItemCommitter({
-              basePath: 'godeGrunner.testimonials',
-              fallbackItems: c.testimonials || [],
-              index: i,
-              field: 'quote',
-            })
-            const commitAuthor = createArrayItemCommitter({
-              basePath: 'godeGrunner.testimonials',
-              fallbackItems: c.testimonials || [],
-              index: i,
-              field: 'author',
-            })
-
-            return (
-              <AnimateIn key={t.author} variant="fadeUp" delay={i * 100}>
-                <article className="h-full rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
-                  <EditableText
-                    as="p"
-                    path={`godeGrunner.testimonials.${i}.quote`}
-                    value={t.quote}
-                    onCommit={commitQuote}
-                    multiline
-                    className="text-gray-600 text-sm leading-relaxed mb-5"
-                  />
-                  <EditableText
-                    as="p"
-                    path={`godeGrunner.testimonials.${i}.author`}
-                    value={t.author}
-                    onCommit={commitAuthor}
-                    className="font-semibold text-ink text-sm"
-                  />
-                </article>
-              </AnimateIn>
-            )
-          })}
         </div>
       </div>
     </section>

@@ -2,9 +2,7 @@ import AnimateIn from '../components/AnimateIn'
 import EditableText, { useVisualEditEnabled } from '../components/editable/EditableText'
 import InlineRichText from '../components/editable/InlineRichText'
 import PageEndNav from '../components/PageEndNav'
-import beachPalms from '../assets/alicante/beach-palms.jpeg'
-import promenadeLifestyle from '../assets/alicante/promenade-lifestyle.jpg'
-import cityView from '../assets/alicante/city-view.jpeg'
+import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 
@@ -143,8 +141,8 @@ export default function SpanskAlicantePage() {
             <AnimateIn variant="fadeLeft" delay={150}>
               <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
                 <img
-                  src={beachPalms}
-                  alt="Strand og palmer i Alicante"
+                  src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1200)}
+                  alt={page.heroImageAlt || 'Strand og palmer i Alicante'}
                   className="w-full h-[360px] lg:h-[460px] object-cover"
                 />
               </div>
@@ -184,8 +182,8 @@ export default function SpanskAlicantePage() {
             <AnimateIn variant="fadeLeft" delay={120}>
               <div className="rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg bg-white">
                 <img
-                  src={promenadeLifestyle}
-                  alt="Sosial hverdag og samtaler i Alicante"
+                  src={img(page.roleImageUrl || IMAGES.spanskAlicantePromenade, 1200)}
+                  alt={page.roleImageAlt || 'Sosial hverdag og samtaler i Alicante'}
                   className="w-full h-[360px] object-cover"
                   loading="lazy"
                 />
@@ -333,8 +331,8 @@ export default function SpanskAlicantePage() {
             <AnimateIn variant="fadeLeft" delay={120}>
               <div className="rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg">
                 <img
-                  src={cityView}
-                  alt="Byliv og utsikt i Alicante"
+                  src={img(page.cityImageUrl || IMAGES.spanskAlicanteCityView, 1200)}
+                  alt={page.cityImageAlt || 'Byliv og utsikt i Alicante'}
                   className="w-full h-[420px] object-cover"
                   loading="lazy"
                 />

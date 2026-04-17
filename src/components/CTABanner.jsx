@@ -13,8 +13,8 @@ export default function CTABanner() {
     >
       <div className="absolute inset-0" aria-hidden="true">
         <img
-          src={img(IMAGES.peopleTeam2, 1600)}
-          alt=""
+          src={img(c.imageUrl || IMAGES.peopleTeam2, 1600)}
+          alt={c.imageAlt || ''}
           className="w-full h-full object-cover object-center"
           loading="lazy"
         />

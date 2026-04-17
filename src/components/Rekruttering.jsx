@@ -43,9 +43,9 @@ export default function Rekruttering() {
   return (
     <section id="rekruttering" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="rekruttering-heading">
       <div className="container-xl">
-        <div className="grid lg:grid-cols-2 gap-14 items-center mb-20">
+        <div className="grid lg:grid-cols-2 gap-14 items-start mb-20">
           <AnimateIn variant="fadeRight">
-            <div>
+            <div className="rounded-3xl border border-gray-100 bg-surface/80 p-8 shadow-sm lg:p-10">
               <EditableText
                 as="span"
                 path="rekrutteringComp.label"
@@ -59,20 +59,24 @@ export default function Rekruttering() {
                 value={c.heading}
                 className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
               />
-              <EditableText
-                as="p"
-                path="rekrutteringComp.p1"
-                value={c.p1}
-                multiline
-                className="text-gray-600 text-lg leading-relaxed mb-8"
-              />
-              <EditableText
-                as="p"
-                path="rekrutteringComp.p2"
-                value={c.p2}
-                multiline
-                className="text-gray-600 text-base leading-relaxed mb-8"
-              />
+              <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                <EditableText
+                  as="p"
+                  path="rekrutteringComp.p1"
+                  value={c.p1}
+                  multiline
+                  inputClassName="min-h-[180px]"
+                  className="text-gray-600 text-lg leading-relaxed"
+                />
+                <EditableText
+                  as="p"
+                  path="rekrutteringComp.p2"
+                  value={c.p2}
+                  multiline
+                  inputClassName="min-h-[180px]"
+                  className="mt-4 text-gray-600 text-base leading-relaxed"
+                />
+              </div>
               <div className="flex flex-wrap gap-3">
                 {(c.sectors || []).map((s, index) => (
                   <EditableText
@@ -92,20 +96,13 @@ export default function Rekruttering() {
             <div className="relative">
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
                 <img
-                  src={img(IMAGES.rekruttering, 900)}
-                  alt="Global Working rekrutteringsmodell"
+                  src={img(c.imageUrl || IMAGES.rekruttering, 900)}
+                  alt={c.imageAlt || 'Global Working rekrutteringsmodell'}
                   className="w-full object-cover"
                   loading="lazy"
                   width="640"
                   height="420"
                 />
-              </div>
-              <div className="absolute -bottom-4 -left-4 bg-primary-600 text-white rounded-2xl px-5 py-3 shadow-lg font-heading font-semibold text-sm flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-                  <polyline points="22 4 12 14.01 9 11.01"/>
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                </svg>
-                {c.badge}
               </div>
             </div>
           </AnimateIn>

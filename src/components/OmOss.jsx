@@ -129,8 +129,8 @@ export default function OmOss() {
           <div className="grid grid-cols-2 gap-4">
             <div className="rounded-2xl overflow-hidden shadow-lg row-span-2 relative group uppercase">
               <img
-                src={img(IMAGES.teamGroup, 1200)}
-                alt="Global Working-teamet"
+                src={img(c.teamImageUrl || IMAGES.teamGroup, 1200)}
+                alt={c.teamImageAlt || 'Global Working-teamet'}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 loading="lazy"
               />
@@ -138,8 +138,8 @@ export default function OmOss() {
             </div>
             <div className="rounded-2xl overflow-hidden shadow-lg relative group">
               <img
-                src={img(IMAGES.oficina, 800)}
-                alt="Global Working-kontor"
+                src={img(c.officeImageUrl || IMAGES.oficina, 800)}
+                alt={c.officeImageAlt || 'Global Working-kontor'}
                 className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                 loading="lazy"
               />

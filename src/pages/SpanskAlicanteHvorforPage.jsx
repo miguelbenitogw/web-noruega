@@ -1,7 +1,7 @@
 import AnimateIn from '../components/AnimateIn'
 import EditableText, { createArrayItemCommitter } from '../components/editable/EditableText'
 import PageEndNav from '../components/PageEndNav'
-import castleArch from '../assets/alicante/castle-arch.jpeg'
+import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 
@@ -65,8 +65,8 @@ export default function SpanskAlicanteHvorforPage() {
             <AnimateIn variant="fadeLeft" delay={120}>
               <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
                 <img
-                  src={castleArch}
-                  alt="Historisk arkitektur og stemning i Alicante"
+                  src={img(vision.imageUrl || IMAGES.spanskAlicanteCastleArch, 1200)}
+                  alt={vision.imageAlt || 'Historisk arkitektur og stemning i Alicante'}
                   className="w-full h-[360px] lg:h-[440px] object-cover"
                 />
               </div>

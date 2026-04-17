@@ -8,8 +8,9 @@ import EditableText, { createArrayItemCommitter } from './editable/EditableText'
 import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
 import groPhoto from '../assets/team/gro-anette.jpg'
 
-const resolveContactPhoto = (name = '') => {
-  const lower = name.toLowerCase()
+const resolveContactPhoto = (contact = {}) => {
+  if (contact.imageUrl) return contact.imageUrl
+  const lower = String(contact.name || '').toLowerCase()
   if (lower.includes('miriam')) return miriamPhoto
   if (lower.includes('gro')) return groPhoto
   return null
@@ -166,9 +167,9 @@ export default function Kontakt() {
                   return (
                     <div key={contact.name} className="glass-card bg-white/70 backdrop-blur-md rounded-2xl p-6 border border-white/50 shadow-sm hover:shadow-lg transition-all duration-300">
                       <div className="flex flex-col gap-4">
-                        {resolveContactPhoto(contact.name) ? (
+                        {resolveContactPhoto(contact) ? (
                           <img
-                            src={resolveContactPhoto(contact.name)}
+                            src={resolveContactPhoto(contact)}
                             alt={contact.name}
                             onClick={() => setExpandedPhoto(expandedPhoto === i ? null : i)}
                             className={`rounded-xl object-cover shrink-0 shadow-lg shadow-primary-200 cursor-pointer transition-all duration-300 hover:scale-110 ${
@@ -214,8 +215,8 @@ export default function Kontakt() {
 
               <div className="group relative rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
                 <img
-                  src={img(IMAGES.alicanteOffice, 1200)}
-                  alt="Global Working-kontoret i Alicante"
+                  src={img(c.imageUrl || IMAGES.alicanteOffice, 1200)}
+                  alt={c.imageAlt || 'Global Working-kontoret i Alicante'}
                   className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent flex flex-col justify-end p-8">
@@ -381,4 +382,3 @@ export default function Kontakt() {
     </section>
   )
 }
-

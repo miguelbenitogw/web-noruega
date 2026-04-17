@@ -10,6 +10,15 @@ import nurses         from './helse/nurses.webp'
 import platformHero   from './platform-hero.png'
 import rekruttering   from './rekruttering.png'
 import peopleTeam2    from './people-team.png'
+import teamHero       from './team-hero.jpg'
+import metricsTeamPhoto from './home/metrics-team.jpg'
+import heroSunset     from './alicante/hero-sunset.jpeg'
+import beachPalms     from './alicante/beach-palms.jpeg'
+import promenadeLifestyle from './alicante/promenade-lifestyle.jpg'
+import cityView       from './alicante/city-view.jpeg'
+import castleArch     from './alicante/castle-arch.jpeg'
+import miriamPhoto    from './team/miriam-svendsen.jpg'
+import groPhoto       from './team/gro-anette.jpg'
 
 // Still on CDN — not included in the download task
 const CDN = 'https://images.squarespace-cdn.com/content/v1'
@@ -21,6 +30,17 @@ export const IMAGES = {
   // Logos
   logo:           logoWhite,
   logoColor:      logoColor,
+
+  // Public page photos that are editable through site content defaults
+  teamHero:       teamHero,
+  homeMetricsTeam: metricsTeamPhoto,
+  spanskAlicanteHeroSunset: heroSunset,
+  spanskAlicanteBeachPalms: beachPalms,
+  spanskAlicantePromenade: promenadeLifestyle,
+  spanskAlicanteCityView: cityView,
+  spanskAlicanteCastleArch: castleArch,
+  contactMiriam: miriamPhoto,
+  contactGro: groPhoto,
 
   // Fotos de personas / fondo (portfolio original)
   peopleHero:    `${OLD}/1615224238156-OY2QGA6E03LY3JALP4NL/Rectangle+16.jpg`,

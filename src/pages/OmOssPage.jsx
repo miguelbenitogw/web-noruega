@@ -47,11 +47,11 @@ function InlineEditableParagraph({
 
 function TeamCard({ member, index, basePath, delay, members }) {
   const normalizedName = (member.name || '').toLowerCase()
-  let portrait = null
+  let portrait = member.imageUrl || null
 
-  if (normalizedName.includes('miriam')) portrait = miriamPhoto
-  else if (normalizedName.includes('gro')) portrait = groPhoto
-  else if (member.hasImage) portrait = IMAGES.ceoPhoto
+  if (!portrait && normalizedName.includes('miriam')) portrait = miriamPhoto
+  else if (!portrait && normalizedName.includes('gro')) portrait = groPhoto
+  else if (!portrait && member.hasImage) portrait = IMAGES.ceoPhoto
 
   const commitName = createArrayItemCommitter({
     basePath,
@@ -72,7 +72,7 @@ function TeamCard({ member, index, basePath, delay, members }) {
         {portrait ? (
           <img
             src={portrait}
-            alt={member.name}
+            alt={member.imageAlt || member.name}
             className="w-24 h-24 rounded-full object-cover mb-4 ring-4 ring-primary-600/20"
             loading="lazy"
           />
@@ -199,8 +199,8 @@ export default function OmOssPage() {
           <AnimateIn variant="scale" delay={100}>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl max-w-4xl mx-auto">
               <img
-                src={img(IMAGES.alicanteOffice, 1200)}
-                alt="Global Working kontorer i Alicante"
+                src={img(offices.imageUrl || IMAGES.alicanteOffice, 1200)}
+                alt={offices.imageAlt || 'Global Working kontorer i Alicante'}
                 className="w-full h-[360px] md:h-[480px] object-cover"
                 loading="lazy"
               />

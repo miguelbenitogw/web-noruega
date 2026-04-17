@@ -3,7 +3,7 @@ import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import EditableText, { useVisualEditEnabled } from './editable/EditableText'
 import InlineRichText from './editable/InlineRichText'
-import { IMAGES } from '../assets/images'
+import { IMAGES, img } from '../assets/images'
 
 function InlineEditableParagraph({
   path,
@@ -87,8 +87,8 @@ export default function Helsesektor() {
             <div className="relative">
               <div className="rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src={IMAGES.enfermeria}
-                  alt="Helsepersonell i opplæring gjennom Global Working"
+                  src={img(c.imageUrl || IMAGES.enfermeria, 900)}
+                  alt={c.imageAlt || 'Helsepersonell i opplæring gjennom Global Working'}
                   className="w-full object-cover"
                   loading="lazy"
                   width="640"

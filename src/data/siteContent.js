@@ -1,3 +1,5 @@
+import { IMAGES } from '../assets/images'
+
 // Contenido central de toda la web. Edita desde /admin.
 const siteContent = {
   hero: {
@@ -5,6 +7,8 @@ const siteContent = {
     h1First: 'Har dere behov for',
     h1Highlight: 'arbeidskraft?',
     description: 'Global Working er verdens største språkskole som underviser i norsk utenfor Skandinavia. Vi spesialiserer oss på norsk språk- og kulturopplæring for søreuropeiske fagfolk, og kobler dem med arbeidsgivere i Norge. Vi følger kandidatene fra første norsktime til trygg oppstart i jobb.',
+    imageUrl: IMAGES.teamHero,
+    imageAlt: 'Global Working-teamet i en lys og profesjonell situasjon',
     cta1: 'Slik jobber vi',
     cta2: 'Kontakt oss',
     stats: [
@@ -38,6 +42,8 @@ const siteContent = {
     label: 'Helsesektoren',
     heading: 'Vi støtter det norske helsevesenet',
     description: 'Global Working er den største leverandøren av sykepleiere utenfra Skandinavia til Norge. Siden 2014 har vi spesialisert oss på å utdanne og kvalifisere sykepleiere fra Spania, Italia og Frankrike for arbeid i norsk helsesektor.',
+    imageUrl: IMAGES.homeMetricsTeam,
+    imageAlt: 'Global Working-teamet i møte med norske arbeidsgivere',
     cta: 'Les mer om helse',
   },
 
@@ -52,6 +58,8 @@ const siteContent = {
     label: 'Nytt konsept i Alicante',
     heading: 'Bo gratis i Alicante med Spansk i Alicante',
     description: 'Bli en del av hverdagen hos Global Working i Spania. Du bidrar som samtaleassistent rundt 15 timer i uken og får bolig, sosialt miljø og internasjonal erfaring tilbake.',
+    imageUrl: IMAGES.spanskAlicanteHeroSunset,
+    imageAlt: 'Solnedgang ved stranden i Alicante',
     cta: 'Utforsk Spansk i Alicante',
   },
 
@@ -59,8 +67,12 @@ const siteContent = {
     breadcrumb: 'Spansk i Alicante',
     heroTitle: 'Bo gratis i Alicante',
     heroSubtitle: 'Bli en del av hverdagen til Global Working i Spania',
+    heroImageUrl: IMAGES.spanskAlicanteBeachPalms,
+    heroImageAlt: 'Strand og palmer i Alicante',
     intro: 'Spansk i Alicante er en enkel måte å teste livet i Spania på, med bolig, mennesker og en hverdag allerede på plass. Du bor sammen med 2 til 3 spanske studenter som lærer norsk og bidrar sosialt i miljøet rundt skolen.',
     exchangeNote: 'Dette er en bytteordning, ikke en typisk jobb. Du bidrar rundt 15 timer i uken som samtaleassistent og får gratis bolig i Alicante.',
+    roleImageUrl: IMAGES.spanskAlicantePromenade,
+    roleImageAlt: 'Sosial hverdag og samtaler i Alicante',
     roleTitle: 'Hva gjør du som samtaleassistent?',
     roleItems: [
       'Ha samtaletimer eller språkkafé på norsk',
@@ -101,6 +113,8 @@ const siteContent = {
       'Deg som vil ha en sosial hverdag, ikke bare et opphold',
     ],
     cityTitle: 'Litt om livet i Alicante',
+    cityImageUrl: IMAGES.spanskAlicanteCityView,
+    cityImageAlt: 'Byliv og utsikt i Alicante',
     cityItems: [
       'Strand og promenade',
       'Mange unge og studenter',
@@ -127,6 +141,8 @@ const siteContent = {
   spanskAlicanteVision: {
     breadcrumb: 'Hvorfor finnes Spansk i Alicante?',
     title: 'Hvorfor finnes Spansk i Alicante?',
+    imageUrl: IMAGES.spanskAlicanteCastleArch,
+    imageAlt: 'Historisk arkitektur og stemning i Alicante',
     intro: 'Spansk i Alicante er en viktig del av hvordan vi forbereder sykepleiere fra Sør-Europa på et liv og en jobb i Norge. Språk alene er ikke nok. Det som ofte mangler er det som skjer mellom linjene i hverdagen.',
     sections: [
       {
@@ -146,8 +162,8 @@ const siteContent = {
   },
 
   contacts: [
-    { name: 'Miriam Svendsen', role: 'Rekrutteringsansvarlig', email: 'miriam.svendsen@globalworking.net', phone: '+47 919 00 649' },
-    { name: 'Gro Anette', role: 'Kandidatoppfølging', email: 'gro.anette@globalworking.net', phone: '+47 408 98 448' },
+    { name: 'Miriam Svendsen', role: 'Rekrutteringsansvarlig', email: 'miriam.svendsen@globalworking.net', phone: '+47 919 00 649', imageUrl: IMAGES.contactMiriam, imageAlt: 'Miriam Svendsen' },
+    { name: 'Gro Anette', role: 'Kandidatoppfølging', email: 'gro.anette@globalworking.net', phone: '+47 408 98 448', imageUrl: IMAGES.contactGro, imageAlt: 'Gro Anette' },
   ],
 
   rekrutteringHero: {
@@ -162,6 +178,8 @@ const siteContent = {
     p1: 'Global Working er ikke et bemanningsbyrå. Vi forbereder kandidatene gjennom strukturert opplæring. Deretter ansetter dere kandidaten direkte – uten mellomledd.',
     p2: 'Samarbeidet starter med en uforpliktende kartlegging av ditt behov. Vi presenterer så kvalifiserte kandidater som matcher kravene dere har satt.',
     p3: 'Gjennom vår nye kandidatportal kan arbeidsgivere selv se tilgjengelige kandidater og invitere til intervju.',
+    imageUrl: IMAGES.teamGroup,
+    imageAlt: 'Global Working rekrutteringsmodell',
     cta1: 'Kontakt oss',
     cta2: 'Se kandidatportalen',
   },
@@ -180,7 +198,7 @@ const siteContent = {
       {
         number: '01',
         title: 'Språk og faglig forberedelse',
-        description: 'Kandidatene gjennomfører opptil 600 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.',
+        description: 'Kandidatene gjennomfører opptil 600 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.\n\nUndervisningen dekker alt fra dagligdagse samtaler til faglig dokumentasjon og kommunikasjon med pasienter og kollegaer. Kandidatene øver på reelle situasjoner fra norsk helsevesen slik at de er klare for arbeidslivet fra første dag.',
         formats: [
           { label: 'Fysisk i Alicante', duration: '5 måneder' },
           { label: 'Kombinasjon fysisk og nett', duration: '7 måneder' },
@@ -222,9 +240,9 @@ const siteContent = {
     heading: 'Møt teamet i Global Working',
     description: 'Vårt flerfaglige team av psykologer, språklærere og rekrutteringsspesialister sikrer en helhetlig prosess – fra utvelgelse og opplæring til oppfølging i Norge.',
     members: [
-      { initials: 'PS', name: 'Pablo Santamarina', role: 'CEO & Grunnlegger', hasImage: true },
-      { initials: 'MS', name: 'Miriam Svendsen', role: 'Rekrutteringsansvarlig', hasImage: false },
-      { initials: 'GA', name: 'Gro Anette', role: 'Kandidatoppfølging', hasImage: false },
+      { initials: 'PS', name: 'Pablo Santamarina', role: 'CEO & Grunnlegger', hasImage: true, imageUrl: IMAGES.ceoPhoto, imageAlt: 'Pablo Santamarina' },
+      { initials: 'MS', name: 'Miriam Svendsen', role: 'Rekrutteringsansvarlig', hasImage: false, imageUrl: IMAGES.contactMiriam, imageAlt: 'Miriam Svendsen' },
+      { initials: 'GA', name: 'Gro Anette', role: 'Kandidatoppfølging', hasImage: false, imageUrl: IMAGES.contactGro, imageAlt: 'Gro Anette' },
       { initials: 'T', name: 'Teamet', role: '50+ ansatte i Alicante og Oslo', hasImage: false },
     ],
   },
@@ -233,6 +251,8 @@ const siteContent = {
     label: 'Lokasjon',
     heading: 'Våre kontorer',
     description: 'Global Working har hovedkontor i Alicante, Spania, med kontor i Oslo.',
+    imageUrl: IMAGES.alicanteOffice,
+    imageAlt: 'Global Working-kontoret i Alicante',
     officeName: 'Hovedkontor – Alicante',
     officeAddress: 'Carrer de Periodista Pirula Arderius, 4, 03001 Alicante, España',
   },
@@ -295,6 +315,8 @@ const siteContent = {
     heading: 'Slik rekrutterer vi fagfolk til Norge',
     p1: 'Våre kandidater kommer hovedsakelig fra Spania, Italia og Frankrike, og er motiverte fagpersoner som ønsker å jobbe i Norge over lengre tid eller etablere seg her på sikt.',
     p2: 'Undervisningen kan gjennomføres fysisk i Alicante (5 måneder), som kombinasjon av fysisk og nettbasert undervisning (7 måneder), eller fullt nettbasert (9 måneder).',
+    imageUrl: IMAGES.teamHero,
+    imageAlt: 'Global Working rekrutteringsmodell',
     sectors: ['Helse og omsorg', 'Industri og bygg', 'Utdanning', 'Barneomsorg'],
     badge: 'Strukturert modell siden 2014',
     steps: [
@@ -309,6 +331,8 @@ const siteContent = {
     label: 'Tjenester for helseinstitusjoner',
     heading: 'Vi forbereder helsepersonell for den norske helsesektoren',
     description: 'Global Working er den største leverandøren av sykepleiere utenfor Skandinavia til Norge. Siden 2014 har vi spesialisert oss på å utdanne og kvalifisere sykepleiere for arbeid i norsk helsesektor.',
+    imageUrl: IMAGES.enfermeria,
+    imageAlt: 'Helsepersonell i opplæring gjennom Global Working',
     stats: [
       { value: '10+ år', label: 'erfaring i Norge' },
       { value: '25 000+', label: 'undervisningstimer i norsk' },
@@ -331,6 +355,10 @@ const siteContent = {
     p1: 'Global Working er en spesialisert aktør innen språkopplæring og internasjonal rekruttering i Europa. Vi forbereder kandidater før ansettelse, slik at arbeidsgivere får medarbeidere og grunnlag for varige ansettelser.',
     p2: 'Global Working ble etablert i 2014 med mål om å gjøre det enklere for fagpersoner å bevege seg i det europeiske arbeidsmarkedet. I dag kombinerer vi rekruttering, språkopplæring og tett oppfølging for å sikre forutsigbare og bærekraftige ansettelser.',
     blockquote: { text: 'For oss handler internasjonal rekruttering ikke bare om å fylle en stilling. Det handler om å forberede mennesker grundig, slik at både arbeidsgiver og kandidat får en trygg start og et langsiktig samarbeid.', author: 'Pablo, CEO Global Working' },
+    teamImageUrl: IMAGES.teamGroup,
+    teamImageAlt: 'Global Working-teamet',
+    officeImageUrl: IMAGES.oficina,
+    officeImageAlt: 'Global Working-kontor',
     stats: [
       { value: '2014', label: 'Etablert' },
       { value: '50', label: 'Ansatte' },
@@ -364,6 +392,8 @@ const siteContent = {
     label: 'Gode grunner til å samarbeide med oss',
     heading: 'Kommuner som lykkes med langsiktig rekruttering',
     description: 'Mangel på helsepersonell krever varige løsninger. Vi kombinerer rekruttering, språk og tett oppfølging slik at både arbeidsgiver og kandidat får en trygg start.',
+    imageUrl: IMAGES.teamHero,
+    imageAlt: 'Global Working samarbeid med norske kommuner',
     articleLink: '/om-oss',
     articleLinkLabel: 'Les mer om oss',
     testimonials: [
@@ -377,6 +407,8 @@ const siteContent = {
     badge: 'Klar til å starte?',
     heading: 'Finn riktig kompetanse for din virksomhet i dag',
     description: 'Vi kobler norske arbeidsgivere med kandidater som er språklig og faglig forberedt for trygg oppstart.',
+    imageUrl: IMAGES.peopleTeam2,
+    imageAlt: 'Global Working-teamet i samarbeid',
     cta1: 'Kontakt oss nå',
     cta2: 'Se kandidater',
   },
@@ -448,6 +480,8 @@ const siteContent = {
     label: 'Kontakt',
     heading: 'Ønsker du å vite mer?',
     description: 'Du treffer oss på e-post eller telefon, eller ved å fylle ut skjemaet under. Vi tar kontakt så snart vi har mulighet.',
+    imageUrl: IMAGES.alicanteOffice,
+    imageAlt: 'Global Working-kontoret i Alicante',
     officeTitle: 'Hovedkontor Alicante',
     officeAddress: 'Carrer de Periodista Pirula Arderius, 4, 03001 Alicante, España',
     mapsLabel: 'Se i Google Maps',
@@ -549,6 +583,8 @@ const siteContent = {
     heading: 'Siste nytt fra Global Working',
     headingPreview: 'Siste nytt',
     ctaLabel: 'Se alle nyheter',
+    imageUrl: IMAGES.platformHero,
+    imageAlt: 'Global Working plattformvisning',
     loadingLabel: 'Laster nyheter...',
     readTimeSuffix: 'lesetid',
     readMoreLabel: 'Les mer',
