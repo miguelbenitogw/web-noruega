@@ -173,6 +173,8 @@ const buildHelseSections = () => [
     fields: [
       field('helseHero.h1', 'Tittel'),
       field('helseHero.description', 'Beskrivelse'),
+      field('helseHero.imageUrl', 'Hero · bilde'),
+      field('helseHero.imageAlt', 'Hero · alt-tekst'),
     ],
   }),
   section('helse-sector', 'Sektorargument', {

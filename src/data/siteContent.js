@@ -188,6 +188,8 @@ const siteContent = {
     breadcrumb: 'Helsesektor',
     h1: 'Tjenester for helseinstitusjoner',
     description: 'Vi forbereder helsepersonell for den norske helsesektoren – fra språkopplæring til trygg oppstart i jobb.',
+    imageUrl: IMAGES.enfermeria,
+    imageAlt: 'Helsepersonell i opplæring gjennom Global Working',
   },
 
   helsePhases: {

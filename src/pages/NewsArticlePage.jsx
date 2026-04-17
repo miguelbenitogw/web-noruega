@@ -233,7 +233,7 @@ export default function NewsArticlePage({ slug }) {
           <img
             src={img(getCoverImage(effectiveArticle), 1200)}
             alt={effectiveArticle.title}
-            className="w-full h-auto object-cover"
+            className="w-full object-cover max-h-[420px]"
             loading="lazy"
           />
         </div>

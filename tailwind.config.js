@@ -26,7 +26,7 @@ export default {
         ink: '#1E293B',
       },
       fontFamily: {
-        heading: ['Lexend', 'sans-serif'],
+        heading: ['Outfit', 'sans-serif'],
         body: ['Source Sans 3', 'sans-serif'],
       },
       maxWidth: {

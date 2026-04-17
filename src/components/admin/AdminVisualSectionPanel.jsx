@@ -187,6 +187,68 @@ function TextFieldEditor({ path, currentValue }) {
   )
 }
 
+function InstructionsPanel() {
+  return (
+    <div className="space-y-4">
+      <div className="rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Hva kan du redigere?</p>
+        <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-600">
+          <li>• <strong>Tekst:</strong> Klikk på et felt i forhåndsvisningen og skriv direkte</li>
+          <li>• <strong>Bilder:</strong> Velg fra Asset Picker (bibliotek) eller lim inn URL direkte</li>
+          <li>• <strong>Lenker og CTA:</strong> Redigeres i "Felter"-fanen (denne panelen)</li>
+          <li>• <strong>Lagring:</strong> Endringer lagres automatisk lokalt mens du skriver</li>
+        </ul>
+      </div>
+
+      <div className="rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Flyt: kladd → publiser → resultat</p>
+        <ol className="mt-3 space-y-2 text-sm leading-relaxed text-slate-600 list-none">
+          <li><strong>1.</strong> Gjør endringer direkte i forhåndsvisningen til venstre</li>
+          <li><strong>2.</strong> Klikk <strong>«Lagre kladd»</strong> øverst → lagres i Supabase som kladd</li>
+          <li><strong>3.</strong> Klikk <strong>«Publiser»</strong> øverst → endringer blir aktive for alle besøkende</li>
+          <li><strong>4.</strong> Åpne siden i ny fane for å bekrefte publisert versjon</li>
+        </ol>
+      </div>
+
+      <div className="rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Tekstfelt: ett avsnitt vs. flere</p>
+        <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-600">
+          <li>• <strong>Én linje:</strong> Skriv normalt og trykk Enter</li>
+          <li>• <strong>Nytt avsnitt:</strong> Trykk <code className="rounded bg-slate-200 px-1.5 py-0.5 font-mono text-xs">Enter</code> to ganger — skaper synlig avstand</li>
+          <li>• Norske tegn (æ, ø, å) og spesialtegn støttes fullt ut</li>
+        </ul>
+      </div>
+
+      <div className="rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Bilder: to måter å bytte</p>
+        <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-600">
+          <li>• <strong>Asset Picker:</strong> Velg <em>Asset</em>-knappen → åpner mediebiblioteket → velg eller last opp bilde (PNG, JPG, WebP)</li>
+          <li>• <strong>URL direkte:</strong> Velg <em>URL direkte</em>-knappen → lim inn en bildelenke (https://…)</li>
+          <li>• Bildestørrelse tilpasses automatisk av siden — ingen grunn til å tenke på dette</li>
+        </ul>
+      </div>
+
+      <div className="rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Lagring: automatisk vs. manuell</p>
+        <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-600">
+          <li>• <strong>Automatisk:</strong> Endringer lagres øyeblikkelig i nettleseren (lokal cache)</li>
+          <li>• <strong>Kladd:</strong> «Lagre kladd» sender endringene til Supabase — trygt mellomlagret</li>
+          <li>• <strong>Publisering:</strong> Bare «Publiser»-knappen gjør endringer synlige for besøkende</li>
+        </ul>
+      </div>
+
+      <div className="rounded-[24px] border border-amber-200 bg-amber-50 px-4 py-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">Tips og feilsøking</p>
+        <ul className="mt-3 space-y-2 text-sm leading-relaxed text-amber-900">
+          <li>• <strong>Noe ser feil ut?</strong> Klikk «Tøm lokal cache» øverst — dette fjerner usave lokale endringer og henter siste publiserte versjon</li>
+          <li>• <strong>Seksjoner:</strong> Bruk «Seksjoner»-fanen for å navigere mellom deler av siden uten å gå ut av editoren</li>
+          <li>• <strong>Asset Picker:</strong> Du kan navigere normalt mens Asset Picker er åpen</li>
+        </ul>
+      </div>
+    </div>
+  )
+}
+
 export default function AdminVisualSectionPanel({
   activeSectionId,
   activeTab,
@@ -195,6 +257,7 @@ export default function AdminVisualSectionPanel({
   previewConfig,
 }) {
   const [overrideTick, setOverrideTick] = useState(0)
+  const [showInstructions, setShowInstructions] = useState(false)
 
   useEffect(() => {
     const sync = () => setOverrideTick((value) => value + 1)
@@ -216,6 +279,18 @@ export default function AdminVisualSectionPanel({
           {previewConfig.panelVariant === 'news-manager' ? 'Redaksjon' : 'Seksjonspanel'}
         </p>
         <h2 className="mt-2 font-heading text-xl font-bold text-slate-950">{previewConfig.label}</h2>
+        <button
+          type="button"
+          onClick={() => setShowInstructions((v) => !v)}
+          className={`mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+            showInstructions
+              ? 'bg-primary-600 text-white'
+              : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900'
+          }`}
+        >
+          <span aria-hidden="true">?</span>
+          {showInstructions ? 'Lukk hjelp' : 'Hjelp og instruksjoner'}
+        </button>
         <p className="mt-1 text-sm leading-relaxed text-slate-500">
           {previewConfig.panelVariant === 'news-manager'
             ? 'Bruk dette panelet som huskeliste mens du jobber i nyhetsstudioet.'
@@ -224,7 +299,9 @@ export default function AdminVisualSectionPanel({
       </div>
 
       <div className="max-h-[40vh] overflow-y-auto px-5 py-5 xl:h-[calc(100vh-206px)] xl:max-h-none">
-        {previewConfig.panelVariant === 'news-manager' ? (
+        {showInstructions ? (
+          <InstructionsPanel />
+        ) : previewConfig.panelVariant === 'news-manager' ? (
           <NewsManagerPanel />
         ) : (
           <>
