@@ -1,8 +1,6 @@
-import { IMAGES, img } from '../assets/images'
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter } from './editable/EditableText'
-import EditableImage from './editable/EditableImage'
 
 const stepIcons = [
   <svg key="s1" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
@@ -26,56 +24,46 @@ export default function Rekruttering() {
   return (
     <section id="rekruttering" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="rekruttering-heading">
       <div className="container-xl">
-        <div className="grid lg:grid-cols-2 gap-14 items-start mb-20">
+        <div className="rounded-3xl border border-gray-100 bg-surface/80 p-8 shadow-sm lg:p-10 mb-20">
           <AnimateIn variant="fadeRight">
-            <div className="rounded-3xl border border-gray-100 bg-surface/80 p-8 shadow-sm lg:p-10">
+            <EditableText
+              as="span"
+              path="rekrutteringComp.label"
+              value={c.label}
+              className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+            />
+            <EditableText
+              id="rekruttering-heading"
+              as="h2"
+              path="rekrutteringComp.heading"
+              value={c.heading}
+              className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
+            />
+            <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm space-y-4">
               <EditableText
-                as="span"
-                path="rekrutteringComp.label"
-                value={c.label}
-                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+                as="p"
+                path="rekrutteringComp.p1"
+                value={c.p1}
+                multiline
+                inputClassName="min-h-[120px]"
+                className="text-gray-600 text-lg leading-relaxed"
               />
               <EditableText
-                id="rekruttering-heading"
-                as="h2"
-                path="rekrutteringComp.heading"
-                value={c.heading}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
+                as="p"
+                path="rekrutteringComp.p2"
+                value={c.p2}
+                multiline
+                inputClassName="min-h-[120px]"
+                className="text-gray-600 text-base leading-relaxed"
               />
-              <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                <EditableText
-                  as="p"
-                  path="rekrutteringComp.p1"
-                  value={c.p1}
-                  multiline
-                  inputClassName="min-h-[180px]"
-                  className="text-gray-600 text-lg leading-relaxed"
-                />
-                <EditableText
-                  as="p"
-                  path="rekrutteringComp.p2"
-                  value={c.p2}
-                  multiline
-                  inputClassName="min-h-[180px]"
-                  className="mt-4 text-gray-600 text-base leading-relaxed"
-                />
-              </div>
-            </div>
-          </AnimateIn>
-
-          <AnimateIn variant="fadeLeft" delay={200}>
-            <div className="relative">
-              <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
-                <EditableImage
-                  src={img(c.imageUrl || IMAGES.rekruttering, 900)}
-                  alt={c.imageAlt || 'Global Working rekrutteringsmodell'}
-                  className="w-full object-cover"
-                  loading="lazy"
-                  width="640"
-                  height="420"
-                  path="rekrutteringComp.imageUrl"
-                />
-              </div>
+              <EditableText
+                as="p"
+                path="rekrutteringComp.p3"
+                value={c.p3 || ''}
+                multiline
+                inputClassName="min-h-[120px]"
+                className="text-gray-600 text-base leading-relaxed"
+              />
             </div>
           </AnimateIn>
         </div>

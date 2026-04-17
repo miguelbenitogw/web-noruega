@@ -317,8 +317,7 @@ const siteContent = {
     heading: 'Slik rekrutterer vi fagfolk til Norge',
     p1: 'Våre kandidater kommer hovedsakelig fra Spania, Italia og Frankrike, og er motiverte fagpersoner som ønsker å jobbe i Norge over lengre tid eller etablere seg her på sikt.',
     p2: 'Undervisningen kan gjennomføres fysisk i Alicante (5 måneder), som kombinasjon av fysisk og nettbasert undervisning (7 måneder), eller fullt nettbasert (9 måneder).',
-    imageUrl: IMAGES.teamHero,
-    imageAlt: 'Global Working rekrutteringsmodell',
+    p3: '',
     sectors: ['Helse og omsorg', 'Industri og bygg', 'Utdanning', 'Barneomsorg'],
     badge: 'Strukturert modell siden 2014',
     steps: [

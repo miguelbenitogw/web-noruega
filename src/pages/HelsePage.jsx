@@ -1,5 +1,4 @@
 import AnimateIn from '../components/AnimateIn'
-import { IMAGES, img } from '../assets/images'
 import Helsesektor from '../components/Helsesektor'
 import GodeGrunner from '../components/GodeGrunner'
 import Nyheter from '../components/Nyheter'
@@ -8,7 +7,6 @@ import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from '../components/editable/EditableText'
 import InlineRichText from '../components/editable/InlineRichText'
-import EditableImage from '../components/editable/EditableImage'
 
 function InlineEditableParagraph({
   path,
@@ -88,40 +86,26 @@ export default function HelsePage() {
       <section className="relative bg-gradient-to-br from-navy via-primary-900 to-primary-800 pt-32 pb-16 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(30,115,190,0.3),transparent_60%)]" aria-hidden="true" />
         <div className="container-xl relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <AnimateIn>
-              <nav className="text-blue-200/70 text-sm mb-6" aria-label="Brødsmuler">
-                <a href="/" className="hover:text-white transition-colors">Hjem</a>
-                <span className="mx-2">/</span>
-                <span className="text-white">{hero.breadcrumb}</span>
-              </nav>
-              <EditableText
-                as="h1"
-                path="helseHero.h1"
-                value={hero.h1}
-                className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight"
-              />
-              <InlineEditableParagraph
-                as="p"
-                path="helseHero.description"
-                value={hero.description}
-                className="!text-blue-100 text-lg max-w-2xl leading-relaxed"
-                linkClassName="!text-blue-50 underline decoration-blue-200 underline-offset-2 transition-colors hover:!text-white hover:!decoration-blue-100"
-              />
-            </AnimateIn>
-            <AnimateIn variant="fadeLeft" delay={150} className="hidden lg:block">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-                <EditableImage
-                  src={img(hero.imageUrl || IMAGES.enfermeria, 800)}
-                  alt={hero.imageAlt || 'Helsepersonell i opplæring gjennom Global Working'}
-                  className="w-full h-80 object-cover object-top"
-                  loading="eager"
-                  path="helseHero.imageUrl"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/40 via-transparent to-transparent" aria-hidden="true" />
-              </div>
-            </AnimateIn>
-          </div>
+          <AnimateIn>
+            <nav className="text-blue-200/70 text-sm mb-6" aria-label="Brødsmuler">
+              <a href="/" className="hover:text-white transition-colors">Hjem</a>
+              <span className="mx-2">/</span>
+              <span className="text-white">{hero.breadcrumb}</span>
+            </nav>
+            <EditableText
+              as="h1"
+              path="helseHero.h1"
+              value={hero.h1}
+              className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight max-w-3xl"
+            />
+            <InlineEditableParagraph
+              as="p"
+              path="helseHero.description"
+              value={hero.description}
+              className="!text-blue-100 text-lg max-w-2xl leading-relaxed"
+              linkClassName="!text-blue-50 underline decoration-blue-200 underline-offset-2 transition-colors hover:!text-white hover:!decoration-blue-100"
+            />
+          </AnimateIn>
         </div>
       </section>
 
