@@ -109,6 +109,14 @@ export const resolveRouteContext = (pathname) => {
 
 const pagesCache = new Map()
 
+export const clearPagesCache = () => {
+  pagesCache.clear()
+}
+
+export const clearAllContentCaches = () => {
+  clearPagesCache()
+}
+
 const getPublishedPages = async (locale) => {
   if (!isSupabaseConfigured) return []
 

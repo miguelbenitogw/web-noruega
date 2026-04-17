@@ -10,6 +10,7 @@ import {
   subscribeVisualEditSession,
   updateVisualEditState,
 } from '../../lib/visualEditSession'
+import { loadDraftIntoOverrides, readContentOverrides } from '../../lib/contentOverrides'
 import AdminVisualCanvas from './AdminVisualCanvas'
 import AdminVisualSectionPanel from './AdminVisualSectionPanel'
 import AdminVisualTopbar from './AdminVisualTopbar'
@@ -23,6 +24,14 @@ export default function AdminVisualShell({ onSignOut }) {
   const [selectedSectionId, setSelectedSectionId] = useState(null)
 
   useEffect(() => subscribeVisualEditSession(setVisualSession), [])
+
+  useEffect(() => {
+    const existing = readContentOverrides()
+    const hasLocalChanges = Object.keys(existing).length > 0
+    if (!hasLocalChanges) {
+      loadDraftIntoOverrides()
+    }
+  }, [])
 
   const activeArticleSlug = useMemo(() => {
     if (selectedArticleSlug && articles.some((entry) => entry.slug === selectedArticleSlug)) {

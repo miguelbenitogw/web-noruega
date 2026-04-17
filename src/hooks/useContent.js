@@ -30,16 +30,29 @@ export default function useContent(section) {
     let cancelled = false
     const locale = getContentLocale()
 
-    fetchPublishedContentSnapshot(locale)
-      .then((snapshot) => {
-        if (!cancelled) setRemoteSiteContent(snapshot?.content || null)
-      })
-      .catch(() => {
-        if (!cancelled) setRemoteSiteContent(null)
-      })
+    const doFetch = () => {
+      cancelled = false
+      fetchPublishedContentSnapshot(locale)
+        .then((snapshot) => {
+          if (!cancelled) setRemoteSiteContent(snapshot?.content || null)
+        })
+        .catch(() => {
+          if (!cancelled) setRemoteSiteContent(null)
+        })
+    }
+
+    doFetch()
+
+    const handleContentPublished = () => {
+      cancelled = false
+      doFetch()
+    }
+
+    window.addEventListener('gw-content-published', handleContentPublished)
 
     return () => {
       cancelled = true
+      window.removeEventListener('gw-content-published', handleContentPublished)
     }
   }, [])
 

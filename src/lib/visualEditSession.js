@@ -1,6 +1,7 @@
 import { clearContentOverrides, readContentOverrides } from './contentOverrides'
-import { fetchPublishedContentSnapshot, publishDraftSnapshot, saveContentSnapshot } from './contentRemote'
+import { fetchDraftContentSnapshot, fetchPublishedContentSnapshot, publishDraftSnapshot, saveContentSnapshot } from './contentRemote'
 import { deepMergeContent } from './contentMappers.js'
+import { clearAllContentCaches } from './contentRuntime'
 
 const listeners = new Set()
 const persistors = new Map()
@@ -90,10 +91,11 @@ const buildDefaultSnapshotResult = async (mode) => {
   const hasLocal = hasObjectValues(overrides)
 
   if (mode === 'publish') {
-    // Fetch existing published content and merge with new overrides so previous
-    // published changes are never lost when publishing a second (or third) batch.
+    // Fetch existing draft first (fallback to published) so previous draft changes
+    // are never lost when publishing a new batch without saving draft first.
+    const existingDraft = await fetchDraftContentSnapshot()
     const existingPublished = await fetchPublishedContentSnapshot()
-    const baseContent = existingPublished?.content || {}
+    const baseContent = existingDraft?.content ?? existingPublished?.content ?? {}
     const mergedContent = deepMergeContent(baseContent, hasLocal ? cloneValue(overrides) : {})
 
     const savedDraft = await saveContentSnapshot(mergedContent, { status: 'draft' })
@@ -106,9 +108,11 @@ const buildDefaultSnapshotResult = async (mode) => {
 
   if (!hasLocal) return null
 
-  // For draft saves: same merge approach so draft is always cumulative.
+  // For draft saves: use existing draft as base (fallback to published) so drafts
+  // are always cumulative across sessions.
+  const existingDraft = await fetchDraftContentSnapshot()
   const existingPublished = await fetchPublishedContentSnapshot()
-  const baseContent = existingPublished?.content || {}
+  const baseContent = existingDraft?.content ?? existingPublished?.content ?? {}
   const mergedContent = deepMergeContent(baseContent, cloneValue(overrides))
 
   const draft = await saveContentSnapshot(mergedContent, { status: 'draft' })
@@ -178,7 +182,6 @@ export const saveVisualEditDraft = async () => {
     if (snapshotResult) results.unshift({ id: 'snapshot', result: snapshotResult })
 
     clearContentOverrides()
-
     setState({
       isSaving: false,
       lastSavedAt: new Date().toISOString(),
@@ -210,6 +213,9 @@ export const publishVisualEditChanges = async () => {
       lastPublishedAt: new Date().toISOString(),
       error: null,
     })
+
+    clearAllContentCaches()
+    window.dispatchEvent(new CustomEvent('gw-content-published'))
 
     return results
   } catch (error) {

@@ -11,32 +11,6 @@ export const cloneValue = (value) => {
 }
 
 export const deepMergeContent = (defaults, content) => {
-  if (Array.isArray(defaults)) {
-    if (!Array.isArray(content) || content.length === 0) {
-      return cloneValue(defaults)
-    }
-
-    const merged = defaults.map((defaultItem, index) => {
-      const contentItem = content[index]
-      if (contentItem === undefined) return cloneValue(defaultItem)
-      if (isPlainObject(defaultItem) && isPlainObject(contentItem)) {
-        return deepMergeContent(defaultItem, contentItem)
-      }
-      if (Array.isArray(defaultItem) && Array.isArray(contentItem)) {
-        return deepMergeContent(defaultItem, contentItem)
-      }
-      return cloneValue(contentItem)
-    })
-
-    if (content.length > defaults.length) {
-      for (let index = defaults.length; index < content.length; index += 1) {
-        merged.push(cloneValue(content[index]))
-      }
-    }
-
-    return merged
-  }
-
   if (isPlainObject(defaults)) {
     if (!isPlainObject(content)) return cloneValue(defaults)
 
@@ -45,12 +19,13 @@ export const deepMergeContent = (defaults, content) => {
       if (value === undefined) return
 
       const defaultValue = defaults[key]
-      if (isPlainObject(defaultValue) && isPlainObject(value)) {
-        merged[key] = deepMergeContent(defaultValue, value)
+
+      if (Array.isArray(value)) {
+        merged[key] = cloneValue(value)
         return
       }
 
-      if (Array.isArray(defaultValue) && Array.isArray(value)) {
+      if (isPlainObject(defaultValue) && isPlainObject(value)) {
         merged[key] = deepMergeContent(defaultValue, value)
         return
       }

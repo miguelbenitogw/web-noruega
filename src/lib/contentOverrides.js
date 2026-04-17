@@ -144,3 +144,11 @@ export const sanitizeContentOverrides = () => {
 }
 
 export const CONTENT_OVERRIDE_EVENT = UPDATE_EVENT
+
+export const loadDraftIntoOverrides = async () => {
+  const { fetchDraftContentSnapshot } = await import('./contentRemote')
+  const draft = await fetchDraftContentSnapshot()
+  if (!draft?.content || Object.keys(draft.content).length === 0) return false
+  writeContentOverrides(draft.content)
+  return true
+}
