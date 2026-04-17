@@ -1,5 +1,6 @@
 import { clearContentOverrides, readContentOverrides } from './contentOverrides'
-import { publishDraftSnapshot, saveContentSnapshot } from './contentRemote'
+import { fetchPublishedContentSnapshot, publishDraftSnapshot, saveContentSnapshot } from './contentRemote'
+import { deepMergeContent } from './contentMappers.js'
 
 const listeners = new Set()
 const persistors = new Map()
@@ -89,10 +90,15 @@ const buildDefaultSnapshotResult = async (mode) => {
   const hasLocal = hasObjectValues(overrides)
 
   if (mode === 'publish') {
-    if (hasLocal) {
-      const savedDraft = await saveContentSnapshot(cloneValue(overrides), { status: 'draft' })
-      if (!savedDraft) throw new Error('Kunne ikke lagre kladd til Supabase før publisering. Sjekk tilkobling og tilgang.')
-    }
+    // Fetch existing published content and merge with new overrides so previous
+    // published changes are never lost when publishing a second (or third) batch.
+    const existingPublished = await fetchPublishedContentSnapshot()
+    const baseContent = existingPublished?.content || {}
+    const mergedContent = deepMergeContent(baseContent, hasLocal ? cloneValue(overrides) : {})
+
+    const savedDraft = await saveContentSnapshot(mergedContent, { status: 'draft' })
+    if (!savedDraft) throw new Error('Kunne ikke lagre kladd til Supabase før publisering. Sjekk tilkobling og tilgang.')
+
     const published = await publishDraftSnapshot()
     if (!published) throw new Error('Publisering til Supabase mislyktes. Sjekk tilkobling og tilgang.')
     return { type: 'snapshot', status: 'published', snapshot: published }
@@ -100,7 +106,12 @@ const buildDefaultSnapshotResult = async (mode) => {
 
   if (!hasLocal) return null
 
-  const draft = await saveContentSnapshot(cloneValue(overrides), { status: 'draft' })
+  // For draft saves: same merge approach so draft is always cumulative.
+  const existingPublished = await fetchPublishedContentSnapshot()
+  const baseContent = existingPublished?.content || {}
+  const mergedContent = deepMergeContent(baseContent, cloneValue(overrides))
+
+  const draft = await saveContentSnapshot(mergedContent, { status: 'draft' })
   if (!draft) throw new Error('Kunne ikke lagre kladd til Supabase. Sjekk tilkobling og tilgang.')
   return { type: 'snapshot', status: 'draft', snapshot: draft }
 }
