@@ -4,7 +4,7 @@ import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
 import { IMAGES, img } from '../assets/images'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
 import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
 import groPhoto from '../assets/team/gro-anette.jpg'
@@ -30,6 +30,7 @@ export default function Kontakt() {
   const contacts = useContent('contacts')
   const c = useContent('kontaktComp')
   const [expandedPhoto, setExpandedPhoto] = useState(null)
+  const visualEditEnabled = useVisualEditEnabled()
   const [form, setForm] = useState({
     from_name: '',
     from_email: '',
@@ -169,16 +170,26 @@ export default function Kontakt() {
                     <div key={contact.name} className="glass-card bg-white/70 backdrop-blur-md rounded-2xl p-6 border border-white/50 shadow-sm hover:shadow-lg transition-all duration-300">
                       <div className="flex flex-col gap-4">
                         {resolveContactPhoto(contact) ? (
-                          <img
-                            src={resolveContactPhoto(contact)}
-                            alt={contact.name}
-                            onClick={() => setExpandedPhoto(expandedPhoto === i ? null : i)}
-                            className={`rounded-xl object-cover shrink-0 shadow-lg shadow-primary-200 cursor-pointer transition-all duration-300 hover:scale-110 ${
-                              expandedPhoto === i
-                                ? 'w-40 h-40 rounded-2xl shadow-2xl'
-                                : 'w-12 h-12'
-                            }`}
-                          />
+                          visualEditEnabled ? (
+                            <EditableImage
+                              path={`contacts.${i}.imageUrl`}
+                              src={resolveContactPhoto(contact)}
+                              alt={contact.name}
+                              className="w-16 h-16 rounded-xl object-cover shrink-0 shadow-lg shadow-primary-200"
+                              wrapperClassName="w-16 h-16 rounded-xl"
+                            />
+                          ) : (
+                            <img
+                              src={resolveContactPhoto(contact)}
+                              alt={contact.name}
+                              onClick={() => setExpandedPhoto(expandedPhoto === i ? null : i)}
+                              className={`rounded-xl object-cover shrink-0 shadow-lg shadow-primary-200 cursor-pointer transition-all duration-300 hover:scale-110 ${
+                                expandedPhoto === i
+                                  ? 'w-40 h-40 rounded-2xl shadow-2xl'
+                                  : 'w-12 h-12'
+                              }`}
+                            />
+                          )
                         ) : (
                           <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary-200">
                             <span className="font-heading font-bold text-white text-lg">{contact.name.charAt(0)}</span>

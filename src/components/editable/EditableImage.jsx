@@ -43,11 +43,12 @@ export default function EditableImage({ path, src, alt, className, wrapperClassN
       <button
         type="button"
         onClick={handleClick}
-        className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/editimg:bg-black/30 transition-all duration-200 cursor-pointer"
+        onContextMenu={(e) => { e.preventDefault(); handleClick() }}
+        className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover/editimg:bg-black/40 outline outline-2 outline-dashed outline-primary-400/70 hover:outline-primary-500 transition-all duration-200 cursor-pointer"
         style={{ borderRadius: 'inherit' }}
         aria-label="Rediger bilde"
       >
-        <span className="opacity-0 group-hover/editimg:opacity-100 transition-opacity flex items-center gap-2 bg-white text-slate-900 text-xs font-bold px-3 py-2 rounded-full shadow-lg pointer-events-none">
+        <span className="flex items-center gap-2 bg-white text-slate-900 text-xs font-bold px-3 py-2 rounded-full shadow-lg pointer-events-none group-hover/editimg:scale-110 transition-transform">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
             <circle cx="12" cy="13" r="4"/>
