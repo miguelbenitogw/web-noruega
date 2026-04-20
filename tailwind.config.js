@@ -26,7 +26,7 @@ export default {
         ink: '#1E293B',
       },
       fontFamily: {
-        heading: ['Outfit', 'sans-serif'],
+        heading: ['Poppins', 'sans-serif'],
         body: ['Source Sans 3', 'sans-serif'],
       },
       maxWidth: {
