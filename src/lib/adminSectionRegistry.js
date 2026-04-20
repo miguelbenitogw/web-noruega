@@ -209,6 +209,8 @@ const buildHelseSections = () => [
       field('helsePartnership.heading', 'Tittel'),
       field('helsePartnership.p1', 'Avsnitt 1'),
       field('helsePartnership.p2', 'Avsnitt 2'),
+      field('helsePartnership.imageUrl', 'Bilde'),
+      field('helsePartnership.imageAlt', 'Bilde · alt-tekst'),
       field('helsePartnership.cta1', 'Primær-CTA'),
       field('helsePartnership.cta2', 'Sekundær-CTA'),
     ],

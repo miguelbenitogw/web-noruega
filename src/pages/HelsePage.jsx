@@ -6,7 +6,9 @@ import PageEndNav from '../components/PageEndNav'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from '../components/editable/EditableText'
+import EditableImage from '../components/editable/EditableImage'
 import InlineRichText from '../components/editable/InlineRichText'
+import { IMAGES, img } from '../assets/images'
 
 function InlineEditableParagraph({
   path,
@@ -201,21 +203,21 @@ export default function HelsePage() {
       {/* Partnership Model */}
       <section className="py-24 lg:py-32 bg-surface">
         <div className="container-xl">
-          <div className="max-w-3xl mx-auto text-center">
-            <AnimateIn>
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <AnimateIn variant="fadeRight">
               <EditableText
                 as="span"
                 path="helsePartnership.label"
                 value={partnership.label}
-                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+                className="inline-block px-4 py-1.5 rounded-full bg-primary-50 text-primary-700 text-sm font-semibold mb-5"
               />
               <EditableText
                 as="h2"
                 path="helsePartnership.heading"
                 value={partnership.heading}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight"
+                className="font-heading text-3xl lg:text-4xl font-bold text-ink leading-tight mb-6"
               />
-              <div className="space-y-4 text-gray-600 text-lg leading-relaxed mb-10">
+              <div className="space-y-4 text-gray-600 leading-relaxed">
                 <InlineEditableParagraph
                   as="p"
                   path="helsePartnership.p1"
@@ -229,21 +231,37 @@ export default function HelsePage() {
                   className="!text-gray-600"
                 />
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 mt-8">
                 <a
                   href="/kontakt"
                   onClick={() => trackEvent('cta_click', { location: 'helse_partnership', cta: 'kontakt_oss' })}
-                  className="inline-flex items-center justify-center px-7 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
+                  className="inline-flex items-center justify-center px-7 py-4 bg-cta text-white font-semibold rounded-xl hover:bg-cta-600 transition-all duration-200 shadow-lg hover:-translate-y-0.5 cursor-pointer"
                 >
                   <EditableText as="span" path="helsePartnership.cta1" value={partnership.cta1} className="inline" />
                 </a>
                 <a
                   href="/talentportalen"
                   onClick={() => trackEvent('cta_click', { location: 'helse_partnership', cta: 'se_portalen' })}
-                  className="inline-flex items-center justify-center px-7 py-4 border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors duration-200 cursor-pointer"
+                  className="inline-flex items-center justify-center px-7 py-4 bg-white border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-all duration-200 cursor-pointer"
                 >
                   <EditableText as="span" path="helsePartnership.cta2" value={partnership.cta2} className="inline" />
                 </a>
+              </div>
+            </AnimateIn>
+
+            <AnimateIn variant="fadeLeft" delay={150}>
+              <div className="relative">
+                <div className="rounded-3xl overflow-hidden border border-gray-100 shadow-xl">
+                  <EditableImage
+                    src={img(partnership.imageUrl || IMAGES.rekruttering, 800)}
+                    alt={partnership.imageAlt || 'Global Working rekrutteringsprosessen'}
+                    className="w-full h-auto object-cover"
+                    loading="lazy"
+                    path="helsePartnership.imageUrl"
+                  />
+                </div>
+                <div className="absolute -bottom-4 -left-4 w-24 h-24 rounded-2xl bg-primary-100/60 -z-10" aria-hidden="true" />
+                <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full bg-cta/10 -z-10" aria-hidden="true" />
               </div>
             </AnimateIn>
           </div>

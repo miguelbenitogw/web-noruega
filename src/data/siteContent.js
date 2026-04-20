@@ -229,6 +229,8 @@ const siteContent = {
     p2: 'Gjennom vår nye kandidatportal kan arbeidsgivere selv se tilgjengelige kandidater og invitere til intervju.',
     cta1: 'Kontakt oss',
     cta2: 'Se kandidatportalen',
+    imageUrl: IMAGES.rekruttering,
+    imageAlt: 'Global Working rekrutteringsprosessen',
   },
 
   omOssHero: {
