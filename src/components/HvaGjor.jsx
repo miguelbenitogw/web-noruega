@@ -2,6 +2,7 @@ import { GraduationCap, ShieldCheck, UsersThree } from '@phosphor-icons/react'
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from './editable/EditableText'
+import EditableImage from './editable/EditableImage'
 import InlineRichText from './editable/InlineRichText'
 
 const serviceIcons = [
@@ -140,6 +141,20 @@ export default function HvaGjor() {
             </svg>
           </a>
         </AnimateIn>
+
+        {c.sectionImageUrl && (
+          <AnimateIn variant="fadeUp" delay={100} className="mt-14">
+            <div className="rounded-3xl overflow-hidden shadow-xl">
+              <EditableImage
+                path="hvaGjor.sectionImageUrl"
+                src={c.sectionImageUrl}
+                alt={c.sectionImageAlt || ''}
+                className="w-full h-[420px] lg:h-[520px] object-cover"
+                loading="lazy"
+              />
+            </div>
+          </AnimateIn>
+        )}
       </div>
     </section>
   )

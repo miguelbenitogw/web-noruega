@@ -310,6 +310,8 @@ const siteContent = {
     ],
     ctaLabel: 'Book et møte med oss',
     ctaNote: 'Uforpliktende kartlegging av behov',
+    sectionImageUrl: '',
+    sectionImageAlt: '',
   },
 
   rekrutteringComp: {

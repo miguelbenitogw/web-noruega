@@ -317,6 +317,8 @@ const buildRekrutteringSections = () => [
       field('hvaGjor.label', 'Fortekst'),
       field('hvaGjor.heading', 'Tittel'),
       field('hvaGjor.description', 'Beskrivelse'),
+      field('hvaGjor.sectionImageUrl', 'Bilde under CTA'),
+      field('hvaGjor.sectionImageAlt', 'Bilde · alt-tekst'),
     ],
   }),
   section('rekruttering-comp', 'Rekrutteringsprosessen', {
