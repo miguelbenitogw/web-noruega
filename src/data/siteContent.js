@@ -310,8 +310,8 @@ const siteContent = {
     ],
     ctaLabel: 'Book et møte med oss',
     ctaNote: 'Uforpliktende kartlegging av behov',
-    sectionImageUrl: '',
-    sectionImageAlt: '',
+    sectionImageUrl: 'https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/hvagjor/classroom-rekruttering.jpg',
+    sectionImageAlt: 'Norskklasse hos Global Working i Alicante',
   },
 
   rekrutteringComp: {
