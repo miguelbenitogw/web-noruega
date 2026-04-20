@@ -26,12 +26,7 @@ export default function Footer() {
       <div className="container-xl py-16">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
           <div className="sm:col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-2 mb-5">
-              <div className="w-9 h-9 bg-primary-600 rounded-lg flex items-center justify-center">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 3a5 5 0 0 1 4.9 4H5.1A5 5 0 0 1 10 5zm0 10a5 5 0 0 1-4.9-4h9.8A5 5 0 0 1 10 15z" fill="white"/>
-                </svg>
-              </div>
+            <div className="mb-5">
               <span className="font-heading font-semibold text-lg">
                 Global Working <span className="text-primary-400">Norge</span>
               </span>

@@ -1,19 +1,13 @@
+import { GraduationCap, ShieldCheck, UsersThree } from '@phosphor-icons/react'
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from './editable/EditableText'
 import InlineRichText from './editable/InlineRichText'
 
 const serviceIcons = [
-  <svg key="i1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-  </svg>,
-  <svg key="i2" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-    <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
-  </svg>,
-  <svg key="i3" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-  </svg>,
+  <UsersThree key="i1" size={52} weight="light" aria-hidden="true" />,
+  <GraduationCap key="i2" size={52} weight="light" aria-hidden="true" />,
+  <ShieldCheck key="i3" size={52} weight="light" aria-hidden="true" />,
 ]
 
 function InlineEditableParagraph({
@@ -103,7 +97,7 @@ export default function HvaGjor() {
                 <div className="group h-full bg-white rounded-[2rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:border-primary-100 transition-all duration-500 overflow-hidden">
                   <div className="p-8 h-full flex flex-col">
                     <div className="flex items-center justify-between mb-8">
-                      <div className="w-14 h-14 bg-primary-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary-200 group-hover:scale-110 transition-transform duration-300">
+                      <div className="text-cta group-hover:scale-110 transition-transform duration-300">
                         {serviceIcons[i] || serviceIcons[0]}
                       </div>
                       <span className="font-heading text-4xl font-bold text-primary-50 group-hover:text-primary-100 transition-colors">
