@@ -96,7 +96,7 @@ export default function Helsesektor() {
                   height="480"
                   path="helsesektorComp.imageUrl"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary-900/40 via-transparent to-transparent" aria-hidden="true" />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary-900/40 via-transparent to-transparent pointer-events-none" aria-hidden="true" />
               </div>
 
             </div>
