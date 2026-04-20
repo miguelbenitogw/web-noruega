@@ -1,8 +1,11 @@
+import { useEffect, useState } from 'react'
+
 const isBrowser = () => typeof window !== 'undefined'
 
 const GW_IMAGE_FIELD_FOCUS = 'gw-image-field-focus'
+const GW_VISUAL_EDIT_CHANGE = 'gw-visual-edit-change'
 
-function isVisualEditEnabled() {
+function readEditEnabled() {
   if (!isBrowser()) return false
   if (window.__GW_VISUAL_EDIT__?.enabled === true) return true
   const rootMode = window.document?.documentElement?.dataset?.visualEditMode
@@ -26,7 +29,16 @@ function isVisualEditEnabled() {
  *   ...rest     — forwarded to <img> (width, height, loading, etc.)
  */
 export default function EditableImage({ path, src, alt, className, wrapperClassName, ...rest }) {
-  const editMode = isVisualEditEnabled()
+  // Reactive: re-reads whenever the admin toggles visual-edit mode
+  const [editMode, setEditMode] = useState(() => readEditEnabled())
+
+  useEffect(() => {
+    const handler = () => setEditMode(readEditEnabled())
+    window.addEventListener(GW_VISUAL_EDIT_CHANGE, handler)
+    // Also sync on mount in case the event already fired
+    handler()
+    return () => window.removeEventListener(GW_VISUAL_EDIT_CHANGE, handler)
+  }, [])
 
   function handleClick() {
     if (!path) return

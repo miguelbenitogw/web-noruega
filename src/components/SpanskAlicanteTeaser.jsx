@@ -71,24 +71,14 @@ export default function SpanskAlicanteTeaser() {
           </AnimateIn>
 
           <AnimateIn variant="fadeLeft" delay={150}>
-            <div className="relative">
-              <div className="rounded-[2rem] overflow-hidden border border-gray-100 shadow-xl bg-surface">
-                <EditableImage
-                  path="spanskAlicanteTeaser.imageUrl"
-                  src={img(teaser.imageUrl || IMAGES.spanskAlicanteHeroSunset, 1200)}
-                  alt={teaser.imageAlt || 'Solnedgang ved stranden i Alicante'}
-                  className="w-full h-[320px] lg:h-[420px] object-cover"
-                  loading="lazy"
-                />
-              </div>
-              <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-lg border border-gray-100 px-5 py-4 max-w-[220px]">
-                <span className="block text-xs uppercase tracking-[0.18em] font-semibold text-primary-600 mb-1">
-                  {extra.cardLabel}
-                </span>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {extra.cardText}
-                </p>
-              </div>
+            <div className="rounded-[2rem] overflow-hidden border border-gray-100 shadow-xl bg-surface">
+              <EditableImage
+                path="spanskAlicanteTeaser.imageUrl"
+                src={img(teaser.imageUrl || IMAGES.spanskAlicanteHeroSunset, 1200)}
+                alt={teaser.imageAlt || 'Solnedgang ved stranden i Alicante'}
+                className="w-full h-[320px] lg:h-[420px] object-cover"
+                loading="lazy"
+              />
             </div>
           </AnimateIn>
         </div>
