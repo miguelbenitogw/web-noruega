@@ -1,5 +1,19 @@
 /* eslint-disable react-refresh/only-export-components */
+import { parseInlineLinkTokens } from '../utils/inlineLinkParser'
+
 export const ARTICLE_BODY_MEASURE_CLASS = 'max-w-[68ch] text-[1.0625rem] leading-[1.85]'
+
+const LINK_CLASS = 'text-primary-600 underline decoration-primary-200 underline-offset-2 hover:text-primary-700 transition-colors'
+
+const renderInline = (text, baseKey) => {
+  const tokens = parseInlineLinkTokens(text)
+  if (tokens.length === 1 && tokens[0].type === 'text') return text
+  return tokens.map((token, i) =>
+    token.type === 'link'
+      ? <a key={`${baseKey}-l${i}`} href={token.href} className={LINK_CLASS}>{token.value}</a>
+      : token.value
+  )
+}
 
 const slugifyHeading = (value) =>
   value
@@ -27,7 +41,7 @@ const flushParagraph = (buffer, key) => {
   if (!text) return null
   return (
     <p key={key} className={`${ARTICLE_BODY_MEASURE_CLASS} mb-5 text-gray-700`}>
-      {text}
+      {renderInline(text, key)}
     </p>
   )
 }
@@ -57,7 +71,7 @@ export default function MarkdownArticle({ markdown }) {
     if (!listItems.length) return
     nodes.push(
       <ul key={`ul-${keyIndex++}`} className={`${ARTICLE_BODY_MEASURE_CLASS} list-disc pl-6 mb-5 space-y-1 text-gray-700`}>
-        {listItems.map(item => <li key={`${keyIndex++}-${item.slice(0, 12)}`}>{item}</li>)}
+        {listItems.map((item, i) => <li key={`${keyIndex++}-${i}`}>{renderInline(item, `li-${keyIndex}`)}</li>)}
       </ul>,
     )
     listItems = []
@@ -81,7 +95,7 @@ export default function MarkdownArticle({ markdown }) {
       const headingId = nextHeadingId(headingText)
       nodes.push(
         <h2 id={headingId} key={`h2-${keyIndex++}`} className="font-heading text-2xl font-bold text-ink mt-8 mb-4 scroll-mt-28">
-          {headingText}
+          {renderInline(headingText, `h2-${keyIndex}`)}
         </h2>,
       )
       continue
@@ -95,7 +109,7 @@ export default function MarkdownArticle({ markdown }) {
       const headingId = nextHeadingId(headingText)
       nodes.push(
         <h3 id={headingId} key={`h3-${keyIndex++}`} className="font-heading text-xl font-semibold text-ink mt-6 mb-3 scroll-mt-28">
-          {headingText}
+          {renderInline(headingText, `h3-${keyIndex}`)}
         </h3>,
       )
       continue
