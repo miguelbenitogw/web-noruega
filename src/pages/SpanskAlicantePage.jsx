@@ -154,7 +154,7 @@ export default function SpanskAlicantePage() {
       <section className="py-16 lg:py-20 bg-white">
         <div className="container-xl">
           <AnimateIn>
-            <div className="bg-surface border border-gray-100 rounded-[2rem] p-8 lg:p-12 max-w-4xl">
+            <div className="bg-surface border border-gray-100 rounded-[2rem] p-8 lg:p-12 max-w-4xl mx-auto text-center">
               <EditableText
                 as="p"
                 path="spanskAlicantePage.exchangeNote"
