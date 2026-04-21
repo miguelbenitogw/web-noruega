@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { IMAGES } from '../assets/images'
-import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter } from './editable/EditableText'
 
