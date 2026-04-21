@@ -9,7 +9,7 @@ import {
 } from '../../lib/contentOverrides'
 import LinkInsertPopover from './LinkInsertPopover'
 import { isValidInternalDestination } from '../../lib/linkableAnchors'
-import { sanitizeInlineLinkMarkdown } from '../../utils/inlineLinkParser'
+import { sanitizeInlineLinkMarkdown, parseInlineLinkTokens } from '../../utils/inlineLinkParser'
 
 const VISUAL_EDIT_EVENTS = ['gw-visual-edit-change', 'gw-visual-edit-state']
 
@@ -125,6 +125,23 @@ export function useVisualEditContext() {
   return context
 }
 
+const INLINE_LINK_CLASS = 'text-primary-600 underline decoration-primary-200 underline-offset-2 transition-colors hover:text-primary-700'
+
+const renderInline = (text, baseKey) => {
+  const tokens = parseInlineLinkTokens(text)
+  if (tokens.length === 1 && tokens[0].type === 'text') return text
+  return tokens.map((token, i) => {
+    if (token.type === 'link') {
+      return (
+        <a key={`${baseKey}-l${i}`} href={token.href} className={INLINE_LINK_CLASS}>
+          {token.value}
+        </a>
+      )
+    }
+    return token.value
+  })
+}
+
 const renderMarkdown = (text) => {
   if (!text) return null
   const lines = text.split('\n')
@@ -140,17 +157,17 @@ const renderMarkdown = (text) => {
   for (const line of lines) {
     if (line.startsWith('## ')) {
       flushList()
-      result.push(<h2 key={k++} className="font-heading text-xl font-bold text-ink mt-5 mb-2">{line.slice(3)}</h2>)
+      result.push(<h2 key={k++} className="font-heading text-xl font-bold text-ink mt-5 mb-2">{renderInline(line.slice(3), k)}</h2>)
     } else if (line.startsWith('### ')) {
       flushList()
-      result.push(<h3 key={k++} className="font-heading text-lg font-semibold text-ink mt-4 mb-1">{line.slice(4)}</h3>)
+      result.push(<h3 key={k++} className="font-heading text-lg font-semibold text-ink mt-4 mb-1">{renderInline(line.slice(4), k)}</h3>)
     } else if (line.startsWith('- ') || line.startsWith('* ')) {
-      listItems.push(<li key={k++} className="leading-relaxed">{line.slice(2)}</li>)
+      listItems.push(<li key={k++} className="leading-relaxed">{renderInline(line.slice(2), k)}</li>)
     } else if (line.trim() === '') {
       flushList()
     } else {
       flushList()
-      result.push(<p key={k++} className="mb-3 leading-relaxed">{line}</p>)
+      result.push(<p key={k++} className="mb-3 leading-relaxed">{renderInline(line, k)}</p>)
     }
   }
   flushList()
