@@ -422,12 +422,12 @@ export default function EditableText({
     if (richText && multiline && typeof displayValue === 'string' && !isEmpty) {
       return renderMarkdown(displayValue)
     }
-    if (!multiline || typeof displayValue !== 'string') return displayValue
+    if (!multiline || typeof displayValue !== 'string') return renderInline(displayValue, 'sv')
     const lines = displayValue.split('\n')
-    if (lines.length <= 1) return displayValue
+    if (lines.length <= 1) return renderInline(displayValue, 'sv')
     return lines.map((line, i) => (
       <span key={i}>
-        {line}
+        {renderInline(line, `sv-${i}`)}
         {i < lines.length - 1 && <br />}
       </span>
     ))
