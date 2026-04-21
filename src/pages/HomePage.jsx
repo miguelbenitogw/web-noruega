@@ -9,6 +9,14 @@ import InlineRichText from '../components/editable/InlineRichText'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import { IMAGES, img } from '../assets/images'
+import { UsersThree, Heart, MagnifyingGlass, Buildings } from '@phosphor-icons/react'
+
+const sectionIcons = [
+  <UsersThree key="i0" size={26} weight="light" aria-hidden="true" />,
+  <Heart key="i1" size={26} weight="light" aria-hidden="true" />,
+  <MagnifyingGlass key="i2" size={26} weight="light" aria-hidden="true" />,
+  <Buildings key="i3" size={26} weight="light" aria-hidden="true" />,
+]
 
 function InlineEditableParagraph({
   path,
@@ -68,9 +76,7 @@ function SummaryCard({ section, delay, index, sections, readMoreLabel }) {
         className="group block h-full bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-primary-100 transition-all duration-300 p-7"
       >
         <div className="w-12 h-12 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary-600 group-hover:text-white transition-colors duration-300">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-          </svg>
+          {sectionIcons[index] ?? sectionIcons[0]}
         </div>
         <EditableText
           as="h3"
