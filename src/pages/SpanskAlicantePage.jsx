@@ -229,7 +229,7 @@ export default function SpanskAlicantePage() {
         <div className="container-xl">
           <AnimateIn>
             <figure className="max-w-4xl mx-auto bg-white border border-gray-100 rounded-[2rem] p-8 lg:p-10 shadow-sm">
-              <div className="flex flex-col sm:flex-row gap-8 items-start">
+              <div className="flex flex-col sm:flex-row gap-8 items-center">
                 {page.testimonialImageUrl && (
                   <img
                     src={page.testimonialImageUrl}
