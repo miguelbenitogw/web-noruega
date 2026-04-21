@@ -98,6 +98,10 @@ const siteContent = {
     ],
     testimonialQuote: 'Det har vært en sann glede å ha vært i Alicante sammen med Global Working. Jeg har fått gode venner, praktisert mye spansk og hatt stor frihet i samtaletimene.',
     testimonialAuthor: 'Oliver Payne, samtaleassistent vår 2026',
+    testimonialImageUrl: 'https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/spansk-alicante/testimonial-oliver.jpg',
+    testimonialImageAlt: 'Oliver Payne',
+    beachCollageUrl: 'https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/spansk-alicante/beach-collage.jpg',
+    beachCollageAlt: 'Hverdagen i Alicante – strand, surf og sosialt miljø',
     spanishCourseTitle: 'Spanskkurs',
     spanishCourseItems: [
       '2 til 15 timer i uken',
@@ -143,6 +147,8 @@ const siteContent = {
     title: 'Hvorfor finnes Spansk i Alicante?',
     imageUrl: IMAGES.spanskAlicanteCastleArch,
     imageAlt: 'Historisk arkitektur og stemning i Alicante',
+    sidebarImageUrl: 'https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/spansk-alicante/group-office.jpg',
+    sidebarImageAlt: 'Gruppe hos Global Working i Alicante',
     intro: 'Spansk i Alicante er en viktig del av hvordan vi forbereder sykepleiere fra Sør-Europa på et liv og en jobb i Norge. Språk alene er ikke nok. Det som ofte mangler er det som skjer mellom linjene i hverdagen.',
     sections: [
       {

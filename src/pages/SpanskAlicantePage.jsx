@@ -229,26 +229,55 @@ export default function SpanskAlicantePage() {
         <div className="container-xl">
           <AnimateIn>
             <figure className="max-w-4xl mx-auto bg-white border border-gray-100 rounded-[2rem] p-8 lg:p-10 shadow-sm">
-              <svg className="text-primary-200 mb-5" width="56" height="56" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M7.17 6A5.001 5.001 0 0 0 2 11v7h7v-7H6.08A3.001 3.001 0 0 1 9 8V6H7.17Zm9 0A5.001 5.001 0 0 0 11 11v7h7v-7h-2.92A3.001 3.001 0 0 1 18 8V6h-1.83Z" />
-              </svg>
-              <EditableText
-                as="blockquote"
-                path="spanskAlicantePage.testimonialQuote"
-                value={page.testimonialQuote}
-                multiline
-                className="font-heading text-2xl lg:text-3xl font-bold text-ink leading-relaxed mb-6"
-              />
-              <EditableText
-                as="figcaption"
-                path="spanskAlicantePage.testimonialAuthor"
-                value={page.testimonialAuthor}
-                className="text-gray-500 font-medium"
-              />
+              <div className="flex flex-col sm:flex-row gap-8 items-start">
+                {page.testimonialImageUrl && (
+                  <img
+                    src={page.testimonialImageUrl}
+                    alt={page.testimonialAuthor || 'Testimonial'}
+                    className="w-24 h-24 rounded-full object-cover object-top shrink-0 border-2 border-primary-100 shadow-md"
+                    loading="lazy"
+                  />
+                )}
+                <div className="flex-1">
+                  <svg className="text-primary-200 mb-5" width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M7.17 6A5.001 5.001 0 0 0 2 11v7h7v-7H6.08A3.001 3.001 0 0 1 9 8V6H7.17Zm9 0A5.001 5.001 0 0 0 11 11v7h7v-7h-2.92A3.001 3.001 0 0 1 18 8V6h-1.83Z" />
+                  </svg>
+                  <EditableText
+                    as="blockquote"
+                    path="spanskAlicantePage.testimonialQuote"
+                    value={page.testimonialQuote}
+                    multiline
+                    className="font-heading text-xl lg:text-2xl font-bold text-ink leading-relaxed mb-4"
+                  />
+                  <EditableText
+                    as="figcaption"
+                    path="spanskAlicantePage.testimonialAuthor"
+                    value={page.testimonialAuthor}
+                    className="text-gray-500 font-medium"
+                  />
+                </div>
+              </div>
             </figure>
           </AnimateIn>
         </div>
       </section>
+
+      {page.beachCollageUrl && (
+        <section className="py-10 lg:py-14 bg-white">
+          <div className="container-xl">
+            <AnimateIn variant="fadeUp">
+              <div className="rounded-[2rem] overflow-hidden shadow-lg">
+                <img
+                  src={page.beachCollageUrl}
+                  alt={page.beachCollageAlt || 'Hverdagen i Alicante'}
+                  className="w-full h-auto object-cover"
+                  loading="lazy"
+                />
+              </div>
+            </AnimateIn>
+          </div>
+        </section>
+      )}
 
       <section className="py-24 lg:py-28 bg-white">
         <div className="container-xl">

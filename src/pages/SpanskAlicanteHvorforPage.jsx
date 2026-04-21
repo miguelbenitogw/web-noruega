@@ -143,6 +143,18 @@ export default function SpanskAlicanteHvorforPage() {
                     <EditableText as="span" path="spanskAlicantePage.ctaSecondary" value={page.ctaSecondary} className="inline" />
                   </a>
                 </div>
+
+                {vision.sidebarImageUrl && (
+                  <div className="mt-6 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+                    <EditableImage
+                      path="spanskAlicanteVision.sidebarImageUrl"
+                      src={vision.sidebarImageUrl}
+                      alt={vision.sidebarImageAlt || 'Gruppe i Alicante'}
+                      className="w-full h-auto object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
               </aside>
             </AnimateIn>
           </div>

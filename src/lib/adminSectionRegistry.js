@@ -255,6 +255,10 @@ const buildSpanskAlicanteSections = () => [
     fields: [
       field('spanskAlicantePage.testimonialQuote', 'Testimonial'),
       field('spanskAlicantePage.testimonialAuthor', 'Testimonial · forfatter'),
+      field('spanskAlicantePage.testimonialImageUrl', 'Testimonial · bilde'),
+      field('spanskAlicantePage.testimonialImageAlt', 'Testimonial · alt-tekst'),
+      field('spanskAlicantePage.beachCollageUrl', 'Strand collage · bilde'),
+      field('spanskAlicantePage.beachCollageAlt', 'Strand collage · alt-tekst'),
       field('spanskAlicantePage.cityTitle', 'Byliv · tittel'),
       field('spanskAlicantePage.cityItems.0', 'Byliv · punkt 1'),
       field('spanskAlicantePage.socialInstagram', 'Instagram'),
@@ -282,6 +286,8 @@ const buildSpanskAlicanteHvorforSections = () => [
       field('spanskAlicanteVision.intro', 'Intro'),
       field('spanskAlicanteVision.imageUrl', 'Bilde'),
       field('spanskAlicanteVision.imageAlt', 'Bilde · alt-tekst'),
+      field('spanskAlicanteVision.sidebarImageUrl', 'Sidebar · bilde'),
+      field('spanskAlicanteVision.sidebarImageAlt', 'Sidebar · alt-tekst'),
     ],
   }),
   section('spansk-alicante-hvorfor-sections', 'Innhold', {
