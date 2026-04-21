@@ -234,7 +234,7 @@ export default function SpanskAlicantePage() {
                   <img
                     src={page.testimonialImageUrl}
                     alt={page.testimonialAuthor || 'Testimonial'}
-                    className="w-32 h-32 rounded-full object-cover object-top shrink-0 border-2 border-primary-100 shadow-md"
+                    className="w-32 h-40 rounded-3xl object-cover object-top shrink-0 border-2 border-primary-100 shadow-md"
                     loading="lazy"
                   />
                 )}
