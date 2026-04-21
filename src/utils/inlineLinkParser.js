@@ -1,8 +1,8 @@
 const WHITESPACE_RE = /\s/
 const BLOCKED_PROTOCOL_RE = /^(?:javascript|data|vbscript)\s*:/i
-const SAFE_FRAGMENT_RE = /^#[A-Za-z0-9._:-]+$/
-const SAFE_ROOT_FRAGMENT_RE = /^\/#?[A-Za-z0-9._:-]+$/
-const SAFE_PATH_RE = /^\/(?!\/)[A-Za-z0-9._~%-]+(?:\/[A-Za-z0-9._~%-]+)*(?:#[A-Za-z0-9._:-]+)?$/
+const SAFE_FRAGMENT_RE = /^#[A-Za-z0-9._:%-]+$/
+const SAFE_ROOT_FRAGMENT_RE = /^\/#?[A-Za-z0-9._:%-]+$/
+const SAFE_PATH_RE = /^\/(?!\/)[A-Za-z0-9._~%-]+(?:\/[A-Za-z0-9._~%-]+)*(?:#[A-Za-z0-9._:%-]+)?$/
 
 const isValidMarkdownLinkText = (text) => typeof text === 'string' && text.length > 0
 
