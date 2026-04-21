@@ -6,26 +6,58 @@ import defaultContent from '../data/siteContent'
 import { deepMergeContent } from '../lib/contentMappers.js'
 import { loadPublishedPageForPath, resolveRouteContext } from '../lib/contentRuntime.js'
 
+// ─── localStorage cache helpers ──────────────────────────────────────────────
+// Persist the last known remote content so the first render already has the
+// correct data and avoids the visible image-swap flash on every page load.
+
+const SITE_CACHE_KEY = 'gw-remote-content-v1'
+const PAGE_CACHE_PREFIX = 'gw-page-content-v1:'
+
+const readSiteCache = () => {
+  try { return JSON.parse(localStorage.getItem(SITE_CACHE_KEY)) } catch { return null }
+}
+const writeSiteCache = (content) => {
+  try { localStorage.setItem(SITE_CACHE_KEY, JSON.stringify(content)) } catch {}
+}
+const readPageCache = (pathname) => {
+  try { return JSON.parse(localStorage.getItem(PAGE_CACHE_PREFIX + pathname)) } catch { return null }
+}
+const writePageCache = (pathname, content) => {
+  try { localStorage.setItem(PAGE_CACHE_PREFIX + pathname, JSON.stringify(content)) } catch {}
+}
+
+const currentPathname = () => (typeof window !== 'undefined' ? window.location.pathname : '/')
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function useContent(section) {
+  const pathname = currentPathname()
+
   const [overrides, setOverrides] = useState(() => {
     sanitizeContentOverrides()
     return readContentOverrides()
   })
-  const [remoteSiteContent, setRemoteSiteContent] = useState(null)
-  const [remotePageState, setRemotePageState] = useState({ pathname: null, content: null })
-  const currentPathname = typeof window !== 'undefined' ? window.location.pathname : '/'
-  const routeContext = useMemo(() => resolveRouteContext(currentPathname), [currentPathname])
 
+  // Initialise with cached remote content → zero flash on subsequent visits
+  const [remoteSiteContent, setRemoteSiteContent] = useState(() => readSiteCache())
+
+  const [remotePageState, setRemotePageState] = useState(() => {
+    const cached = readPageCache(pathname)
+    return cached ? { pathname, content: cached } : { pathname: null, content: null }
+  })
+
+  const routeContext = useMemo(() => resolveRouteContext(pathname), [pathname])
+
+  // Keep overrides in sync with localStorage changes
   useEffect(() => {
     const handler = () => setOverrides(readContentOverrides())
     window.addEventListener(CONTENT_OVERRIDE_EVENT, handler)
     return () => window.removeEventListener(CONTENT_OVERRIDE_EVENT, handler)
   }, [])
 
+  // Fetch & cache global site content snapshot
   useEffect(() => {
-    if (!shouldUseSupabaseContent()) {
-      return
-    }
+    if (!shouldUseSupabaseContent()) return
 
     let cancelled = false
     const locale = getContentLocale()
@@ -34,20 +66,17 @@ export default function useContent(section) {
       cancelled = false
       fetchPublishedContentSnapshot(locale)
         .then((snapshot) => {
-          if (!cancelled) setRemoteSiteContent(snapshot?.content || null)
+          if (cancelled) return
+          const content = snapshot?.content || null
+          setRemoteSiteContent(content)
+          if (content) writeSiteCache(content)
         })
-        .catch(() => {
-          if (!cancelled) setRemoteSiteContent(null)
-        })
+        .catch(() => { if (!cancelled) setRemoteSiteContent(null) })
     }
 
     doFetch()
 
-    const handleContentPublished = () => {
-      cancelled = false
-      doFetch()
-    }
-
+    const handleContentPublished = () => { cancelled = false; doFetch() }
     window.addEventListener('gw-content-published', handleContentPublished)
 
     return () => {
@@ -56,33 +85,28 @@ export default function useContent(section) {
     }
   }, [])
 
+  // Fetch & cache per-page content
   useEffect(() => {
-    if (!section) {
-      return
-    }
-
-    if (!shouldUseSupabaseContent() || routeContext.isAdmin || routeContext.isNewsDetail || !routeContext.sectionRoute) {
-      return
-    }
+    if (!section) return
+    if (!shouldUseSupabaseContent() || routeContext.isAdmin || routeContext.isNewsDetail || !routeContext.sectionRoute) return
 
     let cancelled = false
     const locale = getContentLocale()
 
-    loadPublishedPageForPath(currentPathname, locale)
+    loadPublishedPageForPath(pathname, locale)
       .then((page) => {
-        if (!cancelled) setRemotePageState({ pathname: currentPathname, content: page?.content || null })
+        if (cancelled) return
+        const content = page?.content || null
+        setRemotePageState({ pathname, content })
+        if (content) writePageCache(pathname, content)
       })
-      .catch(() => {
-        if (!cancelled) setRemotePageState({ pathname: currentPathname, content: null })
-      })
+      .catch(() => { if (!cancelled) setRemotePageState({ pathname, content: null }) })
 
-    return () => {
-      cancelled = true
-    }
-  }, [currentPathname, routeContext.isAdmin, routeContext.isNewsDetail, routeContext.sectionRoute, section])
+    return () => { cancelled = true }
+  }, [pathname, routeContext.isAdmin, routeContext.isNewsDetail, routeContext.sectionRoute, section])
 
   const pageContent = section
-    ? remotePageState.pathname === currentPathname
+    ? remotePageState.pathname === pathname
       ? remotePageState.content
       : null
     : null
