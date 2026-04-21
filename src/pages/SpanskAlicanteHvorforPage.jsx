@@ -80,7 +80,7 @@ export default function SpanskAlicanteHvorforPage() {
       <section className="py-24 lg:py-28 bg-white">
         <div className="container-xl">
           <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-start">
-            <div className="space-y-6">
+            <div className="space-y-10">
               {(vision.sections || []).map((section, index) => {
                 const headingCommit = createArrayItemCommitter({
                   basePath: 'spanskAlicanteVision.sections',
@@ -97,7 +97,7 @@ export default function SpanskAlicanteHvorforPage() {
 
                 return (
                   <AnimateIn key={`vision-section-${index}`} variant="fadeUp" delay={index * 100}>
-                    <div className="bg-surface border border-gray-100 rounded-[2rem] p-8">
+                    <div className="py-2">
                       <EditableText
                         as="h2"
                         path={`spanskAlicanteVision.sections.${index}.heading`}
@@ -106,11 +106,12 @@ export default function SpanskAlicanteHvorforPage() {
                         className="font-heading text-2xl lg:text-3xl font-bold text-ink mb-4"
                       />
                       <EditableText
-                        as="p"
+                        as="div"
                         path={`spanskAlicanteVision.sections.${index}.body`}
                         value={section.body}
                         onCommit={bodyCommit}
                         multiline
+                        richText
                         className="text-gray-600 text-lg leading-relaxed"
                       />
                     </div>
