@@ -169,7 +169,7 @@ const siteContent = {
 
   contacts: [
     { name: 'Miriam Svendsen', role: 'Rekrutteringsansvarlig', email: 'miriam.svendsen@globalworking.net', phone: '+47 919 00 649', imageUrl: IMAGES.contactMiriam, imageAlt: 'Miriam Svendsen' },
-    { name: 'Gro Anette', role: 'Kandidatoppfølging', email: 'gro.anette@globalworking.net', phone: '+47 408 98 448', imageUrl: IMAGES.contactGro, imageAlt: 'Gro Anette' },
+    { name: 'Gro Anette Nordskog', role: 'Kandidatoppfølging', email: 'gro.anette@globalworking.net', phone: '+47 408 98 448', imageUrl: IMAGES.contactGro, imageAlt: 'Gro Anette Nordskog' },
   ],
 
   rekrutteringHero: {
@@ -252,7 +252,7 @@ const siteContent = {
     members: [
       { initials: 'PS', name: 'Pablo Santamarina', role: 'CEO & Grunnlegger', hasImage: true, imageUrl: IMAGES.ceoPhoto, imageAlt: 'Pablo Santamarina' },
       { initials: 'MS', name: 'Miriam Svendsen', role: 'Rekrutteringsansvarlig', hasImage: false, imageUrl: IMAGES.contactMiriam, imageAlt: 'Miriam Svendsen' },
-      { initials: 'GA', name: 'Gro Anette', role: 'Kandidatoppfølging', hasImage: false, imageUrl: IMAGES.contactGro, imageAlt: 'Gro Anette' },
+      { initials: 'GA', name: 'Gro Anette Nordskog', role: 'Kandidatoppfølging', hasImage: false, imageUrl: IMAGES.contactGro, imageAlt: 'Gro Anette Nordskog' },
       { initials: 'T', name: 'Teamet', role: '50+ ansatte i Alicante og Oslo', hasImage: false },
     ],
   },
