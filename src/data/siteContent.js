@@ -388,7 +388,7 @@ const siteContent = {
     label: 'Talentportalen',
     heading: 'Ny kandidatportal for arbeidsgivere',
     description: 'Global Working har fått ny kandidatportal. Nå kan du selv gå inn og se hvilke kandidater vi har tilgjengelig for fast ansettelse.',
-    portalUrl: 'https://globalworking-talentportal.lovable.app',
+    portalUrl: 'https://talentportal.globalworking.net/',
     ctaLogin: 'Logg inn på portalen',
     ctaContact: 'Kontakt oss',
     benefits: [
