@@ -19,6 +19,7 @@ export const ADMIN_PREVIEW_MODES = [
   { id: 'helse', label: 'Helse', path: '/helse' },
   { id: 'spansk-alicante', label: 'Spansk i Alicante', path: '/spansk-i-alicante' },
   { id: 'spansk-alicante-hvorfor', label: 'Spansk i Alicante · Hvorfor', path: '/spansk-i-alicante/hvorfor' },
+  { id: 'spansk-alicante-livet-som-student', label: 'Spansk i Alicante · Livet som student', path: '/spansk-i-alicante/livet-som-student' },
   { id: 'rekruttering', label: 'Rekrutteringsmodell', path: '/vr-rekrutteringsmodell' },
   { id: 'article', label: 'Artikkel', path: '/nyheter' },
   { id: 'news-manager', label: 'Nyhetsstudio', path: '/nyheter' },
@@ -305,6 +306,94 @@ const buildSpanskAlicanteHvorforSections = () => [
       field('spanskAlicanteVision.highlights.0', 'Highlight 1'),
       field('spanskAlicanteVision.highlights.1', 'Highlight 2'),
       field('spanskAlicanteVision.highlights.2', 'Highlight 3'),
+    ],
+  }),
+]
+
+const buildLivetSomStudentSections = () => [
+  section('livet-hero', 'Hero', {
+    sectionIndex: 0,
+    fields: [
+      field('livetSomStudent.breadcrumb', 'Brødsmule'),
+      field('livetSomStudent.heroTitle', 'Tittel'),
+      field('livetSomStudent.heroSubtitle', 'Undertittel'),
+      field('livetSomStudent.heroImageUrl', 'Bilde'),
+      field('livetSomStudent.heroImageAlt', 'Bilde · alt-tekst'),
+    ],
+  }),
+  section('livet-intro', 'Intro', {
+    sectionIndex: 1,
+    fields: [
+      field('livetSomStudent.introTitle', 'Tittel'),
+      field('livetSomStudent.introP1', 'Avsnitt 1'),
+      field('livetSomStudent.introP2', 'Avsnitt 2'),
+    ],
+  }),
+  section('livet-undervisning', 'Undervisningen', {
+    sectionIndex: 2,
+    fields: [
+      field('livetSomStudent.undervisningTitle', 'Tittel'),
+      field('livetSomStudent.undervisningP1', 'Avsnitt 1'),
+      field('livetSomStudent.undervisningP2', 'Avsnitt 2'),
+      field('livetSomStudent.undervisningImageUrl', 'Bilde'),
+      field('livetSomStudent.undervisningImageAlt', 'Bilde · alt-tekst'),
+    ],
+  }),
+  section('livet-helse', 'Norsk for helsesektoren', {
+    sectionIndex: 3,
+    fields: [
+      field('livetSomStudent.helseTitle', 'Tittel'),
+      field('livetSomStudent.helseP1', 'Avsnitt 1'),
+      field('livetSomStudent.helseP2', 'Avsnitt 2'),
+      field('livetSomStudent.helseP3', 'Avsnitt 3'),
+      field('livetSomStudent.helseItems.0', 'Punkt 1'),
+      field('livetSomStudent.helseItems.1', 'Punkt 2'),
+      field('livetSomStudent.helseItems.2', 'Punkt 3'),
+      field('livetSomStudent.helseItems.3', 'Punkt 4'),
+      field('livetSomStudent.helseP4', 'Avsnitt 4'),
+      field('livetSomStudent.helseImageUrl', 'Bilde'),
+      field('livetSomStudent.helseImageAlt', 'Bilde · alt-tekst'),
+    ],
+  }),
+  section('livet-samtale', 'Samtaleassistenter', {
+    sectionIndex: 4,
+    fields: [
+      field('livetSomStudent.samtaleTitle', 'Tittel'),
+      field('livetSomStudent.samtaleP1', 'Avsnitt 1'),
+      field('livetSomStudent.samtaleP2', 'Avsnitt 2'),
+      field('livetSomStudent.samtaleItems.0', 'Punkt 1'),
+      field('livetSomStudent.samtaleItems.1', 'Punkt 2'),
+      field('livetSomStudent.samtaleItems.2', 'Punkt 3'),
+      field('livetSomStudent.samtaleP3', 'Avsnitt 3'),
+      field('livetSomStudent.samtaleP4', 'Avsnitt 4'),
+      field('livetSomStudent.samtaleImageUrl', 'Bilde'),
+      field('livetSomStudent.samtaleImageAlt', 'Bilde · alt-tekst'),
+    ],
+  }),
+  section('livet-fellesskap', 'Fellesskap og aktiviteter', {
+    sectionIndex: 5,
+    fields: [
+      field('livetSomStudent.fellesskapTitle', 'Tittel'),
+      field('livetSomStudent.fellesskapP1', 'Avsnitt 1'),
+      field('livetSomStudent.fellesskapP2', 'Avsnitt 2'),
+      field('livetSomStudent.fellesskapLabel', 'Listepunkt-label'),
+      field('livetSomStudent.fellesskapItems.0', 'Punkt 1'),
+      field('livetSomStudent.fellesskapItems.1', 'Punkt 2'),
+      field('livetSomStudent.fellesskapItems.2', 'Punkt 3'),
+      field('livetSomStudent.fellesskapItems.3', 'Punkt 4'),
+      field('livetSomStudent.fellesskapP3', 'Avsnitt 3'),
+      field('livetSomStudent.fellesskapImageUrl', 'Bilde'),
+      field('livetSomStudent.fellesskapImageAlt', 'Bilde · alt-tekst'),
+    ],
+  }),
+  section('livet-cta', 'CTA', {
+    sectionIndex: 6,
+    fields: [
+      field('livetSomStudent.ctaLabel', 'Label'),
+      field('livetSomStudent.ctaTitle', 'Tittel'),
+      field('livetSomStudent.ctaP1', 'Avsnitt 1'),
+      field('livetSomStudent.ctaP2', 'Avsnitt 2'),
+      field('livetSomStudent.ctaButton', 'Knappetekst'),
     ],
   }),
 ]
@@ -701,6 +790,19 @@ export function getAdminPreviewConfig({ viewId, article, articles = [] }) {
       topbarTitle: 'Visuell redigering',
       topbarDescription: 'Rediger under­siden om hvorfor Spansk i Alicante finnes med egne seksjoner og highlights.',
       sections: buildSpanskAlicanteHvorforSections(),
+    }
+  }
+
+  if (currentMode.id === 'spansk-alicante-livet-som-student') {
+    return {
+      id: 'spansk-alicante-livet-som-student',
+      label: 'Spansk i Alicante · Livet som student',
+      path: '/spansk-i-alicante/livet-som-student',
+      routeKey: 'admin:spansk-alicante-livet-som-student',
+      usesVisualSession: true,
+      topbarTitle: 'Visuell redigering',
+      topbarDescription: 'Rediger siden om livet som student i Alicante med alle seksjoner og bilder.',
+      sections: buildLivetSomStudentSections(),
     }
   }
 

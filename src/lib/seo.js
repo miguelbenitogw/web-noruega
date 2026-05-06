@@ -59,6 +59,12 @@ const SECTION_SEO = {
       'Lær hvorfor Spansk i Alicante er en viktig del av Global Working sin forberedelse av fagfolk til jobb i Norge.',
     pathname: '/spansk-i-alicante/hvorfor',
   },
+  'spansk-i-alicante-livet-som-student': {
+    title: 'Livet som student i Alicante | Global Working Norge',
+    description:
+      'Slik er hverdagen for kandidatene våre i Alicante: undervisning, helsenorsk, samtaleassistenter og sosialt fellesskap.',
+    pathname: '/spansk-i-alicante/livet-som-student',
+  },
   personvern: {
     title: 'Personvern | Global Working Norge',
     description:

@@ -16,6 +16,11 @@ const ROUTE_DEFINITIONS = {
     pageSlug: 'spansk-i-alicante-hvorfor',
     aliases: ['spansk-i-alicante-hvorfor', 'spansk-i-alicante-why', 'alicante-hvorfor'],
   },
+  '/spansk-i-alicante/livet-som-student': {
+    sectionRoute: 'spansk-i-alicante-livet-som-student',
+    pageSlug: 'spansk-i-alicante-livet-som-student',
+    aliases: ['spansk-i-alicante-livet-som-student', 'livet-som-student'],
+  },
   '/personvern': { sectionRoute: 'personvern', pageSlug: 'personvern', aliases: ['personvern', 'privacy'] },
   '/vilkar': { sectionRoute: 'vilkar', pageSlug: 'vilkar', aliases: ['vilkar', 'terms'] },
   '/cookies': { sectionRoute: 'cookies', pageSlug: 'cookies', aliases: ['cookies', 'informasjonskapsler'] },

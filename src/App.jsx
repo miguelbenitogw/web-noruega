@@ -23,6 +23,7 @@ import OmOssPage from './pages/OmOssPage'
 import KontaktPage from './pages/KontaktPage'
 import SpanskAlicantePage from './pages/SpanskAlicantePage'
 import SpanskAlicanteHvorforPage from './pages/SpanskAlicanteHvorforPage'
+import LivetSomStudentPage from './pages/LivetSomStudentPage'
 import PersonvernPage from './pages/PersonvernPage'
 import VilkarPage from './pages/VilkarPage'
 import CookiesPage from './pages/CookiesPage'
@@ -41,7 +42,7 @@ export default function App() {
   const searchParams = useMemo(() => new URLSearchParams(currentPath.split('?')[1] || ''), [currentPath])
   const isVisualEditRequested = searchParams.get('edit') === '1'
   const isEditableRoute = !routeContext.isAdmin
-    && (['home', 'nyheter', 'helse', 'rekruttering', 'spansk-i-alicante', 'spansk-i-alicante-hvorfor', 'kontakt', 'om-oss', 'talentportalen', 'personvern', 'vilkar', 'cookies'].includes(sectionRoute) || Boolean(newsSlug))
+    && (['home', 'nyheter', 'helse', 'rekruttering', 'spansk-i-alicante', 'spansk-i-alicante-hvorfor', 'spansk-i-alicante-livet-som-student', 'kontakt', 'om-oss', 'talentportalen', 'personvern', 'vilkar', 'cookies'].includes(sectionRoute) || Boolean(newsSlug))
   const hasVisualEditPermission = isVisualEditRequested && isEditableRoute ? canEditVisualContent : false
   const isVisualEditMode = isVisualEditRequested && isEditableRoute && hasVisualEditPermission
   const visualEditRouteLabel = newsSlug
@@ -58,6 +59,8 @@ export default function App() {
               ? 'Spansk i Alicante'
               : sectionRoute === 'spansk-i-alicante-hvorfor'
                 ? 'Spansk i Alicante · Hvorfor'
+              : sectionRoute === 'spansk-i-alicante-livet-som-student'
+                ? 'Spansk i Alicante · Livet som student'
               : sectionRoute === 'kontakt'
                 ? 'Kontakt'
                 : sectionRoute === 'om-oss'
@@ -216,6 +219,8 @@ export default function App() {
         return <SpanskAlicantePage />
       case 'spansk-i-alicante-hvorfor':
         return <SpanskAlicanteHvorforPage />
+      case 'spansk-i-alicante-livet-som-student':
+        return <LivetSomStudentPage />
       case 'personvern':
         return <PersonvernPage />
       case 'vilkar':

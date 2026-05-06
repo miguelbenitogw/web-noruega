@@ -294,7 +294,6 @@ export default function Kontakt() {
                     </div>
                   )}
 
-                  <input type="hidden" name="type" value={form.type} />
                   <input
                     type="text"
                     name="website"
@@ -305,21 +304,6 @@ export default function Kontakt() {
                     aria-hidden="true"
                     className="absolute -left-[9999px] opacity-0 pointer-events-none"
                   />
-                  <div className="flex bg-surface rounded-xl p-1 gap-1" role="group" aria-label="Type henvendelse">
-                    {['arbeidsgiver', 'kandidat'].map(t => (
-                      <button
-                        key={t}
-                        type="button"
-                        onClick={() => setForm(f => ({ ...f, type: t }))}
-                        className={`flex-1 py-2.5 rounded-lg text-sm font-semibold capitalize transition-all duration-200 cursor-pointer ${
-                          form.type === t ? 'bg-primary-600 text-white shadow-sm' : 'text-gray-500 hover:text-ink'
-                        }`}
-                        aria-pressed={form.type === t}
-                      >
-                        {t === 'arbeidsgiver' ? 'Arbeidsgiver' : 'Kandidat'}
-                      </button>
-                    ))}
-                  </div>
 
                   <div>
                     <label htmlFor="from_name" className="block text-sm font-medium text-ink mb-1.5">Fullt navn *</label>

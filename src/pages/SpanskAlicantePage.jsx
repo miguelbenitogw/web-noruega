@@ -1,6 +1,7 @@
 import AnimateIn from '../components/AnimateIn'
 import EditableText, { useVisualEditEnabled } from '../components/editable/EditableText'
 import InlineRichText from '../components/editable/InlineRichText'
+import KandidatKontakt from '../components/KandidatKontakt'
 import PageEndNav from '../components/PageEndNav'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
@@ -122,8 +123,8 @@ export default function SpanskAlicantePage() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
-                  href="/kontakt"
-                  onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hero', cta: 'kontakt' })}
+                  href="#kandidat-kontakt"
+                  onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hero', cta: 'kandidat_kontakt' })}
                   className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-cta text-white font-semibold rounded-xl hover:bg-cta-600 transition-all duration-200 shadow-lg hover:-translate-y-0.5 cursor-pointer"
                 >
                   <EditableText as="span" path="spanskAlicantePage.ctaSecondary" value={page.ctaSecondary} className="inline" />
@@ -397,8 +398,8 @@ export default function SpanskAlicantePage() {
           <AnimateIn variant="fadeUp" delay={180}>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
-                href="/kontakt"
-                onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_process', cta: 'kontakt' })}
+                href="#kandidat-kontakt"
+                onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_process', cta: 'kandidat_kontakt' })}
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
               >
                 <EditableText as="span" path="spanskAlicantePage.ctaSecondary" value={page.ctaSecondary} className="inline" />
@@ -414,6 +415,8 @@ export default function SpanskAlicantePage() {
           </AnimateIn>
         </div>
       </section>
+
+      <KandidatKontakt />
 
       <PageEndNav current="/spansk-i-alicante" />
     </>
