@@ -52,7 +52,7 @@ const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3
 
 function isImageUrlPath(path) {
   if (!path) return false
-  return path.endsWith('.imageUrl') || path.endsWith('.heroImageUrl') || path.endsWith('.roleImageUrl') || path.endsWith('.cityImageUrl') || path.endsWith('.teamImageUrl') || path.endsWith('.officeImageUrl')
+  return path.endsWith('ImageUrl') || path.endsWith('.imageUrl')
 }
 
 function commitOverride(path, value) {
