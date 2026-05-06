@@ -12,6 +12,7 @@ import TalentportalenPage from '../../pages/TalentportalenPage'
 import RekrutteringPage from '../../pages/RekrutteringPage'
 import SpanskAlicantePage from '../../pages/SpanskAlicantePage'
 import SpanskAlicanteHvorforPage from '../../pages/SpanskAlicanteHvorforPage'
+import LivetSomStudentPage from '../../pages/LivetSomStudentPage'
 import PersonvernPage from '../../pages/PersonvernPage'
 import VilkarPage from '../../pages/VilkarPage'
 import CookiesPage from '../../pages/CookiesPage'
@@ -23,6 +24,7 @@ const PAGE_PREVIEW_COMPONENTS = {
   helse: HelsePage,
   'spansk-alicante': SpanskAlicantePage,
   'spansk-alicante-hvorfor': SpanskAlicanteHvorforPage,
+  'spansk-alicante-livet-som-student': LivetSomStudentPage,
   rekruttering: RekrutteringPage,
   kontakt: KontaktPage,
   'om-oss': OmOssPage,
