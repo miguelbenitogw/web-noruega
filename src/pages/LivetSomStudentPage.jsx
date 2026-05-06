@@ -221,20 +221,8 @@ export default function LivetSomStudentPage() {
       {/* Samtaleassistenter */}
       <section className="py-24 lg:py-28 bg-surface">
         <div className="container-xl">
-          <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-center">
-            <AnimateIn variant="fadeRight">
-              <div className="rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg bg-white">
-                <EditableImage
-                  path="livetSomStudent.samtaleImageUrl"
-                  src={img(page.samtaleImageUrl || IMAGES.spanskAlicantePromenade)}
-                  alt={page.samtaleImageAlt || 'Samtaleassistenter i Alicante'}
-                  className="w-full h-[360px] object-cover"
-                  loading="lazy"
-                />
-              </div>
-            </AnimateIn>
-
-            <AnimateIn variant="fadeLeft" delay={120}>
+          <div className="max-w-3xl mx-auto">
+            <AnimateIn>
               <EditableText
                 as="h2"
                 path="livetSomStudent.samtaleTitle"
@@ -280,6 +268,18 @@ export default function LivetSomStudentPage() {
               </a>
             </AnimateIn>
           </div>
+
+          <AnimateIn variant="fadeUp" delay={120}>
+            <div className="mt-12 max-w-4xl mx-auto rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg">
+              <EditableImage
+                path="livetSomStudent.samtaleImageUrl"
+                src={img(page.samtaleImageUrl || IMAGES.spanskAlicantePromenade)}
+                alt={page.samtaleImageAlt || 'Samtaleassistenter i Alicante'}
+                className="w-full h-[360px] object-cover"
+                loading="lazy"
+              />
+            </div>
+          </AnimateIn>
         </div>
       </section>
 
