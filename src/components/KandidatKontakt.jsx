@@ -20,8 +20,8 @@ const RATE_LIMIT_MAX = 3
 const MIN_FORM_FILL_MS = 3000
 
 const TABS = [
-  { key: 'kandidat', label: 'Kandidat' },
-  { key: 'vil_jobbe', label: 'Vil jobbe' },
+  { key: 'kandidat', label: 'Spørsmål' },
+  { key: 'vil_jobbe', label: 'Søknad' },
 ]
 
 async function uploadCvToStorage(file) {
@@ -304,7 +304,7 @@ export default function KandidatKontakt() {
                       value={form.message}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl text-ink placeholder-gray-400 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all resize-none"
-                      placeholder={form.type === 'vil_jobbe' ? 'Fortell oss om din erfaring og hva du ser etter...' : 'Fortell oss om ditt behov...'}
+                      placeholder={form.type === 'vil_jobbe' ? 'Fortell oss om din erfaring og hva du ser etter...' : 'Skriv inn dine spørsmål til oss...'}
                     />
                   </div>
 
