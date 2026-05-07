@@ -274,6 +274,7 @@ const buildSpanskAlicanteSections = () => [
       field('spanskAlicantePage.ctaPrimary', 'Primær-CTA'),
       field('spanskAlicantePage.ctaSecondary', 'Sekundær-CTA'),
       field('spanskAlicantePage.visionLinkLabel', 'Lenke til hvorfor-siden'),
+      field('spanskAlicantePage.livetSomStudentLinkLabel', 'Lenke til livet-som-student-siden'),
     ],
   }),
 ]

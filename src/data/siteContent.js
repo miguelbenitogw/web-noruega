@@ -140,6 +140,7 @@ const siteContent = {
     ctaPrimary: 'Søk nå!',
     ctaSecondary: 'Send oss en melding',
     visionLinkLabel: 'Les hvorfor Spansk i Alicante finnes',
+    livetSomStudentLinkLabel: 'Livet som student i Alicante',
   },
 
   spanskAlicanteVision: {
