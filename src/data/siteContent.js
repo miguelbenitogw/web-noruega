@@ -504,6 +504,7 @@ const siteContent = {
       { label: 'Vår rekrutteringsmodell', href: '/vr-rekrutteringsmodell' },
       { label: 'Helsesektor', href: '/helse' },
       { label: 'Spansk i Alicante', href: '/spansk-i-alicante' },
+      { label: 'Livet som student', href: '/spansk-i-alicante/livet-som-student' },
       { label: 'Nyheter', href: '/nyheter' },
       { label: 'Talentportalen', href: '/talentportalen' },
       { label: 'Om oss', href: '/om-oss' },

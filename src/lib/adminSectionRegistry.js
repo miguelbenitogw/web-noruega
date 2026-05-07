@@ -689,6 +689,7 @@ const buildGlobalSections = () => [
       field('navbar.links.4.label', 'Lenke 5 · tekst'),
       field('navbar.links.5.label', 'Lenke 6 · tekst'),
       field('navbar.links.6.label', 'Lenke 7 · tekst'),
+      field('navbar.links.7.label', 'Lenke 8 · tekst'),
       field('navbar.ctaLabel', 'CTA-knapp'),
     ],
   }),
