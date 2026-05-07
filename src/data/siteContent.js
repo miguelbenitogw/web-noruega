@@ -232,7 +232,7 @@ const siteContent = {
   livetSomStudent: {
     breadcrumb: 'Livet som student',
     heroTitle: 'Livet som student',
-    heroSubtitle: 'Hvorfor finnes Spansk i Alicante?',
+    heroSubtitle: 'Slik forbereder vi kandidatene våre til livet og arbeidet i Norge.',
     heroImageUrl: IMAGES.spanskAlicanteBeachPalms,
     heroImageAlt: 'Studentlivet i Alicante',
     introTitle: 'Livet som student i Alicante',

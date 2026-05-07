@@ -44,8 +44,6 @@ export default function LivetSomStudentPage() {
                 <ol className="flex items-center gap-2 text-sm text-blue-200">
                   <li><a href="/" className="hover:text-white transition-colors">Hjem</a></li>
                   <li aria-hidden="true">/</li>
-                  <li><a href="/spansk-i-alicante" className="hover:text-white transition-colors">Spansk i Alicante</a></li>
-                  <li aria-hidden="true">/</li>
                   <li className="text-white font-medium">
                     <EditableText as="span" path="livetSomStudent.breadcrumb" value={page.breadcrumb} className="inline" />
                   </li>
