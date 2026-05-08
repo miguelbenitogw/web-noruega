@@ -411,13 +411,6 @@ export default function SpanskAlicantePage() {
               >
                 <EditableText as="span" path="spanskAlicantePage.visionLinkLabel" value={page.visionLinkLabel} className="inline" />
               </a>
-              <a
-                href="/spansk-i-alicante/livet-som-student"
-                onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_process', cta: 'livet_som_student' })}
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors duration-200 cursor-pointer"
-              >
-                <EditableText as="span" path="spanskAlicantePage.livetSomStudentLinkLabel" value={page.livetSomStudentLinkLabel} className="inline" />
-              </a>
             </div>
           </AnimateIn>
         </div>

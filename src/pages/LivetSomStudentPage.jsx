@@ -369,7 +369,21 @@ export default function LivetSomStudentPage() {
               <div className="grid sm:grid-cols-2 gap-4 max-w-lg mx-auto mb-8">
                 {(contacts || []).map((contact) => (
                   <div key={contact.name} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm text-left">
-                    <div className="font-heading font-bold text-ink text-sm mb-0.5">{contact.name}</div>
+                    <div className="flex items-center gap-3 mb-3">
+                      {contact.imageUrl && (
+                        <img
+                          src={contact.imageUrl}
+                          alt={contact.imageAlt || contact.name}
+                          className="w-12 h-12 rounded-full object-cover shrink-0"
+                        />
+                      )}
+                      <div>
+                        <div className="font-heading font-bold text-ink text-sm leading-tight">{contact.name}</div>
+                        {contact.role && (
+                          <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mt-0.5">{contact.role}</div>
+                        )}
+                      </div>
+                    </div>
                     <a href={`mailto:${contact.email}`} className="text-primary-600 text-xs hover:underline block">{contact.email}</a>
                     <a href={`tel:${contact.phone.replace(/\s/g, '')}`} className="text-gray-500 text-xs hover:text-primary-600 transition-colors block">{contact.phone}</a>
                   </div>
