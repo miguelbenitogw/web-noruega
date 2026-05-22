@@ -1,7 +1,7 @@
 import AnimateIn from './AnimateIn'
 import EditableText from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
-import spanskAlicanteLogo from '../assets/alicante/spansk-i-alicante-logo.png'
+import spanskAlicanteLogo from '../assets/alicante/spansk-i-alicante-logo.webp'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'

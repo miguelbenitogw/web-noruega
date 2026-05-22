@@ -3,7 +3,7 @@ import EditableText, { useVisualEditEnabled } from '../components/editable/Edita
 import InlineRichText from '../components/editable/InlineRichText'
 import KandidatKontakt from '../components/KandidatKontakt'
 import PageEndNav from '../components/PageEndNav'
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 
@@ -143,8 +143,13 @@ export default function SpanskAlicantePage() {
               <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
                 <img
                   src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1200)}
+                  srcSet={srcSet(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, [640, 1024, 1200])}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   alt={page.heroImageAlt || 'Strand og palmer i Alicante'}
                   className="w-full h-[360px] lg:h-[460px] object-cover"
+                  loading="eager"
+                  width={1200}
+                  height={460}
                 />
               </div>
             </AnimateIn>
@@ -189,6 +194,9 @@ export default function SpanskAlicantePage() {
                   alt={page.roleImageAlt || 'Sosial hverdag og samtaler i Alicante'}
                   className="w-full h-[360px] object-cover"
                   loading="lazy"
+                  decoding="async"
+                  width={1200}
+                  height={360}
                 />
               </div>
             </AnimateIn>
@@ -367,6 +375,9 @@ export default function SpanskAlicantePage() {
                   alt={page.cityImageAlt || 'Byliv og utsikt i Alicante'}
                   className="w-full h-[420px] object-cover"
                   loading="lazy"
+                  decoding="async"
+                  width={1200}
+                  height={420}
                 />
               </div>
             </AnimateIn>

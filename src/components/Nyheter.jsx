@@ -203,8 +203,9 @@ export default function Nyheter() {
                 alt={featuredTitle}
                 className="w-full h-full object-cover"
                 loading="lazy"
-                width="640"
-                height="240"
+                decoding="async"
+                width={640}
+                height={240}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" aria-hidden="true" />
               <EditableText

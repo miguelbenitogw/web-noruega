@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import MarkdownArticle, { getMarkdownSections } from '../components/MarkdownArticle'
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import { setArticleSEO } from '../lib/seo'
 import { useNewsArticle } from '../hooks/useNews'
@@ -232,9 +232,14 @@ export default function NewsArticlePage({ slug }) {
         <div className="rounded-3xl overflow-hidden mb-10 border border-gray-100">
           <img
             src={img(getCoverImage(effectiveArticle), 1200)}
+            srcSet={srcSet(getCoverImage(effectiveArticle), [640, 1024, 1200])}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 720px"
             alt={effectiveArticle.title}
             className="w-full object-cover max-h-[420px]"
             loading="lazy"
+            decoding="async"
+            width={1200}
+            height={420}
           />
         </div>
 

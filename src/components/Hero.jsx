@@ -2,7 +2,7 @@ import useInView from '../hooks/useInView'
 import useCounter from '../hooks/useCounter'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import EditableText, { createArrayItemCommitter } from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
 
@@ -63,10 +63,14 @@ export default function Hero() {
         <EditableImage
           path="hero.imageUrl"
           src={img(c.imageUrl || IMAGES.teamHero, 1600)}
-          alt={c.imageAlt || ''}
+          srcSet={srcSet(c.imageUrl || IMAGES.teamHero, [640, 1024, 1600])}
+          sizes="100vw"
+          alt={c.imageAlt || 'Global Working Norge – rekruttering av fagfolk'}
           className="w-full h-full object-cover object-top scale-105"
           loading="eager"
           fetchPriority="high"
+          width={1600}
+          height={900}
         />
         <div className="absolute inset-0 bg-primary-900/70" />
         <div className="absolute inset-0 bg-gradient-to-r from-primary-900/80 via-primary-900/50 to-transparent" />

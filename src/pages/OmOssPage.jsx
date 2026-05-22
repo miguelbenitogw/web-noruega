@@ -7,8 +7,8 @@ import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from '../components/editable/EditableText'
 import EditableImage from '../components/editable/EditableImage'
 import InlineRichText from '../components/editable/InlineRichText'
-import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
-import groPhoto from '../assets/team/gro-anette.jpg'
+const miriamPhoto = IMAGES.contactMiriam
+const groPhoto = IMAGES.contactGro
 
 function InlineEditableParagraph({
   path,

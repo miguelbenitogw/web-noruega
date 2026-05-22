@@ -1,5 +1,6 @@
 const SITE_URL = 'https://globalworking.no'
 const DEFAULT_IMAGE = 'https://globalworking.net/wp-content/uploads/2025/12/cropped-GlobalWorking-Logotipo-Principal-vertical-cuadrado-scaled-1.jpg'
+const SITE_NAME = 'Global Working Norge'
 
 const DEFAULT_SEO = {
   title: 'Global Working Norge | Rekruttering av helsepersonell og fagfolk til Norge',
@@ -16,72 +17,95 @@ const SECTION_SEO = {
     description:
       'Se hvordan vi rekrutterer, forbereder og følger opp fagfolk fra Sør-Europa til trygg oppstart i Norge.',
     pathname: '/vr-rekrutteringsmodell',
+    breadcrumbName: 'Rekrutteringsmodell',
+    keywords: 'rekruttering Norge, fagfolk fra Europa, internasjonal rekruttering, arbeidsinnvandring',
   },
   helse: {
     title: 'Helsesektor | Global Working Norge',
     description:
       'Vi forbereder helsepersonell for den norske helsesektoren med språk, faglig oppfølging og strukturert overgang til jobb.',
     pathname: '/helse',
+    breadcrumbName: 'Helsesektor',
+    keywords: 'helsepersonell Norge, sykepleiere rekruttering, helsesektor bemanning, autorisasjon helsepersonell',
   },
   nyheter: {
     title: 'Nyheter & artikler | Global Working Norge',
     description:
       'Følg siste nytt, artikler og oppdateringer fra Global Working om rekruttering, språk og arbeidsliv i Norge.',
     pathname: '/nyheter',
+    breadcrumbName: 'Nyheter',
+    keywords: 'Global Working nyheter, rekruttering nyheter Norge, arbeidsliv Norge',
   },
   talentportalen: {
     title: 'Talentportalen | Global Working Norge',
     description:
       'Se tilgjengelige kandidater og inviter til intervju direkte gjennom vår kandidatportal.',
     pathname: '/talentportalen',
+    breadcrumbName: 'Talentportalen',
+    keywords: 'kandidatportal, tilgjengelige kandidater Norge, rekrutteringsportal',
   },
   'om-oss': {
     title: 'Om oss | Global Working Norge',
     description:
       'Lær mer om Global Working, teamet vårt og hvordan vi jobber med språk, kvalitet og internasjonal rekruttering.',
     pathname: '/om-oss',
+    breadcrumbName: 'Om oss',
+    keywords: 'Global Working team, om Global Working, rekrutteringsbyrå Norge',
   },
   kontakt: {
     title: 'Kontakt | Global Working Norge',
     description:
       'Ta kontakt for spørsmål om rekruttering, samarbeid eller kandidatportalen.',
     pathname: '/kontakt',
+    breadcrumbName: 'Kontakt',
+    keywords: 'kontakt Global Working, rekruttering kontakt, samarbeid Norge',
   },
   'spansk-i-alicante': {
     title: 'Spansk i Alicante | Global Working Norge',
     description:
       'Bo gratis i Alicante og bli samtaleassistent i et internasjonalt miljø gjennom Spansk i Alicante-programmet.',
     pathname: '/spansk-i-alicante',
+    breadcrumbName: 'Spansk i Alicante',
+    keywords: 'spansk i Alicante, samtaleassistent, språkopphold Spania, bo gratis Alicante',
   },
   'spansk-i-alicante-hvorfor': {
     title: 'Hvorfor finnes Spansk i Alicante? | Global Working Norge',
     description:
       'Lær hvorfor Spansk i Alicante er en viktig del av Global Working sin forberedelse av fagfolk til jobb i Norge.',
     pathname: '/spansk-i-alicante/hvorfor',
+    breadcrumbName: 'Hvorfor Spansk i Alicante',
+    parentSection: 'spansk-i-alicante',
+    keywords: 'hvorfor Spansk i Alicante, språkforberedelse fagfolk, Global Working Alicante',
   },
   'spansk-i-alicante-livet-som-student': {
     title: 'Livet som student i Alicante | Global Working Norge',
     description:
       'Slik er hverdagen for kandidatene våre i Alicante: undervisning, helsenorsk, samtaleassistenter og sosialt fellesskap.',
     pathname: '/spansk-i-alicante/livet-som-student',
+    breadcrumbName: 'Livet som student',
+    parentSection: 'spansk-i-alicante',
+    keywords: 'livet som student Alicante, hverdagen i Alicante, helsenorsk, samtaleassistenter, sosialt fellesskap',
   },
   personvern: {
     title: 'Personvern | Global Working Norge',
     description:
       'Les hvordan Global Working Norge behandler personopplysninger, formål, lagringstid og dine rettigheter.',
     pathname: '/personvern',
+    breadcrumbName: 'Personvern',
   },
   vilkar: {
     title: 'Vilkår | Global Working Norge',
     description:
       'Vilkår for bruk av nettstedet og tjenester fra Global Working Norge, inkludert ansvar og kontaktinformasjon.',
     pathname: '/vilkar',
+    breadcrumbName: 'Vilkår',
   },
   cookies: {
     title: 'Informasjonskapsler | Global Working Norge',
     description:
       'Informasjon om hvilke cookies vi bruker, hvorfor vi bruker dem og hvordan du kan administrere samtykke.',
     pathname: '/cookies',
+    breadcrumbName: 'Informasjonskapsler',
   },
 }
 
@@ -161,9 +185,55 @@ const setJsonLd = (id, payload) => {
   document.head.appendChild(script)
 }
 
+const buildBreadcrumbSchema = (items) => ({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: item.name,
+    item: item.url,
+  })),
+})
+
+const buildWebPageSchema = ({ title, description, url, image }) => ({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  description,
+  url,
+  image,
+  inLanguage: 'nb-NO',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: SITE_URL,
+  },
+})
+
+const clearAllDynamicSchemas = () => {
+  clearJsonLd('news-article-schema')
+  clearJsonLd('page-schema')
+  clearJsonLd('breadcrumb-schema')
+}
+
 export function setDefaultSEO() {
   setPageSEO(DEFAULT_SEO)
-  clearJsonLd('news-article-schema')
+  clearAllDynamicSchemas()
+
+  setJsonLd('page-schema', {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: SITE_URL,
+    description: DEFAULT_SEO.description,
+    inLanguage: 'nb-NO',
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+  })
 }
 
 export function setSectionSEO(sectionRoute) {
@@ -174,7 +244,31 @@ export function setSectionSEO(sectionRoute) {
   }
 
   setPageSEO(page)
-  clearJsonLd('news-article-schema')
+  if (page.keywords) {
+    ensureMeta('name', 'keywords', page.keywords)
+  }
+  clearAllDynamicSchemas()
+
+  const url = getCanonicalUrl(page.pathname)
+  setJsonLd('page-schema', buildWebPageSchema({
+    title: page.title,
+    description: page.description,
+    url,
+    image: DEFAULT_IMAGE,
+  }))
+
+  const breadcrumbItems = [{ name: 'Forside', url: SITE_URL }]
+  if (page.parentSection) {
+    const parent = SECTION_SEO[page.parentSection]
+    if (parent) {
+      breadcrumbItems.push({
+        name: parent.breadcrumbName,
+        url: getCanonicalUrl(parent.pathname),
+      })
+    }
+  }
+  breadcrumbItems.push({ name: page.breadcrumbName, url })
+  setJsonLd('breadcrumb-schema', buildBreadcrumbSchema(breadcrumbItems))
 }
 
 export function setNotFoundSEO(pathname = '/') {
@@ -183,7 +277,7 @@ export function setNotFoundSEO(pathname = '/') {
     pathname,
     robots: 'noindex, nofollow',
   })
-  clearJsonLd('news-article-schema')
+  clearAllDynamicSchemas()
 }
 
 export function setArticleSEO(article) {
@@ -199,6 +293,7 @@ export function setArticleSEO(article) {
     image,
     type: 'article',
   })
+  clearAllDynamicSchemas()
 
   setJsonLd('news-article-schema', {
     '@context': 'https://schema.org',
@@ -206,14 +301,14 @@ export function setArticleSEO(article) {
     headline: article.title,
     description,
     datePublished: article.publishAt || `${article.date}T08:00:00Z`,
-    dateModified: article.publishAt || `${article.date}T08:00:00Z`,
+    dateModified: article.updatedAt || article.publishAt || `${article.date}T08:00:00Z`,
     author: {
       '@type': 'Organization',
       name: article.author || 'Global Working',
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Global Working Norge',
+      name: SITE_NAME,
       logo: {
         '@type': 'ImageObject',
         url: DEFAULT_IMAGE,
@@ -222,4 +317,10 @@ export function setArticleSEO(article) {
     mainEntityOfPage: url,
     image: [image],
   })
+
+  setJsonLd('breadcrumb-schema', buildBreadcrumbSchema([
+    { name: 'Forside', url: SITE_URL },
+    { name: 'Nyheter', url: `${SITE_URL}/nyheter` },
+    { name: article.title, url },
+  ]))
 }

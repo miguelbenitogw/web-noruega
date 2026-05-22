@@ -45,13 +45,15 @@ export default function EditableImage({ path, src, alt, className, wrapperClassN
     window.dispatchEvent(new CustomEvent(GW_IMAGE_FIELD_FOCUS, { detail: { path } }))
   }
 
+  const decoding = rest.loading === 'eager' ? 'sync' : 'async'
+
   if (!editMode) {
-    return <img src={src} alt={alt} className={className} {...rest} />
+    return <img src={src} alt={alt} className={className} decoding={decoding} {...rest} />
   }
 
   return (
     <div className={`relative group/editimg ${wrapperClassName || ''}`}>
-      <img src={src} alt={alt} className={className} {...rest} />
+      <img src={src} alt={alt} className={className} decoding={decoding} {...rest} />
       <button
         type="button"
         onClick={handleClick}

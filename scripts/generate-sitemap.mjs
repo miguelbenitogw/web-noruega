@@ -64,6 +64,7 @@ const run = async () => {
     { loc: `${SITE_URL}/kontakt`,                 lastmod: TODAY,       changefreq: 'monthly', priority: '0.8' },
     { loc: `${SITE_URL}/spansk-i-alicante`,       lastmod: TODAY,       changefreq: 'weekly',  priority: '0.8' },
     { loc: `${SITE_URL}/spansk-i-alicante/hvorfor`, lastmod: TODAY,     changefreq: 'monthly', priority: '0.7' },
+    { loc: `${SITE_URL}/spansk-i-alicante/livet-som-student`, lastmod: TODAY, changefreq: 'monthly', priority: '0.7' },
     { loc: `${SITE_URL}/personvern`,              lastmod: TODAY,       changefreq: 'yearly',  priority: '0.5' },
     { loc: `${SITE_URL}/vilkar`,                  lastmod: TODAY,       changefreq: 'yearly',  priority: '0.5' },
     { loc: `${SITE_URL}/cookies`,                 lastmod: TODAY,       changefreq: 'yearly',  priority: '0.5' },

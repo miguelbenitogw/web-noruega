@@ -6,8 +6,8 @@ import { IMAGES, img } from '../assets/images'
 import useContent from '../hooks/useContent'
 import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
-import miriamPhoto from '../assets/team/miriam-svendsen.jpg'
-import groPhoto from '../assets/team/gro-anette.jpg'
+const miriamPhoto = IMAGES.contactMiriam
+const groPhoto = IMAGES.contactGro
 
 const resolveContactPhoto = (contact = {}) => {
   if (contact.imageUrl) return contact.imageUrl
@@ -188,6 +188,10 @@ export default function Kontakt() {
                                   ? 'w-40 h-40 rounded-2xl shadow-2xl'
                                   : 'w-12 h-12'
                               }`}
+                              loading="lazy"
+                              decoding="async"
+                              width={48}
+                              height={48}
                             />
                           )
                         ) : (

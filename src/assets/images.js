@@ -50,9 +50,32 @@ export const IMAGES = {
   empresas:      'https://globalworking.net/wp-content/uploads/2024/10/Empresas-con-las-que-trabajamos_Mesa-de-trabajo-1-1024x89.webp',
 }
 
+const SB_RENDER = SB.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/')
+
 /**
- * img() — previously applied Squarespace CDN width param.
- * Now that images are on Supabase public storage (no transform API),
- * this simply returns the URL unchanged.
+ * img(url, width?) — returns the image URL, optionally with Supabase
+ * Image Transform parameters for resizing and quality optimization.
+ *
+ * Only applies transforms to Supabase Storage URLs. Other URLs pass through.
+ * If transforms are disabled on the Supabase plan, the render endpoint
+ * returns a redirect to the original — so this is always safe.
  */
-export const img = (url) => url ?? ''
+export const img = (url, width) => {
+  if (!url) return ''
+  if (!width || !url.startsWith(SB)) return url
+  const path = url.slice(SB.length)
+  return `${SB_RENDER}${path}?width=${width}&quality=75`
+}
+
+/**
+ * srcSet(url, sizes) — generates a srcset string for responsive images.
+ * Only works with Supabase Storage URLs.
+ *
+ * Usage:
+ *   <img src={img(url, 800)} srcSet={srcSet(url, [400, 800, 1200])} sizes="..." />
+ */
+export const srcSet = (url, sizes = [640, 1024, 1400]) => {
+  if (!url || !url.startsWith(SB)) return undefined
+  const path = url.slice(SB.length)
+  return sizes.map(w => `${SB_RENDER}${path}?width=${w}&quality=75 ${w}w`).join(', ')
+}
