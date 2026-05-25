@@ -163,7 +163,7 @@ const setPageSEO = ({
   ensureMeta('property', 'og:title', title)
   ensureMeta('property', 'og:description', description)
   ensureMeta('property', 'og:image', image)
-  ensureMeta('name', 'twitter:card', 'summary_large_image')
+  ensureMeta('name', 'twitter:card', 'summary')
   ensureMeta('name', 'twitter:title', title)
   ensureMeta('name', 'twitter:description', description)
   ensureMeta('name', 'twitter:image', image)

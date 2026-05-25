@@ -14,42 +14,49 @@ const ROUTES = {
     description: 'Se hvordan vi rekrutterer, forbereder og følger opp fagfolk fra Sør-Europa til trygg oppstart i Norge.',
     keywords: 'rekruttering Norge, fagfolk fra Europa, internasjonal rekruttering, arbeidsinnvandring',
     breadcrumbName: 'Rekrutteringsmodell',
+    bodyExtra: '<h2>Slik fungerer rekrutteringsprosessen</h2><p>Global Workings rekrutteringsmodell er bygd opp i fire faser: identifisering av kandidater, språklig og faglig kvalifisering, dokumenthåndtering og autorisasjon, og til slutt tett oppfølging etter oppstart i Norge. Vi samarbeider med universiteter og fagmiljøer i Spania, Portugal og andre søreuropeiske land for å finne kandidater som matcher norske arbeidsgiveres behov. Alle kandidater gjennomgår norskopplæring til minimum B1-nivå før de starter i jobb.</p>',
   },
   '/helse': {
     title: 'Helsesektor | Global Working Norge',
     description: 'Vi forbereder helsepersonell for den norske helsesektoren med språk, faglig oppfølging og strukturert overgang til jobb.',
     keywords: 'helsepersonell Norge, sykepleiere rekruttering, helsesektor bemanning, autorisasjon helsepersonell',
     breadcrumbName: 'Helsesektor',
+    bodyExtra: '<h2>Rekruttering av helsepersonell til Norge</h2><p>Norsk helsevesen trenger kvalifiserte sykepleiere, helsefagarbeidere og spesialistpersonell. Global Working spesialiserer seg på å rekruttere helsepersonell fra Sør-Europa og forberede dem for det norske arbeidsmarkedet. Programmet vårt inkluderer helsenorsk-opplæring, støtte gjennom autorisasjonsprosessen hos Helsedirektoratet, kulturell forberedelse og tett oppfølging det første året i Norge. Vi samarbeider med kommuner, sykehus og private helseinstitusjoner over hele landet.</p>',
   },
   '/nyheter': {
     title: 'Nyheter & artikler | Global Working Norge',
     description: 'Følg siste nytt, artikler og oppdateringer fra Global Working om rekruttering, språk og arbeidsliv i Norge.',
     keywords: 'Global Working nyheter, rekruttering nyheter Norge, arbeidsliv Norge',
     breadcrumbName: 'Nyheter',
+    bodyExtra: '<h2>Siste nytt</h2><ul><li><a href="/nyheter/kandidatportal-lansert">Ny kandidatportal lansert</a></li><li><a href="/nyheter/innkjopsgrense-juli-2026">Nye innkjøpsgrenser fra juli 2026</a></li><li><a href="/nyheter/evaluering-sprakniva">Evaluering av språknivå</a></li><li><a href="/nyheter/sor-fron-integrasjon">Integrering i Sør-Fron</a></li></ul>',
   },
   '/talentportalen': {
     title: 'Talentportalen | Global Working Norge',
     description: 'Se tilgjengelige kandidater og inviter til intervju direkte gjennom vår kandidatportal.',
     keywords: 'kandidatportal, tilgjengelige kandidater Norge, rekrutteringsportal',
     breadcrumbName: 'Talentportalen',
+    bodyExtra: '<h2>Hvordan Talentportalen fungerer</h2><p>Talentportalen gir norske arbeidsgivere direkte tilgang til forhåndsgodkjente kandidater fra Global Workings nettverk. Du kan filtrere etter fagområde, språknivå og tilgjengelighet, lese kandidatprofiler og invitere til intervju — alt på én plattform. Kandidatene er allerede kvalitetssikret gjennom vår rekrutteringsprosess, noe som gjør at du kan gå fra behov til intervju på kort tid.</p>',
   },
   '/om-oss': {
     title: 'Om oss | Global Working Norge',
     description: 'Lær mer om Global Working, teamet vårt og hvordan vi jobber med språk, kvalitet og internasjonal rekruttering.',
     keywords: 'Global Working team, om Global Working, rekrutteringsbyrå Norge',
     breadcrumbName: 'Om oss',
+    bodyExtra: '<h2>Hvem er Global Working?</h2><p>Global Working ble grunnlagt i 2014 med et mål: å bygge bro mellom kvalifiserte fagfolk i Sør-Europa og arbeidsgivere i Norge som trenger kompetanse. Med hovedkontor i Alicante og representasjon i Oslo har vi over 50 ansatte som jobber daglig med rekruttering, språkopplæring og integrering. Vi tror på langvarige ansettelser bygget på grundig forberedelse — både faglig, språklig og kulturelt.</p>',
   },
   '/kontakt': {
     title: 'Kontakt | Global Working Norge',
     description: 'Ta kontakt for spørsmål om rekruttering, samarbeid eller kandidatportalen.',
     keywords: 'kontakt Global Working, rekruttering kontakt, samarbeid Norge',
     breadcrumbName: 'Kontakt',
+    bodyExtra: '<h2>Ta kontakt med oss</h2><p>Har du spørsmål om rekruttering, samarbeid eller kandidatportalen? Vi svarer gjerne. E-post: kontakt@globalworking.no. Telefon: +47 919 00 649. Besøksadresse: Carrer de Periodista Pirula Arderius, 4, 03001 Alicante, Spania.</p>',
   },
   '/spansk-i-alicante': {
     title: 'Spansk i Alicante | Global Working Norge',
     description: 'Bo gratis i Alicante og bli samtaleassistent i et internasjonalt miljø gjennom Spansk i Alicante-programmet.',
     keywords: 'spansk i Alicante, samtaleassistent, språkopphold Spania, bo gratis Alicante',
     breadcrumbName: 'Spansk i Alicante',
+    bodyExtra: '<h2>Hva er Spansk i Alicante?</h2><p>Spansk i Alicante er et unikt program der norske deltakere bor gratis i Alicante og fungerer som samtaleassistenter for kandidater som lærer norsk. Du trenger ingen forkunnskaper i spansk — programmet er for deg som vil oppleve Alicante, bidra i et internasjonalt miljø og hjelpe fagfolk med å bli trygge i norsk. Oppholdet inkluderer fri bolig, sosialt fellesskap og mulighet til å lære spansk på fritiden.</p>',
   },
   '/spansk-i-alicante/hvorfor': {
     title: 'Hvorfor finnes Spansk i Alicante? | Global Working Norge',
@@ -57,6 +64,7 @@ const ROUTES = {
     keywords: 'hvorfor Spansk i Alicante, språkforberedelse fagfolk, Global Working Alicante',
     breadcrumbName: 'Hvorfor Spansk i Alicante',
     parent: { name: 'Spansk i Alicante', path: '/spansk-i-alicante' },
+    bodyExtra: '<h2>Hvorfor samtaleassistenter?</h2><p>Språkopplæring alene er ikke nok for å bli trygg i norsk. Kandidatene våre trenger daglig praksis med ekte norske samtaler. Samtaleassistentprogrammet gir dem akkurat det — naturlige, uformelle samtaler med nordmenn som bor i Alicante. Dette gjør overgangen til norsk arbeidsliv mye enklere.</p>',
   },
   '/spansk-i-alicante/livet-som-student': {
     title: 'Livet som student i Alicante | Global Working Norge',
@@ -64,6 +72,7 @@ const ROUTES = {
     keywords: 'livet som student Alicante, hverdagen i Alicante, helsenorsk, samtaleassistenter, sosialt fellesskap',
     breadcrumbName: 'Livet som student',
     parent: { name: 'Spansk i Alicante', path: '/spansk-i-alicante' },
+    bodyExtra: '<h2>Hverdagen i Alicante</h2><p>Kandidatene våre følger et strukturert program med norskundervisning, helsenorsk, samtalegrupper med norske assistenter og sosialt fellesskap. Dagene er en blanding av klasseromsundervisning, praktiske øvelser og kulturelle aktiviteter. Alicante tilbyr et trygt og sosialt miljø med mildt klima, noe som gjør forberedelsesperioden til en positiv opplevelse.</p>',
   },
   '/personvern': {
     title: 'Personvern | Global Working Norge',
@@ -246,7 +255,7 @@ const injectMeta = (html, pathname, route) => {
 
   // Inject body skeleton — gives crawlers real content (nav, H1, description, footer)
   const h1 = route.title.split(' | ')[0]
-  const body = buildBodySkeleton({ h1, description: route.description, breadcrumbs })
+  const body = buildBodySkeleton({ h1, description: route.description, breadcrumbs, extraContent: route.bodyExtra })
   result = result.replace('<div id="root"></div>', `<div id="root">${body}</div>`)
 
   return result
@@ -357,7 +366,32 @@ const run = async () => {
     generated++
   }
 
-  console.log(`Prerender meta: generated ${generated} HTML files (${Object.keys(ROUTES).length} pages + ${articles.length} articles).`)
+  // Inject body skeleton into the root index.html (homepage)
+  // This file is NOT in ROUTES, so it doesn't go through injectMeta.
+  const homeSkeleton = buildBodySkeleton({
+    h1: 'Rekruttering av helsepersonell og fagfolk til Norge',
+    description: 'Global Working hjelper norske arbeidsgivere med rekruttering av kvalifiserte fagfolk fra Sør-Europa. Språkopplæring, integrering og dokumentert oppfølging fra første kontakt til oppstart.',
+    breadcrumbs: null,
+    extraContent: [
+      '<h2>Våre tjenester</h2>',
+      '<ul>',
+      '<li><a href="/vr-rekrutteringsmodell">Rekrutteringsmodell</a> — Vi identifiserer, kvalifiserer og følger opp fagfolk fra Sør-Europa til trygge ansettelser i Norge.</li>',
+      '<li><a href="/helse">Helsesektor</a> — Spesialisert rekruttering av sykepleiere og helsefagarbeidere med autorisasjonsstøtte og helsenorsk.</li>',
+      '<li><a href="/spansk-i-alicante">Spansk i Alicante</a> — Samtaleassistentprogram der norske deltakere bor gratis og hjelper kandidater med norsk språktrening.</li>',
+      '<li><a href="/talentportalen">Talentportalen</a> — Digital plattform der arbeidsgivere ser tilgjengelige kandidater og inviterer til intervju.</li>',
+      '</ul>',
+      '<h2>Hvorfor Global Working?</h2>',
+      '<p>Siden 2014 har vi hjulpet over 50 norske arbeidsgivere med å rekruttere kvalifiserte fagfolk. Vårt program inkluderer språkopplæring (norsk B1–B2), kulturell forberedelse, dokumenthåndtering og tett oppfølging gjennom hele prosessen — fra første kontakt til oppstart i Norge.</p>',
+      '<h2>Kontakt oss</h2>',
+      '<p>E-post: kontakt@globalworking.no | Telefon: +47 919 00 649</p>',
+      '<p><a href="/kontakt">Ta kontakt for spørsmål om rekruttering og samarbeid</a></p>',
+    ].join(''),
+  })
+  let homeHtml = await readFile(INDEX_PATH, 'utf8')
+  homeHtml = homeHtml.replace('<div id="root"></div>', `<div id="root">${homeSkeleton}</div>`)
+  await writeFile(INDEX_PATH, homeHtml, 'utf8')
+
+  console.log(`Prerender meta: generated ${generated} HTML files (${Object.keys(ROUTES).length} pages + ${articles.length} articles) + homepage skeleton.`)
 }
 
 run().catch((error) => {

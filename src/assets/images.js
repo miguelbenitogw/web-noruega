@@ -2,8 +2,8 @@ const SB = 'https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/co
 
 export const IMAGES = {
   // Logos (kept as static imports — not content-editable)
-  logo:           new URL('./logo-white.png', import.meta.url).href,
-  logoColor:      new URL('./logo-color.jpg', import.meta.url).href,
+  logo:           new URL('./logo-white.webp', import.meta.url).href,
+  logoColor:      new URL('./logo-color.webp', import.meta.url).href,
 
   // Team / people
   teamHero:                 `${SB}/team-hero.jpg`,

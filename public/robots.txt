@@ -12,3 +12,7 @@ User-agent: MJ12bot
 Crawl-delay: 10
 
 Sitemap: https://globalworking.no/sitemap.xml
+
+# AI crawler discovery
+# See https://llmstxt.org for specification
+LLMs-Txt: https://globalworking.no/llms.txt
