@@ -50,32 +50,23 @@ export const IMAGES = {
   empresas:      'https://globalworking.net/wp-content/uploads/2024/10/Empresas-con-las-que-trabajamos_Mesa-de-trabajo-1-1024x89.webp',
 }
 
-const SB_RENDER = SB.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/')
-
 /**
- * img(url, width?) — returns the image URL, optionally with Supabase
- * Image Transform parameters for resizing and quality optimization.
+ * img(url) — returns the image URL as-is.
  *
- * Only applies transforms to Supabase Storage URLs. Other URLs pass through.
- * If transforms are disabled on the Supabase plan, the render endpoint
- * returns a redirect to the original — so this is always safe.
+ * Supabase Image Transforms (render endpoint) require a Pro plan.
+ * Until then, images are served at their original size from Storage.
+ * The width parameter is accepted but ignored — kept for future use.
  */
-export const img = (url, width) => {
+export const img = (url, _width) => {
   if (!url) return ''
-  if (!width || !url.startsWith(SB)) return url
-  const path = url.slice(SB.length)
-  return `${SB_RENDER}${path}?width=${width}&quality=75`
+  return url
 }
 
 /**
- * srcSet(url, sizes) — generates a srcset string for responsive images.
- * Only works with Supabase Storage URLs.
+ * srcSet() — placeholder that returns undefined.
  *
- * Usage:
- *   <img src={img(url, 800)} srcSet={srcSet(url, [400, 800, 1200])} sizes="..." />
+ * Supabase Image Transforms are not available on the current plan (403).
+ * When enabled, this will generate responsive srcset strings.
+ * Components can keep their srcSet={srcSet(...)} calls — they'll be no-ops.
  */
-export const srcSet = (url, sizes = [640, 1024, 1400]) => {
-  if (!url || !url.startsWith(SB)) return undefined
-  const path = url.slice(SB.length)
-  return sizes.map(w => `${SB_RENDER}${path}?width=${w}&quality=75 ${w}w`).join(', ')
-}
+export const srcSet = (_url, _sizes) => undefined
