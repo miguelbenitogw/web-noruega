@@ -15,7 +15,7 @@
     "test:news-assets": "node --experimental-specifier-resolution=node src/lib/__tests__/newsAssetResolution.test.mjs",
     "prebuild": "node scripts/optimize-images.mjs && node scripts/generate-sitemap.mjs",
     "build": "vite build",
-    "postbuild": "node scripts/prerender-meta.mjs && node scripts/prerender-body.mjs",
+    "postbuild": "node scripts/prerender-meta.mjs",
     "check": "npm test && npm run lint",
     "lint": "eslint .",
     "preview": "vite preview"

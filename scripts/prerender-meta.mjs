@@ -98,6 +98,47 @@ const parseFrontmatter = (raw) => {
 
 const escapeHtml = (str) => str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
+// ── Navigation links for body skeleton ──────────────────────────────
+const NAV_LINKS = [
+  { href: '/', label: 'Hjem' },
+  { href: '/vr-rekrutteringsmodell', label: 'Rekrutteringsmodell' },
+  { href: '/helse', label: 'Helsesektor' },
+  { href: '/spansk-i-alicante', label: 'Spansk i Alicante' },
+  { href: '/spansk-i-alicante/livet-som-student', label: 'Livet som student' },
+  { href: '/talentportalen', label: 'Talentportalen' },
+  { href: '/om-oss', label: 'Om oss' },
+  { href: '/nyheter', label: 'Nyheter' },
+  { href: '/kontakt', label: 'Kontakt' },
+]
+
+const FOOTER_LINKS = [
+  { href: '/vr-rekrutteringsmodell', label: 'Rekrutteringsmodell' },
+  { href: '/helse', label: 'Helsesektor' },
+  { href: '/spansk-i-alicante', label: 'Spansk i Alicante' },
+  { href: '/talentportalen', label: 'Talentportalen' },
+  { href: '/om-oss', label: 'Om oss' },
+  { href: '/kontakt', label: 'Kontakt' },
+  { href: '/nyheter', label: 'Nyheter' },
+  { href: '/personvern', label: 'Personvern' },
+  { href: '/vilkar', label: 'Vilkår' },
+  { href: '/cookies', label: 'Informasjonskapsler' },
+]
+
+/**
+ * Build a static body skeleton with real nav, heading, description, and footer.
+ * React hydration will replace this with the full interactive UI, but crawlers
+ * that don't execute JS will see meaningful content and navigation.
+ */
+const buildBodySkeleton = ({ h1, description, breadcrumbs, extraContent }) => {
+  const nav = NAV_LINKS.map(l => `<a href="${l.href}">${l.label}</a>`).join(' ')
+  const crumbs = breadcrumbs
+    ? `<nav aria-label="Brødsmuler">${breadcrumbs.map((b, i) => i < breadcrumbs.length - 1 ? `<a href="${b.url}">${b.name}</a> / ` : `<span>${b.name}</span>`).join('')}</nav>`
+    : ''
+  const footer = FOOTER_LINKS.map(l => `<a href="${l.href}">${l.label}</a>`).join(' ')
+
+  return `<header><a href="/" aria-label="Global Working Norge – hjem">Global Working Norge</a><nav aria-label="Hovedmeny">${nav}</nav></header><main id="main-content">${crumbs}<h1>${h1}</h1><p>${description}</p>${extraContent || ''}</main><footer><p>© ${new Date().getFullYear()} Global Working Norge AS</p><p>E-post: kontakt@globalworking.no | Telefon: +47 919 00 649</p><nav aria-label="Bunntekst">${footer}</nav></footer>`
+}
+
 const buildNewsArticleSchema = (article) => JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'NewsArticle',
@@ -203,6 +244,11 @@ const injectMeta = (html, pathname, route) => {
     `${schemas}\n    <!-- Analytics is initialized from app code only after cookie consent -->`,
   )
 
+  // Inject body skeleton — gives crawlers real content (nav, H1, description, footer)
+  const h1 = route.title.split(' | ')[0]
+  const body = buildBodySkeleton({ h1, description: route.description, breadcrumbs })
+  result = result.replace('<div id="root"></div>', `<div id="root">${body}</div>`)
+
   return result
 }
 
@@ -245,6 +291,33 @@ const injectArticleMeta = (html, article) => {
     `${schemas}\n    <!-- Analytics is initialized from app code only after cookie consent -->`,
   )
 
+  // Inject body skeleton for article
+  const breadcrumbsList = [
+    { name: 'Forside', url: SITE_URL },
+    { name: 'Nyheter', url: `${SITE_URL}/nyheter` },
+    { name: article.title, url },
+  ]
+  const dateLabel = article.date ? `<time>${article.date}</time>` : ''
+  const excerptHtml = article.excerpt ? `<p><em>${escapeHtml(article.excerpt)}</em></p>` : ''
+  const bodyText = article.body || ''
+  // Extract first ~500 chars of markdown body as plain text for crawlers
+  const plainBody = bodyText
+    .replace(/^---[\s\S]*?---\n?/, '')
+    .replace(/#{1,6}\s+/g, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[*_~`]/g, '')
+    .trim()
+    .slice(0, 800)
+  const bodyPreview = plainBody ? `<p>${escapeHtml(plainBody)}</p>` : ''
+  const body = buildBodySkeleton({
+    h1: article.title,
+    description: article.excerpt || article.description,
+    breadcrumbs: breadcrumbsList,
+    extraContent: `${dateLabel}${excerptHtml}${bodyPreview}`,
+  })
+  result = result.replace('<div id="root"></div>', `<div id="root">${body}</div>`)
+
   return result
 }
 
@@ -255,6 +328,9 @@ const loadArticles = async () => {
     const raw = await readFile(path.join(NEWS_DIR, file), 'utf8')
     const meta = parseFrontmatter(raw)
     if ((meta.status || 'published') !== 'published' || !meta.slug) continue
+    // Extract body (everything after frontmatter) for skeleton prerender
+    const bodyMatch = raw.match(/^---[\s\S]*?---\n?([\s\S]*)/)
+    meta.body = bodyMatch ? bodyMatch[1] : ''
     articles.push(meta)
   }
   return articles
