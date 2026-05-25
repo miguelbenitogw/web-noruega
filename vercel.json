@@ -38,6 +38,12 @@
       "source": "/journal/:slug",
       "destination": "/nyheter/:slug",
       "permanent": true
+    },
+    {
+      "source": "/:path(.*)",
+      "has": [{ "type": "host", "value": "www.globalworking.no" }],
+      "destination": "https://globalworking.no/:path",
+      "permanent": true
     }
   ],
   "rewrites": [

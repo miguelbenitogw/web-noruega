@@ -1,5 +1,5 @@
 const SITE_URL = 'https://globalworking.no'
-const DEFAULT_IMAGE = 'https://globalworking.net/wp-content/uploads/2025/12/cropped-GlobalWorking-Logotipo-Principal-vertical-cuadrado-scaled-1.jpg'
+const DEFAULT_IMAGE = 'https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/og-image.jpg'
 const SITE_NAME = 'Global Working Norge'
 
 const DEFAULT_SEO = {
