@@ -3,6 +3,7 @@ const BLOCKED_PROTOCOL_RE = /^(?:javascript|data|vbscript)\s*:/i
 const SAFE_FRAGMENT_RE = /^#[A-Za-z0-9._:%-]+$/
 const SAFE_ROOT_FRAGMENT_RE = /^\/#?[A-Za-z0-9._:%-]+$/
 const SAFE_PATH_RE = /^\/(?!\/)[A-Za-z0-9._~%-]+(?:\/[A-Za-z0-9._~%-]+)*(?:#[A-Za-z0-9._:%-]+)?$/
+const SAFE_EXTERNAL_RE = /^https:\/\/[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z]{2,})+\//i
 
 const isValidMarkdownLinkText = (text) => typeof text === 'string' && text.length > 0
 
@@ -24,6 +25,18 @@ export function isSafeInlineLinkTarget(target) {
   if (target.startsWith('//')) return false
 
   return SAFE_FRAGMENT_RE.test(target) || SAFE_ROOT_FRAGMENT_RE.test(target) || SAFE_PATH_RE.test(target)
+}
+
+/**
+ * Like isSafeInlineLinkTarget but also accepts external HTTPS links.
+ * Used in article markdown bodies where authors need to link to external resources.
+ */
+export function isSafeArticleLinkTarget(target) {
+  if (isSafeInlineLinkTarget(target)) return true
+  if (typeof target !== 'string') return false
+  if (target.trim() !== target) return false
+  if (!target || hasControlCharacters(target)) return false
+  return SAFE_EXTERNAL_RE.test(target)
 }
 
 function parseInlineLinkCandidateAtIndex(source, startIndex) {
@@ -69,10 +82,11 @@ function parseInlineLinkCandidateAtIndex(source, startIndex) {
   }
 }
 
-function parseInlineLinkAtIndex(source, startIndex) {
+function parseInlineLinkAtIndex(source, startIndex, { allowExternal = false } = {}) {
   const candidate = parseInlineLinkCandidateAtIndex(source, startIndex)
   if (!candidate) return null
-  if (!isSafeInlineLinkTarget(candidate.href)) return null
+  const isValid = allowExternal ? isSafeArticleLinkTarget(candidate.href) : isSafeInlineLinkTarget(candidate.href)
+  if (!isValid) return null
   return candidate
 }
 
@@ -104,7 +118,7 @@ export function sanitizeInlineLinkMarkdown(value, isAllowedDestination = () => t
   return sanitized
 }
 
-export function parseInlineLinkTokens(value) {
+export function parseInlineLinkTokens(value, { allowExternal = false } = {}) {
   const source = value == null ? '' : String(value)
   const tokens = []
   let buffer = ''
@@ -112,7 +126,7 @@ export function parseInlineLinkTokens(value) {
 
   while (index < source.length) {
     if (source[index] === '[') {
-      const parsedLink = parseInlineLinkAtIndex(source, index)
+      const parsedLink = parseInlineLinkAtIndex(source, index, { allowExternal })
 
       if (parsedLink) {
         if (buffer) {

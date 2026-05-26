@@ -330,7 +330,7 @@ const injectArticleMeta = (html, article) => {
   return result
 }
 
-const loadArticles = async () => {
+const loadLocalArticles = async () => {
   const files = await readdir(NEWS_DIR)
   const articles = []
   for (const file of files.filter(f => f.endsWith('.md') && !f.startsWith('_'))) {
@@ -343,6 +343,54 @@ const loadArticles = async () => {
     articles.push(meta)
   }
   return articles
+}
+
+const loadRemoteArticles = async () => {
+  const url = process.env.VITE_SUPABASE_URL?.trim()
+  const key = process.env.VITE_SUPABASE_ANON_KEY?.trim()
+  if (!url || !key) return []
+
+  try {
+    const endpoint = `${url}/rest/v1/news?status=eq.published&select=slug,title,excerpt,body,date,tag,author,coverImage,seoTitle,seoDescription,publishAt&order=publishAt.desc`
+    const res = await fetch(endpoint, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+    })
+    if (!res.ok) {
+      console.warn(`  ⚠ Supabase fetch: ${res.status} ${res.statusText}`)
+      return []
+    }
+    const rows = await res.json()
+    return rows.map((row) => ({
+      slug: row.slug,
+      title: row.seoTitle || row.title,
+      excerpt: row.excerpt || '',
+      description: row.seoDescription || row.excerpt || '',
+      date: row.date || (row.publishAt ? row.publishAt.slice(0, 10) : ''),
+      tag: row.tag || 'Nyhet',
+      author: row.author || 'Global Working',
+      coverImage: row.coverImage || '',
+      body: row.body || '',
+      publishAt: row.publishAt || '',
+      seoTitle: row.seoTitle || '',
+      seoDescription: row.seoDescription || '',
+    }))
+  } catch (error) {
+    console.warn(`  ⚠ Supabase fetch failed: ${error.message}`)
+    return []
+  }
+}
+
+const loadArticles = async () => {
+  const local = await loadLocalArticles()
+  const remote = await loadRemoteArticles()
+
+  // Merge: remote articles take priority over local (by slug)
+  const bySlug = new Map()
+  for (const article of local) bySlug.set(article.slug, article)
+  for (const article of remote) bySlug.set(article.slug, article)
+
+  console.log(`  Articles: ${local.length} local, ${remote.length} remote, ${bySlug.size} total`)
+  return [...bySlug.values()]
 }
 
 const run = async () => {

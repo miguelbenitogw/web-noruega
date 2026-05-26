@@ -5,12 +5,19 @@ export const ARTICLE_BODY_MEASURE_CLASS = 'max-w-[68ch] text-[1.0625rem] leading
 
 const LINK_CLASS = 'text-primary-600 underline decoration-primary-200 underline-offset-2 hover:text-primary-700 transition-colors'
 
+const isExternal = (href) => href.startsWith('https://')
+
 const renderInline = (text, baseKey) => {
-  const tokens = parseInlineLinkTokens(text)
+  const tokens = parseInlineLinkTokens(text, { allowExternal: true })
   if (tokens.length === 1 && tokens[0].type === 'text') return text
   return tokens.map((token, i) =>
     token.type === 'link'
-      ? <a key={`${baseKey}-l${i}`} href={token.href} className={LINK_CLASS}>{token.value}</a>
+      ? <a
+          key={`${baseKey}-l${i}`}
+          href={token.href}
+          className={LINK_CLASS}
+          {...(isExternal(token.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >{token.value}</a>
       : token.value
   )
 }

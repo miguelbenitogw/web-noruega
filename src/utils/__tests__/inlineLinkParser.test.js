@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import process from 'node:process'
 
-import { isSafeInlineLinkTarget, parseInlineLinkTokens, sanitizeInlineLinkMarkdown } from '../inlineLinkParser.js'
+import { isSafeInlineLinkTarget, isSafeArticleLinkTarget, parseInlineLinkTokens, sanitizeInlineLinkMarkdown } from '../inlineLinkParser.js'
 
 const cases = []
 
@@ -114,6 +114,51 @@ testCase('parseInlineLinkTokens keeps nullish input safe and rejects whitespace 
   assert.deepEqual(parseInlineLinkTokens('Texto roto: [malo](#faq 2) y [otro](/equipo#bio\n2).'), [
     { type: 'text', value: 'Texto roto: [malo](#faq 2) y [otro](/equipo#bio\n2).' },
   ])
+})
+
+testCase('isSafeArticleLinkTarget accepts HTTPS external links but rejects unsafe protocols', () => {
+  // External HTTPS links accepted
+  assert.equal(isSafeArticleLinkTarget('https://example.com/page'), true)
+  assert.equal(isSafeArticleLinkTarget('https://www.nrk.no/nyheter'), true)
+  assert.equal(isSafeArticleLinkTarget('https://helsedirektoratet.no/autorisasjon'), true)
+
+  // Internal links still accepted
+  assert.equal(isSafeArticleLinkTarget('/nyheter'), true)
+  assert.equal(isSafeArticleLinkTarget('#kontakt'), true)
+
+  // Dangerous protocols still rejected
+  assert.equal(isSafeArticleLinkTarget('javascript:alert(1)'), false)
+  assert.equal(isSafeArticleLinkTarget('data:text/html;base64,abc'), false)
+  assert.equal(isSafeArticleLinkTarget('http://insecure.example.com/page'), false)
+  assert.equal(isSafeArticleLinkTarget('//protocol-relative.com'), false)
+
+  // No domain (bare https://) rejected
+  assert.equal(isSafeArticleLinkTarget('https://'), false)
+})
+
+testCase('parseInlineLinkTokens with allowExternal parses HTTPS links in article markdown', () => {
+  assert.deepEqual(
+    parseInlineLinkTokens(
+      'Les mer hos [Helsedirektoratet](https://www.helsedirektoratet.no/autorisasjon) og [vår side](/helse).',
+      { allowExternal: true },
+    ),
+    [
+      { type: 'text', value: 'Les mer hos ' },
+      { type: 'link', value: 'Helsedirektoratet', href: 'https://www.helsedirektoratet.no/autorisasjon' },
+      { type: 'text', value: ' og ' },
+      { type: 'link', value: 'vår side', href: '/helse' },
+      { type: 'text', value: '.' },
+    ],
+  )
+})
+
+testCase('parseInlineLinkTokens without allowExternal still rejects HTTPS links (backward compat)', () => {
+  assert.deepEqual(
+    parseInlineLinkTokens('Se [ekstern](https://example.com/page) her.'),
+    [
+      { type: 'text', value: 'Se [ekstern](https://example.com/page) her.' },
+    ],
+  )
 })
 
 testCase('sanitizeInlineLinkMarkdown keeps catalogued destinations and degrades uncatalogued ones to plain text', () => {
