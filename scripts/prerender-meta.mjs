@@ -74,6 +74,14 @@ const ROUTES = {
     parent: { name: 'Spansk i Alicante', path: '/spansk-i-alicante' },
     bodyExtra: '<h2>Hverdagen i Alicante</h2><p>Kandidatene våre følger et strukturert program med norskundervisning, helsenorsk, samtalegrupper med norske assistenter og sosialt fellesskap. Dagene er en blanding av klasseromsundervisning, praktiske øvelser og kulturelle aktiviteter. Alicante tilbyr et trygt og sosialt miljø med mildt klima, noe som gjør forberedelsesperioden til en positiv opplevelse.</p>',
   },
+  '/spansk-i-alicante/helsenorsk': {
+    title: 'Helsenorsk – Yrkesrettet norsk for helsesektoren | Global Working Norge',
+    description: 'Helsenorsk er Global Workings spesialiserte språkprogram for sykepleiere og helsefagarbeidere. 650 timer yrkesrettet norsk tilpasset norsk helsetjeneste.',
+    keywords: 'helsenorsk, norsk for helsepersonell, yrkesrettet norsk, sykepleier norskopplæring, helsenorsk Alicante',
+    breadcrumbName: 'Helsenorsk',
+    parent: { name: 'Spansk i Alicante', path: '/spansk-i-alicante' },
+    bodyExtra: '<h2>Helsenorsk: yrkesrettet norsk for helsesektoren</h2><p>Helsenorsk er et sentralt spor i Global Workings opplæringsprogram. Gjennom 650 timer med yrkesrettet norskopplæring bygger sykepleiere og helsefagarbeidere opp et fagspråk knyttet til situasjoner de vil møte i norsk helsetjeneste. Programmet inkluderer simuleringer av realistiske arbeidssituasjoner, og undervises av spanske sykepleiere som selv har jobbet i Norge.</p>',
+  },
   '/personvern': {
     title: 'Personvern | Global Working Norge',
     description: 'Les hvordan Global Working Norge behandler personopplysninger, formål, lagringstid og dine rettigheter.',

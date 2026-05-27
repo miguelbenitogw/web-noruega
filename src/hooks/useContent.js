@@ -10,21 +10,30 @@ import { loadPublishedPageForPath, resolveRouteContext } from '../lib/contentRun
 // Persist the last known remote content so the first render already has the
 // correct data and avoids the visible image-swap flash on every page load.
 
-const SITE_CACHE_KEY = 'gw-remote-content-v1'
-const PAGE_CACHE_PREFIX = 'gw-page-content-v1:'
+const SITE_CACHE_KEY = 'gw-remote-content-v2'
+const PAGE_CACHE_PREFIX = 'gw-page-content-v2:'
 
-const readSiteCache = () => {
-  try { return JSON.parse(localStorage.getItem(SITE_CACHE_KEY)) } catch { return null }
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours
+
+const readCacheEntry = (key) => {
+  try {
+    const raw = JSON.parse(localStorage.getItem(key))
+    if (!raw || !raw._ts) return null
+    if (Date.now() - raw._ts > CACHE_TTL_MS) {
+      localStorage.removeItem(key)
+      return null
+    }
+    return raw.data
+  } catch { return null }
 }
-const writeSiteCache = (content) => {
-  try { localStorage.setItem(SITE_CACHE_KEY, JSON.stringify(content)) } catch {}
+const writeCacheEntry = (key, data) => {
+  try { localStorage.setItem(key, JSON.stringify({ _ts: Date.now(), data })) } catch {}
 }
-const readPageCache = (pathname) => {
-  try { return JSON.parse(localStorage.getItem(PAGE_CACHE_PREFIX + pathname)) } catch { return null }
-}
-const writePageCache = (pathname, content) => {
-  try { localStorage.setItem(PAGE_CACHE_PREFIX + pathname, JSON.stringify(content)) } catch {}
-}
+
+const readSiteCache = () => readCacheEntry(SITE_CACHE_KEY)
+const writeSiteCache = (content) => writeCacheEntry(SITE_CACHE_KEY, content)
+const readPageCache = (pathname) => readCacheEntry(PAGE_CACHE_PREFIX + pathname)
+const writePageCache = (pathname, content) => writeCacheEntry(PAGE_CACHE_PREFIX + pathname, content)
 
 const currentPathname = () => (typeof window !== 'undefined' ? window.location.pathname : '/')
 

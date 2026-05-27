@@ -86,6 +86,15 @@ const SECTION_SEO = {
     parentSection: 'spansk-i-alicante',
     keywords: 'livet som student Alicante, hverdagen i Alicante, helsenorsk, samtaleassistenter, sosialt fellesskap',
   },
+  'spansk-i-alicante-helsenorsk': {
+    title: 'Helsenorsk – Yrkesrettet norsk for helsesektoren | Global Working Norge',
+    description:
+      'Helsenorsk er Global Workings spesialiserte språkprogram for sykepleiere og helsefagarbeidere. 650 timer yrkesrettet norsk tilpasset norsk helsetjeneste.',
+    pathname: '/spansk-i-alicante/helsenorsk',
+    breadcrumbName: 'Helsenorsk',
+    parentSection: 'spansk-i-alicante',
+    keywords: 'helsenorsk, norsk for helsepersonell, yrkesrettet norsk, sykepleier norskopplæring, helsenorsk Alicante',
+  },
   personvern: {
     title: 'Personvern | Global Working Norge',
     description:

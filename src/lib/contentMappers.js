@@ -20,6 +20,9 @@ export const deepMergeContent = (defaults, content) => {
 
       const defaultValue = defaults[key]
 
+      // Prevent empty-string remote overrides from blanking out real default content
+      if (value === '' && typeof defaultValue === 'string' && defaultValue.length > 0) return
+
       if (Array.isArray(value)) {
         merged[key] = cloneValue(value)
         return
