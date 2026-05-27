@@ -86,6 +86,12 @@ export default function OmOss() {
                   value={c.blockquote.author}
                   className="inline"
                 /></footer>
+                <a
+                  href="/nyheter/pablo-intervju"
+                  className="mt-3 inline-block text-primary-600 font-semibold text-sm hover:text-primary-700 transition-colors"
+                >
+                  Les hele intervjuet med Pablo her →
+                </a>
               </blockquote>
             )}
 

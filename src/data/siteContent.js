@@ -523,6 +523,7 @@ const siteContent = {
     ],
     social: [
       { label: 'LinkedIn', href: 'https://www.linkedin.com/company/globalworking-norge' },
+      { label: 'Instagram', href: 'https://www.instagram.com/globalworkingnorge' },
       { label: 'YouTube', href: 'https://www.youtube.com/@GlobalWorkingNorge/featured' },
     ],
     links: {

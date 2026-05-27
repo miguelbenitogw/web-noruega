@@ -171,6 +171,29 @@ export default function OmOssPage() {
         </div>
       </section>
 
+      {/* YouTube Video Section */}
+      <section className="py-16 lg:py-20 bg-white">
+        <div className="container-xl flex justify-center">
+          <AnimateIn>
+            <div className="text-center mb-8">
+              <h2 className="font-heading text-2xl lg:text-3xl font-bold text-ink">
+                {teamSection.videoHeading || 'Møt teamet i Global Working'}
+              </h2>
+            </div>
+            <div className="relative rounded-2xl overflow-hidden shadow-lg mx-auto" style={{ width: 'min(360px, 100%)', aspectRatio: '9/16' }}>
+              <iframe
+                src="https://www.youtube.com/embed/KC5OgaAj_VM"
+                title="Møt teamet i Global Working"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                loading="lazy"
+                className="absolute inset-0 w-full h-full"
+              />
+            </div>
+          </AnimateIn>
+        </div>
+      </section>
+
       {/* Offices Section */}
       <section className="py-24 lg:py-32 bg-white">
         <div className="container-xl">
