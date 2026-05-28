@@ -149,7 +149,7 @@ export default function Navbar() {
           </a>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-1" aria-label="Primær navigasjon">
+          <nav className="hidden lg:flex items-center gap-0" aria-label="Primær navigasjon">
             {navLinks.map((link, index) => {
               // Dropdown
               if (link.children?.length) {
@@ -199,7 +199,7 @@ export default function Navbar() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className={`relative px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  className={`relative px-2.5 py-2 rounded-md text-[13px] font-medium transition-colors duration-200 ${
                     scrolled
                       ? active
                         ? 'text-primary-700 font-semibold'
