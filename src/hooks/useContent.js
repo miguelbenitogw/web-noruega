@@ -3,8 +3,32 @@ import { readContentOverrides, sanitizeContentOverrides, CONTENT_OVERRIDE_EVENT 
 import { fetchPublishedContentSnapshot } from '../lib/contentRemote'
 import { getContentLocale, shouldUseSupabaseContent } from '../lib/supabaseClient'
 import defaultContent from '../data/siteContent'
-import { deepMergeContent } from '../lib/contentMappers.js'
+import { deepMergeContent, isPlainObject } from '../lib/contentMappers.js'
 import { loadPublishedPageForPath, resolveRouteContext } from '../lib/contentRuntime.js'
+
+// ─── Stale snapshot guard ─────────────────────────────────────────────────────
+// Removes top-level content sections from a remote snapshot where the section
+// has far fewer fields than the current local defaults — a sign that the snapshot
+// was published from an older version of the page and its overrides are outdated.
+// Threshold: remote section must have at least 50% as many fields as local default
+// (only checked when the local section has 8+ fields, to avoid small utility sections).
+const stripStaleSections = (remoteContent) => {
+  if (!isPlainObject(remoteContent)) return remoteContent
+  const cleaned = { ...remoteContent }
+  Object.keys(cleaned).forEach((key) => {
+    const remoteSection = cleaned[key]
+    const localSection = defaultContent[key]
+    if (isPlainObject(remoteSection) && isPlainObject(localSection)) {
+      const remoteKeys = Object.keys(remoteSection).length
+      const localKeys = Object.keys(localSection).length
+      if (localKeys >= 8 && remoteKeys < localKeys * 0.5) {
+        delete cleaned[key]
+      }
+    }
+  })
+  return cleaned
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 // ─── localStorage cache helpers ──────────────────────────────────────────────
 // Persist the last known remote content so the first render already has the
@@ -48,7 +72,10 @@ export default function useContent(section) {
   })
 
   // Initialise with cached remote content → zero flash on subsequent visits
-  const [remoteSiteContent, setRemoteSiteContent] = useState(() => readSiteCache())
+  const [remoteSiteContent, setRemoteSiteContent] = useState(() => {
+    const cached = readSiteCache()
+    return cached ? stripStaleSections(cached) : null
+  })
 
   const [remotePageState, setRemotePageState] = useState(() => {
     const cached = readPageCache(pathname)
@@ -76,7 +103,8 @@ export default function useContent(section) {
       fetchPublishedContentSnapshot(locale)
         .then((snapshot) => {
           if (cancelled) return
-          const content = snapshot?.content || null
+          const raw = snapshot?.content || null
+          const content = raw ? stripStaleSections(raw) : null
           setRemoteSiteContent(content)
           if (content) writeSiteCache(content)
         })
