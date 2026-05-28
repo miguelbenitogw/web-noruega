@@ -113,7 +113,7 @@ function DropdownMenu({ link, scrolled, index, navLinks, currentPath }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
+  const [scrolled, setScrolled] = useState(() => typeof window !== 'undefined' && window.scrollY > 60)
   const [menuOpen, setMenuOpen] = useState(false)
   const [mobileOpenDropdown, setMobileOpenDropdown] = useState(null)
   const c = useContent('navbar')
