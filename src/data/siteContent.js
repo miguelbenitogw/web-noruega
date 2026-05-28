@@ -353,6 +353,7 @@ const siteContent = {
     label: 'Vårt team',
     heading: 'Møt teamet i Global Working',
     description: 'Vårt flerfaglige team av psykologer, språklærere og rekrutteringsspesialister sikrer en helhetlig prosess – fra utvelgelse og opplæring til oppfølging i Norge.',
+    videoHeading: 'Bli med rundt på kontoret vårt i Alicante',
     members: [
       { initials: 'PS', name: 'Pablo Santamarina', role: 'CEO & Grunnlegger', hasImage: true, imageUrl: IMAGES.ceoPhoto, imageAlt: 'Pablo Santamarina' },
       { initials: 'MS', name: 'Miriam Svendsen', role: 'Rekrutteringsansvarlig', hasImage: false, imageUrl: IMAGES.contactMiriam, imageAlt: 'Miriam Svendsen' },
