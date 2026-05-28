@@ -71,7 +71,7 @@ export default function HelsenorskPage() {
               <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
                 <EditableImage
                   path="helsenorsk.heroImageUrl"
-                  src={img(page.heroImageUrl || IMAGES.spanskAlicantePromenade)}
+                  src={img(page.heroImageUrl || IMAGES.enfermeria)}
                   alt={page.heroImageAlt || 'Helsenorsk undervisning'}
                   className="w-full h-[360px] lg:h-[460px] object-cover"
                 />
@@ -104,6 +104,13 @@ export default function HelsenorskPage() {
                 path="helsenorsk.introP2"
                 value={page.introP2}
                 multiline
+                className="text-gray-600 text-lg leading-relaxed mb-4"
+              />
+              <EditableText
+                as="p"
+                path="helsenorsk.introP3"
+                value={page.introP3}
+                multiline
                 className="text-gray-600 text-lg leading-relaxed"
               />
             </AnimateIn>
@@ -127,13 +134,35 @@ export default function HelsenorskPage() {
                 path="helsenorsk.praksisP1"
                 value={page.praksisP1}
                 multiline
-                className="text-gray-600 leading-relaxed mb-6"
+                className="text-gray-600 leading-relaxed mb-4"
               />
-              <BulletList items={page.praksisItems || []} basePath="helsenorsk.praksisItems" />
               <EditableText
                 as="p"
                 path="helsenorsk.praksisP2"
                 value={page.praksisP2}
+                multiline
+                className="text-gray-600 leading-relaxed mb-4"
+              />
+              <EditableText
+                as="p"
+                path="helsenorsk.praksisP3"
+                value={page.praksisP3}
+                multiline
+                className="text-gray-600 leading-relaxed mb-4"
+              />
+              {page.praksisListIntro && (
+                <EditableText
+                  as="p"
+                  path="helsenorsk.praksisListIntro"
+                  value={page.praksisListIntro}
+                  className="text-gray-600 leading-relaxed mb-3"
+                />
+              )}
+              <BulletList items={page.praksisItems || []} basePath="helsenorsk.praksisItems" />
+              <EditableText
+                as="p"
+                path="helsenorsk.praksisP4"
+                value={page.praksisP4}
                 multiline
                 className="text-gray-600 leading-relaxed mt-6"
               />
@@ -165,13 +194,6 @@ export default function HelsenorskPage() {
                 path="helsenorsk.situasjonerP2"
                 value={page.situasjonerP2}
                 multiline
-                className="text-gray-600 leading-relaxed mb-4"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.situasjonerP3"
-                value={page.situasjonerP3}
-                multiline
                 className="text-gray-600 leading-relaxed"
               />
             </AnimateIn>
@@ -180,7 +202,7 @@ export default function HelsenorskPage() {
               <div className="rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg bg-white">
                 <EditableImage
                   path="helsenorsk.situasjonerImageUrl"
-                  src={img(page.situasjonerImageUrl || IMAGES.spanskAlicantePromenade)}
+                  src={img(page.situasjonerImageUrl || IMAGES.helseHealthTeam)}
                   alt={page.situasjonerImageAlt || 'Simulering av helsesituasjoner'}
                   className="w-full h-[360px] object-cover"
                   loading="lazy"
@@ -214,13 +236,6 @@ export default function HelsenorskPage() {
                 path="helsenorsk.undervisereP2"
                 value={page.undervisereP2}
                 multiline
-                className="text-gray-600 leading-relaxed mb-4"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.undervisereP3"
-                value={page.undervisereP3}
-                multiline
                 className="text-gray-600 leading-relaxed"
               />
             </AnimateIn>
@@ -251,15 +266,7 @@ export default function HelsenorskPage() {
                 path="helsenorsk.grunnlagP2"
                 value={page.grunnlagP2}
                 multiline
-                className="text-gray-600 leading-relaxed mb-6"
-              />
-              <BulletList items={page.grunnlagItems || []} basePath="helsenorsk.grunnlagItems" />
-              <EditableText
-                as="p"
-                path="helsenorsk.grunnlagP3"
-                value={page.grunnlagP3}
-                multiline
-                className="text-gray-600 leading-relaxed mt-6"
+                className="text-gray-600 leading-relaxed"
               />
             </AnimateIn>
           </div>
@@ -268,8 +275,8 @@ export default function HelsenorskPage() {
             <div className="mt-12 max-w-4xl mx-auto rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg">
               <EditableImage
                 path="helsenorsk.grunnlagImageUrl"
-                src={img(page.grunnlagImageUrl || IMAGES.spanskAlicantePromenade)}
-                alt={page.grunnlagImageAlt || 'Helsenorsk undervisningsmateriell'}
+                src={img(page.grunnlagImageUrl || IMAGES.claseNoruego)}
+                alt={page.grunnlagImageAlt || 'Helsenorsk undervisning og opplæring'}
                 className="w-full h-[360px] object-cover"
                 loading="lazy"
               />
