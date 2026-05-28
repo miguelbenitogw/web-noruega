@@ -547,9 +547,15 @@ const siteContent = {
     links: [
       { label: 'Vår rekrutteringsmodell', href: '/vr-rekrutteringsmodell' },
       { label: 'Helsesektor', href: '/helse' },
-      { label: 'Spansk i Alicante', href: '/spansk-i-alicante' },
-      { label: 'Livet som student', href: '/spansk-i-alicante/livet-som-student' },
-      { label: 'Helsenorsk', href: '/spansk-i-alicante/helsenorsk' },
+      {
+        label: 'Spansk i Alicante',
+        href: '/spansk-i-alicante',
+        children: [
+          { label: 'Om programmet', href: '/spansk-i-alicante' },
+          { label: 'Livet som student', href: '/spansk-i-alicante/livet-som-student' },
+          { label: 'Helsenorsk', href: '/spansk-i-alicante/helsenorsk' },
+        ],
+      },
       { label: 'Nyheter og Artikler', href: '/nyheter' },
       { label: 'Talentportalen', href: '/talentportalen' },
       { label: 'Om oss', href: '/om-oss' },
