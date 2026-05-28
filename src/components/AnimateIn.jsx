@@ -22,7 +22,7 @@ export default function AnimateIn({ children, variant = 'fadeUp', delay = 0, cla
   return (
     <Component
       ref={ref}
-      className={`transition-all duration-700 ease-out ${isInView ? v.visible : v.hidden} ${className}`}
+      className={`transition-all duration-500 ease-out ${isInView ? v.visible : v.hidden} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}

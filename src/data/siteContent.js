@@ -559,7 +559,7 @@ const siteContent = {
       { label: 'Nyheter og Artikler', href: '/nyheter' },
       { label: 'Talentportalen', href: '/talentportalen' },
       { label: 'Om oss', href: '/om-oss' },
-      { label: 'Kontakt', href: '/kontakt' },
+      { label: 'Kontakt', href: '/kontakt', cta: true },
     ],
     ctaLabel: 'Kom i gang',
   },
