@@ -7,21 +7,40 @@ import { deepMergeContent, isPlainObject } from '../lib/contentMappers.js'
 import { loadPublishedPageForPath, resolveRouteContext } from '../lib/contentRuntime.js'
 
 // ─── Stale snapshot guard ─────────────────────────────────────────────────────
-// Removes top-level content sections from a remote snapshot where the section
-// has far fewer fields than the current local defaults — a sign that the snapshot
-// was published from an older version of the page and its overrides are outdated.
-// Threshold: remote section must have at least 50% as many fields as local default
-// (only checked when the local section has 8+ fields, to avoid small utility sections).
+// Removes top-level content sections from a remote snapshot that look outdated
+// compared to the current local defaults. Two independent checks:
+//
+//   Check 1 — field-count ratio:  remote has <50% of local fields (major version mismatch)
+//             (only applied to sections with 8+ local fields to skip tiny utility objects)
+//
+//   Check 2 — missing array fields: remote is lacking more than half of the non-empty
+//             array fields that exist in local. Catches sections where new list content
+//             (e.g. bullet lists, card arrays) was added after the snapshot was published.
+//             (only applied when local has 2+ non-empty array fields)
 const stripStaleSections = (remoteContent) => {
   if (!isPlainObject(remoteContent)) return remoteContent
   const cleaned = { ...remoteContent }
   Object.keys(cleaned).forEach((key) => {
     const remoteSection = cleaned[key]
     const localSection = defaultContent[key]
-    if (isPlainObject(remoteSection) && isPlainObject(localSection)) {
-      const remoteKeys = Object.keys(remoteSection).length
-      const localKeys = Object.keys(localSection).length
-      if (localKeys >= 8 && remoteKeys < localKeys * 0.5) {
+    if (!isPlainObject(remoteSection) || !isPlainObject(localSection)) return
+
+    const remoteKeys = Object.keys(remoteSection).length
+    const localKeys = Object.keys(localSection).length
+
+    // Check 1: far fewer fields than local → clearly outdated snapshot
+    if (localKeys >= 8 && remoteKeys < localKeys * 0.5) {
+      delete cleaned[key]
+      return
+    }
+
+    // Check 2: missing most array fields → snapshot predates major list content additions
+    const localArrayFields = Object.entries(localSection)
+      .filter(([, v]) => Array.isArray(v) && v.length > 0)
+      .map(([k]) => k)
+    if (localArrayFields.length >= 2) {
+      const missingArrays = localArrayFields.filter((k) => !Array.isArray(remoteSection[k]))
+      if (missingArrays.length > localArrayFields.length * 0.5) {
         delete cleaned[key]
       }
     }

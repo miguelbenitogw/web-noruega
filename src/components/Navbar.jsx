@@ -140,7 +140,8 @@ export default function Navbar() {
             <img
               src={scrolled ? IMAGES.logoColor : IMAGES.logo}
               alt="Global Working Norge"
-              className="h-8 lg:h-9 w-auto transition-opacity duration-300 object-contain"
+              className="h-9 lg:h-11 w-auto transition-opacity duration-300 object-contain"
+              style={scrolled ? { mixBlendMode: 'multiply' } : undefined}
               width="200"
               height="36"
               loading="eager"

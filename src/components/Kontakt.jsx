@@ -252,7 +252,7 @@ export default function Kontakt() {
                       className="text-blue-100 text-sm leading-relaxed max-w-xs"
                     />
                     <a
-                      href="https://maps.google.com/?q=Global+Working+Alicante"
+                      href="https://maps.google.com/?q=Avenida+de+la+Albufereta+44+Alicante"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 mt-4 text-xs font-bold uppercase tracking-wider text-white hover:text-blue-200 transition-colors"

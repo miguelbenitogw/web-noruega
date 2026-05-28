@@ -369,7 +369,7 @@ const siteContent = {
     imageUrl: IMAGES.alicanteOffice,
     imageAlt: 'Global Working-kontoret i Alicante',
     officeName: 'Hovedkontor – Alicante',
-    officeAddress: 'Carrer de Periodista Pirula Arderius, 4, 03001 Alicante, España',
+    officeAddress: 'Avenida de la Albufereta 44, Alicante, España',
   },
 
   talentportalenHero: {
@@ -608,7 +608,7 @@ const siteContent = {
     imageUrl: IMAGES.alicanteOffice,
     imageAlt: 'Global Working-kontoret i Alicante',
     officeTitle: 'Hovedkontor Alicante',
-    officeAddress: 'Carrer de Periodista Pirula Arderius, 4, 03001 Alicante, España',
+    officeAddress: 'Avenida de la Albufereta 44, Alicante, España',
     mapsLabel: 'Se i Google Maps',
     formTitle: 'Send oss en melding',
     formSubtitle: 'Vi svarer normalt innen 1 virkedag.',
