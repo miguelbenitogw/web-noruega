@@ -14,21 +14,23 @@ import { canCurrentUserEditContent } from './lib/contentRemote'
 import { resetVisualEditState, updateVisualEditState } from './lib/visualEditSession'
 
 // Pages
+// HomePage is eager (landing page → fast LCP). All others are route-split
+// via React.lazy so the initial bundle only ships the home route.
 import HomePage from './pages/HomePage'
-import RekrutteringPage from './pages/RekrutteringPage'
-import HelsePage from './pages/HelsePage'
-import NyheterPage from './pages/NyheterPage'
-import TalentportalenPage from './pages/TalentportalenPage'
-import OmOssPage from './pages/OmOssPage'
-import KontaktPage from './pages/KontaktPage'
-import SpanskAlicantePage from './pages/SpanskAlicantePage'
-import SpanskAlicanteHvorforPage from './pages/SpanskAlicanteHvorforPage'
-import LivetSomStudentPage from './pages/LivetSomStudentPage'
-import HelsenorskPage from './pages/HelsenorskPage'
-import PersonvernPage from './pages/PersonvernPage'
-import VilkarPage from './pages/VilkarPage'
-import CookiesPage from './pages/CookiesPage'
-import NewsArticlePage from './pages/NewsArticlePage'
+const RekrutteringPage = React.lazy(() => import('./pages/RekrutteringPage'))
+const HelsePage = React.lazy(() => import('./pages/HelsePage'))
+const NyheterPage = React.lazy(() => import('./pages/NyheterPage'))
+const TalentportalenPage = React.lazy(() => import('./pages/TalentportalenPage'))
+const OmOssPage = React.lazy(() => import('./pages/OmOssPage'))
+const KontaktPage = React.lazy(() => import('./pages/KontaktPage'))
+const SpanskAlicantePage = React.lazy(() => import('./pages/SpanskAlicantePage'))
+const SpanskAlicanteHvorforPage = React.lazy(() => import('./pages/SpanskAlicanteHvorforPage'))
+const LivetSomStudentPage = React.lazy(() => import('./pages/LivetSomStudentPage'))
+const HelsenorskPage = React.lazy(() => import('./pages/HelsenorskPage'))
+const PersonvernPage = React.lazy(() => import('./pages/PersonvernPage'))
+const VilkarPage = React.lazy(() => import('./pages/VilkarPage'))
+const CookiesPage = React.lazy(() => import('./pages/CookiesPage'))
+const NewsArticlePage = React.lazy(() => import('./pages/NewsArticlePage'))
 const AdminPage = React.lazy(() => import('./pages/AdminPage'))
 
 const getCurrentPath = () => `${window.location.pathname}${window.location.search}`
@@ -271,7 +273,9 @@ export default function App() {
       <ScrollProgress />
       <Navbar />
       <main id="main-content">
-        {renderPage()}
+        <Suspense fallback={<div className="min-h-screen" aria-busy="true" />}>
+          {renderPage()}
+        </Suspense>
       </main>
       <VisualEditToolbar
         isRequested={isVisualEditRequested}
