@@ -28,6 +28,7 @@ export const IMAGES = {
   enfermeria:               `${SB}/helse/nurses.webp`,
   helseHealthTeam:          `${SB}/helse/health-team.jpg`,
   helsesektor:              `${SB}/cdn/helsesektor.png`,
+  helseSituasjon:           `${SB}/2026/04/17/9310b14e-9e29-45fb-8ca8-85c672dee960-bilde-sykepleier.jpg`,
 
   // Rekruttering / platform
   rekruttering:             `${SB}/rekruttering.png`,
