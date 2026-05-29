@@ -118,7 +118,7 @@ export default function SpanskAlicantePage() {
                 path="spanskAlicantePage.intro"
                 value={page.intro}
                 multiline
-                className="text-blue-100/90 leading-relaxed max-w-2xl mb-8"
+                className="text-lg text-blue-100/90 leading-relaxed max-w-2xl mb-8"
               />
 
               <div className="flex flex-col sm:flex-row gap-4">

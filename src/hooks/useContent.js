@@ -3,51 +3,8 @@ import { readContentOverrides, sanitizeContentOverrides, CONTENT_OVERRIDE_EVENT 
 import { fetchPublishedContentSnapshot } from '../lib/contentRemote'
 import { getContentLocale, shouldUseSupabaseContent } from '../lib/supabaseClient'
 import defaultContent from '../data/siteContent'
-import { deepMergeContent, isPlainObject } from '../lib/contentMappers.js'
+import { deepMergeContent } from '../lib/contentMappers.js'
 import { loadPublishedPageForPath, resolveRouteContext } from '../lib/contentRuntime.js'
-
-// ─── Stale snapshot guard ─────────────────────────────────────────────────────
-// Removes top-level content sections from a remote snapshot that look outdated
-// compared to the current local defaults. Two independent checks:
-//
-//   Check 1 — field-count ratio:  remote has <50% of local fields (major version mismatch)
-//             (only applied to sections with 8+ local fields to skip tiny utility objects)
-//
-//   Check 2 — missing array fields: remote is lacking more than half of the non-empty
-//             array fields that exist in local. Catches sections where new list content
-//             (e.g. bullet lists, card arrays) was added after the snapshot was published.
-//             (only applied when local has 2+ non-empty array fields)
-const stripStaleSections = (remoteContent) => {
-  if (!isPlainObject(remoteContent)) return remoteContent
-  const cleaned = { ...remoteContent }
-  Object.keys(cleaned).forEach((key) => {
-    const remoteSection = cleaned[key]
-    const localSection = defaultContent[key]
-    if (!isPlainObject(remoteSection) || !isPlainObject(localSection)) return
-
-    const remoteKeys = Object.keys(remoteSection).length
-    const localKeys = Object.keys(localSection).length
-
-    // Check 1: far fewer fields than local → clearly outdated snapshot
-    if (localKeys >= 8 && remoteKeys < localKeys * 0.5) {
-      delete cleaned[key]
-      return
-    }
-
-    // Check 2: missing most array fields → snapshot predates major list content additions
-    const localArrayFields = Object.entries(localSection)
-      .filter(([, v]) => Array.isArray(v) && v.length > 0)
-      .map(([k]) => k)
-    if (localArrayFields.length >= 2) {
-      const missingArrays = localArrayFields.filter((k) => !Array.isArray(remoteSection[k]))
-      if (missingArrays.length > localArrayFields.length * 0.5) {
-        delete cleaned[key]
-      }
-    }
-  })
-  return cleaned
-}
-// ─────────────────────────────────────────────────────────────────────────────
 
 // ─── localStorage cache helpers ──────────────────────────────────────────────
 // Persist the last known remote content so the first render already has the
@@ -93,7 +50,7 @@ export default function useContent(section) {
   // Initialise with cached remote content → zero flash on subsequent visits
   const [remoteSiteContent, setRemoteSiteContent] = useState(() => {
     const cached = readSiteCache()
-    return cached ? stripStaleSections(cached) : null
+    return cached || null
   })
 
   const [remotePageState, setRemotePageState] = useState(() => {
@@ -122,8 +79,7 @@ export default function useContent(section) {
       fetchPublishedContentSnapshot(locale)
         .then((snapshot) => {
           if (cancelled) return
-          const raw = snapshot?.content || null
-          const content = raw ? stripStaleSections(raw) : null
+          const content = snapshot?.content || null
           setRemoteSiteContent(content)
           if (content) writeSiteCache(content)
         })
