@@ -18,16 +18,33 @@ function matchesHref(href, currentPath) {
   if (href === '/') return currentPath === '/'
   return currentPath === href || currentPath.startsWith(href + '/')
 }
+
+// Returns the single most-specific (longest) href that matches the current path,
+// so only ONE nav item lights up even when routes are nested. Without this,
+// /spansk-i-alicante/livet-som-student would also activate the parent
+// "Spansk i Alicante". Child hrefs are considered too.
+function computeActiveHref(currentPath, navLinks) {
+  let best = null
+  const consider = (href) => {
+    if (!href) return
+    if (matchesHref(href, currentPath) && (!best || href.length > best.length)) best = href
+  }
+  navLinks.forEach((link) => {
+    consider(link.href)
+    ;(link.children || []).forEach((child) => consider(child.href))
+  })
+  return best
+}
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ─── Desktop dropdown ────────────────────────────────────────────────────────
-function DropdownMenu({ link, scrolled, index, navLinks, currentPath }) {
+function DropdownMenu({ link, scrolled, index, navLinks, currentPath, activeHref }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
 
   const parentActive =
-    matchesHref(link.href, currentPath) ||
-    (link.children || []).some(c => matchesHref(c.href, currentPath))
+    link.href === activeHref ||
+    (link.children || []).some(c => c.href === activeHref)
 
   useEffect(() => {
     if (!open) return
@@ -96,7 +113,7 @@ function DropdownMenu({ link, scrolled, index, navLinks, currentPath }) {
               key={child.href}
               href={child.href}
               className={`flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors duration-150 ${
-                matchesHref(child.href, currentPath)
+                child.href === activeHref
                   ? 'text-primary-700 bg-primary-50'
                   : 'text-gray-700 hover:bg-primary-50 hover:text-primary-700'
               }`}
@@ -119,6 +136,7 @@ export default function Navbar() {
   const c = useContent('navbar')
   const navLinks = c.links || []
   const currentPath = useCurrentPath()
+  const activeHref = computeActiveHref(currentPath, navLinks)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -161,6 +179,7 @@ export default function Navbar() {
                     index={index}
                     navLinks={navLinks}
                     currentPath={currentPath}
+                    activeHref={activeHref}
                   />
                 )
               }
@@ -192,7 +211,7 @@ export default function Navbar() {
               }
 
               // Regular link
-              const active = matchesHref(link.href, currentPath)
+              const active = link.href === activeHref
               const commitLabel = createArrayItemCommitter({ basePath: 'navbar.links', fallbackItems: navLinks, index, field: 'label' })
 
               return (
@@ -255,7 +274,7 @@ export default function Navbar() {
               // Dropdown (accordion)
               if (link.children?.length) {
                 const isOpen = mobileOpenDropdown === link.href
-                const parentActive = matchesHref(link.href, currentPath) || link.children.some(c => matchesHref(c.href, currentPath))
+                const parentActive = link.href === activeHref || link.children.some(c => c.href === activeHref)
                 return (
                   <div key={link.href}>
                     <button
@@ -284,7 +303,7 @@ export default function Navbar() {
                             href={child.href}
                             onClick={() => setMenuOpen(false)}
                             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-md transition-colors ${
-                              matchesHref(child.href, currentPath)
+                              child.href === activeHref
                                 ? 'text-primary-700 bg-primary-50'
                                 : 'text-gray-600 hover:bg-primary-50 hover:text-primary-700'
                             }`}
@@ -314,7 +333,7 @@ export default function Navbar() {
               }
 
               // Regular link (mobile)
-              const active = matchesHref(link.href, currentPath)
+              const active = link.href === activeHref
               return (
                 <a
                   key={link.href}
