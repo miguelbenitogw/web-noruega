@@ -165,7 +165,7 @@ export default function OmOssPage() {
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {(teamSection.members || []).map((member, i) => (
-              <TeamCard key={member.name} member={member} index={i} basePath="omOssTeam.members" delay={i * 100} members={teamSection.members || []} />
+              <TeamCard key={member.name} member={member} index={i} basePath="omOssTeam.members" delay={i * 60} members={teamSection.members || []} />
             ))}
           </div>
         </div>
@@ -220,7 +220,7 @@ export default function OmOssPage() {
             </div>
           </AnimateIn>
 
-          <AnimateIn variant="scale" delay={100}>
+          <AnimateIn variant="scale" delay={120}>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl max-w-4xl mx-auto">
               <EditableImage
                 path="omOssOffices.imageUrl"

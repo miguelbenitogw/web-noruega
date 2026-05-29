@@ -96,7 +96,7 @@ export default function SpanskAlicanteHvorforPage() {
                 })
 
                 return (
-                  <AnimateIn key={`vision-section-${index}`} variant="fadeUp" delay={index * 100}>
+                  <AnimateIn key={`vision-section-${index}`} variant="fadeUp" delay={index * 60}>
                     <div className="py-2">
                       <EditableText
                         as="h2"
@@ -120,7 +120,7 @@ export default function SpanskAlicanteHvorforPage() {
               })}
             </div>
 
-            <AnimateIn variant="fadeLeft" delay={160}>
+            <AnimateIn variant="fadeLeft" delay={120}>
               <aside className="bg-surface border border-gray-100 rounded-[2rem] p-8 sticky top-28">
                 <h2 className="font-heading text-2xl font-bold text-ink mb-6">{hvorfor.sidebarHeading}</h2>
                 <ul className="space-y-4 mb-8">

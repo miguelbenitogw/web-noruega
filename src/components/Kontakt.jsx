@@ -265,7 +265,7 @@ export default function Kontakt() {
             </div>
           </AnimateIn>
 
-          <AnimateIn variant="fadeLeft" delay={150}>
+          <AnimateIn variant="fadeLeft" delay={120}>
             <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 lg:p-10">
               {status === 'sent' ? (
                 <div className="flex flex-col items-center justify-center text-center py-8 gap-4">

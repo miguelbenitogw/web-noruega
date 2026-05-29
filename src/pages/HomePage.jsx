@@ -158,7 +158,7 @@ export default function HomePage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {(hs.sections || []).map((section, i) => (
-              <SummaryCard key={section.href} section={section} delay={i * 100} index={i} sections={hs.sections || []} readMoreLabel={hs.readMoreLabel} />
+              <SummaryCard key={section.href} section={section} delay={i * 60} index={i} sections={hs.sections || []} readMoreLabel={hs.readMoreLabel} />
             ))}
           </div>
         </div>
@@ -201,7 +201,7 @@ export default function HomePage() {
               </a>
             </AnimateIn>
 
-            <AnimateIn variant="fadeLeft" delay={150}>
+            <AnimateIn variant="fadeLeft" delay={120}>
               <div className="rounded-2xl overflow-hidden border border-white/15 bg-white/5">
                   <EditableImage
                     path="homeHealth.imageUrl"
@@ -249,7 +249,7 @@ export default function HomePage() {
 
             <div className="grid sm:grid-cols-2 gap-5 mb-10">
               {(contacts || []).map((c, i) => (
-                <AnimateIn key={`${c.name}-${i}`} variant="fadeUp" delay={i * 100}>
+                <AnimateIn key={`${c.name}-${i}`} variant="fadeUp" delay={i * 60}>
                   <div className="bg-surface rounded-2xl p-6 border border-gray-100 text-left">
                     <div className="flex items-center gap-4 mb-4">
                       {resolveContactPhoto(c) ? (
@@ -302,7 +302,7 @@ export default function HomePage() {
               ))}
             </div>
 
-            <AnimateIn variant="fadeUp" delay={250}>
+            <AnimateIn variant="fadeUp" delay={120}>
               <a
                 href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'landing_quick_contact', cta: 'send_melding' })}

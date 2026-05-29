@@ -65,7 +65,7 @@ export default function LivetSomStudentPage() {
               />
             </AnimateIn>
 
-            <AnimateIn variant="fadeLeft" delay={150}>
+            <AnimateIn variant="fadeLeft" delay={120}>
               <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
                 <EditableImage
                   path="livetSomStudent.heroImageUrl"

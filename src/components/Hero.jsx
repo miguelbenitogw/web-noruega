@@ -24,7 +24,7 @@ function StatCard({ stat, active, delay, index, allStats }) {
 
   return (
     <div
-      className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-4 text-center transition-all duration-300 ease-out"
+      className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-4 text-center transition-all duration-[400ms] ease-out"
       style={{
         opacity: active ? 1 : 0,
         transform: active ? 'translateY(0)' : 'translateY(12px)',
@@ -80,7 +80,7 @@ export default function Hero() {
         <div className="grid lg:grid-cols-1 gap-12 items-center">
           <div className="mx-auto max-w-4xl text-center">
 
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 animate-[fadeInUp_0.5s_ease-out_0.2s_both]">
+            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 animate-[fadeInUp_0.4s_ease-out_0.1s_both]">
               <EditableText as="span" path="hero.h1First" value={c.h1First} className="inline" />{' '}
               <EditableText as="span" path="hero.h1Highlight" value={c.h1Highlight} className="inline text-cta" />
             </h1>
@@ -90,11 +90,11 @@ export default function Hero() {
               path="hero.description"
               value={c.description}
               multiline
-              className="mx-auto max-w-2xl text-lg lg:text-xl text-blue-100 leading-relaxed mb-10 animate-[fadeInUp_0.5s_ease-out_0.35s_both]"
+              className="mx-auto max-w-2xl text-lg lg:text-xl text-blue-100 leading-relaxed mb-10 animate-[fadeInUp_0.4s_ease-out_0.2s_both]"
               inputClassName="min-h-[180px]"
             />
 
-            <div className="flex flex-col sm:flex-row sm:justify-center gap-4 animate-[fadeInUp_0.5s_ease-out_0.5s_both]">
+            <div className="flex flex-col sm:flex-row sm:justify-center gap-4 animate-[fadeInUp_0.4s_ease-out_0.3s_both]">
               <a
                 href="/vr-rekrutteringsmodell"
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'slik_jobber_vi' })}
@@ -120,7 +120,7 @@ export default function Hero() {
                   key={`${stat.label}-${i}`}
                   stat={stat}
                   active={statsVisible}
-                  delay={i * 80}
+                  delay={i * 60}
                   index={i}
                   allStats={c.stats || []}
                 />

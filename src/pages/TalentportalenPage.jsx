@@ -93,7 +93,7 @@ export default function TalentportalenPage() {
               })
 
               return (
-                <AnimateIn key={step.number} variant="fadeUp" delay={i * 120}>
+                <AnimateIn key={step.number} variant="fadeUp" delay={i * 60}>
                   <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow duration-300 p-7 text-center h-full">
                     <div className="text-primary-600/20 font-heading font-bold text-5xl mb-3">{step.number}</div>
                     <div className="w-14 h-14 bg-primary-50 text-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-5">
@@ -150,7 +150,7 @@ export default function TalentportalenPage() {
                   commitOverrideValue(`talentportalenBenefits.items.${i}`, nextValue)
 
                 return (
-                  <AnimateIn key={i} variant="fadeUp" delay={i * 100}>
+                  <AnimateIn key={i} variant="fadeUp" delay={i * 60}>
                     <li className="flex items-start gap-4 bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
                       <div className="shrink-0 w-7 h-7 bg-primary-50 text-primary-600 rounded-full flex items-center justify-center mt-0.5">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

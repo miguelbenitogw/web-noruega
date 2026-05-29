@@ -155,7 +155,7 @@ export default function HelsePage() {
               })
 
               return (
-                <AnimateIn key={phase.number} variant="fadeUp" delay={i * 120}>
+                <AnimateIn key={phase.number} variant="fadeUp" delay={i * 60}>
                   <div className="relative pl-16 lg:pl-20">
                     {i < (phases.phases || []).length - 1 && (
                       <div className="absolute left-[1.65rem] lg:left-[1.9rem] top-14 bottom-0 w-0.5 bg-primary-100" aria-hidden="true" />
@@ -249,7 +249,7 @@ export default function HelsePage() {
               </div>
             </AnimateIn>
 
-            <AnimateIn variant="fadeLeft" delay={150}>
+            <AnimateIn variant="fadeLeft" delay={120}>
               <div className="relative">
                 <div className="rounded-3xl overflow-hidden border border-gray-100 shadow-xl">
                   <EditableImage

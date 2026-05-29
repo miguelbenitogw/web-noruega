@@ -1,10 +1,12 @@
 import useInView from '../hooks/useInView'
 
+// Unified motion distance: 24px (translate-y-6 / translate-x-6) to match the
+// hero fadeInUp keyframe. Keeps every section entrance feeling consistent.
 const variants = {
-  fadeUp:    { hidden: 'opacity-0 translate-y-8', visible: 'opacity-100 translate-y-0' },
-  fadeDown:  { hidden: 'opacity-0 -translate-y-8', visible: 'opacity-100 translate-y-0' },
-  fadeLeft:  { hidden: 'opacity-0 translate-x-8', visible: 'opacity-100 translate-x-0' },
-  fadeRight: { hidden: 'opacity-0 -translate-x-8', visible: 'opacity-100 translate-x-0' },
+  fadeUp:    { hidden: 'opacity-0 translate-y-6', visible: 'opacity-100 translate-y-0' },
+  fadeDown:  { hidden: 'opacity-0 -translate-y-6', visible: 'opacity-100 translate-y-0' },
+  fadeLeft:  { hidden: 'opacity-0 translate-x-6', visible: 'opacity-100 translate-x-0' },
+  fadeRight: { hidden: 'opacity-0 -translate-x-6', visible: 'opacity-100 translate-x-0' },
   fade:      { hidden: 'opacity-0', visible: 'opacity-100' },
   scale:     { hidden: 'opacity-0 scale-95', visible: 'opacity-100 scale-100' },
 }
@@ -22,7 +24,7 @@ export default function AnimateIn({ children, variant = 'fadeUp', delay = 0, cla
   return (
     <Component
       ref={ref}
-      className={`transition-all duration-[380ms] ease-out ${isInView ? v.visible : v.hidden} ${className}`}
+      className={`transition-all duration-[400ms] ease-out ${isInView ? v.visible : v.hidden} ${className}`}
       style={{ transitionDelay: isInView ? `${delay}ms` : '0ms' }}
     >
       {children}

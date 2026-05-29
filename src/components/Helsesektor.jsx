@@ -84,7 +84,7 @@ export default function Helsesektor() {
             </div>
           </AnimateIn>
 
-          <AnimateIn variant="fadeLeft" delay={200}>
+          <AnimateIn variant="fadeLeft" delay={120}>
             <div className="relative">
               <div className="rounded-3xl overflow-hidden shadow-2xl">
                 <EditableImage

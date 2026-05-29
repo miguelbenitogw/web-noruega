@@ -113,7 +113,7 @@ export default function RekrutteringPage() {
               </div>
             </AnimateIn>
 
-            <AnimateIn variant="fadeLeft" delay={150}>
+            <AnimateIn variant="fadeLeft" delay={120}>
               <div className="relative">
                 <div className="rounded-3xl overflow-hidden border border-gray-100 shadow-xl">
                   <EditableImage
@@ -162,7 +162,7 @@ export default function RekrutteringPage() {
 
             <div className="grid md:grid-cols-2 gap-6">
               {latestNews.map((article, index) => (
-                <AnimateIn key={article.slug} variant="fadeUp" delay={index * 120}>
+                <AnimateIn key={article.slug} variant="fadeUp" delay={index * 60}>
                   <article className="h-full rounded-3xl border border-gray-100 bg-surface p-7 shadow-sm transition-all duration-300 hover:border-primary-100 hover:shadow-lg">
                     <div className="flex items-center justify-between gap-3 mb-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${tagColors[article.tag] || 'bg-gray-100 text-gray-700'}`}>

@@ -129,7 +129,7 @@ export default function FAQ() {
 
           <div className="lg:col-span-3 space-y-3">
             {(c.items || []).map((faq, i) => (
-              <AnimateIn key={i} variant="fadeUp" delay={i * 80}>
+              <AnimateIn key={i} variant="fadeUp" delay={i * 60}>
                 <AccordionItem
                   faq={faq}
                   index={i}

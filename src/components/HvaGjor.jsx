@@ -94,7 +94,7 @@ export default function HvaGjor() {
             })
 
             return (
-              <AnimateIn key={s.title} variant="fadeUp" delay={i * 150} className="h-full">
+              <AnimateIn key={s.title} variant="fadeUp" delay={i * 60} className="h-full">
                 <div className="group h-full bg-white rounded-[2rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:border-primary-100 transition-all duration-500 overflow-hidden">
                   <div className="p-8 h-full flex flex-col">
                     <div className="flex items-center justify-between mb-8">
@@ -143,7 +143,7 @@ export default function HvaGjor() {
         </AnimateIn>
 
         {c.sectionImageUrl && (
-          <AnimateIn variant="fadeUp" delay={100} className="mt-14">
+          <AnimateIn variant="fadeUp" delay={120} className="mt-14">
             <div className="rounded-3xl overflow-hidden shadow-xl">
               <EditableImage
                 path="hvaGjor.sectionImageUrl"
