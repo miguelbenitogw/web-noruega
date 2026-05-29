@@ -70,7 +70,7 @@ const siteContent = {
     heroImageUrl: IMAGES.spanskAlicanteBeachPalms,
     heroImageAlt: 'Strand og palmer i Alicante',
     intro: 'Spansk i Alicante er en enkel måte å teste livet i Spania på, med bolig, mennesker og en hverdag allerede på plass. Du bor sammen med 2 til 3 spanske studenter som lærer norsk og bidrar sosialt i miljøet rundt skolen.',
-    exchangeNote: 'Dette er en bytteordning, ikke en typisk jobb. Du bidrar rundt 15 timer i uken som samtaleassistent og får gratis bolig i Alicante.',
+    exchangeNote: 'Tenk deg en hverdag hvor du våkner opp i Alicante, går ned til en kaffe i sola, og vet at du allerede har et sosialt miljø rundt deg.\n\nSpansk i Alicante er ikke et typisk opphold. Det er en enkel måte å teste livet i Spania på, med bolig, mennesker og en hverdag allerede på plass. Dette er et opphold hvor du bor gratis i Alicante sammen med 2 til 3 spanske studenter som lærer norsk.\n\nHos språkskolen Global Working lærer spanske fagfolk norsk. I bytte mot gratis bolig bidrar du i hverdagen rundt skolen, og har samtaler med våre studenter på norsk.\n\nDu jobber rundt 15 timer i uken, og resten av tiden er din egen. Du kan fylle fritiden din med spansk kurs, deltidsjobb, studier eller bare livet i Alicante. Hvis du ønsker spanskkurs, så hjelper vi deg med å finne det.\n\nDette programmet kan du være en del av fra september til desember eller januar til mai.',
     roleImageUrl: IMAGES.spanskAlicantePromenade,
     roleImageAlt: 'Sosial hverdag og samtaler i Alicante',
     roleTitle: 'Hva gjør du som samtaleassistent?',

@@ -139,7 +139,7 @@ export default function SpanskAlicantePage() {
               </div>
             </AnimateIn>
 
-            <AnimateIn variant="fadeLeft" delay={150}>
+            <AnimateIn variant="fadeLeft" delay={120}>
               <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
                 <img
                   src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1200)}
@@ -167,7 +167,7 @@ export default function SpanskAlicantePage() {
                 value={page.exchangeNote}
                 multiline
                 inputClassName="min-h-[140px]"
-                className="text-lg text-gray-700 leading-relaxed"
+                className="text-lg text-gray-700 leading-relaxed whitespace-pre-line"
               />
             </div>
           </AnimateIn>
@@ -400,13 +400,13 @@ export default function SpanskAlicantePage() {
 
           <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5 mb-10">
             {(page.processSteps || []).map((step, index) => (
-              <AnimateIn key={`process-${index}`} variant="fadeUp" delay={index * 90}>
+              <AnimateIn key={`process-${index}`} variant="fadeUp" delay={index * 60}>
                 <ProcessStep step={step} index={index} />
               </AnimateIn>
             ))}
           </div>
 
-          <AnimateIn variant="fadeUp" delay={180}>
+          <AnimateIn variant="fadeUp" delay={120}>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
                 href="#kandidat-kontakt"
