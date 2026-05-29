@@ -1,7 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
 import { parseInlineLinkTokens } from '../utils/inlineLinkParser'
 
-export const ARTICLE_BODY_MEASURE_CLASS = 'max-w-[68ch] text-[1.0625rem] leading-[1.85]'
+// Body fills the article container width (set by the page) instead of a fixed
+// ch-based column, so the text doesn't look narrow with empty space on the right.
+export const ARTICLE_BODY_MEASURE_CLASS = 'text-[1.0625rem] leading-[1.8]'
 
 const LINK_CLASS = 'text-primary-600 underline decoration-primary-200 underline-offset-2 hover:text-primary-700 transition-colors'
 
