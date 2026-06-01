@@ -326,7 +326,7 @@ const siteContent = {
     grunnlagImageUrl: IMAGES.claseNoruego,
     grunnlagImageAlt: 'Helsenorsk undervisning og opplæring',
     ctaLabel: 'Kontakt',
-    ctaTitle: 'Vil du vite mer om helsenorskprogrammet?',
+    ctaTitle: 'Vil du vite mer om oss?',
     ctaP1: 'Helsenorsk er en viktig del av vår rekrutteringsmodell. Det er her kandidatene utvikler det fagspråket som gjør dem trygge og profesjonelle i møte med norske pasienter og kollegaer.',
     ctaP2: 'Ta kontakt med oss for å lære mer om programmet eller for å se tilgjengelige kandidater.',
     ctaButton: 'Kontakt oss',
