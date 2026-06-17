@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
 import { trackEvent } from '../lib/analytics'
-import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import EditableText from './editable/EditableText'
 
 // Provider URL builders. Keeps the carousel agnostic of the video host so we can
 // switch YouTube → Vimeo later by flipping `homeVideos.provider` — no rewrite.
@@ -29,87 +29,30 @@ const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
+// Shortest circular distance from `cur` to `i` so a 3-item ring resolves to
+// offsets -1 / 0 / +1 (centre + one peek on each side).
+const circularOffset = (i, cur, n) => {
+  let o = i - cur
+  if (o > n / 2) o -= n
+  if (o < -n / 2) o += n
+  return o
+}
+
 const PlayIcon = ({ size = 26 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M8 5v14l11-7z" />
   </svg>
 )
 
-const ChevronIcon = ({ dir = 'right', size = 20 }) => (
+const ChevronIcon = ({ dir = 'right', size = 22 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d={dir === 'left' ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'} />
   </svg>
 )
 
-// Facade card: shows our poster + a play button. The heavy <iframe> only mounts
-// in the lightbox after a click → zero impact on initial load / LCP.
-function VideoCard({ item, index, provider, items, watchLabel, onPlay }) {
-  const builder = PROVIDERS[provider] || PROVIDERS.youtube
-  const poster = item.poster || (builder.thumb ? builder.thumb(item.id) : null)
-  const titleCommitter = createArrayItemCommitter({
-    basePath: 'homeVideos.items',
-    fallbackItems: items,
-    index,
-    field: 'title',
-  })
-
-  return (
-    <div className="snap-start shrink-0 w-[230px] sm:w-[256px]">
-      <button
-        type="button"
-        onClick={() => onPlay(index)}
-        className="group relative block w-full aspect-[9/16] overflow-hidden rounded-3xl bg-navy ring-1 ring-black/5 shadow-lg transition duration-300 ease-out hover:-translate-y-1.5 hover:shadow-2xl hover:ring-primary-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-400 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-        aria-label={`${watchLabel}: ${item.title || 'video'}`}
-      >
-        {poster ? (
-          <img
-            src={poster}
-            alt=""
-            loading="lazy"
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.07] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-navy via-primary-900 to-primary-800" />
-        )}
-        {/* Scrim: legibility for the overlaid title + cinematic depth */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-black/5" />
-
-        {/* Center play affordance */}
-        <span className="absolute left-1/2 top-1/2 flex h-[4.25rem] w-[4.25rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-primary-700 shadow-xl ring-1 ring-black/5 backdrop-blur-sm transition duration-300 ease-out group-hover:scale-110 group-hover:bg-white motion-reduce:transition-none motion-reduce:group-hover:scale-100">
-          <span className="ml-1">
-            <PlayIcon />
-          </span>
-        </span>
-
-        {/* Title + watch hint overlaid on the scrim */}
-        <span className="absolute inset-x-0 bottom-0 p-4 text-left">
-          <span className="block font-heading text-base font-bold leading-snug text-white drop-shadow-sm">
-            {item.title}
-          </span>
-          <span className="mt-1.5 flex items-center gap-1 text-xs font-semibold text-white/0 transition-colors duration-300 group-hover:text-white/90 motion-reduce:transition-none">
-            {watchLabel}
-            <ChevronIcon size={13} />
-          </span>
-        </span>
-      </button>
-
-      {/* Editable title lives below the card so the inline editor never nests
-          inside the <button> (invalid HTML + click conflicts in edit mode).
-          On the published page it's visually hidden — the overlay above shows it. */}
-      <EditableText
-        as="p"
-        path={`homeVideos.items.${index}.title`}
-        value={item.title}
-        onCommit={titleCommitter}
-        className="sr-only"
-      />
-    </div>
-  )
-}
-
 // Accessible lightbox: locks scroll, traps initial focus, ESC/backdrop close,
 // arrow-key navigation. Animates in from center (scale + fade), reduced-motion safe.
-function VideoLightbox({ items, index, provider, watchLabel, onClose, onNavigate }) {
+function VideoLightbox({ items, index, provider, onClose, onNavigate }) {
   const closeRef = useRef(null)
   const [shown, setShown] = useState(false)
   const builder = PROVIDERS[provider] || PROVIDERS.youtube
@@ -199,9 +142,7 @@ function VideoLightbox({ items, index, provider, watchLabel, onClose, onNavigate
         {video.title && (
           <p className="mt-4 text-center font-heading text-sm font-semibold text-white/90">
             {video.title}
-            {hasMultiple && (
-              <span className="ml-2 text-white/50">{index + 1} / {items.length}</span>
-            )}
+            {hasMultiple && <span className="ml-2 text-white/50">{index + 1} / {items.length}</span>}
           </p>
         )}
       </div>
@@ -214,122 +155,184 @@ export default function VideoCarousel() {
   const items = Array.isArray(c.items) ? c.items.filter((it) => it && it.id) : []
   const provider = c.provider || 'youtube'
   const watchLabel = c.watchLabel || 'Se video'
-  const scrollerRef = useRef(null)
+  const builder = PROVIDERS[provider] || PROVIDERS.youtube
+  const n = items.length
+
+  const [current, setCurrent] = useState(0)
   const [activeIndex, setActiveIndex] = useState(null)
-  const [edges, setEdges] = useState({ start: true, end: false })
+  const [stageW, setStageW] = useState(0)
+  const [ready, setReady] = useState(false)
+  const stageRef = useRef(null)
+  const touchX = useRef(null)
   const headingId = useId()
 
-  const updateEdges = useCallback(() => {
-    const el = scrollerRef.current
-    if (!el) return
-    const { scrollLeft, scrollWidth, clientWidth } = el
-    setEdges({
-      start: scrollLeft <= 2,
-      end: scrollLeft + clientWidth >= scrollWidth - 2,
-    })
+  useLayoutEffect(() => {
+    const measure = () => stageRef.current && setStageW(stageRef.current.clientWidth)
+    measure()
+    // Enable the slide transition only AFTER the first measured paint. Otherwise
+    // the cards are born mid-transition (from the stageW=0 fallback geometry) and
+    // the animation never settles. Snap into place first, animate on rotate.
+    const raf = requestAnimationFrame(() => requestAnimationFrame(() => setReady(true)))
+    window.addEventListener('resize', measure)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', measure)
+    }
   }, [])
 
-  useEffect(() => {
-    updateEdges()
-    const el = scrollerRef.current
-    if (!el) return undefined
-    el.addEventListener('scroll', updateEdges, { passive: true })
-    window.addEventListener('resize', updateEdges)
-    return () => {
-      el.removeEventListener('scroll', updateEdges)
-      window.removeEventListener('resize', updateEdges)
-    }
-  }, [updateEdges, items.length])
-
-  const scrollByCards = (dir) => {
-    const el = scrollerRef.current
-    if (!el) return
-    el.scrollBy({
-      left: dir * Math.min(el.clientWidth * 0.8, 560),
-      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
-    })
-  }
+  const go = useCallback((dir) => setCurrent((cur) => (cur + dir + n) % n), [n])
+  const navigate = useCallback((dir) => setActiveIndex((cur) => (cur === null ? cur : (cur + dir + n) % n)), [n])
 
   const handlePlay = (index) => {
     trackEvent('video_play', { location: 'home_videos', id: items[index]?.id, provider })
     setActiveIndex(index)
   }
 
-  const navigate = useCallback(
-    (dir) => setActiveIndex((cur) => (cur === null ? cur : (cur + dir + items.length) % items.length)),
-    [items.length],
-  )
+  const onTouchStart = (e) => { touchX.current = e.touches[0]?.clientX ?? null }
+  const onTouchEnd = (e) => {
+    if (touchX.current === null) return
+    const dx = (e.changedTouches[0]?.clientX ?? touchX.current) - touchX.current
+    if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1)
+    touchX.current = null
+  }
 
-  if (items.length === 0) return null
+  if (n === 0) return null
+
+  // Responsive coverflow geometry, derived from the measured stage width.
+  const cardW = Math.max(190, Math.min(260, Math.round((stageW || 320) * 0.6)))
+  const cardH = Math.round((cardW * 16) / 9)
+  const slot = Math.round(cardW * 0.64) // distance between adjacent card centres
+  const reduce = prefersReducedMotion()
 
   return (
-    <section className="py-24 lg:py-32 bg-gradient-to-b from-white to-surface" aria-labelledby={headingId}>
+    <section className="overflow-hidden py-24 lg:py-32 bg-gradient-to-b from-white to-surface" aria-labelledby={headingId}>
       <div className="container-xl">
-        <AnimateIn className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-2xl">
-            <EditableText
-              as="span"
-              path="homeVideos.label"
-              value={c.label}
-              className="mb-4 inline-block text-xs font-bold uppercase tracking-[0.2em] text-primary-600"
-            />
-            <EditableText
-              as="h2"
-              path="homeVideos.heading"
-              value={c.heading}
-              id={headingId}
-              className="mb-5 font-heading text-3xl font-bold leading-tight text-ink lg:text-4xl xl:text-5xl"
-            />
-            <EditableText
-              as="p"
-              path="homeVideos.description"
-              value={c.description}
-              multiline
-              className="text-lg leading-relaxed text-gray-600"
-            />
+        <AnimateIn className="mb-12 max-w-2xl">
+          <EditableText
+            as="span"
+            path="homeVideos.label"
+            value={c.label}
+            className="mb-4 inline-block text-xs font-bold uppercase tracking-[0.2em] text-primary-600"
+          />
+          <EditableText
+            as="h2"
+            path="homeVideos.heading"
+            value={c.heading}
+            id={headingId}
+            className="mb-5 font-heading text-3xl font-bold leading-tight text-ink lg:text-4xl xl:text-5xl"
+          />
+          <EditableText
+            as="p"
+            path="homeVideos.description"
+            value={c.description}
+            multiline
+            className="text-lg leading-relaxed text-gray-600"
+          />
+        </AnimateIn>
+
+        <div className="relative">
+          {/* Stage */}
+          <div
+            ref={stageRef}
+            className="relative mx-auto w-full overflow-hidden"
+            style={{ height: cardH }}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+            aria-roledescription="karusell"
+          >
+            {items.map((item, i) => {
+              const offset = circularOffset(i, current, n)
+              const abs = Math.abs(offset)
+              const isCenter = offset === 0
+              const visible = abs <= 1
+              const poster = item.poster || (builder.thumb ? builder.thumb(item.id) : null)
+
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => (isCenter ? handlePlay(i) : setCurrent(i))}
+                  aria-hidden={visible ? undefined : true}
+                  tabIndex={visible ? 0 : -1}
+                  aria-label={isCenter ? `${watchLabel}: ${item.title || 'video'}` : `Vis ${item.title || 'video'}`}
+                  className={`group absolute left-1/2 top-1/2 overflow-hidden rounded-3xl bg-navy ring-1 ring-black/5 shadow-xl will-change-transform focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-400 ${reduce || !ready ? '' : 'transition-[transform,opacity] duration-500 ease-out'}`}
+                  style={{
+                    width: cardW,
+                    height: cardH,
+                    transformOrigin: 'center',
+                    transform: `translate(-50%, -50%) translateX(${offset * slot}px) scale(${isCenter ? 1 : 0.82})`,
+                    opacity: visible ? (isCenter ? 1 : 0.5) : 0,
+                    zIndex: 30 - abs,
+                    pointerEvents: visible ? 'auto' : 'none',
+                  }}
+                >
+                  {poster ? (
+                    <img
+                      src={poster}
+                      alt=""
+                      loading="lazy"
+                      className={`absolute inset-0 h-full w-full object-cover ${reduce ? '' : 'transition-transform duration-[600ms] ease-out group-hover:scale-105'}`}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-navy via-primary-900 to-primary-800" />
+                  )}
+                  {/* Side cards get a dark veil; centre stays clear */}
+                  <div className={`absolute inset-0 transition-colors duration-500 ${isCenter ? 'bg-black/0' : 'bg-navy/40'}`} />
+
+                  <span className={`absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-primary-700 shadow-xl ring-1 ring-black/5 backdrop-blur-sm ${reduce ? '' : 'transition duration-300 ease-out group-hover:scale-110 group-hover:bg-white'} ${isCenter ? 'h-[4.25rem] w-[4.25rem]' : 'h-12 w-12'}`}>
+                    <span className="ml-0.5">
+                      <PlayIcon size={isCenter ? 26 : 18} />
+                    </span>
+                  </span>
+                </button>
+              )
+            })}
           </div>
 
-          {/* Editorial arrow controls, top-right. Hidden on mobile (swipe). */}
-          {items.length > 1 && (
-            <div className="hidden shrink-0 gap-3 sm:flex">
+          {/* Side arrows (desktop). Mobile uses swipe + dots. */}
+          {n > 1 && (
+            <>
               <button
                 type="button"
-                onClick={() => scrollByCards(-1)}
-                disabled={edges.start}
-                aria-label="Forrige videoer"
-                className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 bg-white text-ink shadow-sm transition-all hover:border-primary-600 hover:bg-primary-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:bg-white disabled:hover:text-ink"
+                onClick={() => go(-1)}
+                aria-label="Forrige video"
+                className="absolute left-0 top-1/2 z-40 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-ink shadow-md transition-all hover:border-primary-600 hover:bg-primary-600 hover:text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-300 sm:flex lg:left-4"
               >
                 <ChevronIcon dir="left" />
               </button>
               <button
                 type="button"
-                onClick={() => scrollByCards(1)}
-                disabled={edges.end}
-                aria-label="Flere videoer"
-                className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 bg-white text-ink shadow-sm transition-all hover:border-primary-600 hover:bg-primary-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:bg-white disabled:hover:text-ink"
+                onClick={() => go(1)}
+                aria-label="Neste video"
+                className="absolute right-0 top-1/2 z-40 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-ink shadow-md transition-all hover:border-primary-600 hover:bg-primary-600 hover:text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-300 sm:flex lg:right-4"
               >
                 <ChevronIcon dir="right" />
               </button>
-            </div>
+            </>
           )}
-        </AnimateIn>
-
-        <div
-          ref={scrollerRef}
-          className="flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-4 pt-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden motion-reduce:scroll-auto"
-        >
-          {items.map((item, i) => (
-            <VideoCard
-              key={item.id}
-              item={item}
-              index={i}
-              provider={provider}
-              items={items}
-              watchLabel={watchLabel}
-              onPlay={handlePlay}
-            />
-          ))}
         </div>
+
+        {/* Current title */}
+        <p className="mt-7 text-center font-heading text-lg font-bold text-ink" aria-live="polite">
+          {items[current]?.title}
+        </p>
+
+        {/* Dots */}
+        {n > 1 && (
+          <div className="mt-4 flex items-center justify-center gap-2.5" role="tablist" aria-label="Velg video">
+            {items.map((item, i) => (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={i === current}
+                aria-label={item.title || `Video ${i + 1}`}
+                onClick={() => setCurrent(i)}
+                className={`h-2.5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 ${i === current ? 'w-7 bg-primary-600' : 'w-2.5 bg-gray-300 hover:bg-gray-400'}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {activeIndex !== null && (
@@ -337,8 +340,7 @@ export default function VideoCarousel() {
           items={items}
           index={activeIndex}
           provider={provider}
-          watchLabel={watchLabel}
-          onClose={() => setActiveIndex(null)}
+          onClose={() => { if (activeIndex !== null) setCurrent(activeIndex); setActiveIndex(null) }}
           onNavigate={navigate}
         />
       )}
