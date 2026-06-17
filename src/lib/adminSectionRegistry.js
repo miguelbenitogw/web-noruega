@@ -64,8 +64,26 @@ const buildLandingSections = (articles) => {
         field('homeServices.sections.1.title', 'Kort 2 · tittel'),
       ],
     }),
-    section('landing-health', 'Helseblokk', {
+    section('landing-videos', 'Videoer', {
       sectionIndex: 2,
+      description: 'Vertikalt videokarusell på startsiden. Bytt vert via homeVideos.provider (youtube/vimeo).',
+      fields: [
+        field('homeVideos.label', 'Fortekst'),
+        field('homeVideos.heading', 'Tittel'),
+        field('homeVideos.description', 'Beskrivelse'),
+        field('homeVideos.items.0.id', 'Video 1 · ID (YouTube/Vimeo)'),
+        field('homeVideos.items.0.title', 'Video 1 · tittel'),
+        field('homeVideos.items.0.poster', 'Video 1 · egendefinert miniatyr (valgfritt)'),
+        field('homeVideos.items.1.id', 'Video 2 · ID'),
+        field('homeVideos.items.1.title', 'Video 2 · tittel'),
+        field('homeVideos.items.1.poster', 'Video 2 · egendefinert miniatyr (valgfritt)'),
+        field('homeVideos.items.2.id', 'Video 3 · ID'),
+        field('homeVideos.items.2.title', 'Video 3 · tittel'),
+        field('homeVideos.items.2.poster', 'Video 3 · egendefinert miniatyr (valgfritt)'),
+      ],
+    }),
+    section('landing-health', 'Helseblokk', {
+      sectionIndex: 3,
       description: 'Mørk seksjon som leder videre til helsevertikalen.',
       fields: [
         field('homeHealth.label', 'Fortekst'),
@@ -79,7 +97,7 @@ const buildLandingSections = (articles) => {
       ],
     }),
     section('landing-news', 'Siste nyheter', {
-      sectionIndex: 3,
+      sectionIndex: 4,
       description: 'Redaksjonell forhåndsvisning på startsiden.',
       fields: [
         field(featuredArticle ? `news.${featuredArticle.slug}.tag` : 'news.{slug}.tag', 'Fremhevet · tagg'),
@@ -89,7 +107,7 @@ const buildLandingSections = (articles) => {
       ],
     }),
     section('landing-spansk-alicante', 'Spansk i Alicante', {
-      sectionIndex: 4,
+      sectionIndex: 5,
       description: 'Teaserblokk som leder til den nye Alicante-siden.',
       fields: [
         field('spanskAlicanteTeaser.label', 'Fortekst'),
@@ -101,7 +119,7 @@ const buildLandingSections = (articles) => {
       ],
     }),
     section('landing-cta', 'CTA-banner', {
-      sectionIndex: 5,
+      sectionIndex: 6,
       fields: [
         field('ctaBanner.badge', 'Merke'),
         field('ctaBanner.heading', 'Tittel'),
@@ -113,7 +131,7 @@ const buildLandingSections = (articles) => {
       ],
     }),
     section('landing-contact', 'Kontakt', {
-      sectionIndex: 6,
+      sectionIndex: 7,
       fields: [
         field('homeContact.label', 'Fortekst'),
         field('homeContact.heading', 'Tittel'),

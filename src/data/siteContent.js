@@ -47,6 +47,18 @@ const siteContent = {
     cta: 'Les mer om helse',
   },
 
+  homeVideos: {
+    label: 'Innblikk',
+    heading: 'Bli kjent med Global Working',
+    description: 'Få et innblikk i hverdagen vår, kandidatene og veien til en trygg oppstart i Norge.',
+    provider: 'youtube',
+    items: [
+      { id: 'Xw7XZIjUhwg', title: 'Slik jobber vi', uploadDate: '2026-06-17', poster: '' },
+      { id: '4eaBePOnJYI', title: 'Veien til Norge', uploadDate: '2026-06-17', poster: '' },
+      { id: 'g0PLD0-dcMA', title: 'Møt teamet vårt', uploadDate: '2026-06-17', poster: '' },
+    ],
+  },
+
   homeContact: {
     label: 'Kontakt',
     heading: 'Ønsker du å vite mer?',

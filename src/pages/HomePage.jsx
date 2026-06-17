@@ -1,4 +1,5 @@
 import Hero from '../components/Hero'
+import VideoCarousel from '../components/VideoCarousel'
 import Nyheter from '../components/Nyheter'
 import CTABanner from '../components/CTABanner'
 import AnimateIn from '../components/AnimateIn'
@@ -163,6 +164,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <VideoCarousel />
 
       {/* Healthcare Highlight */}
       <section className="py-24 lg:py-32 bg-gradient-to-br from-navy via-primary-900 to-primary-800 relative overflow-hidden">
