@@ -54,9 +54,27 @@ const siteContent = {
     watchLabel: 'Se video',
     provider: 'youtube',
     items: [
-      { id: 'Xw7XZIjUhwg', title: 'Slik jobber vi', uploadDate: '2026-06-17', poster: '' },
-      { id: '4eaBePOnJYI', title: 'Veien til Norge', uploadDate: '2026-06-17', poster: '' },
-      { id: 'g0PLD0-dcMA', title: 'Møt teamet vårt', uploadDate: '2026-06-17', poster: '' },
+      {
+        id: 'Xw7XZIjUhwg',
+        title: 'Bli kjent med Pablo og Belén',
+        description: 'Møt Pablo og Belén – to av fagfolkene som har tatt veien fra Sør-Europa til jobb i Norge med Global Working.',
+        uploadDate: '2026-06-17',
+        poster: '',
+      },
+      {
+        id: '4eaBePOnJYI',
+        title: 'Hvordan lærer en sykepleier norsk?',
+        description: 'Slik lærer en spansk sykepleier norsk godt nok til å jobbe trygt i den norske helsesektoren.',
+        uploadDate: '2026-06-17',
+        poster: '',
+      },
+      {
+        id: 'g0PLD0-dcMA',
+        title: 'Norsk i praksis: Oliver forteller',
+        description: 'Oliver forteller hvordan en sykepleier øver på norsk i praksis i en travel arbeidshverdag.',
+        uploadDate: '2026-06-17',
+        poster: '',
+      },
     ],
   },
 
