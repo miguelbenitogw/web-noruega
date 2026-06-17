@@ -51,6 +51,7 @@ const siteContent = {
     label: 'Innblikk',
     heading: 'Bli kjent med Global Working',
     description: 'Få et innblikk i hverdagen vår, kandidatene og veien til en trygg oppstart i Norge.',
+    watchLabel: 'Se video',
     provider: 'youtube',
     items: [
       { id: 'Xw7XZIjUhwg', title: 'Slik jobber vi', uploadDate: '2026-06-17', poster: '' },
