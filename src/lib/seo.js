@@ -1,3 +1,5 @@
+import siteContent from '../data/siteContent'
+
 const SITE_URL = 'https://globalworking.no'
 const DEFAULT_IMAGE = 'https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/og-image.jpg'
 const SITE_NAME = 'Global Working Norge'
@@ -220,10 +222,52 @@ const buildWebPageSchema = ({ title, description, url, image }) => ({
   },
 })
 
+// Provider-specific URL helpers for VideoObject schema. Mirrors VideoCarousel's
+// PROVIDERS map so the structured data stays in sync with what we embed.
+const VIDEO_SCHEMA_PROVIDERS = {
+  youtube: {
+    thumb: (id) => `https://i.ytimg.com/vi/${id}/oardefault.jpg`,
+    embed: (id) => `https://www.youtube.com/embed/${id}`,
+    watch: (id) => `https://www.youtube.com/watch?v=${id}`,
+  },
+  vimeo: {
+    thumb: () => null,
+    embed: (id) => `https://player.vimeo.com/video/${id}`,
+    watch: (id) => `https://vimeo.com/${id}`,
+  },
+}
+
+const buildHomeVideosSchema = () => {
+  const data = siteContent.homeVideos
+  const items = Array.isArray(data?.items) ? data.items.filter((it) => it && it.id) : []
+  if (items.length === 0) return null
+
+  const builder = VIDEO_SCHEMA_PROVIDERS[data.provider] || VIDEO_SCHEMA_PROVIDERS.youtube
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': items.map((item) => ({
+      '@type': 'VideoObject',
+      name: item.title || data.heading || SITE_NAME,
+      description: item.description || data.description || DEFAULT_SEO.description,
+      thumbnailUrl: [item.poster || builder.thumb(item.id) || DEFAULT_IMAGE],
+      uploadDate: item.uploadDate || '2026-06-17',
+      contentUrl: builder.watch(item.id),
+      embedUrl: builder.embed(item.id),
+      publisher: {
+        '@type': 'Organization',
+        name: SITE_NAME,
+        logo: { '@type': 'ImageObject', url: DEFAULT_IMAGE },
+      },
+    })),
+  }
+}
+
 const clearAllDynamicSchemas = () => {
   clearJsonLd('news-article-schema')
   clearJsonLd('page-schema')
   clearJsonLd('breadcrumb-schema')
+  clearJsonLd('home-videos-schema')
 }
 
 export function setDefaultSEO() {
@@ -243,6 +287,9 @@ export function setDefaultSEO() {
       url: SITE_URL,
     },
   })
+
+  const videosSchema = buildHomeVideosSchema()
+  if (videosSchema) setJsonLd('home-videos-schema', videosSchema)
 }
 
 export function setSectionSEO(sectionRoute) {
