@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { initAnalyticsWithConsent, trackEvent, trackPageView } from '../lib/analytics'
+import { getStoredConsent, setAnalyticsConsent, trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 
 export default function CookieConsent() {
@@ -7,24 +7,26 @@ export default function CookieConsent() {
   const [show, setShow] = useState(false)
 
   useEffect(() => {
-    const accepted = localStorage.getItem('gw-cookies')
-    if (!accepted) {
-      const timer = setTimeout(() => setShow(true), 1500)
-      return () => clearTimeout(timer)
-    }
+    // Solo se pregunta a quien no haya decidido todavia.
+    if (getStoredConsent()) return undefined
+    const timer = setTimeout(() => setShow(true), 1500)
+    return () => clearTimeout(timer)
   }, [])
 
+  // Ya no hace falta arrancar nada aqui: la medicion arranca al cargar la web, denegada.
+  // Esto solo cambia el permiso. La vista de pagina tampoco se reenvia, porque ya se mando
+  // al entrar y `trackPageView` no repite la misma ruta.
   const accept = () => {
-    localStorage.setItem('gw-cookies', 'accepted')
-    if (initAnalyticsWithConsent()) {
-      trackPageView(`${window.location.pathname}${window.location.search}`)
-    }
+    setAnalyticsConsent(true)
     trackEvent('cookie_consent_accept')
     setShow(false)
   }
 
+  // Rechazar deja el permiso denegado de forma EXPLICITA, que no es lo mismo que no haber
+  // decidido. Y ahora este evento si llega: antes se enviaba a un gtag que no existia, asi
+  // que nunca se supo cuanta gente rechazaba.
   const decline = () => {
-    localStorage.setItem('gw-cookies', 'declined')
+    setAnalyticsConsent(false)
     trackEvent('cookie_consent_decline')
     setShow(false)
   }

@@ -7,7 +7,7 @@ import BackToTop from './components/BackToTop'
 import CookieConsent from './components/CookieConsent'
 import AdminErrorBoundary from './components/AdminErrorBoundary'
 import VisualEditToolbar from './components/admin/VisualEditToolbar'
-import { initAnalyticsWithConsent, trackPageView } from './lib/analytics'
+import { initAnalytics, trackPageView } from './lib/analytics'
 import { setDefaultSEO, setNotFoundSEO, setSectionSEO } from './lib/seo'
 import { resolveRouteContext } from './lib/contentRuntime'
 import { canCurrentUserEditContent } from './lib/contentRemote'
@@ -118,11 +118,13 @@ export default function App() {
     }
   }, [routeContext.isAdmin])
 
+  // La medicion arranca SIEMPRE, con el consentimiento denegado por defecto (ver la
+  // cabecera de lib/analytics.js). Antes esto solo corria si el visitante ya habia
+  // aceptado, y el resultado era que de cada veinte personas que entraban se contaba una.
+  // Sin aceptar no se escribe ninguna cookie: solo llegan senales anonimas a Google.
   useEffect(() => {
-    if (localStorage.getItem('gw-cookies') === 'accepted') {
-      if (initAnalyticsWithConsent()) {
-        trackPageView(currentPath)
-      }
+    if (initAnalytics()) {
+      trackPageView(currentPath)
     }
   }, [currentPath])
 
