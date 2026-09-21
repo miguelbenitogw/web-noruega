@@ -5,9 +5,15 @@ const DEFAULT_IMAGE = 'https://hahqimviirkkzkvmusga.supabase.co/storage/v1/objec
 const SITE_NAME = 'Global Working Norge'
 
 const DEFAULT_SEO = {
-  title: 'Global Working Norge | Rekruttering av helsepersonell og fagfolk til Norge',
+  // LA PALABRA QUE BUSCA EL CLIENTE VA PRIMERO, LA MARCA AL FINAL.
+  // Antes empezaba por "Global Working Norge", y los primeros caracteres de un título son
+  // los que más pesan tanto para Google como para el que decide si hace clic. Gastarlos en
+  // el nombre propio solo sirve si ya te conocen — y el 94% de los clics de esta web ya
+  // eran de gente que la conocía. El problema no era la marca: era que no había nada para
+  // los que NO la conocen.
+  title: 'Rekruttering av sykepleiere fra utlandet | Global Working Norge',
   description:
-    'Global Working hjelper norske arbeidsgivere med rekruttering av kvalifiserte fagfolk fra Sør-Europa. Språkopplæring, integrering og dokumentert oppfølging fra første kontakt til oppstart.',
+    'Vi rekrutterer sykepleiere og helsefagarbeidere fra Sør-Europa til norske kommuner og sykehus. 650 timer helsenorsk, hjelp med autorisasjon og oppfølging helt frem til oppstart.',
   pathname: '/',
   image: DEFAULT_IMAGE,
   type: 'website',
@@ -15,20 +21,24 @@ const DEFAULT_SEO = {
 
 const SECTION_SEO = {
   rekruttering: {
-    title: 'Vår rekrutteringsmodell | Global Working Norge',
+    // "Vår rekrutteringsmodell" habla de nosotros. `hvordan rekruttere helsepersonell` es
+    // una búsqueda real, y "Slik ..." es la forma noruega de responder a un "cómo".
+    title: 'Slik rekrutterer du helsepersonell fra utlandet | Global Working',
     description:
-      'Se hvordan vi rekrutterer, forbereder og følger opp fagfolk fra Sør-Europa til trygg oppstart i Norge.',
+      'Hvordan rekruttere helsepersonell fra utlandet? Se hele prosessen steg for steg: utvelgelse, 650 timer helsenorsk, autorisasjon og oppfølging frem til første arbeidsdag.',
     pathname: '/vr-rekrutteringsmodell',
     breadcrumbName: 'Rekrutteringsmodell',
-    keywords: 'rekruttering Norge, fagfolk fra Europa, internasjonal rekruttering, arbeidsinnvandring',
+    keywords: 'hvordan rekruttere helsepersonell, internasjonal rekruttering, rekruttering av sykepleiere, arbeidsinnvandring',
   },
   helse: {
-    title: 'Helsesektor | Global Working Norge',
+    // "Helsesektor" describe el sector, no lo que alguien escribe cuando tiene el problema.
+    // Nadie busca "helsesektor" para contratar a nadie.
+    title: 'Rekruttering av sykepleiere til Norge | Global Working',
     description:
-      'Vi forbereder helsepersonell for den norske helsesektoren med språk, faglig oppfølging og strukturert overgang til jobb.',
+      'Mangel på sykepleiere? Vi finner, forbereder og følger opp utenlandske sykepleiere og helsefagarbeidere til norske kommuner og sykehus — med språk, autorisasjon og trygg oppstart.',
     pathname: '/helse',
     breadcrumbName: 'Helsesektor',
-    keywords: 'helsepersonell Norge, sykepleiere rekruttering, helsesektor bemanning, autorisasjon helsepersonell',
+    keywords: 'rekruttering av sykepleiere, utenlandske sykepleiere i Norge, rekrutteringsbyrå helsepersonell, mangel på sykepleiere',
   },
   nyheter: {
     title: 'Nyheter & artikler | Global Working Norge',
@@ -39,25 +49,30 @@ const SECTION_SEO = {
     keywords: 'Global Working nyheter, rekruttering nyheter Norge, arbeidsliv Norge',
   },
   talentportalen: {
-    title: 'Talentportalen | Global Working Norge',
+    // "Talentportalen" es el nombre interno del producto. En Search Console la gente la
+    // encuentra buscando `kandidatportalen` (12 apariciones, puesto 7) — o sea, buscan la
+    // palabra genérica. El nombre propio se queda, pero detrás de la que se busca.
+    title: 'Kandidatportal for norske arbeidsgivere | Global Working',
     description:
-      'Se tilgjengelige kandidater og inviter til intervju direkte gjennom vår kandidatportal.',
+      'Talentportalen er vår kandidatportal: se tilgjengelige sykepleiere og helsefagarbeidere med dokumentert norsknivå, og inviter til intervju direkte.',
     pathname: '/talentportalen',
     breadcrumbName: 'Talentportalen',
-    keywords: 'kandidatportal, tilgjengelige kandidater Norge, rekrutteringsportal',
+    keywords: 'kandidatportal, kandidatportalen, talentportalen, tilgjengelige sykepleiere, rekrutteringsportal',
   },
   'om-oss': {
-    title: 'Om oss | Global Working Norge',
+    // `rekrutteringsbyrå helse` y `rekrutteringsbyrå helsepersonell` son búsquedas reales.
+    // "Om oss" a secas no las capta ninguna.
+    title: 'Rekrutteringsbyrå for helsesektoren | Global Working Norge',
     description:
-      'Lær mer om Global Working, teamet vårt og hvordan vi jobber med språk, kvalitet og internasjonal rekruttering.',
+      'Global Working er et rekrutteringsbyrå spesialisert på helsepersonell fra Sør-Europa. Møt teamet og se hvordan vi jobber med språk, autorisasjon og kvalitet.',
     pathname: '/om-oss',
     breadcrumbName: 'Om oss',
-    keywords: 'Global Working team, om Global Working, rekrutteringsbyrå Norge',
+    keywords: 'rekrutteringsbyrå helsepersonell, rekrutteringsbyrå helse, om Global Working, internasjonal rekruttering',
   },
   kontakt: {
-    title: 'Kontakt | Global Working Norge',
+    title: 'Kontakt oss om rekruttering av helsepersonell | Global Working',
     description:
-      'Ta kontakt for spørsmål om rekruttering, samarbeid eller kandidatportalen.',
+      'Trenger dere sykepleiere eller helsefagarbeidere? Ta kontakt for en uforpliktende samtale om rekruttering, samarbeid eller kandidatportalen.',
     pathname: '/kontakt',
     breadcrumbName: 'Kontakt',
     keywords: 'kontakt Global Working, rekruttering kontakt, samarbeid Norge',
