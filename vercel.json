@@ -38,6 +38,16 @@
       "source": "/journal/:slug",
       "destination": "/nyheter/:slug",
       "permanent": true
+    },
+    {
+      "source": "/nyheter/evaluering-sprakniva",
+      "destination": "/nyheter/evaluere-norsk-spraak",
+      "permanent": true
+    },
+    {
+      "source": "/nyheter/sor-fron-integrasjon",
+      "destination": "/nyheter/sor-fron-intervju",
+      "permanent": true
     }
   ],
   "rewrites": [

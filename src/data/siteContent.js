@@ -1,4 +1,4 @@
-import { IMAGES } from '../assets/images'
+import { IMAGES } from '../assets/images.js'
 
 // Contenido central de toda la web. Edita desde /admin.
 const siteContent = {
