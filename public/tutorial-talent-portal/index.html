@@ -23,7 +23,9 @@
   =====================================================================
 -->
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap');
+/* Inter + Outfit = la MAQUETA del portal (producto real, no se toca).
+   Poppins + Newsreader = el MANDO (tipografía de marca Global Working). */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&family=Poppins:wght@500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap');
 
 :root{
   --navy:#003D7C; --navy-700:#002f60; --navy-50:#eaf1f9; --navy-100:#d3e2f3;
@@ -35,13 +37,35 @@
   --head:'Outfit','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --mv:.85s;
+
+  /* ---- MANDO: tokens de marca (tailwind.config.js + src/index.css) ----
+     Nada de esto entra en la maqueta del portal; vive solo en el mando. */
+  --gw-navy:#062A6A; --gw-navy-deep:#041E4D; --gw-blue:#1E73BE;
+  --gw-primary-800:#0A3A82; --gw-primary-300:#8FB6E0; --gw-primary-200:#BCD3EC;
+  --gw-ember:#DB532E; --gw-ember-600:#B9411F;
+  --gw-ink:#0E1A2B; --gw-ink-muted:#4A5A70; --gw-ink-soft:#6F7F95;
+  --gw-line:#D8E1EE; --gw-frost:#E7EDF6; --gw-surface:#F1F4F9;
+  --gw-ui:'Poppins',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --gw-serif:'Newsreader',Georgia,'Times New Roman',serif;
+  --gw-r-surface:14px;   /* radio de superficie */
+  --gw-r-pill:999px;     /* radio de acción */
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:transparent}
+/* El hueco que sobraba bajo la barra era alto de iframe que nadie pintaba: la
+   página era transparente y el navy que se veía era el del `bg-navy` de
+   `/talentportalen`. Ahora la página tiene campo propio EN ESE MISMO navy
+   (#062A6A) y el reproductor se centra en él: lo que sobra es margen, no
+   agujero, y a pantalla completa deja de salir sobre blanco. */
+html{height:100%}
+body{min-height:100%;background:var(--gw-navy)}
 body{font-family:var(--body);color:var(--s900);-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-.player{max-width:1280px;margin:0 auto;outline:none}
-.wrap{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:16px;background:#dfe9f6}
+.player{max-width:1280px;margin:0 auto;outline:none;min-height:100svh;padding:0 12px;
+  display:flex;flex-direction:column}
+/* Márgenes automáticos, no `justify-content:center`: cuando el alto no alcanza
+   se resuelven a 0 en vez de recortar por arriba. */
+.wrap{position:relative;width:100%;aspect-ratio:1280/632;flex:0 1 auto;min-height:0;margin-top:auto;
+  overflow:hidden;border-radius:var(--gw-r-surface) var(--gw-r-surface) 0 0;background:#dfe9f6}
 .stage{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;font-size:14px;
   background:radial-gradient(900px 500px at 15% 0%,#cfe0f4 0,transparent 70%),radial-gradient(900px 500px at 100% 100%,#d9e6f5 0,transparent 70%),#e8eff8}
 
@@ -254,34 +278,101 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .cursor.go .rip{animation:rip .6s ease-out}
 @keyframes rip{0%{opacity:.8;transform:scale(.3)}100%{opacity:0;transform:scale(2.2)}}
 
-/* ---------- caption card ---------- */
-.cap{position:absolute;left:24px;top:630px;width:1232px;height:76px;background:#fff;border-radius:20px;box-shadow:0 18px 36px -20px rgba(0,40,90,.4),0 0 0 1px rgba(15,23,42,.06);display:flex;align-items:center;gap:18px;padding:0 24px}
-.cap .num{width:46px;height:46px;border-radius:15px;background:var(--navy);color:#fff;font:600 18px var(--head);display:grid;place-items:center;flex:none}
-.cap .tx{min-width:0;transition:opacity .3s,transform .3s}
-.cap .tx.sw{opacity:0;transform:translateY(5px)}
-.cap h3{font:600 20px/1.2 var(--head);color:var(--navy)}
-.cap p{font-size:15px;color:var(--s600);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cap .chn{margin-left:auto;flex:none;font-size:12.5px;color:var(--s500);background:var(--s100);padding:6px 12px;border-radius:99px;font-weight:500}
+/* ===================================================================
+   MANDO  (narración + pausa + idioma)
+   -------------------------------------------------------------------
+   Esto NO es la maqueta del portal: es el mando de Global Working y va
+   con la tipografía y los colores de la web de marca. Superficies
+   planas y filetes, nunca sombras ni degradados.
 
-/* ---------- controls ---------- */
-.controls{display:flex;align-items:center;gap:8px;padding:12px 4px 0;flex-wrap:wrap}
-.cbtn{width:38px;height:38px;border-radius:12px;background:#fff;display:grid;place-items:center;box-shadow:0 0 0 1px var(--s200);transition:background .2s}
-.cbtn:hover{background:var(--navy-50)}
-.cbtn svg{width:18px;height:18px;stroke:var(--navy);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.cbtn:focus-visible,.mk:focus-visible,.lbtn:focus-visible,.player:focus-visible .bar{outline:3px solid var(--navy);outline-offset:2px}
-.bar{position:relative;flex:1;min-width:140px;height:38px;cursor:pointer;touch-action:none}
-.bar .trk{position:absolute;left:0;right:0;top:16px;height:6px;border-radius:9px;background:var(--navy-100);overflow:hidden}
-.bar .fill{height:100%;width:100%;background:var(--navy);transform-origin:0 50%;transform:scaleX(0)}
-.mk{position:absolute;top:3px;width:32px;height:32px;margin-left:-16px;border-radius:50%;display:grid;place-items:center}
-.mk:before{content:"";width:10px;height:10px;border-radius:50%;background:#fff;border:2.5px solid var(--navy);transition:transform .2s,background .2s}
-.mk:hover:before{transform:scale(1.35)} .mk.done:before{background:var(--navy)} .mk.cur:before{transform:scale(1.3);background:#fff;box-shadow:0 0 0 4px rgba(0,61,124,.2)}
-.clock{font-size:12.5px;color:var(--s600);font-variant-numeric:tabular-nums;min-width:78px;text-align:right}
-.lbtn{height:38px;padding:0 14px;border-radius:12px;background:#fff;box-shadow:0 0 0 1px var(--s200);font-weight:600;color:var(--navy);font-size:13px}
-.capbelow{display:none;margin-top:12px;background:#fff;border-radius:16px;padding:12px 16px;box-shadow:0 0 0 1px var(--s200)}
-.capbelow h3{font:600 17px var(--head);color:var(--navy)}.capbelow p{font-size:14px;color:var(--s600);margin-top:3px;line-height:1.45}
-.player.narrow .cap{display:none}
-.player.narrow .capbelow{display:block}
-.player.narrow .bar{order:9;flex-basis:100%}
+   El cliente quiso ver la animación, no el mando: fuera transporte de
+   capítulo, barra de progreso, puntos y reloj. Quedan dos cosas y la
+   narración:
+     · pausa/play  — WCAG 2.2.2: esto se mueve solo 1:14 y arranca solo,
+                     así que tiene que poder pararse. Discreto, pero
+                     SIEMPRE en el árbol de accesibilidad y alcanzable
+                     con teclado (nunca display:none, nunca solo hover).
+     · EN          — es idioma, no cromo de reproducción.
+
+   La tarjeta de capítulo vivía DENTRO del escenario (position:absolute
+   sobre el 1280x720 del mockup), así que escalaba con él y a 375 px
+   quedaba ilegible — por eso existía `.capbelow` como recambio. Ahora
+   es un bloque propio —el «pupitre»— que nace del borde inferior de la
+   pantalla: una pieza, no dos sueltas.
+   =================================================================== */
+
+/* ---------- pausa/play ----------
+   Vive en el pupitre, no flotando sobre la pantalla: encima tapaba controles
+   reales de la maqueta y hacía que el producto simulado pareciera tener un
+   botón suelto que no es suyo. Acá es un círculo callado, hermano del EN, y
+   está SIEMPRE visible — WCAG 2.2.2 pide poder parar esto, y un control que
+   solo aparece al pasar el ratón no existe en una pantalla táctil.
+   En pausa se pinta navy: es el único sitio donde se lee que está parado. */
+.pbtn{flex:none;width:34px;height:34px;border-radius:var(--gw-r-pill);
+  border:1px solid var(--gw-line);background:#fff;color:var(--gw-navy);
+  display:grid;place-items:center;transition:background .2s,color .2s,border-color .2s}
+.pbtn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.4;
+  stroke-linecap:round;stroke-linejoin:round}
+.pbtn:hover{background:var(--gw-frost)}
+.player.paused .pbtn{background:var(--gw-navy);border-color:var(--gw-navy);color:#fff}
+.player.paused .pbtn:hover{background:var(--gw-primary-800)}
+.pbtn:focus-visible{outline:2px solid var(--gw-blue);outline-offset:2px}
+
+/* ---------- pupitre: la narración ----------
+   Es lo ÚNICO que acompaña a la animación, así que no puede leerse como una
+   caja pegada encima: nace del borde inferior de la pantalla, comparte ancho
+   y radio con ella y cierra la pieza. Nada de sombra ni de tarjeta flotante.
+   Dentro va un bloque editorial de verdad: filete de marca + capítulo en
+   Poppins, titular en Poppins semibold y la explicación en Newsreader con
+   medida de lectura. No es una etiqueta con una nota al pie. */
+.deck{flex:none;margin-bottom:auto;background:#fff;border:1px solid var(--gw-line);border-top:0;
+  border-radius:0 0 var(--gw-r-surface) var(--gw-r-surface);font-family:var(--gw-ui)}
+.cap{display:flex;align-items:flex-start;gap:16px;padding:16px clamp(16px,1.7vw,22px)}
+/* El número ya va dentro de «Kapittel 3/9 · …»; el azulejo navy era una
+   segunda voz diciendo lo mismo. Se queda en el DOM porque el script lo pinta. */
+.cap .num{display:none}
+.cap .tx{min-width:0;flex:1;transition:opacity .2s ease,transform .2s ease}
+.cap .tx.sw{opacity:0;transform:translateY(6px)}
+.cap h3{font:600 clamp(19px,1.75vw,23px)/1.2 var(--gw-ui);letter-spacing:-.025em;color:var(--gw-navy);
+  margin-top:7px}
+/* El serif es para leer, no para operar: la explicación es lectura, y lleva
+   medida corta (38rem, la misma de la web) para que no se vaya a línea larga. */
+.cap p{font:400 clamp(15px,1.25vw,16.5px)/1.55 var(--gw-serif);color:var(--gw-ink-muted);
+  margin-top:5px;max-width:38rem;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  min-height:calc(2 * 1.55em)}   /* dos líneas fijas: hay capítulos sin frase y
+                                    sin esto el pupitre daba un salto de alto */
+/* Filete de marca + capítulo: el gesto `.gw-label` de la web. Sin barra de
+   progreso, esta línea es lo único que dice por dónde va el recorrido. */
+.cap .chn{display:flex;align-items:flex-start;gap:12px;
+  font:600 11.5px/1.35 var(--gw-ui);color:var(--gw-ink-soft)}
+/* margin-top alinea el filete con la PRIMERA línea: en estrecho la etiqueta
+   parte en dos y centrado quedaba flotando entre renglones. */
+.cap .chn:before{content:"";display:block;width:28px;height:2px;margin-top:6px;
+  background:var(--gw-ember);flex:none}
+.acts{flex:none;display:flex;align-items:center;gap:8px;margin-top:-2px}
+.lbtn{flex:none;height:34px;padding:0 14px;border-radius:var(--gw-r-pill);border:1px solid var(--gw-line);
+  background:#fff;font:600 12.5px/1 var(--gw-ui);color:var(--gw-navy);transition:background .2s}
+.lbtn:hover{background:var(--gw-frost)}
+.lbtn:focus-visible{outline:2px solid var(--gw-blue);outline-offset:2px}
+
+/* Región viva solo para lectores de pantalla: la tarjeta visible es
+   aria-hidden (vive dentro del escenario inerte), así que esta es la que
+   anuncia el cambio de capítulo. Antes era `display:none` en ancho, y
+   display:none no se anuncia: nadie se enteraba de nada. */
+.capbelow{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* ---------- estrecho (< 700 px): el móvil y el iframe angosto ----------
+   Ahí sobra alto (el iframe mide 560 y el recorrido no lo llena), así que la
+   explicación puede respirar a tres líneas en vez de recortarse a dos. */
+.player.narrow .cap{padding:14px}
+.player.narrow .cap .chn:before{width:20px}
+.player.narrow .cap h3{margin-top:6px}
+.player.narrow .cap p{-webkit-line-clamp:3;min-height:calc(3 * 1.55em)}
+/* Dedos, no ratón: los dos controles crecen a 40 px. */
+.player.narrow .pbtn{width:40px;height:40px}
+.player.narrow .lbtn{height:40px}
 .player.inst *,.player.reduced *{transition:none!important;animation:none!important}
 .player.reduced .cursor,.player.inst .cursor{display:none}
 @media (prefers-reduced-motion:reduce){.ring.on{animation:none}}
@@ -442,23 +533,33 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       <div class="ring" id="ring"></div>
       <div class="cursor" id="cursor"><div class="rip"></div><svg viewBox="0 0 24 24"><path d="M4 2l15 9.5-6.5 1.6L9.8 20z" fill="#0f172a" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
 
-      <div class="cap" id="cap" aria-hidden="true">
-        <div class="num" id="capNum">1</div>
-        <div class="tx" id="capTx"><h3 id="capT"></h3><p id="capD"></p></div>
-        <div class="chn" id="capCh"></div>
-      </div>
     </div>
   </div>
 
-  <div class="capbelow" id="capBelow" aria-live="polite"><h3 id="capT2"></h3><p id="capD2"></p></div>
-
-  <div class="controls">
-    <button class="cbtn" id="bPrev" type="button"><svg viewBox="0 0 24 24"><path d="M6 5v14M19 5l-10 7 10 7z"/></svg></button>
-    <button class="cbtn" id="bPlay" type="button"><svg viewBox="0 0 24 24" id="icPause"><path d="M8 5v14M16 5v14"/></svg><svg viewBox="0 0 24 24" id="icPlay" style="display:none"><path d="M7 4l13 8-13 8z"/></svg></button>
-    <button class="cbtn" id="bNext" type="button"><svg viewBox="0 0 24 24"><path d="M18 5v14M5 5l10 7-10 7z"/></svg></button>
-    <div class="bar" id="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><div class="trk"><div class="fill" id="fill"></div></div></div>
-    <span class="clock" id="clock">0:00 / 1:10</span>
-    <button class="lbtn" id="bLang" type="button">EN</button>
+  <!-- El pupitre: la narración. La tarjeta estaba antes DENTRO de `.stage`
+       (escalaba con la maqueta y a 375 px no se leía); sigue siendo
+       aria-hidden y quien anuncia el capítulo es `#capBelow`. -->
+  <div class="deck">
+    <div class="cap">
+      <!-- Todo el texto del capítulo va DENTRO de `#capTx` para que entre y
+           salga de una pieza: el filete y «Kapittel 3/9» cambian con el
+           titular, no después. -->
+      <div class="tx" id="capTx" aria-hidden="true">
+        <div class="num" id="capNum">1</div>
+        <div class="chn" id="capCh"></div>
+        <h3 id="capT"></h3>
+        <p id="capD"></p>
+      </div>
+      <div class="capbelow" id="capBelow" aria-live="polite"><h3 id="capT2"></h3><p id="capD2"></p></div>
+      <!-- Los dos únicos controles que quedan: parar (WCAG 2.2.2) e idioma. -->
+      <div class="acts">
+        <button class="pbtn" id="bPlay" type="button">
+          <svg viewBox="0 0 24 24" id="icPause"><path d="M8 5v14M16 5v14"/></svg>
+          <svg viewBox="0 0 24 24" id="icPlay" style="display:none"><path d="M7 4l13 8-13 8z"/></svg>
+        </button>
+        <button class="lbtn" id="bLang" type="button">EN</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -737,17 +838,36 @@ let curCap = null, chIdx = 0;
 function cap(key, quiet) {
   curCap = key; paintCap(!quiet);
 }
-function paintCap(anim) {
+/* Sin barra de progreso ni puntos, el cambio de este texto es la ÚNICA señal
+   de que el recorrido avanzó: tiene que entrar y salir de una pieza, no
+   parpadear dos veces.
+
+   Al entrar en un capítulo había dos repintados seguidos — primero el nombre
+   del capítulo y, ~200 ms después, el primer `cap()` con el texto real — y se
+   veían dos barridos encadenados. Ahora `enter()` arranca el fundido de
+   salida y ESPERA (`hold`) a que llegue ese primer `cap()`: el texto nuevo
+   entra en el mismo barrido. Si no llega ninguno, a los 480 ms se pinta el
+   nombre del capítulo y listo.
+
+   CAP_OUT tiene que coincidir con la transición de `.cap .tx` (.2s). */
+const CAP_OUT = 200;
+let capTimer = 0, capOutAt = 0;
+function paintCap(anim, hold) {
   const tx = $('#capTx');
   const apply = () => {
-    const ch = CHAPTERS[chIdx];
+    capTimer = 0;
     $('#capNum').textContent = chIdx + 1;
     $('#capCh').textContent = T('chapter') + ' ' + (chIdx + 1) + '/' + CHAPTERS.length + ' · ' + T('ch' + (chIdx + 1));
     const t = curCap ? T('cap.' + curCap + '.t') : T('ch' + (chIdx + 1)), d = curCap ? T('cap.' + curCap + '.d') : '';
     $('#capT').textContent = t; $('#capD').textContent = d; $('#capT2').textContent = t; $('#capD2').textContent = d;
     tx.classList.remove('sw');
   };
-  if (anim && !inst) { tx.classList.add('sw'); setTimeout(apply, 180); } else apply();
+  if (capTimer) { clearTimeout(capTimer); capTimer = 0; }
+  if (!anim || inst) { apply(); return; }
+  const now = performance.now();
+  if (!tx.classList.contains('sw')) { capOutAt = now; tx.classList.add('sw'); }
+  const left = Math.max(0, CAP_OUT - (now - capOutAt));
+  capTimer = setTimeout(apply, hold ? Math.max(left, hold) : left);
 }
 
 /* ===================== CHAPTERS =====================
@@ -905,15 +1025,16 @@ function enter(i, instant) {
   $$('.scene').forEach(s => s.classList.toggle('on', s.dataset.scene === CHAPTERS[ci].scene));
   const prevInst = inst; if (instant) { inst = true; player.classList.add('inst'); }
   CHAPTERS[ci].setup();
-  paintCap(false);
+  /* Arranca el fundido de salida y espera hasta 480 ms al primer `cap()` del
+     capítulo, para que el texto nuevo entre en ese mismo barrido. */
+  paintCap(!instant, 480);
   if (instant) {
     for (const s of CHAPTERS[ci].steps) { s.run && s.run(); s.tick && s.tick(1); }
     fired = CHAPTERS[ci].steps.length; t = CHAPTERS[ci].dur * 1000;
     void stage.offsetWidth;
     requestAnimationFrame(() => { inst = prevInst || reduced; if (!inst) player.classList.remove('inst'); });
+    paintCap(false);
   }
-  paintCap(false);
-  updateUI();
 }
 function stepEngine() {
   const ch = CHAPTERS[ci];
@@ -928,15 +1049,7 @@ function stepEngine() {
 function frame(ts) {
   const dt = Math.min(ts - lastTs, 100); lastTs = ts;
   if (playing) { t += dt; stepEngine(); }
-  progress();
   requestAnimationFrame(frame);
-}
-function fmt(s) { s = Math.floor(s); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
-function progress() {
-  const el = START[ci] + Math.min(t / 1000, CHAPTERS[ci].dur);
-  $('#fill').style.transform = `scaleX(${el / TOTAL})`;
-  $('#clock').textContent = fmt(el) + ' / ' + fmt(TOTAL);
-  $('#bar').setAttribute('aria-valuenow', Math.round(el / TOTAL * 100));
 }
 function setPlaying() {
   playing = !userPaused && onScreen && !reduced;
@@ -944,29 +1057,17 @@ function setPlaying() {
   $('#icPlay').style.display = playing ? 'none' : '';
   $('#bPlay').setAttribute('aria-label', playing ? T('pause') : T('play'));
   $('#bPlay').style.display = reduced ? 'none' : '';
-}
-function updateUI() {
-  $$('.mk').forEach((m, i) => { m.classList.toggle('cur', i === ci); m.classList.toggle('done', i < ci); });
+  /* En pausa el botón se queda visible: si desapareciera no habría forma
+     de reanudar con el ratón. */
+  player.classList.toggle('paused', !playing && !reduced);
 }
 function jump(i) { enter(i, !(playing)); setPlaying(); }
 
-/* controls */
+/* controls — solo pausa/play e idioma; el transporte de capítulo, la barra,
+   los puntos y el reloj se quitaron (el cliente quiere ver la animación).
+   Las flechas siguen saltando de capítulo porque no cuestan cromo. */
 $('#bPlay').onclick = () => { userPaused = !userPaused; if (!userPaused && t >= CHAPTERS[ci].dur * 1000) enter(ci, false); setPlaying(); };
-$('#bPrev').onclick = () => jump(t > 2500 && !reduced ? ci : ci - 1);
-$('#bNext').onclick = () => jump(ci + 1);
 $('#bLang').onclick = () => setLang(lang === 'nb' ? 'en' : 'nb');
-$('#bPrev').setAttribute('aria-label', 'prev'); $('#bNext').setAttribute('aria-label', 'next');
-const bar = $('#bar');
-CHAPTERS.forEach((c, i) => {
-  const b = document.createElement('button'); b.className = 'mk'; b.type = 'button';
-  b.style.left = (START[i] / TOTAL * 100) + '%'; b.dataset.i = i;
-  b.onclick = e => { e.stopPropagation(); jump(i); };
-  bar.appendChild(b);
-});
-bar.addEventListener('click', e => {
-  const r = bar.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * TOTAL;
-  let k = 0; START.forEach((s, i) => { if (x >= s) k = i; }); jump(k);
-});
 player.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') { jump(ci + 1); e.preventDefault(); }
   else if (e.key === 'ArrowLeft') { jump(ci - 1); e.preventDefault(); }
@@ -977,9 +1078,6 @@ player.addEventListener('keydown', e => {
 function setLang(l) {
   lang = l; document.documentElement.lang = l === 'nb' ? 'nb' : 'en';
   i18n(); $('#bLang').textContent = T('langBtn'); $('#bLang').title = T('langTitle'); $('#bLang').setAttribute('aria-label', T('langTitle'));
-  $('#bPrev').title = T('prev'); $('#bNext').title = T('next');
-  $('#bPrev').setAttribute('aria-label', T('prev')); $('#bNext').setAttribute('aria-label', T('next'));
-  $$('.mk').forEach((m, i) => { m.title = T('ch' + (i + 1)); m.setAttribute('aria-label', T('ch' + (i + 1))); });
   renderPops();
   if (P.view === 'mine') renderMine(); else { const sv = lastVisible; renderGrid(); }
   paintProfileBits(); setPlaying(); paintCap(false);
