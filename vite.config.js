@@ -11,7 +11,6 @@ export default defineConfig({
         // Split heavy third-party libs into separate, long-cached vendor chunks.
         manualChunks(id) {
           if (!id.includes('node_modules')) return undefined
-          if (id.includes('@supabase')) return 'vendor-supabase'
           if (id.includes('@phosphor-icons')) return 'vendor-icons'
           if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) return 'vendor-react'
           return undefined

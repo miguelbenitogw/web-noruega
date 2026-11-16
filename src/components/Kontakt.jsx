@@ -1,11 +1,29 @@
 import { useEffect, useRef, useState } from 'react'
 import emailjs from '@emailjs/browser'
-import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
 import { IMAGES, img } from '../assets/images'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from './editable/EditableText'
+import EditableText from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
+
+/**
+ * Kontakt — el formulario del empleador noruego.
+ *
+ * Lo que se tiró:
+ *  · Las fichas de contacto eran `glass-card bg-white/70 backdrop-blur-md`
+ *    con `hover:shadow-lg`. Cristal esmerilado sobre un fondo plano no
+ *    difumina nada: es una tarjeta blanca más caro de pintar.
+ *  · La foto del contacto crecía de 48 a 160 px al hacerle clic, con
+ *    `shadow-2xl` y `hover:scale-110`. Un juguete en un formulario de trabajo.
+ *  · La foto de la oficina llevaba un degradado navy encima para poder
+ *    escribir la dirección. La dirección es texto; la foto se ve entera.
+ *  · El panel del formulario flotaba con `shadow-xl` y `rounded-3xl`.
+ *
+ * Lo que se añadió: validación con mensajes legibles (no solo borde rojo),
+ * `aria-invalid` / `aria-describedby` por campo y un aviso de envío anunciado
+ * por lector de pantalla. La protección antibot no se toca.
+ */
+
 const miriamPhoto = IMAGES.contactMiriam
 const groPhoto = IMAGES.contactGro
 
@@ -26,11 +44,73 @@ const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
 const RATE_LIMIT_MAX = 3
 const MIN_FORM_FILL_MS = 3000
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+/* Interfaz en Poppins: un campo en serif se lee peor y se opera peor. */
+const FIELD_CLASS =
+  'w-full font-ui text-[0.9375rem] text-ink bg-white rounded-panel border px-4 py-3 ' +
+  'placeholder:text-ink-soft/80 outline-none transition-colors'
+const FIELD_OK = 'border-line focus:border-primary-600'
+const FIELD_ERROR = 'border-red-500 bg-red-50/50 focus:border-red-600'
+
+function FieldNote({ id, children }) {
+  return (
+    <p id={id} className="mt-2 flex items-start gap-1.5 font-ui text-[0.8125rem] text-red-700">
+      <svg
+        width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        strokeWidth="2.5" strokeLinecap="round" aria-hidden="true" className="shrink-0 mt-[3px]"
+      >
+        <path d="M12 8v5M12 17h.01" />
+        <circle cx="12" cy="12" r="9" strokeWidth="1.75" />
+      </svg>
+      {children}
+    </p>
+  )
+}
+
+function Field({
+  id, name, label, type = 'text', rows,
+  required = false, autoComplete, value, onChange, placeholder, error,
+}) {
+  const errorId = `${id}-error`
+  const shared = {
+    id,
+    name,
+    value,
+    onChange,
+    placeholder,
+    required,
+    'aria-required': required || undefined,
+    'aria-invalid': error ? true : undefined,
+    'aria-describedby': error ? errorId : undefined,
+    className: `${FIELD_CLASS} ${error ? FIELD_ERROR : FIELD_OK}${rows ? ' resize-y min-h-[120px]' : ''}`,
+  }
+
+  return (
+    <div>
+      <label htmlFor={id} className="block font-ui text-[0.8125rem] font-semibold text-navy mb-2">
+        {label}
+      </label>
+      {rows
+        ? <textarea rows={rows} {...shared} />
+        : <input type={type} autoComplete={autoComplete} {...shared} />}
+      {error && <FieldNote id={errorId}>{error}</FieldNote>}
+    </div>
+  )
+}
+
+const validate = (f) => {
+  const next = {}
+  if (!f.from_name.trim()) next.from_name = 'Fyll inn navnet ditt.'
+  if (!f.from_email.trim()) next.from_email = 'Fyll inn e-postadressen din.'
+  else if (!EMAIL_PATTERN.test(f.from_email.trim())) next.from_email = 'Skriv inn en gyldig e-postadresse.'
+  if (!f.message.trim()) next.message = 'Skriv en kort melding til oss.'
+  return next
+}
+
 export default function Kontakt() {
   const contacts = useContent('contacts')
   const c = useContent('kontaktComp')
-  const [expandedPhoto, setExpandedPhoto] = useState(null)
-  const visualEditEnabled = useVisualEditEnabled()
   const [form, setForm] = useState({
     from_name: '',
     from_email: '',
@@ -39,6 +119,7 @@ export default function Kontakt() {
     type: 'arbeidsgiver',
     website: '',
   })
+  const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle')
   const formOpenedAtRef = useRef(0)
 
@@ -46,7 +127,13 @@ export default function Kontakt() {
     formOpenedAtRef.current = Date.now()
   }, [])
 
-  const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setForm(f => ({ ...f, [name]: value }))
+    setErrors(prev => (prev[name] ? { ...prev, [name]: undefined } : prev))
+    // El aviso de «revisá los campos marcados» desaparece en cuanto se corrige.
+    setStatus(s => (s === 'invalid' ? 'idle' : s))
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -64,6 +151,18 @@ export default function Kontakt() {
       trackEvent('contact_blocked_bot', { reason: 'too_fast' })
       return
     }
+
+    // Validación propia: el formulario lleva `noValidate`, así que sin esto
+    // el navegador no comprobaba nada y `required` era decorativo.
+    // Va después de las trampas antibot y antes del rate limit, para no
+    // gastarle un intento a quien solo se dejó un campo sin rellenar.
+    const nextErrors = validate(form)
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors)
+      setStatus('invalid')
+      return
+    }
+    setErrors({})
 
     try {
       const now = Date.now()
@@ -119,182 +218,186 @@ export default function Kontakt() {
 
   const reset = () => {
     setStatus('idle')
+    setErrors({})
     setForm({ from_name: '', from_email: '', phone: '', message: '', type: 'arbeidsgiver', website: '' })
     formOpenedAtRef.current = Date.now()
   }
 
   return (
-    <section id="kontakt" className="scroll-mt-28 py-24 lg:py-32 bg-surface overflow-hidden" aria-labelledby="kontakt-heading">
+    <section
+      id="kontakt"
+      className="scroll-mt-28 py-20 lg:py-28 bg-surface"
+      aria-labelledby="kontakt-heading"
+    >
       <div className="container-xl">
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          <AnimateIn variant="fadeRight">
-            <div className="space-y-12">
-              <div>
-                <EditableText
-                  as="span"
-                  path="kontaktComp.label"
-                  value={c.label}
-                  className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
-                />
-                <EditableText
-                  as="h2"
-                  path="kontaktComp.heading"
-                  value={c.heading}
-                  id="kontakt-heading"
-                  className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
-                />
-                <EditableText
-                  as="p"
-                  path="kontaktComp.description"
-                  value={c.description}
-                  multiline
-                  className="text-gray-600 text-lg leading-relaxed"
-                />
-              </div>
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                {(contacts || []).map((contact, i) => {
-                  const commitName = createArrayItemCommitter({
-                    basePath: 'contacts',
-                    fallbackItems: contacts,
-                    index: i,
-                    field: 'name',
-                  })
-                  const commitRole = createArrayItemCommitter({
-                    basePath: 'contacts',
-                    fallbackItems: contacts,
-                    index: i,
-                    field: 'role',
-                  })
-                  return (
-                    <div key={contact.name} className="glass-card bg-white/70 backdrop-blur-md rounded-2xl p-6 border border-white/50 shadow-sm hover:shadow-lg transition-all duration-300">
-                      <div className="flex flex-col gap-4">
-                        {resolveContactPhoto(contact) ? (
-                          visualEditEnabled ? (
-                            <EditableImage
-                              path={`contacts.${i}.imageUrl`}
-                              src={resolveContactPhoto(contact)}
-                              alt={contact.name}
-                              className="w-16 h-16 rounded-xl object-cover shrink-0 shadow-lg shadow-primary-200"
-                              wrapperClassName="w-16 h-16 rounded-xl"
-                            />
-                          ) : (
-                            <img
-                              src={resolveContactPhoto(contact)}
-                              alt={contact.name}
-                              onClick={() => setExpandedPhoto(expandedPhoto === i ? null : i)}
-                              className={`rounded-xl object-cover shrink-0 shadow-lg shadow-primary-200 cursor-pointer transition-all duration-300 hover:scale-110 ${
-                                expandedPhoto === i
-                                  ? 'w-40 h-40 rounded-2xl shadow-2xl'
-                                  : 'w-12 h-12'
-                              }`}
-                              loading="lazy"
-                              decoding="async"
-                              width={48}
-                              height={48}
-                            />
-                          )
-                        ) : (
-                          <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary-200">
-                            <span className="font-heading font-bold text-white text-lg">{contact.name.charAt(0)}</span>
-                          </div>
-                        )}
-                        <div>
-                          <EditableText
-                            as="div"
-                            path={`contacts.${i}.name`}
-                            value={contact.name}
-                            onCommit={commitName}
-                            className="font-heading font-bold text-ink text-sm mb-0.5"
-                          />
-                          <EditableText
-                            as="div"
-                            path={`contacts.${i}.role`}
-                            value={contact.role}
-                            onCommit={commitRole}
-                            className="text-gray-400 text-[10px] uppercase font-bold tracking-wider mb-2"
-                          />
-                          <div className="space-y-1">
-                            <a href={`mailto:${contact.email}`} className="text-primary-600 text-xs hover:underline flex items-center gap-2">
-                              {contact.email}
-                            </a>
-                            <a href={`tel:${contact.phone.replace(/\s/g, '')}`} className="text-gray-500 text-xs hover:text-primary-600 transition-colors flex items-center gap-2">
-                              {contact.phone}
-                            </a>
-                          </div>
-                        </div>
-                      </div>
+          {/* ── Con quién hablás ───────────────────────────────────────── */}
+          <div className="lg:col-span-5">
+            <EditableText
+              as="span"
+              path="kontaktComp.label"
+              value={c.label}
+              className="gw-label text-primary-600"
+            />
+            <EditableText
+              as="h2"
+              id="kontakt-heading"
+              path="kontaktComp.heading"
+              value={c.heading}
+              className="mt-5 text-display-sm font-semibold text-navy"
+            />
+            <EditableText
+              as="p"
+              path="kontaktComp.description"
+              value={c.description}
+              multiline
+              className="mt-6 text-ink-muted text-body leading-[1.65]"
+            />
+
+            {/* Si la promesa es «hablás con una persona», la persona se ve. */}
+            <div className="mt-10 grid sm:grid-cols-2 gap-5">
+              {(contacts || []).map((contact, i) => (
+                <div key={contact.name} className="gw-panel bg-white border-line p-6">
+                  {resolveContactPhoto(contact) ? (
+                    <img
+                      src={resolveContactPhoto(contact)}
+                      alt={contact.name}
+                      className="w-16 h-16 rounded-pill object-cover object-top mb-4"
+                      loading="lazy"
+                      decoding="async"
+                      width={64}
+                      height={64}
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-pill bg-navy flex items-center justify-center mb-4">
+                      <span className="font-heading font-semibold text-white text-xl">
+                        {contact.name.charAt(0)}
+                      </span>
                     </div>
-                  )
-                })}
-              </div>
+                  )}
 
-              <div className="group relative rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
-                <EditableImage
-                  path="kontaktComp.imageUrl"
-                  src={img(c.imageUrl || IMAGES.alicanteOffice, 1200)}
-                  alt={c.imageAlt || 'Global Working-kontoret i Alicante'}
-                  className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent flex flex-col justify-end p-8">
-                  <div className="text-white">
-                    <EditableText
-                      as="h4"
-                      path="kontaktComp.officeTitle"
-                      value={c.officeTitle}
-                      className="font-heading font-bold text-xl mb-1"
-                    />
-                    <EditableText
-                      as="p"
-                      path="kontaktComp.officeAddress"
-                      value={c.officeAddress}
-                      multiline
-                      className="text-blue-100 text-sm leading-relaxed max-w-xs"
-                    />
+                  <EditableText
+                    as="div"
+                    path={`contacts.${i}.name`}
+                    value={contact.name}
+                    className="font-heading font-semibold text-navy leading-snug"
+                  />
+                  <EditableText
+                    as="div"
+                    path={`contacts.${i}.role`}
+                    value={contact.role}
+                    className="mt-0.5 font-ui text-[0.8125rem] text-ink-soft"
+                  />
+
+                  <div className="mt-4 pt-4 border-t border-line space-y-1.5">
                     <a
-                      href="https://maps.google.com/?q=Avenida+de+la+Albufereta+44+Alicante"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 mt-4 text-xs font-bold uppercase tracking-wider text-white hover:text-blue-200 transition-colors"
+                      href={`mailto:${contact.email}`}
+                      className="block font-ui text-[0.8125rem] text-primary-600 break-words transition-colors hover:text-navy"
                     >
-                      {c.mapsLabel}
+                      {contact.email}
+                    </a>
+                    <a
+                      href={`tel:${contact.phone.replace(/\s/g, '')}`}
+                      className="block font-ui text-[0.8125rem] text-ink-muted tabular-nums transition-colors hover:text-primary-600"
+                    >
+                      {contact.phone}
                     </a>
                   </div>
                 </div>
+              ))}
+            </div>
+
+            {/* La sede: foto entera y la dirección como dato, bajo filete. */}
+            <div className="mt-10">
+              <EditableImage
+                path="kontaktComp.imageUrl"
+                src={img(c.imageUrl || IMAGES.alicanteOffice, 1200)}
+                alt={c.imageAlt || 'Global Working-kontoret i Alicante'}
+                className="w-full h-56 lg:h-64 object-cover rounded-panel"
+                loading="lazy"
+              />
+              <div className="mt-5 pt-5 border-t border-line">
+                <EditableText
+                  as="h3"
+                  path="kontaktComp.officeTitle"
+                  value={c.officeTitle}
+                  className="font-heading text-body font-semibold text-navy"
+                />
+                <EditableText
+                  as="p"
+                  path="kontaktComp.officeAddress"
+                  value={c.officeAddress}
+                  multiline
+                  className="mt-1.5 font-ui text-sm text-ink-muted leading-relaxed"
+                />
+                <a
+                  href="https://maps.google.com/?q=Avenida+de+la+Albufereta+44+Alicante"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group mt-4 inline-flex items-center gap-2 font-ui text-sm font-semibold text-primary-600 transition-colors hover:text-navy"
+                >
+                  {c.mapsLabel}
+                  <svg
+                    width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
+                    className="shrink-0 transition-transform duration-200 group-hover:translate-x-1"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </a>
               </div>
             </div>
-          </AnimateIn>
+          </div>
 
-          <AnimateIn variant="fadeLeft" delay={120}>
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 lg:p-10">
+          {/* ── El formulario ──────────────────────────────────────────── */}
+          <div className="lg:col-span-6 lg:col-start-7">
+            <div className="bg-white rounded-panel border border-line p-7 lg:p-9">
               {status === 'sent' ? (
-                <div className="flex flex-col items-center justify-center text-center py-8 gap-4">
-                  <h3 className="font-heading text-xl font-bold text-ink">{c.successTitle}</h3>
-                  <p className="text-gray-500 leading-relaxed">{c.successDescription}</p>
+                <div className="py-6" role="status" aria-live="polite">
+                  <h3 className="font-heading text-[1.375rem] font-semibold text-navy">
+                    {c.successTitle}
+                  </h3>
+                  <p className="mt-3 text-ink-muted leading-[1.65]">{c.successDescription}</p>
                   <button
                     onClick={reset}
-                    className="mt-2 text-primary-600 font-semibold text-sm hover:text-primary-700 transition-colors cursor-pointer"
+                    type="button"
+                    className="mt-6 font-ui text-sm font-semibold text-primary-600 transition-colors hover:text-navy cursor-pointer"
                   >
                     {c.successReset}
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate className="space-y-5" aria-label="Kontaktskjema">
-                  <div>
-                    <p className="font-heading font-bold text-ink text-xl mb-1">{c.formTitle}</p>
-                    <p className="text-gray-400 text-sm">{c.formSubtitle}</p>
+                  <div className="pb-5 border-b border-line">
+                    <p className="font-heading text-[1.25rem] font-semibold text-navy">{c.formTitle}</p>
+                    <p className="mt-1.5 font-ui text-sm text-ink-soft">{c.formSubtitle}</p>
                   </div>
 
                   {status === 'error' && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3" role="alert">
+                    <div
+                      className="font-ui text-sm text-red-800 bg-red-50 border border-red-300 rounded-panel px-4 py-3"
+                      role="alert"
+                    >
                       {isEmailConfigured
                         ? 'Noe gikk galt. Prøv igjen eller kontakt oss direkte per e-post.'
                         : 'Kontaktskjema er midlertidig utilgjengelig. Kontakt oss direkte på e-post eller telefon.'}
                     </div>
                   )}
                   {status === 'rate_limited' && (
-                    <div className="bg-amber-50 border border-amber-200 text-amber-800 text-sm rounded-xl px-4 py-3" role="alert">
+                    <div
+                      className="font-ui text-sm text-amber-900 bg-amber-50 border border-amber-300 rounded-panel px-4 py-3"
+                      role="alert"
+                    >
                       For mange forsøk på kort tid. Vent litt og prøv igjen.
+                    </div>
+                  )}
+                  {status === 'invalid' && (
+                    <div
+                      className="font-ui text-sm text-red-800 bg-red-50 border border-red-300 rounded-panel px-4 py-3"
+                      role="alert"
+                    >
+                      Sjekk de merkede feltene og prøv igjen.
                     </div>
                   )}
 
@@ -309,75 +412,67 @@ export default function Kontakt() {
                     className="absolute -left-[9999px] opacity-0 pointer-events-none"
                   />
 
-                  <div>
-                    <label htmlFor="from_name" className="block text-sm font-medium text-ink mb-1.5">Fullt navn *</label>
-                    <input
-                      id="from_name"
-                      name="from_name"
-                      type="text"
-                      required
-                      autoComplete="name"
-                      value={form.from_name}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-ink placeholder-gray-400 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all"
-                      placeholder="Ola Nordmann"
-                    />
-                  </div>
+                  <Field
+                    id="from_name"
+                    name="from_name"
+                    label="Fullt navn *"
+                    required
+                    autoComplete="name"
+                    value={form.from_name}
+                    onChange={handleChange}
+                    placeholder="Ola Nordmann"
+                    error={errors.from_name}
+                  />
 
-                  <div>
-                    <label htmlFor="from_email" className="block text-sm font-medium text-ink mb-1.5">E-postadresse *</label>
-                    <input
-                      id="from_email"
-                      name="from_email"
-                      type="email"
-                      required
-                      autoComplete="email"
-                      value={form.from_email}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-ink placeholder-gray-400 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all"
-                      placeholder="ola@bedrift.no"
-                    />
-                  </div>
+                  <Field
+                    id="from_email"
+                    name="from_email"
+                    type="email"
+                    label="E-postadresse *"
+                    required
+                    autoComplete="email"
+                    value={form.from_email}
+                    onChange={handleChange}
+                    placeholder="ola@bedrift.no"
+                    error={errors.from_email}
+                  />
 
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-ink mb-1.5">Telefon</label>
-                    <input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      autoComplete="tel"
-                      value={form.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-ink placeholder-gray-400 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all"
-                      placeholder="+47 000 00 000"
-                    />
-                  </div>
+                  <Field
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    label="Telefon"
+                    autoComplete="tel"
+                    value={form.phone}
+                    onChange={handleChange}
+                    placeholder="+47 000 00 000"
+                    error={errors.phone}
+                  />
 
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-ink mb-1.5">Melding *</label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      required
-                      rows={4}
-                      value={form.message}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-ink placeholder-gray-400 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all resize-none"
-                      placeholder="Fortell oss om ditt behov..."
-                    />
-                  </div>
+                  <Field
+                    id="message"
+                    name="message"
+                    label="Melding *"
+                    rows={5}
+                    required
+                    value={form.message}
+                    onChange={handleChange}
+                    placeholder="Fortell oss om ditt behov..."
+                    error={errors.message}
+                  />
 
+                  {/* El único naranja de la pantalla: el botón que importa. */}
                   <button
                     type="submit"
                     disabled={status === 'sending'}
-                    className="w-full py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="gw-btn gw-btn-ember w-full disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {status === 'sending' ? c.sendingLabel : c.submitLabel}
                   </button>
                 </form>
               )}
             </div>
-          </AnimateIn>
+          </div>
         </div>
       </div>
     </section>

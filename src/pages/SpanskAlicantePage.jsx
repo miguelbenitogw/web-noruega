@@ -1,62 +1,35 @@
-import AnimateIn from '../components/AnimateIn'
-import EditableText, { useVisualEditEnabled } from '../components/editable/EditableText'
-import InlineRichText from '../components/editable/InlineRichText'
+import EditableText from '../components/editable/EditableText'
 import KandidatKontakt from '../components/KandidatKontakt'
 import PageEndNav from '../components/PageEndNav'
 import { IMAGES, img, srcSet } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 
-function InlineEditableParagraph({
-  path,
-  value,
-  className,
-  linkClassName,
-  as = 'p',
-  ...rest
-}) {
-  const visualEditEnabled = useVisualEditEnabled()
+/**
+ * SpanskAlicantePage — la otra orilla, a página completa.
+ *
+ * Antes esta página era un muestrario del patrón por defecto: nueve cajas con
+ * `rounded-[2rem]` y `shadow-lg`, cada lista con su circulito azul y su check,
+ * un degradado `from-primary-50 via-white to-surface` debajo del testimonio y
+ * un `AnimateIn` con fadeUp en cada sección.
+ *
+ * Ahora la jerarquía la dan el tono de fondo y los filetes, no la altura. Las
+ * fotos —lo único cálido de la marca— mandan y salen por el borde de la
+ * pantalla, alternando izquierda y derecha como en el teaser de la home.
+ */
 
-  if (visualEditEnabled) {
-    return (
-      <EditableText
-        as={as}
-        path={path}
-        value={value}
-        multiline
-        inputClassName="min-h-[220px] resize-y leading-relaxed"
-        className={className}
-        {...rest}
-      />
-    )
-  }
-
+/* Lista de filetes. Sustituye al patrón «círculo azul + check», que es el tic
+   de cualquier landing generada: aquí lo que separa es la línea, no el icono. */
+function RuleList({ items, basePath }) {
   return (
-    <InlineRichText
-      as={as}
-      value={value}
-      className={className}
-      linkClassName={linkClassName}
-      {...rest}
-    />
-  )
-}
-
-function SimpleBulletList({ items, basePath }) {
-  return (
-    <ul className="space-y-3">
+    <ul className="border-t border-line">
       {items.map((item, index) => (
-        <li key={`${basePath}-${index}`} className="flex gap-3 items-start">
-          <span className="mt-1 w-6 h-6 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center shrink-0">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-              <path d="M5 13l4 4L19 7" />
-            </svg>
-          </span>
+        <li key={`${basePath}-${index}`} className="border-b border-line py-3.5">
           <EditableText
             as="span"
             path={`${basePath}.${index}`}
             value={item}
-            className="text-gray-600 leading-relaxed"
+            className="font-ui text-[0.9375rem] leading-snug text-ink"
           />
         </li>
       ))}
@@ -64,285 +37,284 @@ function SimpleBulletList({ items, basePath }) {
   )
 }
 
-function ProcessStep({ step, index }) {
-  return (
-    <div className="bg-surface border border-gray-100 rounded-2xl p-5">
-      <div className="w-10 h-10 rounded-xl bg-primary-600 text-white font-heading font-bold flex items-center justify-center mb-4">
-        {index + 1}
-      </div>
-      <EditableText
-        as="p"
-        path={`spanskAlicantePage.processSteps.${index}`}
-        value={step}
-        className="font-medium text-ink leading-relaxed"
-      />
-    </div>
-  )
-}
-
 export default function SpanskAlicantePage() {
   const page = useContent('spanskAlicantePage')
+  const processSteps = page.processSteps || []
 
   return (
     <>
-      <section className="relative bg-gradient-to-br from-navy via-primary-900 to-primary-800 pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(30,115,190,0.25),transparent_60%)]" aria-hidden="true" />
-        <div className="container-xl relative z-10">
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
-            <AnimateIn>
-              <nav aria-label="Brødsmuler" className="mb-6">
-                <ol className="flex items-center gap-2 text-sm text-blue-200">
-                  <li><a href="/" className="hover:text-white transition-colors">Hjem</a></li>
-                  <li aria-hidden="true">/</li>
-                  <li className="text-white font-medium">
-                    <EditableText as="span" path="spanskAlicantePage.breadcrumb" value={page.breadcrumb} className="inline" />
-                  </li>
-                </ol>
+      {/* ── Hero ──────────────────────────────────────────────────────────
+          Navy plano y la foto saliendo por el borde derecho. Sin tarjeta,
+          sin sombra: el borde de la pantalla es el marco. */}
+      <section className="bg-navy overflow-hidden" aria-labelledby="spansk-alicante-hero-heading">
+        <div className="container-xl">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center pt-32 pb-16 lg:pt-40 lg:pb-20">
+
+            <div className="lg:col-span-6 animate-riseIn">
+              <nav className="font-ui text-primary-300 text-sm mb-7" aria-label="Brødsmuler">
+                <a href="/" className="hover:text-white transition-colors">Hjem</a>
+                <span className="mx-2 text-primary-400" aria-hidden="true">/</span>
+                <EditableText
+                  as="span"
+                  path="spanskAlicantePage.breadcrumb"
+                  value={page.breadcrumb}
+                  className="text-white"
+                />
               </nav>
 
               <EditableText
                 as="h1"
+                id="spansk-alicante-hero-heading"
                 path="spanskAlicantePage.heroTitle"
                 value={page.heroTitle}
-                className="font-heading text-3xl lg:text-5xl font-bold text-white leading-tight mb-4"
+                className="text-display-sm sm:text-display font-semibold !text-white break-words max-w-[18ch]"
               />
               <EditableText
                 as="p"
                 path="spanskAlicantePage.heroSubtitle"
                 value={page.heroSubtitle}
                 multiline
-                className="text-xl text-blue-100 leading-relaxed mb-6 max-w-2xl"
+                className="mt-6 gw-measure text-body lg:text-[1.1875rem] text-primary-100 leading-[1.6]"
               />
               <EditableText
                 as="p"
                 path="spanskAlicantePage.intro"
                 value={page.intro}
                 multiline
-                className="text-lg text-blue-100/90 leading-relaxed max-w-2xl mb-8"
+                className="mt-5 gw-measure text-body text-primary-200 leading-[1.65]"
               />
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
                 <a
                   href="#kandidat-kontakt"
                   onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hero', cta: 'kandidat_kontakt' })}
-                  className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-cta text-white font-semibold rounded-xl hover:bg-cta-600 transition-all duration-200 shadow-lg hover:-translate-y-0.5 cursor-pointer"
+                  className="gw-btn gw-btn-ember"
                 >
                   <EditableText as="span" path="spanskAlicantePage.ctaSecondary" value={page.ctaSecondary} className="inline" />
                 </a>
                 <a
                   href="#spansk-alicante-process"
                   onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hero', cta: 'process' })}
-                  className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-white/10 border border-white/20 text-white font-semibold rounded-xl hover:bg-white/15 transition-colors duration-200 cursor-pointer"
+                  className="gw-btn gw-btn-ghost"
                 >
                   <EditableText as="span" path="spanskAlicantePage.ctaPrimary" value={page.ctaPrimary} className="inline" />
                 </a>
               </div>
-            </AnimateIn>
+            </div>
 
-            <AnimateIn variant="fadeLeft" delay={120}>
-              <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
-                <img
-                  src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1200)}
-                  srcSet={srcSet(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, [640, 1024, 1200])}
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  alt={page.heroImageAlt || 'Strand og palmer i Alicante'}
-                  className="w-full h-[360px] lg:h-[460px] object-cover"
-                  loading="eager"
-                  width={1200}
-                  height={460}
-                />
-              </div>
-            </AnimateIn>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 lg:py-20 bg-white">
-        <div className="container-xl">
-          <AnimateIn>
-            <div className="bg-surface border border-gray-100 rounded-[2rem] p-8 lg:p-12 max-w-4xl mx-auto">
-              <EditableText
-                as="p"
-                path="spanskAlicantePage.exchangeNote"
-                value={page.exchangeNote}
-                multiline
-                inputClassName="min-h-[140px]"
-                className="text-lg text-gray-700 leading-relaxed whitespace-pre-line"
+            <div className="lg:col-span-6 animate-settle gw-bleed-r">
+              <img
+                src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1400)}
+                srcSet={srcSet(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, [640, 1024, 1400])}
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                alt={page.heroImageAlt || 'Strand og palmer i Alicante'}
+                className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
+                loading="eager"
+                decoding="sync"
+                width={1400}
+                height={520}
               />
             </div>
-          </AnimateIn>
+
+          </div>
         </div>
       </section>
 
-      <section className="py-24 lg:py-28 bg-surface">
+      {/* ── El relato ─────────────────────────────────────────────────────
+          Cinco párrafos corridos: esto se lee, así que va en serif, a medida
+          de lectura y sin caja alrededor. */}
+      <section className="py-24 lg:py-32 bg-white">
         <div className="container-xl">
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-16 items-start">
-            <AnimateIn variant="fadeRight">
+          <div className="gw-measure border-t border-line pt-10 lg:pt-12">
+            <EditableText
+              as="div"
+              path="spanskAlicantePage.exchangeNote"
+              value={page.exchangeNote}
+              multiline
+              richText
+              className="text-body lg:text-[1.1875rem] text-ink leading-[1.75] [&>p]:mb-6 [&>p:last-child]:mb-0 [&>p]:leading-[1.75]"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ── El rol: foto saliendo por la izquierda ───────────────────────── */}
+      <section className="bg-surface overflow-hidden" aria-labelledby="spansk-alicante-role-heading">
+        <div className="container-xl">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+
+            <div className="lg:col-span-6 order-2 lg:order-1 pb-20 lg:py-28 gw-bleed-l">
+              <img
+                src={img(page.roleImageUrl || IMAGES.spanskAlicantePromenade, 1400)}
+                alt={page.roleImageAlt || 'Sosial hverdag og samtaler i Alicante'}
+                className="w-full h-[300px] lg:h-[520px] object-cover rounded-panel lg:rounded-l-none"
+                loading="lazy"
+                decoding="async"
+                width={1400}
+                height={520}
+              />
+            </div>
+
+            <div className="lg:col-span-5 lg:col-start-8 order-1 lg:order-2 pt-24 lg:py-28">
               <EditableText
                 as="h2"
+                id="spansk-alicante-role-heading"
                 path="spanskAlicantePage.roleTitle"
                 value={page.roleTitle}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight"
+                className="text-display-sm font-semibold text-navy break-words"
               />
-              <SimpleBulletList items={page.roleItems || []} basePath="spanskAlicantePage.roleItems" />
-            </AnimateIn>
+              <div className="mt-8">
+                <RuleList items={page.roleItems || []} basePath="spanskAlicantePage.roleItems" />
+              </div>
+            </div>
 
-            <AnimateIn variant="fadeLeft" delay={120}>
-              <div className="rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg bg-white">
+          </div>
+        </div>
+      </section>
+
+      {/* ── Qué recibís / cómo es la semana ─────────────────────────────── */}
+      <section className="py-24 lg:py-32 bg-white">
+        <div className="container-xl">
+          <div className="grid lg:grid-cols-2 gap-14 lg:gap-20">
+            <div>
+              <EditableText
+                as="h2"
+                path="spanskAlicantePage.benefitsTitle"
+                value={page.benefitsTitle}
+                className="text-display-sm font-semibold text-navy break-words"
+              />
+              <div className="mt-8">
+                <RuleList items={page.benefitsItems || []} basePath="spanskAlicantePage.benefitsItems" />
+              </div>
+            </div>
+
+            <div>
+              <EditableText
+                as="h2"
+                path="spanskAlicantePage.weekTitle"
+                value={page.weekTitle}
+                className="text-display-sm font-semibold text-navy break-words"
+              />
+              <div className="mt-8">
+                <RuleList items={page.weekItems || []} basePath="spanskAlicantePage.weekItems" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonio ────────────────────────────────────────────────────
+          Antes: tarjeta blanca con sombra sobre un degradado y un icono de
+          comillas gigante. Ahora la cita es tipografía y la cara es una foto. */}
+      <section className="py-24 lg:py-32 bg-surface">
+        <div className="container-xl">
+          <figure className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            {page.testimonialImageUrl && (
+              <div className="lg:col-span-4">
                 <img
-                  src={img(page.roleImageUrl || IMAGES.spanskAlicantePromenade, 1200)}
-                  alt={page.roleImageAlt || 'Sosial hverdag og samtaler i Alicante'}
-                  className="w-full h-[360px] object-cover"
+                  src={page.testimonialImageUrl}
+                  alt={page.testimonialImageAlt || page.testimonialAuthor || ''}
+                  className="w-[200px] lg:w-full h-[240px] lg:h-[420px] object-cover object-top rounded-panel"
                   loading="lazy"
                   decoding="async"
-                  width={1200}
-                  height={360}
                 />
               </div>
-            </AnimateIn>
-          </div>
+            )}
+            <div className="lg:col-span-7 lg:col-start-6">
+              <EditableText
+                as="blockquote"
+                path="spanskAlicantePage.testimonialQuote"
+                value={page.testimonialQuote}
+                multiline
+                className="text-[1.375rem] lg:text-[1.75rem] text-navy leading-[1.45]"
+              />
+              <EditableText
+                as="figcaption"
+                path="spanskAlicantePage.testimonialAuthor"
+                value={page.testimonialAuthor}
+                className="mt-7 font-ui text-sm text-ink-soft"
+              />
+            </div>
+          </figure>
         </div>
       </section>
 
-      <section className="py-24 lg:py-28 bg-white">
-        <div className="container-xl">
-          <div className="grid lg:grid-cols-2 gap-8">
-            <AnimateIn variant="fadeUp">
-              <div className="bg-surface border border-gray-100 rounded-[2rem] p-8 h-full">
-                <EditableText
-                  as="h2"
-                  path="spanskAlicantePage.benefitsTitle"
-                  value={page.benefitsTitle}
-                  className="font-heading text-2xl lg:text-3xl font-bold text-ink mb-6"
-                />
-                <SimpleBulletList items={page.benefitsItems || []} basePath="spanskAlicantePage.benefitsItems" />
-              </div>
-            </AnimateIn>
-
-            <AnimateIn variant="fadeUp" delay={120}>
-              <div className="bg-surface border border-gray-100 rounded-[2rem] p-8 h-full">
-                <EditableText
-                  as="h2"
-                  path="spanskAlicantePage.weekTitle"
-                  value={page.weekTitle}
-                  className="font-heading text-2xl lg:text-3xl font-bold text-ink mb-6"
-                />
-                <SimpleBulletList items={page.weekItems || []} basePath="spanskAlicantePage.weekItems" />
-              </div>
-            </AnimateIn>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 lg:py-28 bg-gradient-to-br from-primary-50 via-white to-surface">
-        <div className="container-xl">
-          <AnimateIn>
-            <figure className="max-w-4xl mx-auto bg-white border border-gray-100 rounded-[2rem] p-8 lg:p-10 shadow-sm">
-              <div className="flex flex-col sm:flex-row gap-8 items-center">
-                {page.testimonialImageUrl && (
-                  <img
-                    src={page.testimonialImageUrl}
-                    alt={page.testimonialAuthor || 'Testimonial'}
-                    className="w-32 h-40 rounded-3xl object-cover object-top shrink-0 border-2 border-primary-100 shadow-md"
-                    loading="lazy"
-                  />
-                )}
-                <div className="flex-1">
-                  <svg className="text-primary-200 mb-5" width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M7.17 6A5.001 5.001 0 0 0 2 11v7h7v-7H6.08A3.001 3.001 0 0 1 9 8V6H7.17Zm9 0A5.001 5.001 0 0 0 11 11v7h7v-7h-2.92A3.001 3.001 0 0 1 18 8V6h-1.83Z" />
-                  </svg>
-                  <EditableText
-                    as="blockquote"
-                    path="spanskAlicantePage.testimonialQuote"
-                    value={page.testimonialQuote}
-                    multiline
-                    className="font-heading text-xl lg:text-2xl font-bold text-ink leading-relaxed mb-4"
-                  />
-                  <EditableText
-                    as="figcaption"
-                    path="spanskAlicantePage.testimonialAuthor"
-                    value={page.testimonialAuthor}
-                    className="text-gray-500 font-medium"
-                  />
-                </div>
-              </div>
-            </figure>
-          </AnimateIn>
-        </div>
-      </section>
-
+      {/* ── La foto de la hverdag, de borde a borde ───────────────────────
+          Sin contenedor, sin radio y sin sombra: es la sección más cálida de
+          toda la web y no necesita marco. */}
       {page.beachCollageUrl && (
-        <section className="py-10 lg:py-14 bg-white">
-          <div className="container-xl">
-            <AnimateIn variant="fadeUp">
-              <div className="rounded-[2rem] overflow-hidden shadow-lg">
-                <img
-                  src={page.beachCollageUrl}
-                  alt={page.beachCollageAlt || 'Hverdagen i Alicante'}
-                  className="w-full h-auto object-cover"
-                  loading="lazy"
-                />
-              </div>
-            </AnimateIn>
-          </div>
+        <section className="bg-white">
+          <img
+            src={page.beachCollageUrl}
+            alt={page.beachCollageAlt || 'Hverdagen i Alicante'}
+            className="w-full h-[280px] sm:h-[360px] lg:h-[480px] object-cover"
+            loading="lazy"
+            decoding="async"
+          />
         </section>
       )}
 
-      <section className="py-24 lg:py-28 bg-white">
+      {/* ── Curso de español / para quién es ────────────────────────────── */}
+      <section className="py-24 lg:py-32 bg-white">
         <div className="container-xl">
-          <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-8">
-            <AnimateIn variant="fadeRight">
-              <div className="bg-surface border border-gray-100 rounded-[2rem] p-8 h-full">
-                <EditableText
-                  as="h2"
-                  path="spanskAlicantePage.spanishCourseTitle"
-                  value={page.spanishCourseTitle}
-                  className="font-heading text-2xl lg:text-3xl font-bold text-ink mb-6"
-                />
-                <SimpleBulletList items={page.spanishCourseItems || []} basePath="spanskAlicantePage.spanishCourseItems" />
+          <div className="grid lg:grid-cols-2 gap-14 lg:gap-20">
+            <div>
+              <EditableText
+                as="h2"
+                path="spanskAlicantePage.spanishCourseTitle"
+                value={page.spanishCourseTitle}
+                className="text-display-sm font-semibold text-navy break-words"
+              />
+              <div className="mt-8">
+                <RuleList items={page.spanishCourseItems || []} basePath="spanskAlicantePage.spanishCourseItems" />
               </div>
-            </AnimateIn>
+            </div>
 
-            <AnimateIn variant="fadeLeft" delay={120}>
-              <div className="bg-surface border border-gray-100 rounded-[2rem] p-8 h-full">
-                <EditableText
-                  as="h2"
-                  path="spanskAlicantePage.fitTitle"
-                  value={page.fitTitle}
-                  className="font-heading text-2xl lg:text-3xl font-bold text-ink mb-6"
-                />
-                <SimpleBulletList items={page.fitItems || []} basePath="spanskAlicantePage.fitItems" />
+            <div>
+              <EditableText
+                as="h2"
+                path="spanskAlicantePage.fitTitle"
+                value={page.fitTitle}
+                className="text-display-sm font-semibold text-navy break-words"
+              />
+              <div className="mt-8">
+                <RuleList items={page.fitItems || []} basePath="spanskAlicantePage.fitItems" />
               </div>
-            </AnimateIn>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="py-24 lg:py-28 bg-surface">
+      {/* ── La ciudad: foto saliendo por la derecha ──────────────────────── */}
+      <section className="bg-surface overflow-hidden" aria-labelledby="spansk-alicante-city-heading">
         <div className="container-xl">
-          <div className="grid lg:grid-cols-[1fr_0.9fr] gap-10 items-start">
-            <AnimateIn variant="fadeRight">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+
+            <div className="lg:col-span-5 pt-24 lg:py-28">
               <EditableText
                 as="h2"
+                id="spansk-alicante-city-heading"
                 path="spanskAlicantePage.cityTitle"
                 value={page.cityTitle}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6"
+                className="text-display-sm font-semibold text-navy break-words"
               />
-              <SimpleBulletList items={page.cityItems || []} basePath="spanskAlicantePage.cityItems" />
+              <div className="mt-8">
+                <RuleList items={page.cityItems || []} basePath="spanskAlicantePage.cityItems" />
+              </div>
 
-              <div className="mt-10 bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="mt-10">
                 <EditableText
                   as="h3"
                   path="spanskAlicantePage.socialTitle"
                   value={page.socialTitle}
-                  className="font-heading text-xl font-bold text-ink mb-4"
+                  className="font-heading text-lg font-semibold text-navy"
                 />
-                <div className="flex flex-col gap-3">
+                <div className="mt-4 flex flex-col items-start gap-2.5">
                   <a
                     href={page.instagramUrl || 'https://www.instagram.com/globalworking'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-600 hover:text-primary-600 transition-colors"
+                    className="group inline-flex items-center gap-2 font-ui text-[0.9375rem] font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                   >
                     <EditableText
                       as="span"
@@ -350,12 +322,15 @@ export default function SpanskAlicantePage() {
                       value={page.socialInstagram}
                       className="inline"
                     />
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                      <path d="M7 17L17 7M9 7h8v8" />
+                    </svg>
                   </a>
                   <a
                     href={page.tiktokUrl || 'https://www.tiktok.com/@globalworking'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-600 hover:text-primary-600 transition-colors"
+                    className="group inline-flex items-center gap-2 font-ui text-[0.9375rem] font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                   >
                     <EditableText
                       as="span"
@@ -363,67 +338,81 @@ export default function SpanskAlicantePage() {
                       value={page.socialTikTok}
                       className="inline"
                     />
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                      <path d="M7 17L17 7M9 7h8v8" />
+                    </svg>
                   </a>
                 </div>
               </div>
-            </AnimateIn>
+            </div>
 
-            <AnimateIn variant="fadeLeft" delay={120}>
-              <div className="rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg">
-                <img
-                  src={img(page.cityImageUrl || IMAGES.spanskAlicanteCityView, 1200)}
-                  alt={page.cityImageAlt || 'Byliv og utsikt i Alicante'}
-                  className="w-full h-[420px] object-cover"
-                  loading="lazy"
-                  decoding="async"
-                  width={1200}
-                  height={420}
-                />
-              </div>
-            </AnimateIn>
+            <div className="lg:col-span-6 lg:col-start-7 pb-20 lg:py-28 gw-bleed-r">
+              <img
+                src={img(page.cityImageUrl || IMAGES.spanskAlicanteCityView, 1400)}
+                alt={page.cityImageAlt || 'Byliv og utsikt i Alicante'}
+                className="w-full h-[300px] lg:h-[560px] object-cover rounded-panel lg:rounded-r-none"
+                loading="lazy"
+                decoding="async"
+                width={1400}
+                height={560}
+              />
+            </div>
+
           </div>
         </div>
       </section>
 
-      <section id="spansk-alicante-process" className="py-24 lg:py-28 bg-white">
+      {/* ── El proceso ────────────────────────────────────────────────────
+          Acá sí hay secuencia real —interés, charla, encaje, Alicante—, así
+          que la numeración dice algo. Cuatro tarjetas con cuadrado azul y
+          número en blanco decían «plantilla». */}
+      <section id="spansk-alicante-process" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="spansk-alicante-process-heading">
         <div className="container-xl">
-          <AnimateIn>
-            <div className="text-center max-w-3xl mx-auto mb-12">
-              <EditableText
-                as="h2"
-                path="spanskAlicantePage.processTitle"
-                value={page.processTitle}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
-              />
-            </div>
-          </AnimateIn>
+          <EditableText
+            as="h2"
+            id="spansk-alicante-process-heading"
+            path="spanskAlicantePage.processTitle"
+            value={page.processTitle}
+            className="text-display-sm font-semibold text-navy break-words max-w-[24ch]"
+          />
 
-          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5 mb-10">
-            {(page.processSteps || []).map((step, index) => (
-              <AnimateIn key={`process-${index}`} variant="fadeUp" delay={index * 60}>
-                <ProcessStep step={step} index={index} />
-              </AnimateIn>
-            ))}
+          {processSteps.length > 0 && (
+            <ol className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 border-t border-line">
+              {processSteps.map((step, index) => (
+                <li
+                  key={`process-${index}`}
+                  className="border-b border-line py-7 lg:border-l lg:first:border-l-0 lg:pl-6 lg:first:pl-0"
+                >
+                  <span className="font-ui text-[0.8125rem] font-semibold tabular-nums text-primary-300">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <EditableText
+                    as="p"
+                    path={`spanskAlicantePage.processSteps.${index}`}
+                    value={step}
+                    className="mt-3 font-heading text-body font-semibold text-navy leading-snug"
+                  />
+                </li>
+              ))}
+            </ol>
+          )}
+
+          <div className="mt-12 flex flex-col sm:flex-row gap-3.5">
+            <a
+              href="#kandidat-kontakt"
+              onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_process', cta: 'kandidat_kontakt' })}
+              className="gw-btn gw-btn-ink"
+            >
+              <EditableText as="span" path="spanskAlicantePage.ctaSecondary" value={page.ctaSecondary} className="inline" />
+            </a>
+            <a
+              href="/spansk-i-alicante/hvorfor"
+              onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_process', cta: 'hvorfor' })}
+              className="gw-btn gw-btn-line"
+            >
+              <EditableText as="span" path="spanskAlicantePage.visionLinkLabel" value={page.visionLinkLabel} className="inline" />
+            </a>
           </div>
-
-          <AnimateIn variant="fadeUp" delay={120}>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a
-                href="#kandidat-kontakt"
-                onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_process', cta: 'kandidat_kontakt' })}
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
-              >
-                <EditableText as="span" path="spanskAlicantePage.ctaSecondary" value={page.ctaSecondary} className="inline" />
-              </a>
-              <a
-                href="/spansk-i-alicante/hvorfor"
-                onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_process', cta: 'hvorfor' })}
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors duration-200 cursor-pointer"
-              >
-                <EditableText as="span" path="spanskAlicantePage.visionLinkLabel" value={page.visionLinkLabel} className="inline" />
-              </a>
-            </div>
-          </AnimateIn>
         </div>
       </section>
 

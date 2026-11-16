@@ -1,10 +1,9 @@
-import AnimateIn from '../components/AnimateIn'
 import { IMAGES, img } from '../assets/images'
 import OmOss from '../components/OmOss'
 import FAQ from '../components/FAQ'
 import PageEndNav from '../components/PageEndNav'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from '../components/editable/EditableText'
+import EditableText from '../components/editable/EditableText'
 import EditableImage from '../components/editable/EditableImage'
 import InlineRichText from '../components/editable/InlineRichText'
 const miriamPhoto = IMAGES.contactMiriam
@@ -13,40 +12,33 @@ const groPhoto = IMAGES.contactGro
 function InlineEditableParagraph({
   path,
   value,
-  onCommit,
   className,
   linkClassName,
   as = 'p',
   ...rest
 }) {
-  const visualEditEnabled = useVisualEditEnabled()
-
-  if (visualEditEnabled) {
-    return (
-      <EditableText
-        as={as}
-        path={path}
-        value={value}
-        onCommit={onCommit}
-        multiline
-        className={className}
-        {...rest}
-      />
-    )
-  }
-
   return (
     <InlineRichText
       as={as}
       value={value}
       className={className}
       linkClassName={linkClassName}
+      data-content-path={path}
       {...rest}
     />
   )
 }
 
-function TeamCard({ member, index, basePath, delay, members }) {
+/**
+ * Ficha de equipo.
+ *
+ * Antes: avatar de 96 px con `ring-4` azul dentro de una tarjeta blanca con
+ * `shadow-sm hover:shadow-md`, todo centrado. Cuatro medallones idénticos.
+ *
+ * Si la promesa de la empresa es «detrás hay personas», la persona tiene que
+ * verse: retrato vertical a toda la columna, nombre y rol debajo. Sin caja.
+ */
+function TeamMember({ member, index, basePath }) {
   const normalizedName = (member.name || '').toLowerCase()
   let portrait = member.imageUrl || null
 
@@ -54,50 +46,37 @@ function TeamCard({ member, index, basePath, delay, members }) {
   else if (!portrait && normalizedName.includes('gro')) portrait = groPhoto
   else if (!portrait && member.hasImage) portrait = IMAGES.ceoPhoto
 
-  const commitName = createArrayItemCommitter({
-    basePath,
-    fallbackItems: members || [],
-    index,
-    field: 'name',
-  })
-  const commitRole = createArrayItemCommitter({
-    basePath,
-    fallbackItems: members || [],
-    index,
-    field: 'role',
-  })
-
   return (
-    <AnimateIn variant="fadeUp" delay={delay}>
-      <div className="flex flex-col items-center text-center p-6 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-shadow">
-        {portrait ? (
-          <img
-            src={portrait}
-            alt={member.imageAlt || member.name}
-            className="w-24 h-24 rounded-full object-cover mb-4 ring-4 ring-primary-600/20"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-24 h-24 rounded-full bg-primary-600 flex items-center justify-center mb-4 ring-4 ring-primary-600/20">
-            <span className="text-white font-heading text-2xl font-bold">{member.initials}</span>
-          </div>
-        )}
-        <EditableText
-          as="h3"
-          path={`${basePath}.${index}.name`}
-          value={member.name}
-          onCommit={commitName}
-          className="font-heading text-lg font-bold text-ink"
+    <div>
+      {portrait ? (
+        <img
+          src={portrait}
+          alt={member.imageAlt || member.name}
+          className="w-full aspect-[4/5] object-cover object-top rounded-panel bg-frost"
+          loading="lazy"
+          decoding="async"
         />
-        <EditableText
-          as="p"
-          path={`${basePath}.${index}.role`}
-          value={member.role}
-          onCommit={commitRole}
-          className="text-gray-500 text-sm mt-1"
-        />
-      </div>
-    </AnimateIn>
+      ) : (
+        <div className="w-full aspect-[4/5] rounded-panel bg-navy flex items-center justify-center">
+          <span className="font-heading text-3xl font-semibold text-white">
+            {member.initials}
+          </span>
+        </div>
+      )}
+
+      <EditableText
+        as="h3"
+        path={`${basePath}.${index}.name`}
+        value={member.name}
+        className="mt-4 font-heading text-body font-semibold text-navy leading-snug"
+      />
+      <EditableText
+        as="p"
+        path={`${basePath}.${index}.role`}
+        value={member.role}
+        className="mt-1 font-ui text-[0.8125rem] text-ink-soft leading-snug"
+      />
+    </div>
   )
 }
 
@@ -108,144 +87,170 @@ export default function OmOssPage() {
 
   return (
     <>
-      {/* Hero Banner */}
-      <section className="relative bg-gradient-to-br from-navy via-primary-900 to-primary-800 pt-32 pb-16 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(30,115,190,0.3),transparent_60%)]" aria-hidden="true" />
-        <div className="container-xl relative z-10">
-          <AnimateIn>
-            <nav className="text-blue-200/70 text-sm mb-6" aria-label="Brødsmuler">
-              <a href="/" className="hover:text-white transition-colors">Hjem</a>
-              <span className="mx-2">/</span>
-              <span className="text-white">{hero.breadcrumb}</span>
-            </nav>
-            <EditableText
-              as="h1"
-              path="omOssHero.h1"
-              value={hero.h1}
-              className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight"
-            />
-            <InlineEditableParagraph
-              as="p"
-              path="omOssHero.description"
-              value={hero.description}
-              className="!text-blue-100 text-lg max-w-2xl leading-relaxed"
-              linkClassName="!text-blue-50 underline decoration-blue-200 underline-offset-2 transition-colors hover:!text-white hover:!decoration-blue-100"
-            />
-          </AnimateIn>
+      {/* ── Cabecera de página ───────────────────────────────────────────
+          Banda navy sólida, sin mancha radial. La migaja en Poppins: es
+          navegación, no lectura. */}
+      <section className="bg-navy pt-32 pb-16 lg:pt-40 lg:pb-20">
+        <div className="container-xl">
+          <nav className="font-ui text-[0.8125rem] text-primary-200 mb-7" aria-label="Brødsmuler">
+            <a href="/" className="transition-colors hover:text-white">Hjem</a>
+            <span className="mx-2 text-primary-300/70" aria-hidden="true">/</span>
+            <span className="text-white">{hero.breadcrumb}</span>
+          </nav>
+
+          <EditableText
+            as="h1"
+            path="omOssHero.h1"
+            value={hero.h1}
+            className="text-display font-semibold !text-white"
+          />
+          <InlineEditableParagraph
+            as="p"
+            path="omOssHero.description"
+            value={hero.description}
+            className="mt-6 gw-measure !text-primary-100 text-body lg:text-[1.1875rem] !leading-[1.6]"
+            linkClassName="!text-white underline decoration-primary-400 underline-offset-4 transition-colors hover:!decoration-white"
+          />
         </div>
       </section>
 
       <OmOss />
 
-      {/* Team Section */}
-      <section className="py-24 lg:py-32 bg-surface">
+      {/* ── Equipo ───────────────────────────────────────────────────────
+          Cabecera a dos columnas: el texto largo centrado en serif obliga al
+          ojo a buscar el arranque de cada línea. */}
+      <section className="py-20 lg:py-28 bg-surface" aria-labelledby="om-oss-team-heading">
         <div className="container-xl">
-          <AnimateIn>
-            <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-12 lg:mb-14">
+            <div className="lg:col-span-6">
               <EditableText
                 as="span"
                 path="omOssTeam.label"
                 value={teamSection.label}
-                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+                className="gw-label text-primary-600"
               />
               <EditableText
                 as="h2"
+                id="om-oss-team-heading"
                 path="omOssTeam.heading"
                 value={teamSection.heading}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-4"
+                className="mt-5 text-display-sm font-semibold text-navy"
               />
+            </div>
+            <div className="lg:col-span-5 lg:col-start-8">
               <InlineEditableParagraph
                 as="p"
                 path="omOssTeam.description"
                 value={teamSection.description}
-                className="!text-gray-600 leading-relaxed"
+                className="!text-ink-muted text-body !leading-[1.65]"
               />
             </div>
-          </AnimateIn>
+          </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
             {(teamSection.members || []).map((member, i) => (
-              <TeamCard key={member.name} member={member} index={i} basePath="omOssTeam.members" delay={i * 60} members={teamSection.members || []} />
+              <TeamMember
+                key={member.name}
+                member={member}
+                index={i}
+                basePath="omOssTeam.members"
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* YouTube Video Section */}
-      <section className="py-16 lg:py-20 bg-white">
-        <div className="container-xl flex justify-center">
-          <AnimateIn>
-            <div className="text-center mb-8">
-              <h2 className="font-heading text-2xl lg:text-3xl font-bold text-ink">
+      {/* ── El vídeo del despacho ────────────────────────────────────────
+          El vertical de 9:16 vivía centrado dentro de una caja con
+          `shadow-lg`. Ahora es una columna más de la retícula. */}
+      <section className="py-20 lg:py-28 bg-white" aria-labelledby="om-oss-video-heading">
+        <div className="container-xl">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            <div className="lg:col-span-6">
+              <h2
+                id="om-oss-video-heading"
+                className="text-display-sm font-semibold text-navy"
+              >
                 {teamSection.videoHeading || 'Møt teamet i Global Working'}
               </h2>
             </div>
-            <div className="relative rounded-2xl overflow-hidden shadow-lg mx-auto" style={{ width: 'min(360px, 100%)', aspectRatio: '9/16' }}>
-              <iframe
-                src="https://www.youtube.com/embed/KC5OgaAj_VM"
-                title="Møt teamet i Global Working"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                loading="lazy"
-                className="absolute inset-0 w-full h-full"
-              />
+
+            <div className="lg:col-span-4 lg:col-start-9">
+              <div
+                className="relative rounded-panel overflow-hidden bg-navy mx-auto lg:mx-0"
+                style={{ width: 'min(340px, 100%)', aspectRatio: '9/16' }}
+              >
+                <iframe
+                  src="https://www.youtube.com/embed/KC5OgaAj_VM"
+                  title="Møt teamet i Global Working"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full"
+                />
+              </div>
             </div>
-          </AnimateIn>
+          </div>
         </div>
       </section>
 
-      {/* Offices Section */}
-      <section className="py-24 lg:py-32 bg-white">
+      {/* ── Sedes ────────────────────────────────────────────────────────
+          Antes: `rounded-3xl`, `shadow-2xl` y un degradado navy encima de la
+          foto para poder escribir la dirección. La dirección es un dato: va
+          en texto, con filete, y la foto se ve entera. */}
+      <section
+        className="bg-surface overflow-hidden"
+        aria-labelledby="om-oss-offices-heading"
+      >
         <div className="container-xl">
-          <AnimateIn>
-            <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            <div className="lg:col-span-5 pt-20 lg:py-28">
               <EditableText
                 as="span"
                 path="omOssOffices.label"
                 value={offices.label}
-                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+                className="gw-label text-primary-600"
               />
               <EditableText
                 as="h2"
+                id="om-oss-offices-heading"
                 path="omOssOffices.heading"
                 value={offices.heading}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-4"
+                className="mt-5 text-display-sm font-semibold text-navy"
               />
               <InlineEditableParagraph
                 as="p"
                 path="omOssOffices.description"
                 value={offices.description}
-                className="!text-gray-600 leading-relaxed"
+                className="mt-6 !text-ink-muted text-body !leading-[1.65]"
               />
-            </div>
-          </AnimateIn>
 
-          <AnimateIn variant="scale" delay={120}>
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl max-w-4xl mx-auto">
-              <EditableImage
-                path="omOssOffices.imageUrl"
-                src={img(offices.imageUrl || IMAGES.alicanteOffice, 1200)}
-                alt={offices.imageAlt || 'Global Working kontorer i Alicante'}
-                className="w-full h-[360px] md:h-[480px] object-cover"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10 text-white">
+              <div className="mt-8 pt-6 border-t border-line">
                 <EditableText
                   as="h3"
                   path="omOssOffices.officeName"
                   value={offices.officeName}
-                  className="font-heading text-xl md:text-2xl font-bold mb-2"
+                  className="font-heading text-body font-semibold text-navy"
                 />
                 <EditableText
                   as="p"
                   path="omOssOffices.officeAddress"
                   value={offices.officeAddress}
-                  className="text-white/80 text-sm md:text-base"
+                  className="mt-1.5 font-ui text-sm text-ink-muted leading-relaxed"
                 />
               </div>
             </div>
-          </AnimateIn>
+
+            <div className="lg:col-span-6 lg:col-start-7 pb-16 lg:py-24 gw-bleed-r">
+              <EditableImage
+                path="omOssOffices.imageUrl"
+                src={img(offices.imageUrl || IMAGES.alicanteOffice, 1200)}
+                alt={offices.imageAlt || 'Global Working kontorer i Alicante'}
+                className="w-full h-[300px] lg:h-[500px] object-cover rounded-panel lg:rounded-r-none"
+                loading="lazy"
+              />
+            </div>
+          </div>
         </div>
       </section>
 

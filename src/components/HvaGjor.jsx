@@ -1,159 +1,135 @@
 import { GraduationCap, ShieldCheck, UsersThree } from '@phosphor-icons/react'
-import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from './editable/EditableText'
+import EditableText from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
 import InlineRichText from './editable/InlineRichText'
 
 const serviceIcons = [
-  <UsersThree key="i1" size={52} weight="light" aria-hidden="true" />,
-  <GraduationCap key="i2" size={52} weight="light" aria-hidden="true" />,
-  <ShieldCheck key="i3" size={52} weight="light" aria-hidden="true" />,
+  <UsersThree key="i1" size={24} weight="regular" aria-hidden="true" />,
+  <GraduationCap key="i2" size={24} weight="regular" aria-hidden="true" />,
+  <ShieldCheck key="i3" size={24} weight="regular" aria-hidden="true" />,
 ]
 
 function InlineEditableParagraph({
   path,
   value,
-  onCommit,
   className,
   linkClassName,
   as = 'p',
   ...rest
 }) {
-  const visualEditEnabled = useVisualEditEnabled()
-
-  if (visualEditEnabled) {
-    return (
-      <EditableText
-        as={as}
-        path={path}
-        value={value}
-        onCommit={onCommit}
-        multiline
-        className={className}
-        {...rest}
-      />
-    )
-  }
-
   return (
     <InlineRichText
       as={as}
       value={value}
       className={className}
       linkClassName={linkClassName}
+      data-content-path={path}
       {...rest}
     />
   )
 }
 
+/**
+ * HvaGjor — qué hace Global Working.
+ *
+ * Antes: dos manchas radiales de 600 px con `blur-3xl`, cabecera centrada,
+ * tres tarjetas `rounded-[2rem]` con `shadow-sm hover:shadow-2xl`, un número
+ * gigante en `text-primary-50` que no se leía, un icono naranja por tarjeta
+ * (tres naranjas en una pantalla) y un botón con `shadow-xl` y `active:scale-95`.
+ * Todo eso viene de fábrica en cualquier landing generada.
+ *
+ * Ahora es un bloque editorial asimétrico: a la izquierda la cabecera y la
+ * única acción, a la derecha los tres servicios como filas separadas por
+ * filetes. La jerarquía la da el tono y el filete, no la altura.
+ */
 export default function HvaGjor() {
   const c = useContent('hvaGjor')
 
   return (
-    <section id="hvagjor" className="scroll-mt-28 py-24 lg:py-32 bg-white relative overflow-hidden" aria-labelledby="hvagjor-heading">
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-primary-50/30 rounded-full blur-3xl opacity-50 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-[600px] h-[600px] bg-blue-50/30 rounded-full blur-3xl opacity-50 pointer-events-none" />
+    <section
+      id="hvagjor"
+      className="scroll-mt-28 py-20 lg:py-28 bg-white"
+      aria-labelledby="hvagjor-heading"
+    >
+      <div className="container-xl">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
 
-      <div className="container-xl relative z-10">
-        <AnimateIn className="text-center max-w-3xl mx-auto mb-20">
-          <EditableText
-            as="span"
-            path="hvaGjor.label"
-            value={c.label}
-            className="inline-block text-primary-600 font-bold text-xs uppercase tracking-[0.2em] mb-4"
-          />
-          <EditableText
-            id="hvagjor-heading"
-            as="h2"
-            path="hvaGjor.heading"
-            value={c.heading}
-            className="font-heading text-3xl lg:text-4xl xl:text-5xl font-bold text-ink mb-6 leading-tight"
-          />
-          <InlineEditableParagraph
-            as="p"
-            path="hvaGjor.description"
-            value={c.description}
-            className="!text-gray-600 text-lg leading-relaxed"
-          />
-        </AnimateIn>
+          <div className="lg:col-span-5">
+            <EditableText
+              as="span"
+              path="hvaGjor.label"
+              value={c.label}
+              className="gw-label text-primary-600"
+            />
+            <EditableText
+              id="hvagjor-heading"
+              as="h2"
+              path="hvaGjor.heading"
+              value={c.heading}
+              className="mt-5 text-display-sm font-semibold text-navy"
+            />
+            <InlineEditableParagraph
+              as="p"
+              path="hvaGjor.description"
+              value={c.description}
+              className="mt-6 gw-measure !text-ink-muted text-body leading-[1.65]"
+            />
 
-        <div className="grid lg:grid-cols-3 gap-8 mb-16 px-4">
-          {(c.services || []).map((s, i) => {
-            const commitTitle = createArrayItemCommitter({
-              basePath: 'hvaGjor.services',
-              fallbackItems: c.services || [],
-              index: i,
-              field: 'title',
-            })
-            const commitDescription = createArrayItemCommitter({
-              basePath: 'hvaGjor.services',
-              fallbackItems: c.services || [],
-              index: i,
-              field: 'description',
-            })
+            <a href="/kontakt" className="gw-btn gw-btn-ember mt-9">
+              <EditableText as="span" path="hvaGjor.ctaLabel" value={c.ctaLabel} className="inline" />
+              <svg
+                width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </a>
 
-            return (
-              <AnimateIn key={s.title} variant="fadeUp" delay={i * 60} className="h-full">
-                <div className="group h-full bg-white rounded-[2rem] p-1 border border-gray-100 shadow-sm hover:shadow-2xl hover:border-primary-100 transition-all duration-500 overflow-hidden">
-                  <div className="p-8 h-full flex flex-col">
-                    <div className="flex items-center justify-between mb-8">
-                      <div className="text-cta group-hover:scale-110 transition-transform duration-300">
-                        {serviceIcons[i] || serviceIcons[0]}
-                      </div>
-                      <span className="font-heading text-4xl font-bold text-primary-50 group-hover:text-primary-100 transition-colors">
-                        0{i + 1}
-                      </span>
-                    </div>
-                    <EditableText
-                      as="h3"
-                      path={`hvaGjor.services.${i}.title`}
-                      value={s.title}
-                      onCommit={commitTitle}
-                      className="font-heading text-xl font-bold text-ink mb-4 group-hover:text-primary-600 transition-colors"
-                    />
-                    <InlineEditableParagraph
-                      as="p"
-                      path={`hvaGjor.services.${i}.description`}
-                      value={s.description}
-                      onCommit={commitDescription}
-                      className="!text-gray-500 leading-relaxed mb-8 flex-1"
-                    />
-                    <div className="w-12 h-1 bg-primary-100 group-hover:w-full transition-all duration-500 rounded-full" />
-                  </div>
+            {c.ctaNote && (
+              <EditableText
+                as="p"
+                path="hvaGjor.ctaNote"
+                value={c.ctaNote}
+                className="mt-4 font-ui text-[0.875rem] text-ink-soft"
+              />
+            )}
+          </div>
+
+          <div className="lg:col-span-6 lg:col-start-7 border-t border-line">
+            {(c.services || []).map((s, i) => (
+              <div key={s.title} className="flex gap-5 py-8 border-b border-line">
+                <span className="text-primary-600 shrink-0 mt-1" aria-hidden="true">
+                  {serviceIcons[i] || serviceIcons[0]}
+                </span>
+                <div className="min-w-0">
+                  <EditableText
+                    as="h3"
+                    path={`hvaGjor.services.${i}.title`}
+                    value={s.title}
+                    className="font-heading text-[1.1875rem] font-semibold text-navy leading-snug"
+                  />
+                  <InlineEditableParagraph
+                    as="p"
+                    path={`hvaGjor.services.${i}.description`}
+                    value={s.description}
+                    className="mt-2.5 gw-measure !text-ink-muted text-body leading-[1.65]"
+                  />
                 </div>
-              </AnimateIn>
-            )
-          })}
+              </div>
+            ))}
+          </div>
+
         </div>
 
-        <AnimateIn className="text-center">
-          <a
-            href="/kontakt"
-            className="group inline-flex items-center gap-3 px-10 py-5 bg-primary-600 text-white font-bold rounded-2xl hover:bg-navy transition-all duration-300 shadow-xl shadow-primary-100 hover:shadow-navy/20 cursor-pointer active:scale-95"
-          >
-            <EditableText as="span" path="hvaGjor.ctaLabel" value={c.ctaLabel} className="inline" />
-            <svg
-              width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"
-              className="group-hover:translate-x-1 transition-transform"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
-        </AnimateIn>
-
         {c.sectionImageUrl && (
-          <AnimateIn variant="fadeUp" delay={120} className="mt-14">
-            <div className="rounded-3xl overflow-hidden shadow-xl">
-              <EditableImage
-                path="hvaGjor.sectionImageUrl"
-                src={c.sectionImageUrl}
-                alt={c.sectionImageAlt || ''}
-                className="w-full h-[420px] lg:h-[520px] object-cover"
-                loading="lazy"
-              />
-            </div>
-          </AnimateIn>
+          <EditableImage
+            path="hvaGjor.sectionImageUrl"
+            src={c.sectionImageUrl}
+            alt={c.sectionImageAlt || ''}
+            className="mt-16 lg:mt-20 w-full h-[260px] sm:h-[360px] lg:h-[460px] object-cover rounded-panel"
+            loading="lazy"
+          />
         )}
       </div>
     </section>

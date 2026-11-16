@@ -1,21 +1,17 @@
-﻿import React, { Suspense, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+﻿import React, { Suspense, useEffect, useState } from 'react'
 import './index.css'
 import Navbar from './components/Navbar'
 import ScrollProgress from './components/ScrollProgress'
 import Footer from './components/Footer'
 import BackToTop from './components/BackToTop'
 import CookieConsent from './components/CookieConsent'
-import AdminErrorBoundary from './components/AdminErrorBoundary'
-import VisualEditToolbar from './components/admin/VisualEditToolbar'
 import { initAnalytics, trackPageView } from './lib/analytics'
 import { setDefaultSEO, setNotFoundSEO, setSectionSEO } from './lib/seo'
 import { resolveRouteContext } from './lib/contentRuntime'
-import { canCurrentUserEditContent } from './lib/contentRemote'
-import { resetVisualEditState, updateVisualEditState } from './lib/visualEditSession'
 
 // Pages
-// HomePage is eager (landing page → fast LCP). All others are route-split
-// via React.lazy so the initial bundle only ships the home route.
+// HomePage es eager (es la landing → LCP rápido). El resto va en chunks
+// aparte con React.lazy, así el bundle inicial solo trae la home.
 import HomePage from './pages/HomePage'
 const RekrutteringPage = React.lazy(() => import('./pages/RekrutteringPage'))
 const HelsePage = React.lazy(() => import('./pages/HelsePage'))
@@ -31,97 +27,20 @@ const PersonvernPage = React.lazy(() => import('./pages/PersonvernPage'))
 const VilkarPage = React.lazy(() => import('./pages/VilkarPage'))
 const CookiesPage = React.lazy(() => import('./pages/CookiesPage'))
 const NewsArticlePage = React.lazy(() => import('./pages/NewsArticlePage'))
-const AdminPage = React.lazy(() => import('./pages/AdminPage'))
 
 const getCurrentPath = () => `${window.location.pathname}${window.location.search}`
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(getCurrentPath)
-  const [canEditVisualContent, setCanEditVisualContent] = useState(false)
   const currentPathname = currentPath.split('?')[0]
   const routeContext = resolveRouteContext(currentPathname)
-  const newsSlug = routeContext.newsSlug
-  const sectionRoute = routeContext.sectionRoute
-  const searchParams = useMemo(() => new URLSearchParams(currentPath.split('?')[1] || ''), [currentPath])
-  const isVisualEditRequested = searchParams.get('edit') === '1'
-  const isEditableRoute = !routeContext.isAdmin
-    && (['home', 'nyheter', 'helse', 'rekruttering', 'spansk-i-alicante', 'spansk-i-alicante-hvorfor', 'spansk-i-alicante-livet-som-student', 'spansk-i-alicante-helsenorsk', 'kontakt', 'om-oss', 'talentportalen', 'personvern', 'vilkar', 'cookies'].includes(sectionRoute) || Boolean(newsSlug))
-  const hasVisualEditPermission = isVisualEditRequested && isEditableRoute ? canEditVisualContent : false
-  const isVisualEditMode = isVisualEditRequested && isEditableRoute && hasVisualEditPermission
-  const visualEditRouteLabel = newsSlug
-    ? `Noticia: ${newsSlug}`
-    : sectionRoute === 'home'
-      ? 'Landing'
-        : sectionRoute === 'nyheter'
-          ? 'Noticias'
-          : sectionRoute === 'helse'
-            ? 'Sector sanitario'
-            : sectionRoute === 'rekruttering'
-              ? 'Rekrutteringsmodell'
-            : sectionRoute === 'spansk-i-alicante'
-              ? 'Spansk i Alicante'
-              : sectionRoute === 'spansk-i-alicante-hvorfor'
-                ? 'Spansk i Alicante · Hvorfor'
-              : sectionRoute === 'spansk-i-alicante-livet-som-student'
-                ? 'Spansk i Alicante · Livet som student'
-              : sectionRoute === 'spansk-i-alicante-helsenorsk'
-                ? 'Spansk i Alicante · Helsenorsk'
-              : sectionRoute === 'kontakt'
-                ? 'Kontakt'
-                : sectionRoute === 'om-oss'
-                  ? 'Om oss'
-                  : sectionRoute === 'talentportalen'
-                    ? 'Talentportalen'
-                    : sectionRoute === 'personvern'
-                      ? 'Personvern'
-                      : sectionRoute === 'vilkar'
-                        ? 'Vilkår'
-                        : sectionRoute === 'cookies'
-                          ? 'Cookies'
-                          : null
+  const { newsSlug, sectionRoute } = routeContext
 
-  useLayoutEffect(() => {
-    if (!routeContext.isAdmin) return undefined
-
-    const html = document.documentElement
-    const body = document.body
-    const previousHtmlTranslate = html.getAttribute('translate')
-    const previousHtmlLang = html.getAttribute('lang')
-    const previousHtmlClass = html.classList.contains('notranslate')
-    const previousBodyTranslate = body ? body.getAttribute('translate') : null
-    const previousBodyClass = body ? body.classList.contains('notranslate') : false
-
-    html.classList.add('notranslate')
-    html.setAttribute('translate', 'no')
-    html.setAttribute('lang', 'nb')
-
-    if (body) {
-      body.classList.add('notranslate')
-      body.setAttribute('translate', 'no')
-    }
-
-    return () => {
-      if (previousHtmlTranslate === null) html.removeAttribute('translate')
-      else html.setAttribute('translate', previousHtmlTranslate)
-
-      if (previousHtmlLang === null) html.removeAttribute('lang')
-      else html.setAttribute('lang', previousHtmlLang)
-
-      if (!previousHtmlClass) html.classList.remove('notranslate')
-
-      if (body) {
-        if (previousBodyTranslate === null) body.removeAttribute('translate')
-        else body.setAttribute('translate', previousBodyTranslate)
-
-        if (!previousBodyClass) body.classList.remove('notranslate')
-      }
-    }
-  }, [routeContext.isAdmin])
-
-  // La medicion arranca SIEMPRE, con el consentimiento denegado por defecto (ver la
-  // cabecera de lib/analytics.js). Antes esto solo corria si el visitante ya habia
-  // aceptado, y el resultado era que de cada veinte personas que entraban se contaba una.
-  // Sin aceptar no se escribe ninguna cookie: solo llegan senales anonimas a Google.
+  // La medición arranca SIEMPRE, con el consentimiento denegado por defecto
+  // (ver la cabecera de lib/analytics.js). Antes esto solo corría si el
+  // visitante ya había aceptado, y el resultado era que de cada veinte
+  // personas que entraban se contaba una. Sin aceptar no se escribe ninguna
+  // cookie: solo llegan señales anónimas a Google.
   useEffect(() => {
     if (initAnalytics()) {
       trackPageView(currentPath)
@@ -135,60 +54,6 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    let cancelled = false
-
-    if (!isVisualEditRequested || !isEditableRoute) return undefined
-
-    const checkPermissions = async () => {
-      try {
-        const allowed = await canCurrentUserEditContent()
-        if (!cancelled) {
-          setCanEditVisualContent(Boolean(allowed))
-        }
-      } catch {
-        if (!cancelled) {
-          setCanEditVisualContent(false)
-        }
-      }
-    }
-
-    checkPermissions()
-
-    return () => {
-      cancelled = true
-    }
-  }, [isEditableRoute, isVisualEditRequested])
-
-  useEffect(() => {
-    if (routeContext.isAdmin) return
-
-    updateVisualEditState({
-      requested: isVisualEditRequested,
-      enabled: isVisualEditMode,
-      canEdit: hasVisualEditPermission,
-      isEditableRoute,
-      routeKey: newsSlug ? `news:${newsSlug}` : sectionRoute || null,
-      routeLabel: visualEditRouteLabel,
-      error: null,
-    })
-
-    if (!isVisualEditRequested && !isVisualEditMode) {
-      resetVisualEditState()
-    }
-  }, [
-    canEditVisualContent,
-    hasVisualEditPermission,
-    isEditableRoute,
-    isVisualEditMode,
-    isVisualEditRequested,
-    newsSlug,
-    routeContext.isAdmin,
-    sectionRoute,
-    visualEditRouteLabel,
-  ])
-
-  useEffect(() => {
-    if (routeContext.isAdmin) return
     if (newsSlug) return
 
     if (sectionRoute === 'home') {
@@ -202,73 +67,46 @@ export default function App() {
     }
 
     setNotFoundSEO(currentPathname)
-  }, [currentPathname, newsSlug, routeContext.isAdmin, sectionRoute])
+  }, [currentPathname, newsSlug, sectionRoute])
 
   const renderPage = () => {
     if (newsSlug) return <NewsArticlePage slug={newsSlug} />
 
     switch (sectionRoute) {
-      case 'home':
-        return <HomePage />
-      case 'rekruttering':
-        return <RekrutteringPage />
-      case 'helse':
-        return <HelsePage />
-      case 'nyheter':
-        return <NyheterPage />
-      case 'talentportalen':
-        return <TalentportalenPage />
-      case 'om-oss':
-        return <OmOssPage />
-      case 'kontakt':
-        return <KontaktPage />
-      case 'spansk-i-alicante':
-        return <SpanskAlicantePage />
-      case 'spansk-i-alicante-hvorfor':
-        return <SpanskAlicanteHvorforPage />
-      case 'spansk-i-alicante-livet-som-student':
-        return <LivetSomStudentPage />
-      case 'spansk-i-alicante-helsenorsk':
-        return <HelsenorskPage />
-      case 'personvern':
-        return <PersonvernPage />
-      case 'vilkar':
-        return <VilkarPage />
-      case 'cookies':
-        return <CookiesPage />
+      case 'home':                                 return <HomePage />
+      case 'rekruttering':                         return <RekrutteringPage />
+      case 'helse':                                return <HelsePage />
+      case 'nyheter':                              return <NyheterPage />
+      case 'talentportalen':                       return <TalentportalenPage />
+      case 'om-oss':                               return <OmOssPage />
+      case 'kontakt':                              return <KontaktPage />
+      case 'spansk-i-alicante':                    return <SpanskAlicantePage />
+      case 'spansk-i-alicante-hvorfor':            return <SpanskAlicanteHvorforPage />
+      case 'spansk-i-alicante-livet-som-student':  return <LivetSomStudentPage />
+      case 'spansk-i-alicante-helsenorsk':         return <HelsenorskPage />
+      case 'personvern':                           return <PersonvernPage />
+      case 'vilkar':                               return <VilkarPage />
+      case 'cookies':                              return <CookiesPage />
       default:
         return (
-          <section className="py-24 bg-white">
+          <section className="py-32 bg-white">
             <div className="container-xl">
-              <h1 className="font-heading text-3xl font-bold text-ink mb-4">Siden ble ikke funnet</h1>
-              <p className="text-gray-600 mb-6">Kontroller adressen eller gå tilbake til forsiden.</p>
-              <a href="/" className="text-primary-600 font-semibold hover:text-primary-700">
-                Tilbake til forsiden
-              </a>
+              <h1 className="text-display-sm font-semibold text-navy mb-4">Siden ble ikke funnet</h1>
+              <p className="text-ink-muted mb-8 gw-measure">
+                Kontroller adressen eller gå tilbake til forsiden.
+              </p>
+              <a href="/" className="gw-btn gw-btn-ink">Tilbake til forsiden</a>
             </div>
           </section>
         )
     }
   }
 
-  // Admin page renders standalone without chrome
-  if (sectionRoute === 'admin') {
-    return (
-      <AdminErrorBoundary key={currentPathname}>
-        <div className="notranslate" translate="no">
-          <Suspense fallback={<div />}>
-            <AdminPage />
-          </Suspense>
-        </div>
-      </AdminErrorBoundary>
-    )
-  }
-
   return (
     <>
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded-lg"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-navy focus:text-white focus:rounded-pill"
       >
         Hopp til hovedinnhold
       </a>
@@ -279,17 +117,9 @@ export default function App() {
           {renderPage()}
         </Suspense>
       </main>
-      <VisualEditToolbar
-        isRequested={isVisualEditRequested}
-        isEnabled={isVisualEditMode}
-        canEdit={hasVisualEditPermission}
-        isEditableRoute={isEditableRoute}
-        routeLabel={visualEditRouteLabel}
-      />
       <Footer />
       <BackToTop />
       <CookieConsent />
     </>
   )
 }
-

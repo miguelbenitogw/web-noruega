@@ -1,86 +1,91 @@
 import { useState } from 'react'
-import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from './editable/EditableText'
+import EditableText from './editable/EditableText'
 import InlineRichText from './editable/InlineRichText'
+
+/**
+ * FAQ
+ *
+ * Antes cada pregunta era una tarjeta redondeada con borde, tinte azul al
+ * abrirse, `shadow-sm` y un círculo gris con un chevron que giraba. Seis
+ * tarjetas apiladas con esquinas de 16 px es el acordeón de cualquier plantilla.
+ *
+ * Ahora es una lista con filetes: las preguntas son pares entre sí, el filete
+ * las separa y el signo + / − dice el estado sin pintar la fila.
+ *
+ * El panel se oculta con `hidden` en vez de `max-h-60`: la respuesta larga ya
+ * no se corta a media línea.
+ */
 
 function InlineEditableParagraph({
   path,
   value,
-  onCommit,
   className,
   linkClassName,
   as = 'p',
   ...rest
 }) {
-  const visualEditEnabled = useVisualEditEnabled()
-
-  if (visualEditEnabled) {
-    return (
-      <EditableText
-        as={as}
-        path={path}
-        value={value}
-        onCommit={onCommit}
-        multiline
-        className={className}
-        {...rest}
-      />
-    )
-  }
-
   return (
     <InlineRichText
       as={as}
       value={value}
       className={className}
       linkClassName={linkClassName}
+      data-content-path={path}
       {...rest}
     />
   )
 }
 
-function AccordionItem({ faq, index, basePath, isOpen, onToggle, allItems }) {
-  const commitQ = createArrayItemCommitter({
-    basePath,
-    fallbackItems: allItems,
-    index,
-    field: 'q',
-  })
-  const commitA = createArrayItemCommitter({
-    basePath,
-    fallbackItems: allItems,
-    index,
-    field: 'a',
-  })
+function AccordionItem({ faq, index, basePath, isOpen, onToggle }) {
+  const buttonId = `faq-q-${index}`
+  const panelId = `faq-a-${index}`
 
   return (
-    <div className={`border rounded-2xl transition-all duration-200 ${isOpen ? 'border-primary-200 bg-primary-50/30 shadow-sm' : 'border-gray-100 bg-white'}`}>
-      <button
-        onClick={onToggle}
-        className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left cursor-pointer"
-        aria-expanded={isOpen}
+    <div className="border-b border-line">
+      <h3>
+        <button
+          id={buttonId}
+          type="button"
+          onClick={onToggle}
+          aria-expanded={isOpen}
+          aria-controls={panelId}
+          className="group w-full flex items-start justify-between gap-5 py-5 text-left cursor-pointer"
+        >
+          <EditableText
+            as="span"
+            path={`${basePath}.${index}.q`}
+            value={faq.q}
+            className={`font-heading text-body font-semibold leading-snug transition-colors ${
+              isOpen ? 'text-primary-600' : 'text-navy group-hover:text-primary-600'
+            }`}
+          />
+          <span
+            aria-hidden="true"
+            className="shrink-0 mt-1 text-primary-600 transition-colors"
+          >
+            <svg
+              width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="2.5" strokeLinecap="round"
+            >
+              <path d="M5 12h14" />
+              {!isOpen && <path d="M12 5v14" />}
+            </svg>
+          </span>
+        </button>
+      </h3>
+
+      <div
+        id={panelId}
+        role="region"
+        aria-labelledby={buttonId}
+        hidden={!isOpen}
       >
-        <EditableText
-          as="span"
-          path={`${basePath}.${index}.q`}
-          value={faq.q}
-          onCommit={commitQ}
-          className={`font-heading font-semibold text-sm lg:text-base transition-colors ${isOpen ? 'text-primary-700' : 'text-ink'}`}
-        />
-        <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-primary-600 rotate-180' : 'bg-gray-100'}`}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isOpen ? 'white' : '#64748b'} strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </div>
-      </button>
-      <div className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'}`}>
         <InlineEditableParagraph
           as="p"
           path={`${basePath}.${index}.a`}
           value={faq.a}
-          onCommit={commitA}
-          className="px-6 pb-5 !text-gray-500 text-sm leading-relaxed"
+          className="pb-6 pr-8 gw-measure !text-ink-muted text-[0.9375rem] !leading-[1.7]"
         />
       </div>
     </div>
@@ -92,53 +97,55 @@ export default function FAQ() {
   const c = useContent('faq')
 
   return (
-    <section className="py-24 lg:py-32 bg-white" aria-labelledby="faq-heading">
+    <section className="py-20 lg:py-28 bg-white" aria-labelledby="faq-heading">
       <div className="container-xl">
-        <div className="grid lg:grid-cols-5 gap-14 items-start">
-          <div className="lg:col-span-2 lg:sticky lg:top-28">
-            <AnimateIn>
-              <EditableText
-                as="span"
-                path="faq.label"
-                value={c.label}
-                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
-              />
-              <EditableText
-                as="h2"
-                path="faq.heading"
-                value={c.heading}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
-              />
-              <InlineEditableParagraph
-                as="p"
-                path="faq.description"
-                value={c.description}
-                className="!text-gray-600 leading-relaxed mb-8"
-              />
-              <a
-                href="/kontakt"
-                className="inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700 transition-colors"
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+
+          <div className="lg:col-span-4 lg:sticky lg:top-28">
+            <EditableText
+              as="span"
+              path="faq.label"
+              value={c.label}
+              className="gw-label text-primary-600"
+            />
+            <EditableText
+              as="h2"
+              id="faq-heading"
+              path="faq.heading"
+              value={c.heading}
+              className="mt-5 text-display-sm font-semibold text-navy"
+            />
+            <InlineEditableParagraph
+              as="p"
+              path="faq.description"
+              value={c.description}
+              className="mt-6 !text-ink-muted !leading-[1.65]"
+            />
+            <a
+              href="/kontakt"
+              className="group mt-8 inline-flex items-center gap-2 font-ui text-[0.9375rem] font-semibold text-primary-600 transition-colors hover:text-navy"
+            >
+              <EditableText as="span" path="faq.ctaText" value={c.ctaText} className="inline" />
+              <svg
+                width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
+                className="shrink-0 transition-transform duration-200 group-hover:translate-x-1"
               >
-                <EditableText as="span" path="faq.ctaText" value={c.ctaText} className="inline" />
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </a>
-            </AnimateIn>
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </a>
           </div>
 
-          <div className="lg:col-span-3 space-y-3">
+          <div className="lg:col-span-7 lg:col-start-6 border-t border-line">
             {(c.items || []).map((faq, i) => (
-              <AnimateIn key={i} variant="fadeUp" delay={i * 60}>
-                <AccordionItem
-                  faq={faq}
-                  index={i}
-                  basePath="faq.items"
-                  allItems={c.items || []}
-                  isOpen={openIndex === i}
-                  onToggle={() => setOpenIndex(openIndex === i ? -1 : i)}
-                />
-              </AnimateIn>
+              <AccordionItem
+                key={faq.q || i}
+                faq={faq}
+                index={i}
+                basePath="faq.items"
+                isOpen={openIndex === i}
+                onToggle={() => setOpenIndex(openIndex === i ? -1 : i)}
+              />
             ))}
           </div>
         </div>

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
-import AnimateIn from './AnimateIn'
 import useContent from '../hooks/useContent'
 import { trackEvent } from '../lib/analytics'
 import EditableText from './editable/EditableText'
@@ -205,30 +204,30 @@ export default function VideoCarousel() {
   const reduce = prefersReducedMotion()
 
   return (
-    <section className="overflow-hidden py-24 lg:py-32 bg-gradient-to-b from-white to-surface" aria-labelledby={headingId}>
+    <section className="overflow-hidden py-20 lg:py-28 bg-surface" aria-labelledby={headingId}>
       <div className="container-xl">
-        <AnimateIn className="mb-12 max-w-2xl">
+        <div className="mb-12 gw-measure">
           <EditableText
             as="span"
             path="homeVideos.label"
             value={c.label}
-            className="mb-4 inline-block text-xs font-bold uppercase tracking-[0.2em] text-primary-600"
+            className="gw-label text-primary-600"
           />
           <EditableText
             as="h2"
             path="homeVideos.heading"
             value={c.heading}
             id={headingId}
-            className="mb-5 font-heading text-3xl font-bold leading-tight text-ink lg:text-4xl xl:text-5xl"
+            className="mt-5 text-display-sm font-semibold text-navy"
           />
           <EditableText
             as="p"
             path="homeVideos.description"
             value={c.description}
             multiline
-            className="text-lg leading-relaxed text-gray-600"
+            className="mt-5 text-body leading-[1.65] text-ink-muted"
           />
-        </AnimateIn>
+        </div>
 
         <div className="relative">
           {/* Stage */}
@@ -274,7 +273,7 @@ export default function VideoCarousel() {
                       className={`absolute inset-0 h-full w-full object-cover ${reduce ? '' : 'transition-transform duration-[600ms] ease-out group-hover:scale-105'}`}
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-navy via-primary-900 to-primary-800" />
+                    <div className="absolute inset-0 bg-navy" />
                   )}
                   {/* Side cards get a dark veil; centre stays clear */}
                   <div className={`absolute inset-0 transition-colors duration-500 ${isCenter ? 'bg-black/0' : 'bg-navy/40'}`} />
@@ -296,7 +295,7 @@ export default function VideoCarousel() {
                 type="button"
                 onClick={() => go(-1)}
                 aria-label="Forrige video"
-                className="absolute left-0 top-1/2 z-40 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-ink shadow-md transition-all hover:border-primary-600 hover:bg-primary-600 hover:text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-300 sm:flex lg:left-4"
+                className="absolute left-0 top-1/2 z-40 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-white text-ink shadow-md transition-all hover:border-primary-600 hover:bg-primary-600 hover:text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-300 sm:flex lg:left-4"
               >
                 <ChevronIcon dir="left" />
               </button>
@@ -304,7 +303,7 @@ export default function VideoCarousel() {
                 type="button"
                 onClick={() => go(1)}
                 aria-label="Neste video"
-                className="absolute right-0 top-1/2 z-40 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-ink shadow-md transition-all hover:border-primary-600 hover:bg-primary-600 hover:text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-300 sm:flex lg:right-4"
+                className="absolute right-0 top-1/2 z-40 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-white text-ink shadow-md transition-all hover:border-primary-600 hover:bg-primary-600 hover:text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-300 sm:flex lg:right-4"
               >
                 <ChevronIcon dir="right" />
               </button>

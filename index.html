@@ -41,20 +41,33 @@
     <link rel="dns-prefetch" href="https://hahqimviirkkzkvmusga.supabase.co" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- LCP de la Home: el hero lo pinta React despues del bundle, asi que sin
+         este preload el navegador lo descubre tarde. Tiene que coincidir con
+         HOME_HERO_PRELOAD en src/assets/images.js y con el sizes del <img> en
+         src/components/Hero.jsx, o se descargan dos variantes distintas. -->
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      href="/assets/media/team-hero-1024.webp"
+      imagesrcset="/assets/media/team-hero-640.webp 640w, /assets/media/team-hero-1024.webp 1024w, /assets/media/team-hero-1600.webp 1600w"
+      imagesizes="(max-width: 640px) 100vw, 33vw"
+      fetchpriority="high"
+    />
     <!-- Fonts loaded async (non-render-blocking). Replaces the @import in index.css. -->
     <link
       rel="preload"
       as="style"
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap"
       onload="this.onload=null;this.rel='stylesheet'"
     />
     <noscript>
       <link
         rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap"
       />
     </noscript>
-    <meta name="theme-color" content="#2563EB" />
+    <meta name="theme-color" content="#062A6A" />
     <script>
       (function () {
         try {

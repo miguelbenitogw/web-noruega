@@ -33,30 +33,39 @@ export default function CookieConsent() {
 
   if (!show) return null
 
+  // Solo el aspecto: la logica de consentimiento de arriba no se toca.
+  //
+  // Antes era una tarjeta blanca con `rounded-2xl` y `shadow-2xl` — la sombra
+  // mas fuerte de todo el sitio, en el elemento menos importante. Ahora es una
+  // banda navy: el contraste con la pagina basta para despegarla del fondo, sin
+  // sombra, y el navy dice «esto es el sistema, no el contenido».
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-[70] p-4 animate-[fadeInUp_0.5s_ease-out]"
+      className="fixed bottom-0 left-0 right-0 z-[70] p-3 sm:p-4 animate-riseIn"
       role="dialog"
       aria-label="Informasjonskapsler"
     >
       <div className="container-xl">
-        <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="bg-navy border border-white/10 rounded-panel px-5 py-5 sm:px-7 sm:py-6
+                        flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
           <div className="flex-1">
-            <p className="font-heading font-semibold text-ink text-sm mb-1">{cookie.title}</p>
-            <p className="text-gray-500 text-xs leading-relaxed">
+            <p className="font-heading text-[0.9375rem] font-semibold text-white">{cookie.title}</p>
+            <p className="mt-1.5 max-w-measure text-[0.875rem] leading-[1.6] text-primary-200">
               {cookie.description}
             </p>
           </div>
-          <div className="flex gap-2 shrink-0">
+          <div className="flex shrink-0 gap-2.5">
             <button
               onClick={decline}
-              className="px-4 py-2.5 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+              className="flex-1 rounded-pill border border-white/30 px-5 py-2.5 font-ui text-[0.875rem]
+                         font-semibold text-white/85 transition-colors hover:bg-white/10 hover:text-white cursor-pointer sm:flex-none"
             >
               {cookie.declineLabel}
             </button>
             <button
               onClick={accept}
-              className="px-5 py-2.5 bg-primary-600 text-white text-sm font-semibold rounded-lg hover:bg-primary-700 transition-colors shadow-sm cursor-pointer"
+              className="flex-1 rounded-pill bg-white px-5 py-2.5 font-ui text-[0.875rem] font-semibold
+                         text-navy transition-colors hover:bg-primary-100 cursor-pointer sm:flex-none"
             >
               {cookie.acceptLabel}
             </button>

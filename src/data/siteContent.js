@@ -14,7 +14,7 @@ const siteContent = {
     stats: [
       { value: '2014', label: 'Grunnlagt', animate: false },
       { value: '50+', label: 'Ansatte', animate: true },
-      { value: '500+', label: 'Kandidater plassert i Norge', animate: true },
+      { value: '2500+', label: 'Kandidater plassert i Norge', animate: true },
       { value: '95%', label: 'Retensjonsgrad', animate: true },
     ],
   },
@@ -33,7 +33,7 @@ const siteContent = {
   },
 
   homeStats: [
-    { value: '500+', label: 'Kandidater plassert i Norge' },
+    { value: '2500+', label: 'Kandidater plassert i Norge' },
     { value: '95%', label: 'Retensjonsgrad' },
     { value: '25 000+', label: 'Undervisningstimer i norsk' },
   ],

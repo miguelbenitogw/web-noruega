@@ -4,61 +4,77 @@ import useContent from '../hooks/useContent'
 import EditableText from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
 
+/**
+ * CTABanner
+ *
+ * Antes: foto a sangre con dos velos encima, insignia en pastilla, titular
+ * centrado y dos botones centrados. Es la tarjeta de visita de una landing
+ * generada, y además la foto no se veía: dos overlays la dejaban en textura.
+ *
+ * Ahora la foto ocupa su mitad y se ve, y el texto vive sobre navy sólido.
+ * La imagen sale por el borde izquierdo de la pantalla para que el bloque no
+ * parezca otra fila dentro de la retícula.
+ */
 export default function CTABanner() {
   const c = useContent('ctaBanner')
 
   return (
     <section
-      className="relative py-28 overflow-hidden"
+      className="bg-navy-deep overflow-hidden"
       aria-label="Kom i gang med Global Working Norge"
     >
-      <div className="absolute inset-0" aria-hidden="true">
-        <EditableImage
-          path="ctaBanner.imageUrl"
-          src={img(c.imageUrl || IMAGES.peopleTeam2, 1600)}
-          alt={c.imageAlt || ''}
-          className="w-full h-full object-cover object-center"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-primary-900/80" />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-900/90 to-primary-800/60" />
-      </div>
+      <div className="container-xl">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
-      <div className="container-xl relative z-10 text-center">
-        <EditableText
-          as="span"
-          path="ctaBanner.badge"
-          value={c.badge}
-          className="inline-block px-4 py-1.5 rounded-full bg-cta/20 border border-cta/30 text-cta text-sm font-semibold mb-6"
-        />
-        <EditableText
-          as="h2"
-          path="ctaBanner.heading"
-          value={c.heading}
-          className="font-heading text-3xl lg:text-5xl font-bold text-white mb-6 leading-tight max-w-3xl mx-auto"
-        />
-        <EditableText
-          as="p"
-          path="ctaBanner.description"
-          value={c.description}
-          multiline
-          className="text-blue-200 text-lg leading-relaxed max-w-2xl mx-auto mb-10"
-        />
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="/kontakt"
-            onClick={() => trackEvent('cta_click', { location: 'cta_banner', cta: 'kontakt_oss_na' })}
-            className="px-8 py-4 bg-cta text-white font-semibold rounded-xl hover:bg-cta-600 transition-all duration-200 shadow-lg hover:-translate-y-0.5 cursor-pointer"
-          >
-            <EditableText as="span" path="ctaBanner.cta1" value={c.cta1} className="inline" />
-          </a>
-          <a
-            href="/talentportalen"
-            onClick={() => trackEvent('cta_click', { location: 'cta_banner', cta: 'se_kandidater' })}
-            className="px-8 py-4 bg-white/10 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-200 cursor-pointer"
-          >
-            <EditableText as="span" path="ctaBanner.cta2" value={c.cta2} className="inline" />
-          </a>
+          <div className="lg:col-span-6 order-2 lg:order-1 pb-14 lg:py-16 gw-bleed-l">
+            <EditableImage
+              path="ctaBanner.imageUrl"
+              src={img(c.imageUrl || IMAGES.peopleTeam2, 1600)}
+              alt={c.imageAlt || ''}
+              className="w-full h-[280px] lg:h-[460px] object-cover object-center rounded-panel lg:rounded-l-none"
+              loading="lazy"
+            />
+          </div>
+
+          <div className="lg:col-span-5 lg:col-start-8 order-1 lg:order-2 pt-20 lg:py-16">
+            <EditableText
+              as="span"
+              path="ctaBanner.badge"
+              value={c.badge}
+              className="gw-label text-white"
+            />
+            <EditableText
+              as="h2"
+              path="ctaBanner.heading"
+              value={c.heading}
+              className="mt-5 text-display-sm font-semibold !text-white"
+            />
+            <EditableText
+              as="p"
+              path="ctaBanner.description"
+              value={c.description}
+              multiline
+              className="mt-6 text-body text-primary-100 leading-[1.65]"
+            />
+
+            <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
+              <a
+                href="/kontakt"
+                onClick={() => trackEvent('cta_click', { location: 'cta_banner', cta: 'kontakt_oss_na' })}
+                className="gw-btn gw-btn-ember"
+              >
+                <EditableText as="span" path="ctaBanner.cta1" value={c.cta1} className="inline" />
+              </a>
+              <a
+                href="/talentportalen"
+                onClick={() => trackEvent('cta_click', { location: 'cta_banner', cta: 'se_kandidater' })}
+                className="gw-btn gw-btn-ghost"
+              >
+                <EditableText as="span" path="ctaBanner.cta2" value={c.cta2} className="inline" />
+              </a>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>

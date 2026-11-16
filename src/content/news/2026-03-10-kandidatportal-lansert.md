@@ -1,62 +1,63 @@
 ---
 slug: "kandidatportal-lansert"
-title: "Ny kandidatportal lansert"
-excerpt: "Vi lanserer en ny digital plattform der arbeidsgivere enkelt kan søke gjennom forhåndsgodkjente kandidater i sanntid."
+title: "Global Working lanserer Talentportalen"
+excerpt: "En ny måte å jobbe med rekruttering på! Global Working lanserer Talentportalen, en ny digital plattform der arbeidsgivere enkelt kan søke gjennom forhåndsgodkjente kandidater."
 date: "2026-03-10"
 tag: "Plattform"
 readTime: "7 min"
 coverImage: "https://images.squarespace-cdn.com/content/v1/699f19dee84d12556ca836b0/6ad4318b-849b-4578-93da-9d23c07a46b2/Screenshot+2026-02-26+at+15.58.15.png"
+featured: false
 status: "published"
-publishAt: "2026-03-10T08:00:00Z"
+publishAt: "2026-03-10T08:00:00+00:00"
 author: "Global Working"
 seoTitle: "Ny kandidatportal lansert"
 seoDescription: "Global Working lanserer ny kandidatportal for raskere matching mellom arbeidsgivere og forhåndsgodkjente kandidater."
 ---
 
-Global Working har lansert en ny kandidatportal som gir arbeidsgivere direkte tilgang til tilgjengelige kandidater for fast ansettelse. Målet er å gjøre første del av rekrutteringen raskere, mer oversiktlig og tryggere.
+Rekruttering i helse og omsorg tar tid, samtidig som behovet ofte er akutt.
 
-## Hva portalen brukes til
+Mange kommuner kjenner seg igjen i dette: behovet for rask tilgang på kvalifisert personell, kombinert med ønsket om stabile, langsiktige ansettelser.
 
-Portalen er laget for virksomheter som vil:
+Med dette som utgangspunkt har Global Working utviklet en ny løsning: Talentportalen.
 
-- få rask oversikt over aktuelle kandidater
-- gjøre en første vurdering av relevans før intervju
-- redusere tiden fra behov til konkret kandidatdialog
+## Fra prosess til oversikt
 
-Dette gir bedre flyt i prosessen, spesielt når behov oppstår raskt.
+Talentportalen er et digitalt verktøy som gir kommuner direkte tilgang til kvalifiserte kandidater som er klare for jobb i Norge.
 
-## Hva du får som arbeidsgiver
+I stedet for å gå gjennom flere ledd og lange prosesser, får arbeidsgivere én samlet oversikt over kandidater som matcher deres behov. Her kan man søke, filtrere og vurdere kandidater basert på kompetanse og erfaring, før man eventuelt inviterer til intervju.
 
-I portalen kan du arbeide mer strukturert med kandidatgrunnlaget:
+Dette handler om å gjøre det enda lettere å finne den arbeidskraften dere trenger.
 
-- se tilgjengelige profiler for fast ansettelse
-- prioritere kandidater som matcher rolle og behov
-- invitere videre til intervju i neste steg
+## En enklere vei fra behov til intervju
 
-Portalen erstatter ikke kvalitetssikringen i prosessen, men gjør samarbeidet mer effektivt fra start.
+Selve prosessen er enkel:
+1. Kommunen får tilgang til portalen
+2. Søker og filtrerer blant kvalifiserte kandidater
+3. Inviterer på intervju og følger prosessen digitalt
 
-## Knyttet til hele rekrutteringsmodellen
+Dette gir en mer direkte og effektiv rekrutteringsflyt, der arbeidsgiver i større grad styrer prosessen selv og har folk å velge i. 
 
-Kandidatportalen er tett koblet til modellen vår for forberedelse før ansettelse. Kandidater som presenteres går gjennom et strukturert løp med:
+Kommuner Får blant annet:
+- direkte tilgang til kandidater med gyldig HPR nummer
+- kandidater som ønsker minimum to års ansettelse
+- mulighet til å bestille intervjuer
+- trygg og GDPR sikker håndtering av data 
 
-- opptil 600 timer norskopplæring
-- bransjespesifikk terminologi
-- innføring i norsk arbeidskultur
 
-I tillegg planlegges overgangen til arbeidsgiver i forkant, med intervjuvindu typisk 1–4 uker etter avsluttet opplæring.
+## Et verktøy for mer langsiktig bemanning
 
-## Hvorfor dette gir mer trygghet
+Samtidig handler dette ikke bare om å finne kandidater fort, men også om å finne de riktige kandidatene.
 
-For norske arbeidsgivere handler dette om mer enn hastighet. Portalen bidrar til:
+Der mange løsninger i dag er rettet mot midlertidige behov, er Talentportalen bygget rundt kandidater som ønsker fast ansettelse over tid. Det gir arbeidsgiver mulighet til å jobbe mer strategisk med bemanning, og i større grad bygge stabile fagmiljøer.
 
-- bedre beslutningsgrunnlag tidlig i prosessen
-- tydeligere forventninger mellom kandidat og arbeidsgiver
-- tryggere oppstart når språk og rolleforståelse er bedre avklart
+## Kom raskt i gang
 
-Dette er særlig viktig i tjenester der kommunikasjon og samhandling er kritisk.
+Tilgangen til portalen er også enkel:
+- Send en interessemelding
+- Få opprettet profil
+- Motta innlogging
+- Start å utforske kandidater og bestille intervjuer
 
-## Neste steg
+I tillegg bistår Global Working med onboarding og opplæring, slik at kommunen kommer raskt i gang.
 
-Vi videreutvikler portalen med bedre innsikt i kandidatflyt og enda tydeligere støtte for arbeidsgivere i vurderingsfasen.
-
-Ønsker du en gjennomgang av kandidatportalen, kan vi sette opp en kort demo tilpasset din virksomhet.
+Ta gjerne kontakt dersom dere er nysgjerrige på hvordan dette kan fungere i deres kommune.

@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GlobalWorking Talent Portal – produktomvisning</title>
+<!--
+  =====================================================================
+  GlobalWorking Talent Portal – selvspillende produktomvisning
+  =====================================================================
+  EMBED (iframe):
+    <iframe src="tutorial-talent-portal/index.html" title="GlobalWorking Talent Portal"
+            style="width:100%;aspect-ratio:16/9;border:0;border-radius:16px"
+            loading="lazy" allow="fullscreen"></iframe>
+    (Høyden til iframen bør være ca. 16:9 + 70px for kontrollene, se embed.html.)
+
+  EDIT TEXTS : alle tekster ligger i ordboken `DICT` (nb + en) i <script>-blokken.
+               Bildetekster = nøklene `cap.<id>.t` (tittel) og `cap.<id>.d` (setning).
+  EDIT TIMING: `CHAPTERS` i scriptet. Hvert kapittel har `dur` (sekunder) og en liste
+               med steg: S(sekund, fn) eller T(sekund, varighet, fn). Tider er relative
+               til kapittelstart.
+  CTA-LENKE  : konstanten CTA_URL øverst i scriptet (standard "#kontakt").
+  =====================================================================
+-->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap');
+
+:root{
+  --navy:#003D7C; --navy-700:#002f60; --navy-50:#eaf1f9; --navy-100:#d3e2f3;
+  --s50:#f8fafc; --s100:#f1f5f9; --s200:#e2e8f0; --s300:#cbd5e1; --s400:#94a3b8; --s500:#64748b; --s600:#475569; --s700:#334155; --s900:#0f172a;
+  --em:#10b981; --em-bg:#ecfdf5; --em-fg:#047857;
+  --am:#f59e0b; --am-bg:#fffbeb; --am-fg:#b45309;
+  --vi:#8b5cf6; --vi-bg:#f5f3ff; --vi-fg:#6d28d9;
+  --rose:#e11d48;
+  --head:'Outfit','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mv:.85s;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:transparent}
+body{font-family:var(--body);color:var(--s900);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.player{max-width:1280px;margin:0 auto;outline:none}
+.wrap{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:16px;background:#dfe9f6}
+.stage{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;font-size:14px;
+  background:radial-gradient(900px 500px at 15% 0%,#cfe0f4 0,transparent 70%),radial-gradient(900px 500px at 100% 100%,#d9e6f5 0,transparent 70%),#e8eff8}
+
+/* ---------- window ---------- */
+.win{position:absolute;left:24px;top:14px;width:1232px;height:604px;background:#fff;border-radius:18px;overflow:hidden;
+  box-shadow:0 34px 60px -24px rgba(0,40,90,.4),0 0 0 1px rgba(15,23,42,.07)}
+.chrome{height:26px;background:var(--s100);border-bottom:1px solid var(--s200);display:flex;align-items:center;gap:6px;padding:0 12px}
+.chrome i{width:9px;height:9px;border-radius:50%;background:var(--s300)}
+.chrome span{flex:1;text-align:center;font-size:11px;color:var(--s500);margin-right:40px}
+.content{position:absolute;left:0;top:26px;width:1232px;height:578px;overflow:hidden;background:var(--s50)}
+.scene{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s .45s}
+.scene.on{opacity:1;visibility:visible;transition-delay:0s}
+
+/* ---------- shared bits ---------- */
+.logo{font:700 20px var(--head);color:var(--navy);letter-spacing:-.02em}
+.logo span{font-weight:500}
+.input{position:relative;height:42px;border:1.5px solid var(--s200);border-radius:12px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:14px;transition:border-color .25s,box-shadow .25s}
+.input.focus{border-color:var(--navy);box-shadow:0 0 0 4px rgba(0,61,124,.12)}
+.input .ph{color:var(--s400)} .input.has .ph{display:none}
+.input .caret{width:1.5px;height:18px;background:var(--navy);margin-left:1px;opacity:0}
+.input.focus .caret{opacity:1;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.pill{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 10px;border-radius:99px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.st-avail{background:var(--em-bg);color:var(--em-fg)} .st-train{background:var(--am-bg);color:var(--am-fg)} .st-busy{background:var(--vi-bg);color:var(--vi-fg)}
+.chip{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:7px;background:var(--s100);color:var(--s600);font-size:11px;font-weight:500}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:42px;border-radius:12px;font-weight:600;font-size:14px;transition:transform .15s,background .25s}
+.btn-p{background:var(--navy);color:#fff;box-shadow:0 8px 18px -8px rgba(0,61,124,.7)}
+.btn-s{background:#fff;color:var(--navy);border:1.5px solid var(--navy-100)}
+.btn-g{background:var(--s100);color:var(--s700)}
+.press{transform:scale(.96)}
+.av{border-radius:50%;overflow:hidden;flex:none}
+.av svg{display:block;width:100%;height:100%}
+
+/* ---------- login ---------- */
+.lg{display:grid;grid-template-columns:1fr 1fr;height:100%}
+.lg-left{background:linear-gradient(155deg,#004a96 0,var(--navy) 45%,#002a55 100%);color:#fff;padding:54px 64px;position:relative;overflow:hidden}
+.lg-left:before{content:"";position:absolute;right:-120px;bottom:-140px;width:420px;height:420px;border-radius:50%;border:60px solid rgba(255,255,255,.05)}
+.lg-left .logo{color:#fff;font-size:24px}
+.lg-head{margin-top:70px;display:inline-block}
+.lg-head h1{font:600 38px/1.12 var(--head);letter-spacing:-.02em;max-width:470px}
+.lg-pts{margin-top:30px;display:grid;gap:14px}
+.lg-pts div{display:flex;align-items:center;gap:12px;font-size:16px;color:#dbe7f5}
+.lg-pts svg{flex:none;width:26px;height:26px;padding:5px;border-radius:50%;background:rgba(255,255,255,.14);stroke:#fff}
+.lg-right{display:flex;align-items:center;justify-content:center;background:var(--s50)}
+.lg-card{width:430px;background:#fff;border-radius:24px;padding:30px 34px;box-shadow:0 20px 40px -20px rgba(15,23,42,.25);border:1px solid var(--s200)}
+.lg-card h2{font:600 24px var(--head);color:var(--navy)}
+.lg-card .sub{color:var(--s500);margin:4px 0 18px;font-size:13.5px}
+.lg-card label{display:block;font-size:12.5px;font-weight:600;color:var(--s700);margin:12px 0 6px}
+.lg-card .btn{width:100%;margin-top:18px}
+.lg-card .btn.load{pointer-events:none;background:var(--navy-700)}
+.spin{width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;display:none;animation:rot .7s linear infinite}
+.load .spin{display:block}
+@keyframes rot{to{transform:rotate(360deg)}}
+.lg-or{display:flex;align-items:center;gap:10px;color:var(--s400);font-size:12px;margin:18px 0 12px}
+.lg-or:before,.lg-or:after{content:"";flex:1;height:1px;background:var(--s200)}
+.lg-explore{border:1.5px dashed var(--navy-100);border-radius:16px;padding:12px 14px;background:var(--navy-50)}
+.lg-explore b{font:600 14px var(--head);color:var(--navy)}
+.lg-explore .row{display:flex;gap:10px;margin-top:10px}
+.lg-explore .row .btn{height:36px;margin:0;font-size:13px;flex:1}
+
+/* ---------- portal chrome ---------- */
+.ahead{height:52px;background:#fff;border-bottom:1px solid var(--s200);display:flex;align-items:center;padding:0 24px;gap:12px}
+.ahead .tag{font-size:12px;color:var(--s500);border-left:1px solid var(--s200);padding-left:12px}
+.ahead .usr{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--s700)}
+.ahead .usr b{width:28px;height:28px;border-radius:50%;background:var(--navy-50);color:var(--navy);display:grid;place-items:center;font:600 13px var(--head)}
+.pbody{display:flex;height:526px}
+.side{width:224px;background:#fff;border-right:1px solid var(--s200);padding:16px 12px}
+.side h4{font:600 11.5px var(--body);color:var(--s400);margin:4px 12px 8px}
+.nv{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-weight:500;color:var(--s700);margin-bottom:3px;transition:background .25s,color .25s}
+.nv.on{background:var(--navy-50);color:var(--navy);font-weight:600}
+.nv .d{width:9px;height:9px;border-radius:50%;flex:none}
+.nv em{margin-left:auto;font-style:normal;font-size:12px;background:var(--s100);color:var(--s600);padding:1px 8px;border-radius:99px}
+.nv.on em{background:#fff}
+.main{flex:1;position:relative}
+.pane{position:absolute;inset:18px 24px 0;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
+.pane.on{opacity:1;visibility:visible;transition-delay:0s}
+.ptitle{display:flex;align-items:baseline;gap:12px;height:28px;margin-bottom:10px}
+.ptitle h2{font:600 22px var(--head);color:var(--s900);letter-spacing:-.01em}
+.ptitle small{color:var(--s500);font-size:13px}
+.frow{display:flex;align-items:center;gap:10px;height:38px;margin-bottom:14px;position:relative}
+.search{width:330px;height:38px}
+.search svg{flex:none;margin-right:8px;stroke:var(--s400)}
+.fchip{position:relative;height:38px;display:flex;align-items:center;gap:6px;padding:0 12px;border:1.5px solid var(--s200);border-radius:12px;background:#fff;font-size:13px;font-weight:500;color:var(--s700);transition:border-color .25s,background .25s}
+.fchip.act,.fchip.open{border-color:var(--navy);background:var(--navy-50);color:var(--navy)}
+.pop{position:absolute;left:0;top:44px;min-width:170px;background:#fff;border-radius:14px;border:1px solid var(--s200);box-shadow:0 18px 36px -12px rgba(15,23,42,.3);padding:6px;opacity:0;transform:translateY(-6px);visibility:hidden;transition:opacity .2s,transform .2s,visibility 0s .2s;z-index:20}
+.fchip.open .pop{opacity:1;transform:none;visibility:visible;transition-delay:0s}
+.pop .opt{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:9px;font-size:13px;color:var(--s700);font-weight:500;transition:background .2s}
+.pop .opt.on{background:var(--navy-50);color:var(--navy)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:196px;gap:14px}
+.cand{background:#fff;border:1px solid var(--s200);border-radius:20px;padding:12px 14px;box-shadow:0 1px 2px rgba(15,23,42,.04);display:flex;flex-direction:column;overflow:hidden;position:relative}
+.cand.gone{display:none}
+.cand.pop-in{animation:popin .4s cubic-bezier(.2,.8,.2,1) both}
+@keyframes popin{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+.c-top{display:flex;gap:12px;align-items:center}
+.c-top .av{width:54px;height:54px}
+.c-name{font:600 16px/1.2 var(--head);color:var(--s900)}
+.c-prof{font-size:12px;color:var(--s500);margin:2px 0 5px}
+.heart{margin-left:auto;align-self:flex-start;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--s100);transition:background .25s,transform .2s}
+.heart svg{width:16px;height:16px;fill:none;stroke:var(--s400);stroke-width:2;transition:all .25s}
+.heart.on{background:#ffe4e6}.heart.on svg{fill:var(--rose);stroke:var(--rose)}
+.cand .pill{margin-top:8px;align-self:flex-start}
+.c-from{font-size:12px;color:var(--s600);margin-top:5px;font-weight:500}
+.c-sum{font-size:12px;line-height:16px;color:var(--s500);margin-top:3px;height:32px;overflow:hidden}
+.c-foot{margin-top:auto}
+.c-foot .vp{width:100%;height:26px;border-radius:9px;background:var(--navy-50);color:var(--navy);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .2s,transform .15s}
+
+/* ---------- mine ---------- */
+.stp{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-bottom:14px;background:#fff;border:1px solid var(--s200);border-radius:20px;padding:6px}
+.stg{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;position:relative}
+.stg + .stg:before{content:"";position:absolute;left:-6px;top:50%;width:10px;height:10px;border-top:2px solid var(--s300);border-right:2px solid var(--s300);transform:translateY(-50%) rotate(45deg)}
+.stg b{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:600 14px var(--head);color:#fff}
+.stg span{font:600 15px var(--head);color:var(--s900)} .stg small{display:block;font:400 12px var(--body);color:var(--s500)}
+.s0b{background:#6b9bd1}.s1b{background:#2f6fb5}.s2b{background:#0d5299}.s3b{background:var(--navy-700)}
+.mrow{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--s200);border-radius:18px;padding:10px 16px;margin-bottom:8px;opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s}
+.mrow.in{opacity:1;transform:none}
+.mrow .av{width:42px;height:42px}
+.mrow .who{width:230px}
+.mrow .who b{font:600 15px var(--head)} .mrow .who small{display:block;color:var(--s500);font-size:12px}
+.dots{display:flex;align-items:center;gap:0;flex:1;max-width:340px}
+.dots i{width:12px;height:12px;border-radius:50%;background:var(--s200);flex:none}
+.dots u{flex:1;height:3px;background:var(--s200)}
+.dots i.f,.dots u.f{background:var(--navy)}
+.sp{margin-left:auto;display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:99px;font-size:12px;font-weight:600;gap:6px}
+.sp0{background:#e3edf8;color:#1e5a9e}.sp1{background:#c9dcf1;color:#0d4a8e}.sp2{background:#9fc0e5;color:#00306a}.sp3{background:var(--navy);color:#fff}
+
+/* ---------- profile ---------- */
+.pf-back{height:38px;display:flex;align-items:center;padding:0 24px;color:var(--navy);font-weight:600;font-size:13px;gap:6px}
+.pf{display:flex;gap:20px;padding:0 24px;height:488px}
+.pf-left{width:300px;background:#fff;border:1px solid var(--s200);border-radius:24px;padding:20px;align-self:flex-start;display:flex;flex-direction:column;align-items:center;text-align:center}
+.pf-left .av{width:108px;height:108px;box-shadow:0 0 0 4px var(--em-bg)}
+.pf-left h3{font:600 22px var(--head);margin-top:10px}
+.pf-left .pr{color:var(--s500);margin:2px 0 8px}
+.pf-left .from{font-size:12.5px;color:var(--s600);margin-top:8px;font-weight:500}
+.pf-act{width:100%;display:grid;gap:8px;margin-top:16px}
+.pf-act .btn{height:40px;font-size:13.5px}
+.pf-act small{font-weight:500;color:var(--s500);font-size:11px}
+.btn.sent{background:var(--em);box-shadow:0 8px 18px -8px rgba(16,185,129,.7)}
+.pf-view{flex:1;height:470px;overflow:hidden;border-radius:4px}
+.pin{position:relative;transition:transform .85s cubic-bezier(.65,0,.35,1);display:grid;gap:12px;padding-bottom:4px}
+.card{background:#fff;border:1px solid var(--s200);border-radius:20px;padding:16px 20px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.card h4{font:600 14px var(--head);color:var(--navy);margin-bottom:8px}
+.card p{font-size:13.5px;line-height:1.55;color:var(--s600);max-width:760px}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 20px}
+.kv div{font-size:13px;font-weight:500;color:var(--s900)} .kv small{display:block;font-size:11.5px;color:var(--s500);font-weight:400;margin-bottom:1px}
+.lang{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.lang div{font-size:13px;font-weight:500}
+.lang small{color:var(--s500);font-weight:400} .lang .bar{height:6px;border-radius:9px;background:var(--s100);margin-top:6px;overflow:hidden}
+.lang .bar i{display:block;height:100%;background:var(--navy);border-radius:9px}
+.tl{display:grid;gap:10px}
+.tl div{display:flex;gap:12px;font-size:13px}
+.tl i{width:9px;height:9px;border-radius:50%;background:var(--navy);margin-top:5px;flex:none;box-shadow:0 0 0 4px var(--navy-50)}
+.tl b{font-weight:600} .tl small{display:block;color:var(--s500);font-size:12px}
+.toast{position:absolute;left:50%;top:62px;transform:translate(-50%,-20px);background:var(--s900);color:#fff;padding:10px 18px;border-radius:14px;font-weight:500;font-size:13.5px;display:flex;align-items:center;gap:8px;opacity:0;transition:opacity .35s,transform .35s;z-index:30}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast svg{stroke:#34d399}
+.chat{position:absolute;right:16px;top:60px;bottom:16px;width:350px;background:#fff;border-radius:22px;border:1px solid var(--s200);box-shadow:0 30px 60px -20px rgba(0,40,90,.4);display:flex;flex-direction:column;transform:translateX(120%);transition:transform .6s cubic-bezier(.2,.8,.2,1);z-index:25;overflow:hidden}
+.chat.on{transform:none}
+.ch-h{display:flex;gap:12px;align-items:center;padding:14px 16px;background:var(--navy);color:#fff}
+.ch-h .gw{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;font:600 13px var(--head)}
+.ch-h b{font:600 15px var(--head);display:block}.ch-h small{font-size:12px;color:#c5d7ec}
+.ch-b{flex:1;padding:14px;display:flex;flex-direction:column;gap:8px;overflow:hidden;background:var(--s50)}
+.msg{max-width:82%;padding:9px 13px;border-radius:16px;font-size:13px;line-height:1.4;animation:popin .35s both}
+.msg.me{align-self:flex-end;background:var(--navy);color:#fff;border-bottom-right-radius:5px}
+.msg.them{align-self:flex-start;background:#fff;border:1px solid var(--s200);border-bottom-left-radius:5px}
+.msg.dots-m{display:flex;gap:4px;padding:12px 14px}
+.msg.dots-m i{width:6px;height:6px;border-radius:50%;background:var(--s400);animation:bnc 1s infinite}
+.msg.dots-m i:nth-child(2){animation-delay:.15s}.msg.dots-m i:nth-child(3){animation-delay:.3s}
+@keyframes bnc{0%,60%,100%{transform:none}30%{transform:translateY(-4px)}}
+.ch-i{display:flex;gap:8px;padding:12px;border-top:1px solid var(--s200);background:#fff}
+.ch-i .input{flex:1;height:40px;font-size:13px}
+.ch-i button{width:40px;height:40px;border-radius:12px;background:var(--navy);display:grid;place-items:center;transition:transform .15s}
+.ch-i button svg{stroke:#fff}
+
+/* ---------- privacy ---------- */
+.pv{background:linear-gradient(160deg,#004a96,var(--navy) 50%,#002650);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 90px}
+.pv .sh{width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.12);display:grid;place-items:center;box-shadow:0 0 0 14px rgba(255,255,255,.05)}
+.pv .sh svg{stroke:#fff}
+.pv h2{font:600 40px var(--head);letter-spacing:-.02em;margin:24px 0 34px}
+.pv .three{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;width:100%}
+.pv .it{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:22px;opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}
+.pv .it.in{opacity:1;transform:none}
+.pv .it svg{stroke:#8ec1ff;margin-bottom:12px}
+.pv .it b{display:block;font:600 18px/1.25 var(--head);margin-bottom:6px}
+.pv .it span{font-size:14px;line-height:1.5;color:#c9daee}
+.pv .sh{opacity:0;transform:scale(.8);transition:all .6s}.pv.on .sh{opacity:1;transform:none}
+
+/* ---------- closing ---------- */
+.cl{background:linear-gradient(160deg,#e9f1fb,#f8fafc);display:flex;align-items:center;justify-content:center}
+.cl:before{content:"";position:absolute;width:760px;height:760px;border-radius:50%;background:radial-gradient(circle,rgba(0,61,124,.12),transparent 65%)}
+.cl-card{position:relative;width:640px;background:#fff;border-radius:32px;padding:44px 52px;text-align:center;box-shadow:0 40px 80px -30px rgba(0,40,90,.45);border:1px solid var(--s200);opacity:0;transform:translateY(16px) scale(.98);transition:all .6s cubic-bezier(.2,.8,.2,1)}
+.cl.on .cl-card{opacity:1;transform:none}
+.cl-card .logo{font-size:26px}
+.cl-card h2{font:600 34px/1.15 var(--head);color:var(--s900);letter-spacing:-.02em;margin:18px 0 10px}
+.cl-card p{color:var(--s600);font-size:16px;line-height:1.5;max-width:420px;margin:0 auto 26px}
+.cta{display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 34px;border-radius:16px;background:var(--navy);color:#fff;font:600 18px var(--head);text-decoration:none;box-shadow:0 14px 28px -10px rgba(0,61,124,.7);position:relative}
+.cta.pulse:after{content:"";position:absolute;inset:-6px;border-radius:21px;border:2px solid var(--navy);opacity:0;animation:pulse 1.6s ease-out infinite}
+@keyframes pulse{0%{opacity:.6;transform:scale(.97)}100%{opacity:0;transform:scale(1.12)}}
+
+/* ---------- overlays ---------- */
+.ring{position:absolute;left:0;top:0;width:10px;height:10px;border:3px solid var(--navy);border-radius:16px;box-shadow:0 0 0 6px rgba(0,61,124,.14),0 0 28px rgba(0,61,124,.25);opacity:0;pointer-events:none;z-index:40;
+  transition:left .6s cubic-bezier(.65,0,.35,1),top .6s cubic-bezier(.65,0,.35,1),width .6s cubic-bezier(.65,0,.35,1),height .6s cubic-bezier(.65,0,.35,1),opacity .35s}
+.ring.on{opacity:1;animation:ringp 2s ease-in-out infinite}
+@keyframes ringp{50%{box-shadow:0 0 0 10px rgba(0,61,124,.08),0 0 34px rgba(0,61,124,.3)}}
+.cursor{position:absolute;left:0;top:0;z-index:60;pointer-events:none;opacity:0;transition:transform var(--mv) cubic-bezier(.65,0,.35,1),opacity .3s;filter:drop-shadow(0 3px 5px rgba(15,23,42,.35))}
+.cursor.on{opacity:1}
+.cursor svg{display:block;width:26px;height:26px;transition:transform .12s}
+.cursor.down svg{transform:scale(.82)}
+.cursor .rip{position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;background:rgba(0,61,124,.35);opacity:0;transform:scale(.3)}
+.cursor.go .rip{animation:rip .6s ease-out}
+@keyframes rip{0%{opacity:.8;transform:scale(.3)}100%{opacity:0;transform:scale(2.2)}}
+
+/* ---------- caption card ---------- */
+.cap{position:absolute;left:24px;top:630px;width:1232px;height:76px;background:#fff;border-radius:20px;box-shadow:0 18px 36px -20px rgba(0,40,90,.4),0 0 0 1px rgba(15,23,42,.06);display:flex;align-items:center;gap:18px;padding:0 24px}
+.cap .num{width:46px;height:46px;border-radius:15px;background:var(--navy);color:#fff;font:600 18px var(--head);display:grid;place-items:center;flex:none}
+.cap .tx{min-width:0;transition:opacity .3s,transform .3s}
+.cap .tx.sw{opacity:0;transform:translateY(5px)}
+.cap h3{font:600 20px/1.2 var(--head);color:var(--navy)}
+.cap p{font-size:15px;color:var(--s600);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cap .chn{margin-left:auto;flex:none;font-size:12.5px;color:var(--s500);background:var(--s100);padding:6px 12px;border-radius:99px;font-weight:500}
+
+/* ---------- controls ---------- */
+.controls{display:flex;align-items:center;gap:8px;padding:12px 4px 0;flex-wrap:wrap}
+.cbtn{width:38px;height:38px;border-radius:12px;background:#fff;display:grid;place-items:center;box-shadow:0 0 0 1px var(--s200);transition:background .2s}
+.cbtn:hover{background:var(--navy-50)}
+.cbtn svg{width:18px;height:18px;stroke:var(--navy);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cbtn:focus-visible,.mk:focus-visible,.lbtn:focus-visible,.player:focus-visible .bar{outline:3px solid var(--navy);outline-offset:2px}
+.bar{position:relative;flex:1;min-width:140px;height:38px;cursor:pointer;touch-action:none}
+.bar .trk{position:absolute;left:0;right:0;top:16px;height:6px;border-radius:9px;background:var(--navy-100);overflow:hidden}
+.bar .fill{height:100%;width:100%;background:var(--navy);transform-origin:0 50%;transform:scaleX(0)}
+.mk{position:absolute;top:3px;width:32px;height:32px;margin-left:-16px;border-radius:50%;display:grid;place-items:center}
+.mk:before{content:"";width:10px;height:10px;border-radius:50%;background:#fff;border:2.5px solid var(--navy);transition:transform .2s,background .2s}
+.mk:hover:before{transform:scale(1.35)} .mk.done:before{background:var(--navy)} .mk.cur:before{transform:scale(1.3);background:#fff;box-shadow:0 0 0 4px rgba(0,61,124,.2)}
+.clock{font-size:12.5px;color:var(--s600);font-variant-numeric:tabular-nums;min-width:78px;text-align:right}
+.lbtn{height:38px;padding:0 14px;border-radius:12px;background:#fff;box-shadow:0 0 0 1px var(--s200);font-weight:600;color:var(--navy);font-size:13px}
+.capbelow{display:none;margin-top:12px;background:#fff;border-radius:16px;padding:12px 16px;box-shadow:0 0 0 1px var(--s200)}
+.capbelow h3{font:600 17px var(--head);color:var(--navy)}.capbelow p{font-size:14px;color:var(--s600);margin-top:3px;line-height:1.45}
+.player.narrow .cap{display:none}
+.player.narrow .capbelow{display:block}
+.player.narrow .bar{order:9;flex-basis:100%}
+.player.inst *,.player.reduced *{transition:none!important;animation:none!important}
+.player.reduced .cursor,.player.inst .cursor{display:none}
+@media (prefers-reduced-motion:reduce){.ring.on{animation:none}}
+</style>
+</head>
+<body>
+<div class="player" id="player" tabindex="0" role="region" aria-label="GlobalWorking Talent Portal">
+  <div class="wrap" id="wrap">
+    <div class="stage" id="stage" inert aria-hidden="true">
+      <div class="win">
+        <div class="chrome"><i></i><i></i><i></i><span>GlobalWorking Talent Portal</span></div>
+        <div class="content" id="content">
+
+          <!-- 1 LOGIN -->
+          <section class="scene" data-scene="login">
+            <div class="lg">
+              <div class="lg-left">
+                <div class="logo">Global<span>Working</span></div>
+                <div class="lg-head"><h1 data-i18n="lg.h"></h1></div>
+                <div class="lg-pts">
+                  <div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg><span data-i18n="lg.p1"></span></div>
+                  <div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg><span data-i18n="lg.p2"></span></div>
+                  <div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg><span data-i18n="lg.p3"></span></div>
+                </div>
+              </div>
+              <div class="lg-right">
+                <div class="lg-card">
+                  <h2 data-i18n="lg.title"></h2>
+                  <p class="sub" data-i18n="lg.sub"></p>
+                  <label data-i18n="lg.user"></label>
+                  <div class="input" id="lg-user"><span class="val"></span><span class="caret"></span><span class="ph" data-i18n="lg.userph"></span></div>
+                  <label data-i18n="lg.pass"></label>
+                  <div class="input" id="lg-pass"><span class="val"></span><span class="caret"></span><span class="ph">••••••••</span></div>
+                  <button class="btn btn-p" id="lg-btn" tabindex="-1"><span class="spin"></span><span data-i18n="lg.btn"></span></button>
+                  <div class="lg-or" data-i18n="or"></div>
+                  <div class="lg-explore">
+                    <b data-i18n="lg.explore"></b>
+                    <div class="row"><button class="btn btn-s b-kom" tabindex="-1" data-i18n="lg.kom"></button><button class="btn btn-s b-ag" tabindex="-1" data-i18n="lg.ag"></button></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2-4, 7 PORTAL -->
+          <section class="scene" data-scene="portal">
+            <div class="ahead"><div class="logo">Global<span>Working</span></div><div class="tag">Talent Portal</div><div class="usr"><b>K</b><span data-i18n="usr"></span></div></div>
+            <div class="pbody">
+              <nav class="side">
+                <h4 data-i18n="nav.h"></h4>
+                <div class="nv" data-v="avail"><span class="d" style="background:var(--em)"></span><span data-i18n="nav.avail"></span><em>48</em></div>
+                <div class="nv" data-v="train"><span class="d" style="background:var(--am)"></span><span data-i18n="nav.train"></span><em>23</em></div>
+                <div class="nv" data-v="fav"><span class="d" style="background:var(--rose)"></span><span data-i18n="nav.fav"></span><em id="favCount">5</em></div>
+                <div class="nv" data-v="mine"><span class="d" style="background:var(--navy)"></span><span data-i18n="nav.mine"></span><em>4</em></div>
+              </nav>
+              <div class="main">
+                <div class="pane" id="paneGrid">
+                  <div class="ptitle"><h2 id="gridTitle"></h2><small id="gridCount"></small></div>
+                  <div class="frow" id="frow">
+                    <div class="input search" id="searchBox"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="val"></span><span class="caret"></span><span class="ph" data-i18n="search.ph"></span></div>
+                    <div class="fchip" data-f="nat"><span class="lbl" data-i18n="f.nat"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg><div class="pop" id="popNat"></div></div>
+                    <div class="fchip" data-f="exp"><span class="lbl" data-i18n="f.exp"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
+                    <div class="fchip" data-f="lic"><span class="lbl" data-i18n="f.lic"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
+                    <div class="fchip" data-f="from"><span class="lbl" data-i18n="f.from"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg><div class="pop" id="popFrom"></div></div>
+                  </div>
+                  <div class="grid" id="grid"></div>
+                </div>
+                <div class="pane" id="paneMine">
+                  <div class="ptitle"><h2 data-i18n="nav.mine"></h2><small data-i18n="mine.sub"></small></div>
+                  <div class="stp" id="stp"></div>
+                  <div id="mrows"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5-6 PROFILE -->
+          <section class="scene" data-scene="profile">
+            <div class="ahead"><div class="logo">Global<span>Working</span></div><div class="tag">Talent Portal</div><div class="usr"><b>K</b><span data-i18n="usr"></span></div></div>
+            <div class="pf-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg><span data-i18n="pf.back"></span></div>
+            <div class="pf">
+              <aside class="pf-left" id="pfLeft">
+                <div class="av" id="pfAv"></div>
+                <h3>Elena R.</h3>
+                <div class="pr" data-i18n="prof"></div>
+                <span class="pill st-avail"><i></i><span data-i18n="st.avail"></span></span>
+                <div class="from" id="pfFrom"></div>
+                <div class="pf-act">
+                  <button class="btn btn-p" id="btnInt" tabindex="-1"><span data-i18n="pf.int" id="btnIntT"></span></button>
+                  <button class="btn btn-s" id="btnCv" tabindex="-1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg><span data-i18n="pf.cv"></span> <small data-i18n="pf.cvn"></small></button>
+                  <button class="btn btn-g" id="btnFav" tabindex="-1"><svg width="16" height="16" viewBox="0 0 24 24" fill="#e11d48" stroke="#e11d48" stroke-width="2"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg><span data-i18n="pf.fav"></span></button>
+                </div>
+              </aside>
+              <div class="pf-view" id="pfView"><div class="pin" id="pin">
+                <div id="pfG1" style="display:grid;gap:12px">
+                  <div class="card" id="pfSum"><h4 data-i18n="pf.sum"></h4><p data-i18n="pf.sumtx"></p></div>
+                  <div class="card" id="pfInfo"><h4 data-i18n="pf.info"></h4>
+                    <div class="kv">
+                      <div><small data-i18n="k.prof"></small><span data-i18n="prof"></span></div>
+                      <div><small data-i18n="k.exp"></small><span data-i18n="k.expv"></span></div>
+                      <div><small data-i18n="k.spec"></small><span data-i18n="k.specv"></span></div>
+                      <div><small data-i18n="k.lic"></small><span data-i18n="k.licv"></span></div>
+                      <div><small data-i18n="k.nat"></small><span data-i18n="c.es"></span></div>
+                      <div><small data-i18n="k.from"></small><span id="pfFrom2"></span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card" id="pfLang"><h4 data-i18n="pf.lang"></h4>
+                  <div class="lang">
+                    <div><span data-i18n="l.es"></span> <small data-i18n="l.nat"></small><div class="bar"><i style="width:100%"></i></div></div>
+                    <div><span data-i18n="l.no"></span> <small>B2</small><div class="bar"><i style="width:72%"></i></div></div>
+                    <div><span data-i18n="l.en"></span> <small>B2</small><div class="bar"><i style="width:70%"></i></div></div>
+                  </div>
+                </div>
+                <div class="card" id="pfEdu"><h4 data-i18n="pf.edu"></h4>
+                  <div class="tl"><div><i></i><span><b data-i18n="e.deg"></b><small data-i18n="e.where"></small></span></div></div>
+                </div>
+                <div class="card" id="pfExp"><h4 data-i18n="pf.exp"></h4>
+                  <div class="tl">
+                    <div><i></i><span><b data-i18n="x.1"></b><small data-i18n="x.1w"></small></span></div>
+                    <div><i></i><span><b data-i18n="x.2"></b><small data-i18n="x.2w"></small></span></div>
+                    <div><i></i><span><b data-i18n="x.3"></b><small data-i18n="x.3w"></small></span></div>
+                  </div>
+                </div>
+              </div></div>
+            </div>
+            <div class="toast" id="toast"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg><span data-i18n="toast"></span></div>
+            <aside class="chat" id="chat">
+              <div class="ch-h"><div class="gw">GW</div><div><b data-i18n="chat.t"></b><small data-i18n="chat.s"></small></div></div>
+              <div class="ch-b" id="chatBody"></div>
+              <div class="ch-i"><div class="input" id="chatIn"><span class="val"></span><span class="caret"></span><span class="ph" data-i18n="chat.ph"></span></div><button id="chatSend" tabindex="-1" aria-label="send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l16-8-6 17-3-7z"/></svg></button></div>
+            </aside>
+          </section>
+
+          <!-- 8 PRIVACY -->
+          <section class="scene pv" data-scene="privacy">
+            <div class="sh"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></div>
+            <h2 data-i18n="pv.h"></h2>
+            <div class="three">
+              <div class="it"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l16 16M10 6.5C10.6 6.2 11.3 6 12 6c4 0 7 3.5 8 6-.4 1-1.1 2.1-2.1 3.1M6.6 8.1C5.2 9.2 4.4 10.7 4 12c1 2.5 4 6 8 6 1.2 0 2.3-.3 3.2-.8"/></svg><b data-i18n="pv.1t"></b><span data-i18n="pv.1d"></span></div>
+              <div class="it"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4M9 15l6 0"/></svg><b data-i18n="pv.2t"></b><span data-i18n="pv.2d"></span></div>
+              <div class="it"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c1-4 4-6 8-6s7 2 8 6"/></svg><b data-i18n="pv.3t"></b><span data-i18n="pv.3d"></span></div>
+            </div>
+          </section>
+
+          <!-- 9 CLOSING -->
+          <section class="scene cl" data-scene="closing">
+            <div class="cl-card">
+              <div class="logo">Global<span>Working</span></div>
+              <h2 data-i18n="cl.h"></h2>
+              <p data-i18n="cl.p"></p>
+              <a class="cta" id="cta" href="#kontakt"><span data-i18n="cl.cta"></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6l6 6-6 6"/></svg></a>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="ring" id="ring"></div>
+      <div class="cursor" id="cursor"><div class="rip"></div><svg viewBox="0 0 24 24"><path d="M4 2l15 9.5-6.5 1.6L9.8 20z" fill="#0f172a" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+
+      <div class="cap" id="cap" aria-hidden="true">
+        <div class="num" id="capNum">1</div>
+        <div class="tx" id="capTx"><h3 id="capT"></h3><p id="capD"></p></div>
+        <div class="chn" id="capCh"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="capbelow" id="capBelow" aria-live="polite"><h3 id="capT2"></h3><p id="capD2"></p></div>
+
+  <div class="controls">
+    <button class="cbtn" id="bPrev" type="button"><svg viewBox="0 0 24 24"><path d="M6 5v14M19 5l-10 7 10 7z"/></svg></button>
+    <button class="cbtn" id="bPlay" type="button"><svg viewBox="0 0 24 24" id="icPause"><path d="M8 5v14M16 5v14"/></svg><svg viewBox="0 0 24 24" id="icPlay" style="display:none"><path d="M7 4l13 8-13 8z"/></svg></button>
+    <button class="cbtn" id="bNext" type="button"><svg viewBox="0 0 24 24"><path d="M18 5v14M5 5l10 7-10 7z"/></svg></button>
+    <div class="bar" id="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><div class="trk"><div class="fill" id="fill"></div></div></div>
+    <span class="clock" id="clock">0:00 / 1:10</span>
+    <button class="lbtn" id="bLang" type="button">EN</button>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+/* ===================== CONFIG ===================== */
+const CTA_URL    = '#kontakt';   // <- lenke for «Be om tilgang»
+const CTA_TARGET = '_top';       // _top = åpner i hovedsiden når tutorialen ligger i en iframe
+const DEFAULT_LANG = 'nb';       // 'nb' | 'en'
+const AUTOPLAY   = true;
+
+/* ===================== DICTIONARY ===================== */
+const DICT = {
+nb:{
+ or:'eller', usr:'Demo-kommune', prof:'Sykepleier',
+ ch1:'Innlogging',ch2:'Arbeidsområde',ch3:'Søk og filtre',ch4:'Kandidatkort',ch5:'Kandidatprofil',ch6:'Interesse og chat',ch7:'Mine kandidater',ch8:'Personvern',ch9:'Kom i gang',
+ chapter:'Kapittel', play:'Spill av', pause:'Pause', prev:'Forrige kapittel', next:'Neste kapittel', langBtn:'EN', langTitle:'Switch to English',
+ 'lg.h':'Helsepersonell forberedt på norske kommuner','lg.p1':'Norskopplæring til B2','lg.p2':'Verifiserte profiler og dokumenter','lg.p3':'Personlig, GDPR-kompatibel tilgang',
+ 'lg.title':'Logg inn','lg.sub':'Velkommen tilbake til Talent Portal','lg.user':'Brukernavn eller e-post','lg.userph':'navn@kommune.no','lg.pass':'Passord','lg.btn':'Logg inn',
+ 'lg.explore':'Utforsk med eksempelkandidater','lg.kom':'Kommune','lg.ag':'Agency',
+ 'nav.h':'Kandidater','nav.avail':'Tilgjengelig','nav.train':'Under opplæring','nav.fav':'Favoritter','nav.mine':'Mine kandidater',
+ 'view.avail':'Tilgjengelige kandidater','view.train':'Kandidater under opplæring','view.fav':'Favoritter','cnt':'{n} kandidater',
+ 'search.ph':'Søk etter navn, yrke, kompetanse…','f.nat':'Nasjonalitet','f.exp':'Erfaring','f.lic':'Førerkort','f.from':'Tilgjengelig fra','f.all':'Alle',
+ 'st.avail':'Tilgjengelig','st.train':'Under opplæring','st.busy':'I prosess hos en annen kunde',
+ 'from':'Tilgjengelig fra {m}','age':'{n} år','view':'Se profil',
+ 'c.es':'Spania','c.it':'Italia','c.pt':'Portugal','c.fr':'Frankrike',
+ months:['januar','februar','mars','april','mai','juni','juli','august','september','oktober','november','desember'],
+ qword:'intensiv',
+ 'pf.back':'Tilbake til kandidater','pf.int':'Jeg er interessert i denne kandidaten','pf.intSent':'Interesse sendt','pf.cv':'Last ned CV','pf.cvn':'(anonymisert)','pf.fav':'Favoritter',
+ 'pf.sum':'Sammendrag','pf.sumtx':'Sykepleier med seks års erfaring fra intensivavdeling. Trygg i akutte situasjoner, vant til tverrfaglig samarbeid og motivert for å jobbe i norsk kommunehelsetjeneste.',
+ 'pf.info':'Profesjonell informasjon','k.prof':'Yrke','k.exp':'Erfaring','k.expv':'6 år','k.spec':'Spesialfelt','k.specv':'Intensiv og akutt','k.lic':'Førerkort','k.licv':'Klasse B','k.nat':'Nasjonalitet','k.from':'Tilgjengelig fra',
+ 'pf.lang':'Språk','l.es':'Spansk','l.nat':'morsmål','l.no':'Norsk','l.en':'Engelsk',
+ 'pf.edu':'Utdanning','e.deg':'Bachelor i sykepleie','e.where':'Universitet i Spania · 2014–2018',
+ 'pf.exp':'Erfaring','x.1':'Sykepleier, intensivavdeling','x.1w':'Sykehus i Valencia · 2020 – nå','x.2':'Sykepleier, medisinsk avdeling','x.2w':'Sykehus i Valencia · 2018–2020','x.3':'Praksis, akuttmottak','x.3w':'Sykehus i Spania · 2017–2018',
+ 'toast':'Forespørselen er sendt til GlobalWorking',
+ 'chat.t':'Spør om Elena R.','chat.s':'GlobalWorking-teamet','chat.ph':'Skriv en melding…','chat.hi':'Hei! Hva lurer du på om Elena?','chat.q':'Kan hun starte i januar?','chat.a':'Ja, Elena er tilgjengelig fra januar 2027. Vi tar kontakt i dag.',
+ 'mine.sub':'Kandidatene du følger i prosessen','stg0':'Presentert','stg1':'Intervju','stg2':'Tilbud','stg3':'Ansatt','stgn':'{n} kandidat',
+ 'pv.h':'Personvern først','pv.1t':'Uten kontaktinformasjon','pv.1d':'Profilene deles uten kontaktopplysninger.','pv.2t':'Uten fødselsdato og interne notater','pv.2d':'Du ser det som trengs for å vurdere en kandidat, ikke mer.','pv.3t':'Personlig og logget tilgang','pv.3d':'Hver bruker har sin egen tilgang, og bruken logges.',
+ 'cl.h':'Klar til å møte kandidatene?','cl.p':'Ta kontakt, så viser vi deg portalen og setter opp tilgang for din kommune eller ditt byrå.','cl.cta':'Be om tilgang',
+ 'cap.c1a.t':'Helsepersonell forberedt på norske kommuner','cap.c1a.d':'Portalen gir kommuner og bemanningsbyråer tilgang til verifiserte kandidater.',
+ 'cap.c1b.t':'Personlig innlogging','cap.c1b.d':'Hver bruker logger inn med eget brukernavn eller e-post og passord.',
+ 'cap.c1c.t':'Utforsk med eksempelkandidater','cap.c1c.d':'Vil du bare se hvordan det fungerer? Start som kommune eller agency med eksempeldata.',
+ 'cap.c2a.t':'Ditt arbeidsområde','cap.c2a.d':'Menyen til venstre samler kandidatvisningene dine, med antall på hver.',
+ 'cap.c2b.t':'Under opplæring','cap.c2b.d':'Se også kandidater som fortsatt er i norskopplæring, og når de blir tilgjengelige.',
+ 'cap.c2c.t':'Favoritter','cap.c2c.d':'Kandidatene du har merket, ligger samlet på ett sted.',
+ 'cap.c3a.t':'Søk fritt','cap.c3a.d':'Skriv navn, yrke eller kompetanse, for eksempel «intensiv».',
+ 'cap.c3b.t':'Resultatene oppdateres med en gang','cap.c3b.d':'Kandidatene filtreres mens du skriver.',
+ 'cap.c3c.t':'Filtrer videre','cap.c3c.d':'Avgrens på nasjonalitet, erfaring og førerkort.',
+ 'cap.c3d.t':'Tilgjengelig fra','cap.c3d.d':'Velg måneden opplæringen er ferdig, og planlegg oppstart i god tid.',
+ 'cap.c4a.t':'Kandidatkort','cap.c4a.d':'Foto, land, yrke og alder, med en kort oppsummering av kandidaten.',
+ 'cap.c4b.t':'Tydelig status','cap.c4b.d':'Grønn er tilgjengelig. Fiolett betyr at kandidaten er i prosess hos en annen kunde.',
+ 'cap.c4c.t':'Under opplæring','cap.c4c.d':'Gul status viser kandidater i opplæring, med måneden de blir tilgjengelige.',
+ 'cap.c4d.t':'Favoritt og profil','cap.c4d.d':'Lagre med hjertet, eller åpne hele profilen med «Se profil».',
+ 'cap.c5a.t':'Hele profilen','cap.c5a.d':'Status, handlinger og anonymisert CV samlet på venstre side.',
+ 'cap.c5b.t':'Sammendrag og yrkesinformasjon','cap.c5b.d':'Et kort sammendrag og de viktigste fakta om kandidaten.',
+ 'cap.c5c.t':'Språk, utdanning og erfaring','cap.c5c.d':'Bla videre for språknivåer, utdanning og arbeidserfaring.',
+ 'cap.c6a.t':'Meld interesse','cap.c6a.d':'Ett klikk sender en forespørsel til GlobalWorking.',
+ 'cap.c6b.t':'Spør om kandidaten','cap.c6b.d':'Still spørsmål direkte i chatten med GlobalWorking-teamet.',
+ 'cap.c7a.t':'Mine kandidater','cap.c7a.d':'Her følger du kandidatene du har meldt interesse for.',
+ 'cap.c7b.t':'Fire trinn i prosessen','cap.c7b.d':'Presentert, intervju, tilbud og ansatt.',
+ 'cap.c7c.t':'Status på hver kandidat','cap.c7c.d':'Hver kandidat viser hvilket trinn prosessen har kommet til.',
+ 'cap.c8a.t':'Personvern i fokus','cap.c8a.d':'Profiler deles uten kontaktinformasjon, fødselsdato eller interne notater. Tilgangen er personlig og logges.',
+ 'cap.c9a.t':'Klar til å se kandidatene?','cap.c9a.d':'Be om tilgang, så viser vi deg portalen.'
+},
+en:{
+ or:'or', usr:'Demo municipality', prof:'Nurse',
+ ch1:'Sign in',ch2:'Workspace',ch3:'Search & filters',ch4:'Candidate cards',ch5:'Candidate profile',ch6:'Interest & chat',ch7:'My candidates',ch8:'Privacy',ch9:'Get started',
+ chapter:'Chapter', play:'Play', pause:'Pause', prev:'Previous chapter', next:'Next chapter', langBtn:'NO', langTitle:'Bytt til norsk',
+ 'lg.h':'Healthcare professionals prepared for Norwegian municipalities','lg.p1':'Norwegian training up to B2','lg.p2':'Verified profiles and documents','lg.p3':'Personal, GDPR-compliant access',
+ 'lg.title':'Sign in','lg.sub':'Welcome back to the Talent Portal','lg.user':'Username or email','lg.userph':'name@municipality.no','lg.pass':'Password','lg.btn':'Sign in',
+ 'lg.explore':'Explore with sample candidates','lg.kom':'Municipality','lg.ag':'Agency',
+ 'nav.h':'Candidates','nav.avail':'Available','nav.train':'In training','nav.fav':'Favourites','nav.mine':'My candidates',
+ 'view.avail':'Available candidates','view.train':'Candidates in training','view.fav':'Favourites','cnt':'{n} candidates',
+ 'search.ph':'Search by name, profession, skills…','f.nat':'Nationality','f.exp':'Experience','f.lic':'Driving licence','f.from':'Available from','f.all':'All',
+ 'st.avail':'Available','st.train':'In training','st.busy':'In process with another client',
+ 'from':'Available from {m}','age':'{n} yrs','view':'View profile',
+ 'c.es':'Spain','c.it':'Italy','c.pt':'Portugal','c.fr':'France',
+ months:['January','February','March','April','May','June','July','August','September','October','November','December'],
+ qword:'intensive',
+ 'pf.back':'Back to candidates','pf.int':'I am interested in this candidate','pf.intSent':'Interest sent','pf.cv':'Download CV','pf.cvn':'(anonymised)','pf.fav':'Favourites',
+ 'pf.sum':'Summary','pf.sumtx':'Nurse with six years of experience in intensive care. Confident in acute situations, used to multidisciplinary teamwork and motivated to work in Norwegian municipal healthcare.',
+ 'pf.info':'Professional information','k.prof':'Profession','k.exp':'Experience','k.expv':'6 years','k.spec':'Specialty','k.specv':'Intensive and acute care','k.lic':'Driving licence','k.licv':'Class B','k.nat':'Nationality','k.from':'Available from',
+ 'pf.lang':'Languages','l.es':'Spanish','l.nat':'native','l.no':'Norwegian','l.en':'English',
+ 'pf.edu':'Education','e.deg':'Bachelor of Nursing','e.where':'University in Spain · 2014–2018',
+ 'pf.exp':'Experience','x.1':'Nurse, intensive care unit','x.1w':'Hospital in Valencia · 2020 – present','x.2':'Nurse, medical ward','x.2w':'Hospital in Valencia · 2018–2020','x.3':'Placement, emergency department','x.3w':'Hospital in Spain · 2017–2018',
+ 'toast':'Your request has been sent to GlobalWorking',
+ 'chat.t':'Ask about Elena R.','chat.s':'The GlobalWorking team','chat.ph':'Write a message…','chat.hi':'Hi! What would you like to know about Elena?','chat.q':'Can she start in January?','chat.a':'Yes, Elena is available from January 2027. We will be in touch today.',
+ 'mine.sub':'The candidates you follow through the process','stg0':'Presented','stg1':'Interview','stg2':'Offer','stg3':'Hired','stgn':'{n} candidate',
+ 'pv.h':'Privacy first','pv.1t':'No contact details','pv.1d':'Profiles are shared without contact information.','pv.2t':'No date of birth or internal notes','pv.2d':'You see what you need to assess a candidate, nothing more.','pv.3t':'Personal, logged access','pv.3d':'Every user has their own access, and use is logged.',
+ 'cl.h':'Ready to meet the candidates?','cl.p':'Get in touch and we will show you the portal and set up access for your municipality or agency.','cl.cta':'Request access',
+ 'cap.c1a.t':'Healthcare professionals prepared for Norwegian municipalities','cap.c1a.d':'The portal gives municipalities and staffing agencies access to verified candidates.',
+ 'cap.c1b.t':'Personal sign-in','cap.c1b.d':'Every user signs in with their own username or email and password.',
+ 'cap.c1c.t':'Explore with sample candidates','cap.c1c.d':'Just want to see how it works? Start as a municipality or agency with sample data.',
+ 'cap.c2a.t':'Your workspace','cap.c2a.d':'The menu on the left gathers your candidate views, with a count on each.',
+ 'cap.c2b.t':'In training','cap.c2b.d':'Also see candidates still in Norwegian training, and when they become available.',
+ 'cap.c2c.t':'Favourites','cap.c2c.d':'The candidates you have marked are kept together in one place.',
+ 'cap.c3a.t':'Search freely','cap.c3a.d':'Type a name, profession or skill, for example “intensive”.',
+ 'cap.c3b.t':'Results update instantly','cap.c3b.d':'Candidates are filtered as you type.',
+ 'cap.c3c.t':'Narrow it down','cap.c3c.d':'Filter by nationality, experience and driving licence.',
+ 'cap.c3d.t':'Available from','cap.c3d.d':'Pick the month training ends and plan the start date well ahead.',
+ 'cap.c4a.t':'Candidate cards','cap.c4a.d':'Photo, country, profession and age, with a short summary of the candidate.',
+ 'cap.c4b.t':'Clear status','cap.c4b.d':'Green is available. Violet means the candidate is in process with another client.',
+ 'cap.c4c.t':'In training','cap.c4c.d':'Amber shows candidates in training, with the month they become available.',
+ 'cap.c4d.t':'Favourite and profile','cap.c4d.d':'Save with the heart, or open the full profile with “View profile”.',
+ 'cap.c5a.t':'The full profile','cap.c5a.d':'Status, actions and the anonymised CV are gathered on the left.',
+ 'cap.c5b.t':'Summary and professional details','cap.c5b.d':'A short summary and the key facts about the candidate.',
+ 'cap.c5c.t':'Languages, education and experience','cap.c5c.d':'Scroll on for language levels, education and work experience.',
+ 'cap.c6a.t':'Show your interest','cap.c6a.d':'One click sends a request to GlobalWorking.',
+ 'cap.c6b.t':'Ask about the candidate','cap.c6b.d':'Ask questions directly in the chat with the GlobalWorking team.',
+ 'cap.c7a.t':'My candidates','cap.c7a.d':'Follow the candidates you have shown interest in.',
+ 'cap.c7b.t':'Four stages in the process','cap.c7b.d':'Presented, interview, offer and hired.',
+ 'cap.c7c.t':'Status for every candidate','cap.c7c.d':'Each candidate shows the stage the process has reached.',
+ 'cap.c8a.t':'Privacy in focus','cap.c8a.d':'Profiles are shared without contact details, date of birth or internal notes. Access is personal and logged.',
+ 'cap.c9a.t':'Ready to see the candidates?','cap.c9a.d':'Request access and we will show you the portal.'
+}};
+
+/* ===================== DATA (fiktive eksempler) ===================== */
+const FAV0 = ['a1','a4','t2','t3','a5'];
+const CANDS = [
+ {id:'a1',n:'Elena R.',c:'es',st:'avail',age:31,m:[0,2027],tags:'intensiv intensive akutt',sum:{nb:'Seks års erfaring fra intensivavdeling. Norsknivå B2 og klar for oppstart.',en:'Six years in intensive care. Norwegian level B2 and ready to start.'},av:['#edc3a1','#5a3421','long','#0f9d8f','#dbeafe','#bfdbfe']},
+ {id:'a2',n:'Giulia F.',c:'it',st:'avail',age:34,m:[1,2027],tags:'geriatri hjemmesykepleie',sum:{nb:'Bred erfaring fra geriatri og hjemmesykepleie.',en:'Broad experience in geriatrics and home care.'},av:['#f1c9a9','#2b1b14','bun','#003D7C','#fce7f3','#fbcfe8']},
+ {id:'a3',n:'Sofía P.',c:'es',st:'busy',age:28,m:[0,2027],tags:'intensiv intensive postoperativ',sum:{nb:'Intensiv og postoperativ pleie. Har førerkort klasse B.',en:'Intensive and postoperative care. Holds a class B licence.'},av:['#d9a47c','#2a1a12','curly','#0ea5e9','#fef3c7','#fde68a']},
+ {id:'a4',n:'Camille D.',c:'fr',st:'avail',age:36,m:[0,2027],tags:'intensiv intensive akuttmottak',sum:{nb:'Ni års erfaring, blant annet fra intensiv og akuttmottak.',en:'Nine years of experience, including intensive care and emergency.'},av:['#f3d2b8','#a0522d','short','#0f9d8f','#dcfce7','#bbf7d0']},
+ {id:'a5',n:'Marco B.',c:'it',st:'avail',age:30,m:[1,2027],tags:'psykisk helse rehabilitering',sum:{nb:'Erfaring fra psykisk helsevern og rehabilitering.',en:'Experience in mental health care and rehabilitation.'},av:['#e2b08a','#1f1611','short','#003D7C','#e0e7ff','#c7d2fe']},
+ {id:'a6',n:'Inês C.',c:'pt',st:'avail',age:27,m:[2,2027],tags:'barsel pediatri',sum:{nb:'Nyutdannet med praksis fra barsel og pediatri.',en:'Recent graduate with placements in maternity and paediatrics.'},av:['#dcaa83','#3b2418','long','#0ea5e9','#ffedd5','#fed7aa']},
+ {id:'t1',n:'Alejandro M.',c:'es',st:'train',age:29,m:[2,2027],tags:'medisinsk',sum:{nb:'Erfaring fra medisinsk avdeling. I norskopplæring mot B2.',en:'Experience from a medical ward. In Norwegian training towards B2.'},av:['#d8a681','#1c1410','short','#0f9d8f','#cffafe','#a5f3fc']},
+ {id:'t2',n:'Lucía G.',c:'es',st:'train',age:26,m:[3,2027],tags:'kirurgi',sum:{nb:'Praksis fra kirurgisk avdeling. I norskopplæring mot B2.',en:'Placements in a surgical ward. In Norwegian training towards B2.'},av:['#efc7a5','#6b3a22','bun','#003D7C','#fae8ff','#f5d0fe']},
+ {id:'t3',n:'Paolo V.',c:'it',st:'train',age:32,m:[2,2027],tags:'akutt',sum:{nb:'Fem års erfaring fra akuttmottak. I norskopplæring.',en:'Five years in emergency care. In Norwegian training.'},av:['#e8b995','#2b2018','curly','#0ea5e9','#e2e8f0','#cbd5e1']},
+ {id:'t4',n:'Marie L.',c:'fr',st:'train',age:33,m:[5,2027],tags:'geriatri',sum:{nb:'Erfaring fra sykehjem og geriatri. I norskopplæring.',en:'Experience from nursing homes and geriatrics. In Norwegian training.'},av:['#f4d6bf','#c18a4a','long','#0f9d8f','#fef9c3','#fef08a']},
+ {id:'t5',n:'Rita S.',c:'pt',st:'train',age:30,m:[4,2027],tags:'hjemmesykepleie',sum:{nb:'Hjemmesykepleie og primærhelse. I norskopplæring.',en:'Home care and primary care. In Norwegian training.'},av:['#d6a07a','#2a1a12','bun','#003D7C','#ccfbf1','#99f6e4']},
+ {id:'t6',n:'Luca M.',c:'it',st:'train',age:28,m:[5,2027],tags:'ortopedi',sum:{nb:'Praksis fra ortopedisk avdeling. I norskopplæring.',en:'Placements in an orthopaedic ward. In Norwegian training.'},av:['#ebbf9b','#4a3426','short','#0ea5e9','#ffe4e6','#fecdd3']}
+];
+const MINE = [{id:'a1',s:0},{id:'a5',s:1},{id:'a4',s:2},{id:'a6',s:3}];
+const byId = id => CANDS.find(c => c.id === id);
+
+/* ===================== STATE / HELPERS ===================== */
+let lang = DEFAULT_LANG;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const player = $('#player'), wrap = $('#wrap'), stage = $('#stage');
+const T = (k, v) => { let s = (DICT[lang][k] ?? DICT.nb[k] ?? k); if (v) for (const x in v) s = s.replace('{' + x + '}', v[x]); return s; };
+const mon = (m) => T('months')[m[0]] + ' ' + m[1];
+function i18n(root = document) {
+  $$('[data-i18n]', root).forEach(e => { e.textContent = T(e.dataset.i18n); });
+}
+let avId = 0;
+function avatar(p) {
+  const [skin, hair, style, scrub, b1, b2] = p, id = 'g' + (avId++);
+  let back = '', front = '';
+  const cap = `<path d="M26.5 31 Q27 16 40 16 Q53 16 53.5 31 Q47 22 40 22 Q33 22 26.5 31Z" fill="${hair}"/>`;
+  if (style === 'long') { back = `<path d="M24 34 Q24 11 40 11 Q56 11 56 34 L57 54 Q40 60 23 54Z" fill="${hair}"/>`; front = cap; }
+  else if (style === 'short') front = cap;
+  else if (style === 'bun') front = cap + `<circle cx="40" cy="13" r="6.5" fill="${hair}"/>`;
+  else { back = [[28,24],[36,17],[45,17],[53,24],[27,34],[54,34]].map(c => `<circle cx="${c[0]}" cy="${c[1]}" r="7.5" fill="${hair}"/>`).join(''); }
+  return `<svg viewBox="0 0 80 80" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${b1}"/><stop offset="1" stop-color="${b2}"/></linearGradient></defs>
+  <rect width="80" height="80" fill="url(#${id})"/>${back}
+  <path d="M10 82 Q12 55 40 53 Q68 55 70 82Z" fill="${scrub}"/><path d="M32 54 L40 66 L48 54" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2"/>
+  <rect x="34.5" y="40" width="11" height="15" rx="4" fill="${skin}" style="filter:brightness(.93)"/>
+  <ellipse cx="40" cy="31" rx="12.5" ry="14" fill="${skin}"/>${front}</svg>`;
+}
+const HEART = '<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>';
+
+/* ===================== PORTAL STATE ===================== */
+let P = {view:'avail', q:'', nat:null, pop:null};
+let favs = new Set(FAV0);
+const VIEW = { avail: c => c.st === 'avail' || c.st === 'busy', train: c => c.st === 'train', fav: c => favs.has(c.id) };
+
+function cardHTML(c) {
+  const chip = T('c.' + c.c);
+  return `<div class="cand" data-id="${c.id}">
+   <div class="c-top"><div class="av">${avatar(c.av)}</div>
+     <div><div class="c-name">${c.n}</div><div class="c-prof">${T('prof')} · ${T('age',{n:c.age})}</div><span class="chip">${chip}</span></div>
+     <button class="heart${favs.has(c.id) ? ' on' : ''}" tabindex="-1" aria-label="favorite">${HEART}</button></div>
+   <span class="pill st-${c.st}"><i></i>${T('st.' + c.st)}</span>
+   <div class="c-from">${T('from',{m:mon(c.m)})}</div>
+   <div class="c-sum">${c.sum[lang]}</div>
+   <div class="c-foot"><div class="vp">${T('view')}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6l6 6-6 6"/></svg></div></div></div>`;
+}
+let lastVisible = '';
+function renderGrid() {
+  const list = CANDS.filter(VIEW[P.view]);
+  $('#grid').innerHTML = list.map(cardHTML).join('');
+  $('#gridTitle').textContent = T('view.' + P.view);
+  lastVisible = '';
+  applyFilter(true);
+}
+function applyFilter(noAnim) {
+  const q = P.q.trim().toLowerCase();
+  let n = 0, ids = [];
+  $$('.cand', $('#grid')).forEach(el => {
+    const c = byId(el.dataset.id);
+    const hay = (c.n + ' ' + T('prof') + ' sykepleier nurse ' + c.tags + ' ' + c.sum.nb + ' ' + c.sum.en).toLowerCase();
+    const ok = (!q || hay.includes(q)) && (!P.nat || c.c === P.nat);
+    el.classList.toggle('gone', !ok);
+    if (ok) { n++; ids.push(c.id); }
+  });
+  $('#gridCount').textContent = T('cnt', {n});
+  const key = ids.join(',');
+  if (key !== lastVisible && !noAnim) {
+    $$('.cand', $('#grid')).forEach(el => { el.classList.remove('pop-in'); if (!el.classList.contains('gone')) { void el.offsetWidth; el.classList.add('pop-in'); } });
+  }
+  lastVisible = key;
+  const nc = $('#frow [data-f=nat]');
+  nc.classList.toggle('act', !!P.nat);
+  $('.lbl', nc).textContent = P.nat ? T('f.nat') + ': ' + T('c.' + P.nat) : T('f.nat');
+}
+function renderPops() {
+  $('#popNat').innerHTML = ['', 'es', 'it', 'pt', 'fr'].map(k => `<div class="opt${(P.nat || '') === k ? ' on' : ''}" data-v="${k}">${k ? T('c.' + k) : T('f.all')}</div>`).join('');
+  $('#popFrom').innerHTML = [0,1,2,3].map(i => `<div class="opt" data-m="${i}">${mon([i+0, 2027])}</div>`).join('');
+}
+function renderSide() {
+  $$('.side .nv').forEach(n => n.classList.toggle('on', n.dataset.v === P.view));
+  $('#favCount').textContent = favs.size;
+}
+function setView(v) {
+  P.view = v;
+  $('#paneGrid').classList.toggle('on', v !== 'mine');
+  $('#paneMine').classList.toggle('on', v === 'mine');
+  renderSide();
+  if (v === 'mine') renderMine(); else renderGrid();
+}
+function setPop(k) {
+  P.pop = k;
+  $$('#frow .fchip').forEach(c => c.classList.toggle('open', c.dataset.f === k));
+}
+function renderMine() {
+  $('#stp').innerHTML = [0,1,2,3].map(i => `<div class="stg" data-s="${i}"><b class="s${i}b">${i+1}</b><span>${T('stg'+i)}<small>${T('stgn',{n:1})}</small></span></div>`).join('');
+  $('#mrows').innerHTML = MINE.map(m => {
+    const c = byId(m.id);
+    let d = '';
+    for (let i = 0; i < 4; i++) { d += `<i class="${i <= m.s ? 'f' : ''}"></i>` + (i < 3 ? `<u class="${i < m.s ? 'f' : ''}"></u>` : ''); }
+    return `<div class="mrow" data-id="${c.id}"><div class="av">${avatar(c.av)}</div><div class="who"><b>${c.n}</b><small>${T('prof')} · ${T('c.' + c.c)}</small></div><div class="dots">${d}</div><span class="sp sp${m.s}">${T('stg' + m.s)}</span></div>`;
+  }).join('');
+}
+
+/* ===================== ENGINE ===================== */
+const S = (at, run) => ({at, run});
+const T_ = (at, dur, tick, run) => ({at, dur, tick, run});
+const stageScale = () => stage.getBoundingClientRect().width / 1280;
+function box(el) {
+  const r = el.getBoundingClientRect(), s = stage.getBoundingClientRect(), k = s.width / 1280;
+  return {x:(r.left - s.left) / k, y:(r.top - s.top) / k, w:r.width / k, h:r.height / k};
+}
+const el_ = s => typeof s === 'string' ? $(s, stage) : s;
+const cursor = $('#cursor'), ring = $('#ring');
+function go(sel, ax = .5, ay = .5) {
+  const e = el_(sel); if (!e) return;
+  const b = box(e);
+  cursor.style.transform = `translate(${Math.round(b.x + b.w * ax)}px,${Math.round(b.y + b.h * ay)}px)`;
+  cursor.classList.add('on');
+}
+function press(sel, fn) {
+  const e = el_(sel);
+  cursor.classList.remove('go'); void cursor.offsetWidth; cursor.classList.add('go');
+  cursor.classList.add('down'); setTimeout(() => cursor.classList.remove('down'), 140);
+  if (e) { e.classList.add('press'); setTimeout(() => e.classList.remove('press'), 160); }
+  if (fn) fn();
+}
+function hl(sel, pad = 6, rad = 14) {
+  const e = el_(sel); if (!e) return;
+  const b = box(e);
+  Object.assign(ring.style, {left:(b.x - pad - 3) + 'px', top:(b.y - pad - 3) + 'px', width:(b.w + pad * 2) + 'px', height:(b.h + pad * 2) + 'px', borderRadius:rad + 'px'});
+  ring.classList.add('on');
+}
+const unhl = () => ring.classList.remove('on');
+function typeVal(sel, text, p, mask) {
+  const e = el_(sel), n = Math.round(p * text.length), v = text.slice(0, n);
+  $('.val', e).textContent = mask ? '•'.repeat(n) : v;
+  e.classList.toggle('has', n > 0);
+}
+const focus = (sel, on = true) => el_(sel).classList.toggle('focus', on);
+
+/* captions */
+let curCap = null, chIdx = 0;
+function cap(key, quiet) {
+  curCap = key; paintCap(!quiet);
+}
+function paintCap(anim) {
+  const tx = $('#capTx');
+  const apply = () => {
+    const ch = CHAPTERS[chIdx];
+    $('#capNum').textContent = chIdx + 1;
+    $('#capCh').textContent = T('chapter') + ' ' + (chIdx + 1) + '/' + CHAPTERS.length + ' · ' + T('ch' + (chIdx + 1));
+    const t = curCap ? T('cap.' + curCap + '.t') : T('ch' + (chIdx + 1)), d = curCap ? T('cap.' + curCap + '.d') : '';
+    $('#capT').textContent = t; $('#capD').textContent = d; $('#capT2').textContent = t; $('#capD2').textContent = d;
+    tx.classList.remove('sw');
+  };
+  if (anim && !inst) { tx.classList.add('sw'); setTimeout(apply, 180); } else apply();
+}
+
+/* ===================== CHAPTERS =====================
+   S(sek, fn)         : kjør fn ved sek
+   T_(sek, dur, tick) : animasjon over dur sek, tick(p 0..1)
+   Alle tider er relative til kapittelstart.                */
+const sc = n => $('[data-scene=' + n + ']');
+function toast(on) { $('#toast').classList.toggle('on', on); }
+function pfScroll(sel) {
+  const pin = $('#pin'), view = $('#pfView');
+  const max = Math.max(0, pin.scrollHeight - view.clientHeight);
+  const y = sel ? Math.min(max, el_(sel).offsetTop - 2) : 0;
+  pin.style.transform = `translateY(${-y}px)`;
+}
+function chatMsg(cls, key) {
+  const d = document.createElement('div'); d.className = 'msg ' + cls; d.dataset.i18n = key; d.textContent = T(key);
+  $('#chatBody').appendChild(d); return d;
+}
+function portalReset(view) {
+  P = {view, q:'', nat:null, pop:null}; favs = new Set(FAV0);
+  $('#searchBox').classList.remove('has', 'focus'); $('.val', $('#searchBox')).textContent = '';
+  setPop(null); renderPops(); setView(view);
+}
+function profileReset() {
+  pfScroll(null); toast(false); $('#chat').classList.remove('on'); $('#chatBody').innerHTML = '';
+  $('#chatIn').classList.remove('has', 'focus'); $('.val', $('#chatIn')).textContent = '';
+  $('#btnInt').classList.remove('sent'); $('#btnIntT').dataset.i18n = 'pf.int'; $('#btnIntT').textContent = T('pf.int');
+}
+function paintProfileBits() {
+  const m = mon(byId('a1').m);
+  $('#pfFrom').textContent = T('from', {m}); $('#pfFrom2').textContent = m;
+  $('#pfAv').innerHTML = avatar(byId('a1').av);
+}
+
+const CHAPTERS = [
+ {scene:'login', dur:8.2,
+  setup(){ ['#lg-user','#lg-pass'].forEach(s => { const e = $(s); e.classList.remove('has','focus'); $('.val', e).textContent = ''; }); $('#lg-btn').classList.remove('load'); },
+  steps:[
+   S(.3, () => { cap('c1a'); hl('.lg-head', 12, 18); go('.lg-head', .85, .5); }),
+   S(2.4, () => { cap('c1b'); hl('.lg-card', 10, 30); go('#lg-user', .3, .5); }),
+   S(3.3, () => { press('#lg-user'); focus('#lg-user'); }),
+   T_(3.4, 1.2, p => typeVal('#lg-user', 'helse@demo-kommune.no', p)),
+   S(4.8, () => { focus('#lg-user', false); go('#lg-pass', .3, .5); }),
+   S(5.7, () => { press('#lg-pass'); focus('#lg-pass'); }),
+   T_(5.8, .8, p => typeVal('#lg-pass', '••••••••', p, true)),
+   S(6.2, () => { focus('#lg-pass', false); cap('c1c'); hl('.lg-explore', 8, 20); go('.b-kom', .5, .5); }),
+   S(7.0, () => { go('#lg-btn', .5, .5); unhl(); }),
+   S(7.7, () => press('#lg-btn', () => $('#lg-btn').classList.add('load')))
+  ]},
+ {scene:'portal', dur:6.7,
+  setup(){ portalReset('avail'); },
+  steps:[
+   S(.3, () => { cap('c2a'); hl('.side', 0, 4); go('.nv[data-v=avail]', .5, .5); }),
+   S(2.0, () => { cap('c2b'); hl('.nv[data-v=train]', 4, 14); go('.nv[data-v=train]', .6, .5); }),
+   S(2.8, () => press('.nv[data-v=train]', () => setView('train'))),
+   S(3.9, () => { cap('c2c'); hl('.nv[data-v=fav]', 4, 14); go('.nv[data-v=fav]', .6, .5); }),
+   S(4.6, () => press('.nv[data-v=fav]', () => setView('fav'))),
+   S(5.5, () => { hl('.nv[data-v=avail]', 4, 14); go('.nv[data-v=avail]', .6, .5); }),
+   S(6.1, () => press('.nv[data-v=avail]', () => setView('avail')))
+  ]},
+ {scene:'portal', dur:9.6,
+  setup(){ portalReset('avail'); },
+  steps:[
+   S(.3, () => { cap('c3a'); hl('#searchBox', 4, 14); go('#searchBox', .4, .5); }),
+   S(1.2, () => { press('#searchBox'); focus('#searchBox'); }),
+   T_(1.4, 1.2, p => { typeVal('#searchBox', T('qword'), p); P.q = T('qword').slice(0, Math.round(p * T('qword').length)); applyFilter(); }),
+   S(2.9, () => { cap('c3b'); focus('#searchBox', false); hl('#grid', 4, 20); go('.cand:not(.gone)', .5, .5); }),
+   S(4.6, () => { cap('c3c'); hl('#frow .fchip[data-f=nat]', 4, 14); go('#frow .fchip[data-f=nat]', .5, .5); }),
+   S(5.5, () => press('#frow .fchip[data-f=nat]', () => setPop('nat'))),
+   S(6.2, () => go('#popNat .opt[data-v=es]', .5, .5)),
+   S(6.9, () => press('#popNat .opt[data-v=es]', () => { P.nat = 'es'; renderPops(); applyFilter(); setPop(null); hl('#grid', 4, 20); })),
+   S(7.7, () => { cap('c3d'); hl('#frow .fchip[data-f=from]', 4, 14); go('#frow .fchip[data-f=from]', .5, .5); }),
+   S(8.5, () => press('#frow .fchip[data-f=from]', () => setPop('from'))),
+   S(9.3, () => go('#popFrom .opt[data-m="2"]', .5, .5))
+  ]},
+ {scene:'portal', dur:11.8,
+  setup(){ portalReset('avail'); },
+  steps:[
+   S(.3, () => { cap('c4a'); hl('.cand[data-id=a1]', 4, 22); go('.cand[data-id=a1] .av', .5, .5); }),
+   S(2.8, () => { cap('c4b'); hl('.cand[data-id=a1] .pill', 5, 14); go('.cand[data-id=a1] .pill', .5, .5); }),
+   S(4.2, () => { hl('.cand[data-id=a3] .pill', 5, 14); go('.cand[data-id=a3] .pill', .5, .5); }),
+   S(5.3, () => { cap('c4c'); hl('.nv[data-v=train]', 4, 14); go('.nv[data-v=train]', .6, .5); }),
+   S(6.2, () => press('.nv[data-v=train]', () => setView('train'))),
+   S(6.9, () => { hl('.cand[data-id=t1] .c-from', 6, 10); go('.cand[data-id=t1] .c-from', .6, .5); }),
+   S(8.3, () => { cap('c4d'); hl('.cand[data-id=t1] .heart', 5, 99); go('.cand[data-id=t1] .heart', .5, .5); }),
+   S(9.1, () => press('.cand[data-id=t1] .heart', () => { $('.cand[data-id=t1] .heart').classList.add('on'); favs.add('t1'); $('#favCount').textContent = favs.size; })),
+   S(9.8, () => { unhl(); go('.nv[data-v=avail]', .6, .5); }),
+   S(10.3, () => press('.nv[data-v=avail]', () => setView('avail'))),
+   S(10.7, () => { hl('.cand[data-id=a1] .vp', 4, 12); go('.cand[data-id=a1] .vp', .5, .5); }),
+   S(11.3, () => press('.cand[data-id=a1] .vp'))
+  ]},
+ {scene:'profile', dur:9.8,
+  setup(){ profileReset(); paintProfileBits(); },
+  steps:[
+   S(.3, () => { cap('c5a'); hl('#pfLeft', 8, 30); go('#btnCv', .5, .5); }),
+   S(3.0, () => { cap('c5b'); hl('#pfG1', 6, 24); go('#pfSum', .6, .6); }),
+   S(5.3, () => { cap('c5c'); unhl(); pfScroll('#pfLang'); go('#pfView', .6, .2); }),
+   S(6.4, () => hl('#pfLang', 6, 24)),
+   S(7.6, () => { pfScroll('#pfExp'); unhl(); }),
+   S(8.6, () => { hl('#pfEdu', 6, 24); go('#pfEdu', .6, .5); }),
+   S(9.3, () => { hl('#pfExp', 6, 24); go('#pfExp', .6, .5); })
+  ]},
+ {scene:'profile', dur:9.2,
+  setup(){ profileReset(); paintProfileBits(); },
+  steps:[
+   S(.3, () => { cap('c6a'); hl('#btnInt', 5, 16); go('#btnInt', .5, .5); }),
+   S(1.5, () => press('#btnInt', () => { $('#btnInt').classList.add('sent'); $('#btnIntT').dataset.i18n = 'pf.intSent'; $('#btnIntT').textContent = T('pf.intSent'); toast(true); })),
+   S(3.5, () => { toast(false); unhl(); }),
+   S(3.9, () => { cap('c6b'); $('#chat').classList.add('on'); chatMsg('them', 'chat.hi'); go('#chatIn', .4, .5); }),
+   S(5.0, () => { hl('#chat', 6, 26); press('#chatIn'); focus('#chatIn'); }),
+   T_(5.1, 1.4, p => typeVal('#chatIn', T('chat.q'), p)),
+   S(6.7, () => { go('#chatSend', .5, .5); }),
+   S(7.4, () => press('#chatSend', () => { focus('#chatIn', false); typeVal('#chatIn', '', 1); chatMsg('me', 'chat.q'); })),
+   S(7.9, () => { const d = document.createElement('div'); d.className = 'msg them dots-m'; d.id = 'typing'; d.innerHTML = '<i></i><i></i><i></i>'; $('#chatBody').appendChild(d); }),
+   S(8.6, () => { const t = $('#typing'); if (t) t.remove(); chatMsg('them', 'chat.a'); })
+  ]},
+ {scene:'portal', dur:7.2,
+  setup(){ portalReset('avail'); $$('.mrow').forEach(r => r.classList.remove('in')); },
+  steps:[
+   S(.3, () => { cap('c7a'); hl('.nv[data-v=mine]', 4, 14); go('.nv[data-v=mine]', .6, .5); }),
+   S(1.3, () => press('.nv[data-v=mine]', () => { setView('mine'); })),
+   S(2.2, () => { cap('c7b'); hl('#stp', 5, 24); go('#stp', .5, .5); }),
+   S(3.7, () => { cap('c7c'); hl('#mrows', 5, 20); $$('.mrow').forEach((r, i) => setTimeout(() => r.classList.add('in'), i * 140)); go('.mrow[data-id=a5] .dots', .5, .5); }),
+   S(5.2, () => { hl('.mrow[data-id=a5] .sp', 5, 99); go('.mrow[data-id=a5] .sp', .5, .5); }),
+   S(6.5, () => { hl('.mrow[data-id=a4] .sp', 5, 99); go('.mrow[data-id=a4] .sp', .5, .5); })
+  ]},
+ {scene:'privacy', dur:6.0,
+  setup(){ $$('.pv .it').forEach(i => i.classList.remove('in')); },
+  steps:[
+   S(.2, () => { cap('c8a'); unhl(); cursor.classList.remove('on'); }),
+   S(1.0, () => $$('.pv .it')[0].classList.add('in')),
+   S(2.0, () => $$('.pv .it')[1].classList.add('in')),
+   S(3.0, () => $$('.pv .it')[2].classList.add('in'))
+  ]},
+ {scene:'closing', dur:6.0,
+  setup(){ $('#cta').classList.remove('pulse'); },
+  steps:[
+   S(.2, () => { cap('c9a'); unhl(); cursor.classList.remove('on'); }),
+   S(1.6, () => { $('#cta').classList.add('pulse'); go('#cta', .6, .55); }),
+   S(3.6, () => { hl('#cta', 7, 22); }),
+   S(4.8, () => press('#cta'))
+  ]}
+];
+const N = CHAPTERS.length;
+const TOTAL = CHAPTERS.reduce((a, c) => a + c.dur, 0);
+const START = []; CHAPTERS.reduce((a, c, i) => (START[i] = a, a + c.dur), 0);
+
+/* ===================== PLAYER ===================== */
+let ci = 0, t = 0, fired = 0, tweens = [], playing = false, userPaused = false, onScreen = true, inst = false, reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let lastTs = 0;
+
+function enter(i, instant) {
+  ci = (i + N) % N; chIdx = ci; t = 0; fired = 0; tweens = []; curCap = null;
+  unhl(); if (ci === 0) { cursor.classList.remove('on'); }
+  $$('.scene').forEach(s => s.classList.toggle('on', s.dataset.scene === CHAPTERS[ci].scene));
+  const prevInst = inst; if (instant) { inst = true; player.classList.add('inst'); }
+  CHAPTERS[ci].setup();
+  paintCap(false);
+  if (instant) {
+    for (const s of CHAPTERS[ci].steps) { s.run && s.run(); s.tick && s.tick(1); }
+    fired = CHAPTERS[ci].steps.length; t = CHAPTERS[ci].dur * 1000;
+    void stage.offsetWidth;
+    requestAnimationFrame(() => { inst = prevInst || reduced; if (!inst) player.classList.remove('inst'); });
+  }
+  paintCap(false);
+  updateUI();
+}
+function stepEngine() {
+  const ch = CHAPTERS[ci];
+  while (fired < ch.steps.length && ch.steps[fired].at * 1000 <= t) {
+    const s = ch.steps[fired++];
+    if (s.run) s.run();
+    if (s.dur) tweens.push({s, start: s.at * 1000});
+  }
+  tweens = tweens.filter(w => { const p = Math.min(1, (t - w.start) / (w.s.dur * 1000)); w.s.tick(p); return p < 1; });
+  if (t >= ch.dur * 1000) enter(ci + 1);
+}
+function frame(ts) {
+  const dt = Math.min(ts - lastTs, 100); lastTs = ts;
+  if (playing) { t += dt; stepEngine(); }
+  progress();
+  requestAnimationFrame(frame);
+}
+function fmt(s) { s = Math.floor(s); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+function progress() {
+  const el = START[ci] + Math.min(t / 1000, CHAPTERS[ci].dur);
+  $('#fill').style.transform = `scaleX(${el / TOTAL})`;
+  $('#clock').textContent = fmt(el) + ' / ' + fmt(TOTAL);
+  $('#bar').setAttribute('aria-valuenow', Math.round(el / TOTAL * 100));
+}
+function setPlaying() {
+  playing = !userPaused && onScreen && !reduced;
+  $('#icPause').style.display = playing ? '' : 'none';
+  $('#icPlay').style.display = playing ? 'none' : '';
+  $('#bPlay').setAttribute('aria-label', playing ? T('pause') : T('play'));
+  $('#bPlay').style.display = reduced ? 'none' : '';
+}
+function updateUI() {
+  $$('.mk').forEach((m, i) => { m.classList.toggle('cur', i === ci); m.classList.toggle('done', i < ci); });
+}
+function jump(i) { enter(i, !(playing)); setPlaying(); }
+
+/* controls */
+$('#bPlay').onclick = () => { userPaused = !userPaused; if (!userPaused && t >= CHAPTERS[ci].dur * 1000) enter(ci, false); setPlaying(); };
+$('#bPrev').onclick = () => jump(t > 2500 && !reduced ? ci : ci - 1);
+$('#bNext').onclick = () => jump(ci + 1);
+$('#bLang').onclick = () => setLang(lang === 'nb' ? 'en' : 'nb');
+$('#bPrev').setAttribute('aria-label', 'prev'); $('#bNext').setAttribute('aria-label', 'next');
+const bar = $('#bar');
+CHAPTERS.forEach((c, i) => {
+  const b = document.createElement('button'); b.className = 'mk'; b.type = 'button';
+  b.style.left = (START[i] / TOTAL * 100) + '%'; b.dataset.i = i;
+  b.onclick = e => { e.stopPropagation(); jump(i); };
+  bar.appendChild(b);
+});
+bar.addEventListener('click', e => {
+  const r = bar.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * TOTAL;
+  let k = 0; START.forEach((s, i) => { if (x >= s) k = i; }); jump(k);
+});
+player.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') { jump(ci + 1); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft') { jump(ci - 1); e.preventDefault(); }
+  else if (e.key === ' ' && e.target === player) { $('#bPlay').click(); e.preventDefault(); }
+});
+
+/* language */
+function setLang(l) {
+  lang = l; document.documentElement.lang = l === 'nb' ? 'nb' : 'en';
+  i18n(); $('#bLang').textContent = T('langBtn'); $('#bLang').title = T('langTitle'); $('#bLang').setAttribute('aria-label', T('langTitle'));
+  $('#bPrev').title = T('prev'); $('#bNext').title = T('next');
+  $('#bPrev').setAttribute('aria-label', T('prev')); $('#bNext').setAttribute('aria-label', T('next'));
+  $$('.mk').forEach((m, i) => { m.title = T('ch' + (i + 1)); m.setAttribute('aria-label', T('ch' + (i + 1))); });
+  renderPops();
+  if (P.view === 'mine') renderMine(); else { const sv = lastVisible; renderGrid(); }
+  paintProfileBits(); setPlaying(); paintCap(false);
+  // re-apply typed query display
+  $$('.cand', $('#grid')); applyFilter(true);
+  $$('.msg[data-i18n]').forEach(m => m.textContent = T(m.dataset.i18n));
+}
+
+/* fit */
+function fit() {
+  const w = wrap.clientWidth, k = w / 1280;
+  stage.style.transform = `scale(${k})`;
+  player.classList.toggle('narrow', w < 700);
+}
+new ResizeObserver(fit).observe(wrap);
+
+/* misc */
+$('#cta').href = CTA_URL; $('#cta').target = CTA_TARGET;
+document.addEventListener('visibilitychange', () => { onScreen = !document.hidden; setPlaying(); });
+if ('IntersectionObserver' in window) new IntersectionObserver(es => { onScreen = es[0].isIntersecting && !document.hidden; setPlaying(); }, {threshold: .25}).observe(wrap);
+matchMedia('(prefers-reduced-motion: reduce)').addEventListener?.('change', e => { reduced = e.matches; player.classList.toggle('reduced', reduced); inst = reduced; enter(ci, reduced); setPlaying(); });
+
+/* boot */
+player.classList.toggle('reduced', reduced); inst = reduced;
+fit(); setLang(DEFAULT_LANG);
+if (!AUTOPLAY) userPaused = true;
+enter(0, reduced); setPlaying();
+requestAnimationFrame(ts => { lastTs = ts; requestAnimationFrame(frame); });
+
+window.GWTour = {jump, chapters: CHAPTERS, total: TOTAL, setLang, state: () => ({ci, t, playing})};
+})();
+</script>
+</body>
+</html>

@@ -1,37 +1,40 @@
 ﻿import Nyheter from '../components/Nyheter'
 import PageEndNav from '../components/PageEndNav'
-import AnimateIn from '../components/AnimateIn'
 import EditableText from '../components/editable/EditableText'
 import useContent from '../hooks/useContent'
 
+/**
+ * NyheterPage — la cabecera de la sección de prensa.
+ *
+ * Cambios: fuera el `AnimateIn` (el titular de una página no tiene por qué
+ * aparecer con retardo), las migas en `font-ui` como el resto de las internas,
+ * y la bajada a la medida de lectura en lugar de `max-w-2xl`.
+ */
 export default function NyheterPage() {
   const hero = useContent('nyheterHero')
 
   return (
     <>
-      <section className="pt-32 pb-12 bg-gradient-to-br from-navy via-primary-900 to-primary-800 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(30,115,190,0.3),transparent_60%)]" aria-hidden="true" />
-        <div className="container-xl relative z-10">
-          <AnimateIn>
-            <nav className="text-blue-200/70 text-sm mb-6" aria-label="Brødsmuler">
-              <a href="/" className="hover:text-white transition-colors">Hjem</a>
-              <span className="mx-2">/</span>
-              <span className="text-white">{hero.breadcrumb}</span>
-            </nav>
-            <EditableText
-              as="h1"
-              path="nyheterHero.h1"
-              value={hero.h1}
-              className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight"
-            />
-            <EditableText
-              as="p"
-              path="nyheterHero.description"
-              value={hero.description}
-              multiline
-              className="text-blue-100 text-lg max-w-2xl leading-relaxed"
-            />
-          </AnimateIn>
+      <section className="bg-navy pt-32 pb-16 lg:pt-40 lg:pb-20">
+        <div className="container-xl">
+          <nav className="font-ui text-primary-300 text-sm mb-7" aria-label="Brødsmuler">
+            <a href="/" className="hover:text-white transition-colors">Hjem</a>
+            <span className="mx-2 text-primary-400" aria-hidden="true">/</span>
+            <span className="text-white">{hero.breadcrumb}</span>
+          </nav>
+          <EditableText
+            as="h1"
+            path="nyheterHero.h1"
+            value={hero.h1}
+            className="text-display font-semibold !text-white max-w-[20ch]"
+          />
+          <EditableText
+            as="p"
+            path="nyheterHero.description"
+            value={hero.description}
+            multiline
+            className="mt-6 gw-measure text-body lg:text-[1.1875rem] text-primary-100 leading-[1.6]"
+          />
         </div>
       </section>
 

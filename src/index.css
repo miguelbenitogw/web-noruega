@@ -1,4 +1,5 @@
-/* Fonts are loaded via <link> in index.html (non-render-blocking). */
+/* Fonts are loaded via <link> in index.html (non-render-blocking).
+   Display: Poppins (marca). Texto: Newsreader (serif editorial). */
 
 @tailwind base;
 @tailwind components;
@@ -7,13 +8,17 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-size: 17.5px;
+    /* 17px base: el serif tiene una altura de x menor que el sans anterior,
+       así que el cuerpo se lee igual de grande con un rem algo más chico. */
+    font-size: 17px;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    @apply font-body text-ink bg-surface antialiased;
+    @apply font-body text-ink bg-white antialiased;
     margin: 0;
-    line-height: 1.65;
+    line-height: 1.62;
+    font-optical-sizing: auto;
   }
 
   #root {
@@ -21,66 +26,130 @@
     text-align: left;
   }
 
+  /* El display lleva tracking negativo: Poppins abre demasiado en tamaños
+     grandes y sin esto los titulares parecen flotar. */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    @apply font-heading text-ink;
     margin: 0;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
   }
 
-  p {
-    margin: 0;
+  h1 { letter-spacing: -0.035em; }
+
+  p { margin: 0; }
+
+  /* Interfaz en Poppins: botones, campos y navegación. El serif es para leer,
+     no para operar. */
+  button, input, select, textarea, label {
+    @apply font-ui;
+  }
+
+  header nav a, footer nav a {
+    @apply font-ui;
   }
 
   *:focus-visible {
-    @apply outline-none ring-2 ring-primary-600 ring-offset-2;
+    @apply outline-none ring-2 ring-primary-700 ring-offset-2;
+  }
+
+  ::selection {
+    background-color: #062A6A;
+    color: #fff;
+  }
+}
+
+@layer components {
+  .container-xl {
+    @apply max-w-7xl mx-auto px-5 sm:px-6 lg:px-8;
+  }
+
+  /* ── Etiqueta de sección ──────────────────────────────────────────────
+     Filete naranja + etiqueta en caja normal. Es el gesto de marca de
+     globalworking.net, sin las versalitas tracked-out. */
+  .gw-label {
+    @apply inline-flex items-center gap-3 font-ui text-[0.8125rem] font-semibold;
+  }
+  .gw-label::before {
+    content: '';
+    @apply block h-[2px] w-7 bg-cta shrink-0;
+  }
+
+  /* ── Botones ──────────────────────────────────────────────────────────
+     Pastilla, como la marca. Sin sombra, sin levantarse al pasar el ratón:
+     el color ya dice que es pulsable. */
+  .gw-btn {
+    @apply inline-flex items-center justify-center gap-2 font-ui font-semibold
+           rounded-pill px-7 py-3.5 text-[0.9375rem] leading-none
+           transition-colors duration-200 cursor-pointer;
+  }
+  .gw-btn-ember { @apply bg-cta text-white hover:bg-cta-600; }
+  .gw-btn-ink   { @apply bg-navy text-white hover:bg-primary-800; }
+  .gw-btn-ghost { @apply border border-white/35 text-white hover:bg-white/10; }
+  .gw-btn-line  { @apply border border-line text-navy hover:bg-frost; }
+
+  /* ── Superficie plana ─────────────────────────────────────────────────
+     Panel sin sombra. Las tarjetas flotantes con shadow-lg son el tic de
+     toda landing generada; acá la jerarquía la da el tono, no la altura. */
+  .gw-panel {
+    @apply bg-frost rounded-panel border border-transparent
+           transition-colors duration-200;
+  }
+  .gw-panel-hover:hover { @apply border-primary-200 bg-primary-50; }
+
+  /* Medida de lectura: el serif pide línea corta. */
+  .gw-measure    { @apply max-w-measure; }
+  .gw-measure-sm { @apply max-w-measure-sm; }
+
+  /* ── Sangrado al borde de la pantalla ─────────────────────────────────
+     Saca una imagen fuera de `.container-xl` hasta el borde del viewport.
+     El `+2rem` cancela el padding del contenedor en lg; el `max(0px, …)`
+     evita margen negativo por debajo de 80rem, donde no sobra espacio.
+
+     Estaba copiado literal en trece sitios de ocho archivos: si alguien
+     tocaba el ancho de `.container-xl`, había que corregirlos a mano uno
+     por uno. Ahora el cálculo vive en un solo lugar.
+
+     La sección que lo contenga necesita `overflow-hidden`. */
+  @media (min-width: 1024px) {
+    .gw-bleed-l { margin-left: calc((max(0px, (100vw - 80rem) / 2) + 2rem) * -1); }
+    .gw-bleed-r { margin-right: calc((max(0px, (100vw - 80rem) / 2) + 2rem) * -1); }
+  }
+
+  /* Círculo de flecha — elemento de marca de las tarjetas de empleo .net */
+  .gw-arrow {
+    @apply inline-flex items-center justify-center w-10 h-10 rounded-pill
+           bg-cta text-white shrink-0 transition-colors duration-200;
   }
 }
 
 @layer utilities {
-  .container-xl {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 
-/* Hero entrance animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* Barra de desplazamiento en tonos de marca */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #F1F4F9; }
+::-webkit-scrollbar-thumb { background: #BCD3EC; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #8FB6E0; }
 
-/* Line-clamp support */
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Smooth scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* Reduced motion: disable all animations */
+/* Movimiento reducido: se desactiva todo */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

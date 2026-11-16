@@ -1,18 +1,32 @@
 import { useEffect, useRef, useState } from 'react'
 import emailjs from '@emailjs/browser'
-import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
-import { getSupabaseClient, isSupabaseConfigured } from '../lib/supabaseClient'
+
+/**
+ * Formulario de candidatos.
+ *
+ * La subida del CV se eliminó al desconectar Supabase: el archivo iba a un
+ * bucket `cv-uploads` de Supabase Storage y el correo solo llevaba el enlace.
+ * Ahora el candidato manda el CV por correo. Si en algún momento se quiere
+ * recuperar el adjunto sin volver a Supabase, EmailJS admite adjuntos en sus
+ * planes de pago.
+ *
+ * Diseño: antes era un bloque centrado (`max-w-2xl mx-auto`, todo el texto al
+ * medio) con el panel flotando en `shadow-xl rounded-3xl`, pestañas con
+ * `shadow-sm` y un círculo verde con un tic al enviar. Ahora la banda navy se
+ * reparte en dos columnas —el porqué a la izquierda, el formulario a la
+ * derecha— y la jerarquía la dan el tono y el filete.
+ *
+ * La protección antibot (honeypot `website`, `MIN_FORM_FILL_MS`, rate limit)
+ * no se toca: es lógica, no diseño.
+ */
 
 const EMAILJS_SERVICE = import.meta.env.VITE_EMAILJS_SERVICE_ID
 const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
 const EMAILJS_PUBLIC = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 const isEmailConfigured = Boolean(EMAILJS_SERVICE && EMAILJS_TEMPLATE && EMAILJS_PUBLIC)
 
-const CV_BUCKET = 'cv-uploads'
-const CV_MAX_SIZE_BYTES = 5 * 1024 * 1024
-const CV_ALLOWED_TYPES = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
-const CV_ALLOWED_EXTENSIONS = '.pdf,.doc,.docx'
+const CV_EMAIL = 'kontakt@globalworking.no'
 
 const BOT_GUARD_KEY = 'gw_kandidat_rate_limit_v1'
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
@@ -24,22 +38,70 @@ const TABS = [
   { key: 'vil_jobbe', label: 'Søknad' },
 ]
 
-async function uploadCvToStorage(file) {
-  const client = getSupabaseClient()
-  if (!client) throw new Error('Supabase ikke konfigurert')
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-  const ext = file.name.split('.').pop()?.toLowerCase() || 'pdf'
-  const uuid = crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
-  const path = `${new Date().toISOString().slice(0, 10)}/${uuid}.${ext}`
+/* Mismas clases de campo que `Kontakt.jsx`. Están duplicadas a propósito:
+   extraer un `<FormField>` compartido es refactor de componentes, no rediseño,
+   y toca archivos que ahora mismo están en manos de otros. */
+const FIELD_CLASS =
+  'w-full font-ui text-[0.9375rem] text-ink bg-white rounded-panel border px-4 py-3 ' +
+  'placeholder:text-ink-soft/80 outline-none transition-colors'
+const FIELD_OK = 'border-line focus:border-primary-600'
+const FIELD_ERROR = 'border-red-500 bg-red-50/50 focus:border-red-600'
 
-  const { data, error } = await client.storage
-    .from(CV_BUCKET)
-    .upload(path, file, { contentType: file.type, upsert: false })
+function FieldNote({ id, children }) {
+  return (
+    <p id={id} className="mt-2 flex items-start gap-1.5 font-ui text-[0.8125rem] text-red-700">
+      <svg
+        width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        strokeWidth="2.5" strokeLinecap="round" aria-hidden="true" className="shrink-0 mt-[3px]"
+      >
+        <path d="M12 8v5M12 17h.01" />
+        <circle cx="12" cy="12" r="9" strokeWidth="1.75" />
+      </svg>
+      {children}
+    </p>
+  )
+}
 
-  if (error) throw error
+function Field({
+  id, name, label, type = 'text', rows,
+  required = false, autoComplete, value, onChange, placeholder, error,
+}) {
+  const errorId = `${id}-error`
+  const shared = {
+    id,
+    name,
+    value,
+    onChange,
+    placeholder,
+    required,
+    'aria-required': required || undefined,
+    'aria-invalid': error ? true : undefined,
+    'aria-describedby': error ? errorId : undefined,
+    className: `${FIELD_CLASS} ${error ? FIELD_ERROR : FIELD_OK}${rows ? ' resize-y min-h-[120px]' : ''}`,
+  }
 
-  const { data: urlData } = client.storage.from(CV_BUCKET).getPublicUrl(data?.path || path)
-  return urlData?.publicUrl || null
+  return (
+    <div>
+      <label htmlFor={id} className="block font-ui text-[0.8125rem] font-semibold text-navy mb-2">
+        {label}
+      </label>
+      {rows
+        ? <textarea rows={rows} {...shared} />
+        : <input type={type} autoComplete={autoComplete} {...shared} />}
+      {error && <FieldNote id={errorId}>{error}</FieldNote>}
+    </div>
+  )
+}
+
+const validate = (f) => {
+  const next = {}
+  if (!f.from_name.trim()) next.from_name = 'Fyll inn navnet ditt.'
+  if (!f.from_email.trim()) next.from_email = 'Fyll inn e-postadressen din.'
+  else if (!EMAIL_PATTERN.test(f.from_email.trim())) next.from_email = 'Skriv inn en gyldig e-postadresse.'
+  if (!f.message.trim()) next.message = 'Skriv en kort melding til oss.'
+  return next
 }
 
 export default function KandidatKontakt() {
@@ -51,41 +113,20 @@ export default function KandidatKontakt() {
     type: 'kandidat',
     website: '',
   })
-  const [cvFile, setCvFile] = useState(null)
+  const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle')
-  const [cvError, setCvError] = useState('')
   const formOpenedAtRef = useRef(0)
-  const fileInputRef = useRef(null)
 
   useEffect(() => {
     formOpenedAtRef.current = Date.now()
   }, [])
 
-  const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
-
-  const handleCvChange = (e) => {
-    setCvError('')
-    const file = e.target.files?.[0]
-    if (!file) {
-      setCvFile(null)
-      return
-    }
-
-    if (!CV_ALLOWED_TYPES.includes(file.type)) {
-      setCvError('Kun PDF- og Word-filer er tillatt.')
-      setCvFile(null)
-      if (fileInputRef.current) fileInputRef.current.value = ''
-      return
-    }
-
-    if (file.size > CV_MAX_SIZE_BYTES) {
-      setCvError('Filen er for stor. Maks 5 MB.')
-      setCvFile(null)
-      if (fileInputRef.current) fileInputRef.current.value = ''
-      return
-    }
-
-    setCvFile(file)
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setForm(f => ({ ...f, [name]: value }))
+    setErrors(prev => (prev[name] ? { ...prev, [name]: undefined } : prev))
+    // El aviso de «revisá los campos marcados» desaparece en cuanto se corrige.
+    setStatus(s => (s === 'invalid' ? 'idle' : s))
   }
 
   const handleSubmit = async (e) => {
@@ -102,6 +143,17 @@ export default function KandidatKontakt() {
       trackEvent('kandidat_blocked_bot', { reason: 'too_fast' })
       return
     }
+
+    // El formulario lleva `noValidate`, así que `required` no comprobaba nada
+    // por sí solo. Se valida después de las trampas antibot y antes del rate
+    // limit, para no gastar un intento por un campo vacío.
+    const nextErrors = validate(form)
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors)
+      setStatus('invalid')
+      return
+    }
+    setErrors({})
 
     try {
       const now = Date.now()
@@ -130,17 +182,6 @@ export default function KandidatKontakt() {
     }
 
     try {
-      let cvUrl = ''
-
-      if (form.type === 'vil_jobbe' && cvFile) {
-        if (!isSupabaseConfigured) {
-          setStatus('error')
-          trackEvent('kandidat_error', { reason: 'missing_supabase_config' })
-          return
-        }
-        cvUrl = await uploadCvToStorage(cvFile)
-      }
-
       await emailjs.send(
         EMAILJS_SERVICE,
         EMAILJS_TEMPLATE,
@@ -150,13 +191,15 @@ export default function KandidatKontakt() {
           phone: form.phone,
           message: form.message,
           type: form.type === 'vil_jobbe' ? 'Vil jobbe' : 'Kandidat',
-          cv_url: cvUrl || 'Ingen CV lastet opp',
+          // La plantilla de EmailJS sigue esperando esta variable: se conserva
+          // con el mismo texto que ya usaba cuando no había adjunto.
+          cv_url: 'Ingen CV lastet opp',
         },
         EMAILJS_PUBLIC,
       )
 
       setStatus('sent')
-      trackEvent('kandidat_submit', { contact_type: form.type, has_cv: Boolean(cvUrl) })
+      trackEvent('kandidat_submit', { contact_type: form.type })
       trackEvent('generate_lead', { lead_type: form.type, method: 'kandidat_form' })
     } catch (err) {
       console.error('KandidatKontakt send error:', err)
@@ -167,43 +210,47 @@ export default function KandidatKontakt() {
 
   const reset = () => {
     setStatus('idle')
-    setCvFile(null)
-    setCvError('')
+    setErrors({})
     setForm({ from_name: '', from_email: '', phone: '', message: '', type: 'kandidat', website: '' })
-    if (fileInputRef.current) fileInputRef.current.value = ''
     formOpenedAtRef.current = Date.now()
   }
 
   return (
-    <section id="kandidat-kontakt" className="scroll-mt-28 py-24 lg:py-28 bg-gradient-to-br from-navy via-primary-900 to-primary-800 overflow-hidden">
+    <section
+      id="kandidat-kontakt"
+      className="scroll-mt-28 py-20 lg:py-28 bg-navy"
+      aria-labelledby="kandidat-kontakt-heading"
+    >
       <div className="container-xl">
-        <AnimateIn>
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-10">
-              <span className="inline-block text-blue-200 font-semibold text-sm tracking-wide uppercase mb-3">
-                Kontakt oss
-              </span>
-              <h2 className="font-heading text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight">
-                Klar for en ny mulighet?
-              </h2>
-              <p className="text-blue-100/90 text-lg leading-relaxed">
-                Enten du er kandidat eller ønsker å jobbe — fyll ut skjemaet, så tar vi kontakt.
-              </p>
-            </div>
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
 
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 lg:p-10">
+          <div className="lg:col-span-5">
+            <span className="gw-label text-white">Kontakt oss</span>
+            <h2
+              id="kandidat-kontakt-heading"
+              className="mt-5 text-display-sm font-semibold text-white"
+            >
+              Klar for en ny mulighet?
+            </h2>
+            <p className="mt-6 gw-measure text-primary-100 text-body leading-[1.65]">
+              Enten du er kandidat eller ønsker å jobbe — fyll ut skjemaet, så tar vi kontakt.
+            </p>
+          </div>
+
+          <div className="lg:col-span-6 lg:col-start-7">
+            <div className="bg-white rounded-panel border border-line p-7 lg:p-9">
               {status === 'sent' ? (
-                <div className="flex flex-col items-center justify-center text-center py-8 gap-4">
-                  <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mb-2">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-green-500">
-                      <path d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <h3 className="font-heading text-xl font-bold text-ink">Takk for henvendelsen!</h3>
-                  <p className="text-gray-500 leading-relaxed">Vi kontakter deg innen 1 virkedag.</p>
+                <div className="py-6" role="status" aria-live="polite">
+                  <h3 className="font-heading text-[1.375rem] font-semibold text-navy">
+                    Takk for henvendelsen!
+                  </h3>
+                  <p className="mt-3 text-ink-muted leading-[1.65]">
+                    Vi kontakter deg innen 1 virkedag.
+                  </p>
                   <button
                     onClick={reset}
-                    className="mt-2 text-primary-600 font-semibold text-sm hover:text-primary-700 transition-colors cursor-pointer"
+                    type="button"
+                    className="mt-6 font-ui text-sm font-semibold text-primary-600 transition-colors hover:text-navy cursor-pointer"
                   >
                     Send ny melding
                   </button>
@@ -222,26 +269,48 @@ export default function KandidatKontakt() {
                   />
 
                   {status === 'error' && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3" role="alert">
+                    <div
+                      className="font-ui text-sm text-red-800 bg-red-50 border border-red-300 rounded-panel px-4 py-3"
+                      role="alert"
+                    >
                       {isEmailConfigured
                         ? 'Noe gikk galt. Prøv igjen eller kontakt oss direkte per e-post.'
                         : 'Kontaktskjema er midlertidig utilgjengelig. Kontakt oss direkte på e-post eller telefon.'}
                     </div>
                   )}
                   {status === 'rate_limited' && (
-                    <div className="bg-amber-50 border border-amber-200 text-amber-800 text-sm rounded-xl px-4 py-3" role="alert">
+                    <div
+                      className="font-ui text-sm text-amber-900 bg-amber-50 border border-amber-300 rounded-panel px-4 py-3"
+                      role="alert"
+                    >
                       For mange forsøk på kort tid. Vent litt og prøv igjen.
                     </div>
                   )}
+                  {status === 'invalid' && (
+                    <div
+                      className="font-ui text-sm text-red-800 bg-red-50 border border-red-300 rounded-panel px-4 py-3"
+                      role="alert"
+                    >
+                      Sjekk de merkede feltene og prøv igjen.
+                    </div>
+                  )}
 
-                  <div className="flex bg-surface rounded-xl p-1 gap-1" role="group" aria-label="Type henvendelse">
+                  {/* Dos caminos, un control. Pastilla plana: el seleccionado
+                      se distingue por tono, no por sombra. */}
+                  <div
+                    className="flex gap-1 rounded-pill border border-line bg-frost p-1"
+                    role="group"
+                    aria-label="Type henvendelse"
+                  >
                     {TABS.map(t => (
                       <button
                         key={t.key}
                         type="button"
                         onClick={() => setForm(f => ({ ...f, type: t.key }))}
-                        className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
-                          form.type === t.key ? 'bg-primary-600 text-white shadow-sm' : 'text-gray-500 hover:text-ink'
+                        className={`flex-1 rounded-pill py-2.5 font-ui text-sm font-semibold transition-colors duration-200 cursor-pointer ${
+                          form.type === t.key
+                            ? 'bg-navy text-white'
+                            : 'text-ink-muted hover:text-navy'
                         }`}
                         aria-pressed={form.type === t.key}
                       >
@@ -250,97 +319,79 @@ export default function KandidatKontakt() {
                     ))}
                   </div>
 
-                  <div>
-                    <label htmlFor="kandidat_from_name" className="block text-sm font-medium text-ink mb-1.5">Fullt navn *</label>
-                    <input
-                      id="kandidat_from_name"
-                      name="from_name"
-                      type="text"
-                      required
-                      autoComplete="name"
-                      value={form.from_name}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-ink placeholder-gray-400 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all"
-                      placeholder="Ola Nordmann"
-                    />
-                  </div>
+                  <Field
+                    id="kandidat_from_name"
+                    name="from_name"
+                    label="Fullt navn *"
+                    required
+                    autoComplete="name"
+                    value={form.from_name}
+                    onChange={handleChange}
+                    placeholder="Ola Nordmann"
+                    error={errors.from_name}
+                  />
 
-                  <div>
-                    <label htmlFor="kandidat_from_email" className="block text-sm font-medium text-ink mb-1.5">E-postadresse *</label>
-                    <input
-                      id="kandidat_from_email"
-                      name="from_email"
-                      type="email"
-                      required
-                      autoComplete="email"
-                      value={form.from_email}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-ink placeholder-gray-400 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all"
-                      placeholder="ola@eksempel.no"
-                    />
-                  </div>
+                  <Field
+                    id="kandidat_from_email"
+                    name="from_email"
+                    type="email"
+                    label="E-postadresse *"
+                    required
+                    autoComplete="email"
+                    value={form.from_email}
+                    onChange={handleChange}
+                    placeholder="ola@eksempel.no"
+                    error={errors.from_email}
+                  />
 
-                  <div>
-                    <label htmlFor="kandidat_phone" className="block text-sm font-medium text-ink mb-1.5">Telefon</label>
-                    <input
-                      id="kandidat_phone"
-                      name="phone"
-                      type="tel"
-                      autoComplete="tel"
-                      value={form.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-ink placeholder-gray-400 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all"
-                      placeholder="+47 000 00 000"
-                    />
-                  </div>
+                  <Field
+                    id="kandidat_phone"
+                    name="phone"
+                    type="tel"
+                    label="Telefon"
+                    autoComplete="tel"
+                    value={form.phone}
+                    onChange={handleChange}
+                    placeholder="+47 000 00 000"
+                    error={errors.phone}
+                  />
 
-                  <div>
-                    <label htmlFor="kandidat_message" className="block text-sm font-medium text-ink mb-1.5">Melding *</label>
-                    <textarea
-                      id="kandidat_message"
-                      name="message"
-                      required
-                      rows={4}
-                      value={form.message}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-ink placeholder-gray-400 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all resize-none"
-                      placeholder={form.type === 'vil_jobbe' ? 'Fortell oss om din erfaring og hva du ser etter...' : 'Skriv inn dine spørsmål til oss...'}
-                    />
-                  </div>
+                  <Field
+                    id="kandidat_message"
+                    name="message"
+                    label="Melding *"
+                    rows={5}
+                    required
+                    value={form.message}
+                    onChange={handleChange}
+                    placeholder={form.type === 'vil_jobbe'
+                      ? 'Fortell oss om din erfaring og hva du ser etter...'
+                      : 'Skriv inn dine spørsmål til oss...'}
+                    error={errors.message}
+                  />
 
+                  {/* El CV ya no se sube: va por correo. El aviso se queda,
+                      pero como nota bajo filete, no como caja de alerta. */}
                   {form.type === 'vil_jobbe' && (
-                    <div>
-                      <label htmlFor="kandidat_cv" className="block text-sm font-medium text-ink mb-1.5">
-                        Last opp CV <span className="text-gray-400 font-normal">(PDF eller Word, maks 5 MB)</span>
-                      </label>
-                      <div className="relative">
-                        <input
-                          ref={fileInputRef}
-                          id="kandidat_cv"
-                          type="file"
-                          accept={CV_ALLOWED_EXTENSIONS}
-                          onChange={handleCvChange}
-                          className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-600 hover:file:bg-primary-100 file:cursor-pointer file:transition-colors"
-                        />
-                      </div>
-                      {cvFile && (
-                        <p className="mt-1.5 text-xs text-green-600 flex items-center gap-1">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-                            <path d="M5 13l4 4L19 7" />
-                          </svg>
-                          {cvFile.name} ({(cvFile.size / 1024 / 1024).toFixed(1)} MB)
-                        </p>
-                      )}
-                      {cvError && (
-                        <p className="mt-1.5 text-xs text-red-600">{cvError}</p>
-                      )}
+                    <div className="gw-panel border-line px-5 py-4">
+                      <p className="font-ui text-[0.875rem] text-ink-muted leading-relaxed">
+                        Send CV-en din til{' '}
+                        <a
+                          href={`mailto:${CV_EMAIL}`}
+                          className="font-semibold text-primary-600 underline decoration-primary-200 underline-offset-4 transition-colors hover:text-navy hover:decoration-navy"
+                        >
+                          {CV_EMAIL}
+                        </a>
+                        .
+                      </p>
                     </div>
                   )}
 
+                  {/* El único naranja de la pantalla. */}
                   <button
                     type="submit"
                     disabled={status === 'sending'}
-                    className="w-full py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="gw-btn gw-btn-ember w-full disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {status === 'sending' ? 'Sender...' : 'Send melding'}
                   </button>
@@ -348,7 +399,7 @@ export default function KandidatKontakt() {
               )}
             </div>
           </div>
-        </AnimateIn>
+        </div>
       </div>
     </section>
   )

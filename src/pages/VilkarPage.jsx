@@ -1,80 +1,75 @@
-﻿import AnimateIn from '../components/AnimateIn'
-import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter } from '../components/editable/EditableText'
+﻿import useContent from '../hooks/useContent'
+import EditableText from '../components/editable/EditableText'
 
+/**
+ * VilkarPage — página legal.
+ *
+ * Misma estructura de documento que Personvern y Cookies: fondo blanco, cada
+ * apartado numerado en la columna de interfaz y el texto a la medida de
+ * lectura. Fuera la tarjeta con sombra sobre `bg-surface` y el `AnimateIn`.
+ */
 export default function VilkarPage() {
   const c = useContent('legalVilkar')
+  const blocks = c.blocks || []
 
   return (
     <>
-      <section className="pt-32 pb-12 bg-gradient-to-br from-navy via-primary-900 to-primary-800 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(30,115,190,0.3),transparent_60%)]" aria-hidden="true" />
-        <div className="container-xl relative z-10">
-          <AnimateIn>
-            <nav className="text-blue-200/70 text-sm mb-6" aria-label="Breadcrumb">
-              <a href="/" className="hover:text-white transition-colors">Hjem</a>
-              <span className="mx-2">/</span>
-              <span className="text-white">{c.breadcrumb}</span>
-            </nav>
-            <EditableText
-              as="h1"
-              path="legalVilkar.title"
-              value={c.title}
-              className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight"
-            />
-            <EditableText
-              as="p"
-              path="legalVilkar.intro"
-              value={c.intro}
-              multiline
-              className="text-blue-100 text-lg max-w-3xl leading-relaxed"
-            />
-          </AnimateIn>
+      <section className="bg-navy pt-32 pb-16 lg:pt-40 lg:pb-20">
+        <div className="container-xl">
+          <nav className="font-ui text-primary-300 text-sm mb-7" aria-label="Brødsmuler">
+            <a href="/" className="hover:text-white transition-colors">Hjem</a>
+            <span className="mx-2 text-primary-400" aria-hidden="true">/</span>
+            <span className="text-white">{c.breadcrumb}</span>
+          </nav>
+          <EditableText
+            as="h1"
+            path="legalVilkar.title"
+            value={c.title}
+            className="text-display font-semibold !text-white max-w-[20ch]"
+          />
+          <EditableText
+            as="p"
+            path="legalVilkar.intro"
+            value={c.intro}
+            multiline
+            className="mt-6 gw-measure text-body lg:text-[1.1875rem] text-primary-100 leading-[1.6]"
+          />
         </div>
       </section>
 
-      <section className="py-16 bg-surface">
+      <section className="bg-white py-16 lg:py-24">
         <div className="container-xl">
-          <div className="max-w-4xl bg-white rounded-2xl border border-gray-100 shadow-sm p-8 lg:p-10 space-y-8">
-            {(c.blocks || []).map((block, index) => {
-              const commitHeading = createArrayItemCommitter({
-                basePath: 'legalVilkar.blocks',
-                fallbackItems: c.blocks || [],
-                index,
-                field: 'heading',
-              })
-              const commitBody = createArrayItemCommitter({
-                basePath: 'legalVilkar.blocks',
-                fallbackItems: c.blocks || [],
-                index,
-                field: 'body',
-              })
-
-              return (
-                <div key={`${block.heading}-${index}`}>
+          <div className="mx-auto max-w-[62rem]">
+            {blocks.map((block, index) => (
+              <div
+                key={`${block.heading}-${index}`}
+                className="grid gap-x-10 gap-y-3 border-t border-line py-9 last:border-b lg:grid-cols-12 lg:py-11"
+              >
+                <div className="lg:col-span-2">
+                  <span className="font-ui text-[0.8125rem] font-semibold tabular-nums text-ink-soft">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                </div>
+                <div className="lg:col-span-10">
                   <EditableText
                     as="h2"
                     path={`legalVilkar.blocks.${index}.heading`}
                     value={block.heading}
-                    onCommit={commitHeading}
-                    className="font-heading text-2xl font-bold text-ink mb-3"
+                    className="font-heading text-[1.25rem] lg:text-[1.375rem] font-semibold text-navy"
                   />
                   <EditableText
                     as="p"
                     path={`legalVilkar.blocks.${index}.body`}
                     value={block.body}
-                    onCommit={commitBody}
                     multiline
-                    className="text-gray-700 leading-relaxed"
+                    className="mt-3.5 max-w-measure text-body leading-[1.75] text-ink"
                   />
                 </div>
-              )
-            })}
+              </div>
+            ))}
           </div>
         </div>
       </section>
     </>
   )
 }
-
-
