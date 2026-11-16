@@ -928,6 +928,35 @@ const run = async () => {
     )
   await writeFile(INDEX_PATH, homeHtml, 'utf8')
 
+  // ── 404 ─────────────────────────────────────────────────────────────────
+  // Antes, el rewrite catch-all de vercel.json mandaba CUALQUIER URL a
+  // index.html, así que una dirección inventada devolvía 200 con la portada
+  // entera: contenido duplicado indexable en infinitas URLs. Y con el cuerpo
+  // prerenderizado iba a peor, porque pasaba a servir también su <h1>.
+  //
+  // Ahora el rewrite está acotado y lo que no casa con un archivo cae aquí.
+  // Vercel sirve este archivo con código 404 de verdad. React monta encima y
+  // pinta la página de «no encontrado» de la web, así que el visitante ve algo
+  // con la cara del sitio y el buscador ve un 404 con noindex.
+  const notFoundSkeleton = buildBodySkeleton({
+    h1: 'Siden ble ikke funnet',
+    description: 'Kontroller adressen eller gå tilbake til forsiden.',
+    breadcrumbs: null,
+    extraContent: '<p><a href="/">Tilbake til forsiden</a></p>',
+  })
+  const notFoundHtml = stripHomePreload(
+    injectBody(baseHtml, notFoundSkeleton, '404'),
+  )
+    .replace(/<title>[^<]*<\/title>/, '<title>Siden ble ikke funnet | Global Working Norge</title>')
+    .replace(
+      /<meta name="robots" content="[^"]*" \/>/,
+      '<meta name="robots" content="noindex, follow" />',
+    )
+  if (!notFoundHtml.includes('content="noindex')) {
+    throw new Error('prerender: 404.html se escribió sin noindex.')
+  }
+  await writeFile(path.join(DIST_DIR, '404.html'), notFoundHtml, 'utf8')
+
   // Comprobación final sobre lo ESCRITO EN DISCO, no sobre lo que creemos
   // haber escrito. El guard de injectBody cubre el marcador; esto cubre el
   // resultado: cuerpo con <h1> y un grafo con la entidad dentro.
