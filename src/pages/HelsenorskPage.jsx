@@ -1,352 +1,261 @@
-import AnimateIn from '../components/AnimateIn'
 import EditableText from '../components/editable/EditableText'
 import EditableImage from '../components/editable/EditableImage'
 import PageEndNav from '../components/PageEndNav'
+import PageHero from '../components/ui/PageHero'
+import RuleList from '../components/ui/RuleList'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
+import BodyParagraph from '../components/ui/BodyParagraph'
 
-function BulletList({ items, basePath }) {
-  return (
-    <ul className="space-y-3">
-      {items.map((item, index) => (
-        <li key={`${basePath}-${index}`} className="flex gap-3 items-start">
-          <span className="mt-1 w-6 h-6 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center shrink-0">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-              <path d="M5 13l4 4L19 7" />
-            </svg>
-          </span>
-          <EditableText
-            as="span"
-            path={`${basePath}.${index}`}
-            value={item}
-            className="text-gray-600 leading-relaxed"
-          />
-        </li>
-      ))}
-    </ul>
-  )
-}
+/**
+ * HelsenorskPage — las 650 horas de noruego sanitario.
+ *
+ * Es la página más técnica de la sección y la que menos se puede permitir el
+ * adorno: lo que vende es la seriedad del programa. Antes eran seis secciones
+ * idénticas de `max-w-3xl` centrado, dos fotos en cajas con sombra, un
+ * eyebrow en MAYÚSCULAS y un degradado `from-primary-50 via-white to-surface`
+ * debajo del contacto.
+ *
+ * Ahora cada bloque es un carril —titular a la izquierda, lectura a la
+ * derecha— y el argumento de confianza (quién enseña) se lleva la única
+ * banda oscura de la página.
+ */
+
 
 export default function HelsenorskPage() {
   const page = useContent('helsenorsk')
-  const contacts = useContent('contacts')
+  const contactsRaw = useContent('contacts')
+  const contacts = Array.isArray(contactsRaw) ? contactsRaw : []
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative bg-gradient-to-br from-navy via-primary-900 to-primary-800 pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(30,115,190,0.25),transparent_60%)]" aria-hidden="true" />
-        <div className="container-xl relative z-10">
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
-            <AnimateIn>
-              <nav aria-label="Brodsmuler" className="mb-6">
-                <ol className="flex items-center gap-2 text-sm text-blue-200">
-                  <li><a href="/" className="hover:text-white transition-colors">Hjem</a></li>
-                  <li aria-hidden="true">/</li>
-                  <li><a href="/spansk-i-alicante" className="hover:text-white transition-colors">Spansk i Alicante</a></li>
-                  <li aria-hidden="true">/</li>
-                  <li className="text-white font-medium">
-                    <EditableText as="span" path="helsenorsk.breadcrumb" value={page.breadcrumb} className="inline" />
-                  </li>
-                </ol>
-              </nav>
+      <PageHero
+        trail={[{ label: 'Spansk i Alicante', href: '/spansk-i-alicante' }]}
+        current={page.breadcrumb}
+        currentPath="helsenorsk.breadcrumb"
+        titleId="helsenorsk-heading"
+        title={page.heroTitle}
+        titlePath="helsenorsk.heroTitle"
+        titleWidth="18ch"
+        description={page.heroSubtitle}
+        descriptionPath="helsenorsk.heroSubtitle"
+        media={(
+          <EditableImage
+            path="helsenorsk.heroImageUrl"
+            src={img(page.heroImageUrl || IMAGES.enfermeria, 1400)}
+            alt={page.heroImageAlt || 'Helsenorsk undervisning'}
+            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
+            loading="eager"
+            width={1400}
+            height={520}
+          />
+        )}
+      />
 
-              <EditableText
-                as="h1"
-                path="helsenorsk.heroTitle"
-                value={page.heroTitle}
-                className="font-heading text-3xl lg:text-5xl font-bold text-white leading-tight mb-4"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.heroSubtitle"
-                value={page.heroSubtitle}
-                multiline
-                className="text-xl text-blue-100 leading-relaxed max-w-2xl"
-              />
-            </AnimateIn>
-
-            <AnimateIn variant="fadeLeft" delay={120}>
-              <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
-                <EditableImage
-                  path="helsenorsk.heroImageUrl"
-                  src={img(page.heroImageUrl || IMAGES.enfermeria)}
-                  alt={page.heroImageAlt || 'Helsenorsk undervisning'}
-                  className="w-full h-[360px] lg:h-[460px] object-cover"
-                />
-              </div>
-            </AnimateIn>
-          </div>
-        </div>
-      </section>
-
-      {/* Intro */}
-      <section className="py-24 lg:py-28 bg-white">
+      {/* ── Intro ─────────────────────────────────────────────────────────── */}
+      <section className="py-24 lg:py-32 bg-white" aria-labelledby="helsenorsk-intro-heading">
         <div className="container-xl">
-          <div className="max-w-3xl mx-auto">
-            <AnimateIn>
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+            <div className="lg:col-span-4">
               <EditableText
                 as="h2"
+                id="helsenorsk-intro-heading"
                 path="helsenorsk.introTitle"
                 value={page.introTitle}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight"
+                className="text-display-sm font-semibold text-navy break-words"
               />
-              <EditableText
-                as="p"
-                path="helsenorsk.introP1"
-                value={page.introP1}
-                multiline
-                className="text-gray-600 text-lg leading-relaxed mb-4"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.introP2"
-                value={page.introP2}
-                multiline
-                className="text-gray-600 text-lg leading-relaxed mb-4"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.introP3"
-                value={page.introP3}
-                multiline
-                className="text-gray-600 text-lg leading-relaxed"
-              />
-            </AnimateIn>
+            </div>
+            <div className="lg:col-span-7 lg:col-start-6 gw-measure">
+              <BodyParagraph path="helsenorsk.introP1" value={page.introP1} />
+              <BodyParagraph path="helsenorsk.introP2" value={page.introP2} className="mt-6" />
+              <BodyParagraph path="helsenorsk.introP3" value={page.introP3} className="mt-6" />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Sprak som kan brukes i praksis */}
-      <section className="py-24 lg:py-28 bg-surface">
+      {/* ── Lengua aplicada ───────────────────────────────────────────────── */}
+      <section className="py-24 lg:py-32 bg-surface" aria-labelledby="helsenorsk-praksis-heading">
         <div className="container-xl">
-          <div className="max-w-3xl mx-auto">
-            <AnimateIn>
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+            <div className="lg:col-span-4">
               <EditableText
                 as="h2"
+                id="helsenorsk-praksis-heading"
                 path="helsenorsk.praksisTitle"
                 value={page.praksisTitle}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight"
+                className="text-display-sm font-semibold text-navy break-words"
               />
-              <EditableText
-                as="p"
-                path="helsenorsk.praksisP1"
-                value={page.praksisP1}
-                multiline
-                className="text-gray-600 leading-relaxed mb-4"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.praksisP2"
-                value={page.praksisP2}
-                multiline
-                className="text-gray-600 leading-relaxed mb-4"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.praksisP3"
-                value={page.praksisP3}
-                multiline
-                className="text-gray-600 leading-relaxed mb-4"
-              />
+            </div>
+            <div className="lg:col-span-7 lg:col-start-6 gw-measure">
+              <BodyParagraph path="helsenorsk.praksisP1" value={page.praksisP1} />
+              <BodyParagraph path="helsenorsk.praksisP2" value={page.praksisP2} className="mt-6" />
+              <BodyParagraph path="helsenorsk.praksisP3" value={page.praksisP3} className="mt-6" />
               {page.praksisListIntro && (
                 <EditableText
                   as="p"
                   path="helsenorsk.praksisListIntro"
                   value={page.praksisListIntro}
-                  className="text-gray-600 leading-relaxed mb-3"
+                  className="mt-8 font-ui text-body-sm font-semibold text-navy"
                 />
               )}
-              <BulletList items={page.praksisItems || []} basePath="helsenorsk.praksisItems" />
-              <EditableText
-                as="p"
-                path="helsenorsk.praksisP4"
-                value={page.praksisP4}
-                multiline
-                className="text-gray-600 leading-relaxed mt-6"
-              />
-            </AnimateIn>
+              <RuleList items={page.praksisItems || []} basePath="helsenorsk.praksisItems" className="mt-4" />
+              <BodyParagraph path="helsenorsk.praksisP4" value={page.praksisP4} className="mt-8" />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Realistiske situasjoner */}
-      <section className="py-24 lg:py-28 bg-white">
+      {/* ── Situaciones reales: la foto sale por la izquierda ─────────────── */}
+      <section className="bg-white overflow-hidden" aria-labelledby="helsenorsk-situasjoner-heading">
         <div className="container-xl">
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-16 items-center">
-            <AnimateIn variant="fadeRight">
-              <EditableText
-                as="h2"
-                path="helsenorsk.situasjonerTitle"
-                value={page.situasjonerTitle}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.situasjonerP1"
-                value={page.situasjonerP1}
-                multiline
-                className="text-gray-600 leading-relaxed mb-4"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.situasjonerP2"
-                value={page.situasjonerP2}
-                multiline
-                className="text-gray-600 leading-relaxed"
-              />
-            </AnimateIn>
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
-            <AnimateIn variant="fadeLeft" delay={120}>
-              <div className="rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg bg-white">
-                <EditableImage
-                  path="helsenorsk.situasjonerImageUrl"
-                  src={img(page.situasjonerImageUrl || IMAGES.helseHealthTeam)}
-                  alt={page.situasjonerImageAlt || 'Simulering av helsesituasjoner'}
-                  className="w-full h-[360px] object-cover"
-                  loading="lazy"
-                />
-              </div>
-            </AnimateIn>
-          </div>
-        </div>
-      </section>
-
-      {/* Undervist av helsepersonell */}
-      <section className="py-24 lg:py-28 bg-surface">
-        <div className="container-xl">
-          <div className="max-w-3xl mx-auto">
-            <AnimateIn>
-              <EditableText
-                as="h2"
-                path="helsenorsk.undervisereTitle"
-                value={page.undervisereTitle}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.undervisereP1"
-                value={page.undervisereP1}
-                multiline
-                className="text-gray-600 leading-relaxed mb-4"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.undervisereP2"
-                value={page.undervisereP2}
-                multiline
-                className="text-gray-600 leading-relaxed"
-              />
-            </AnimateIn>
-          </div>
-        </div>
-      </section>
-
-      {/* Et solid spraklig grunnlag */}
-      <section className="py-24 lg:py-28 bg-white">
-        <div className="container-xl">
-          <div className="max-w-3xl mx-auto">
-            <AnimateIn>
-              <EditableText
-                as="h2"
-                path="helsenorsk.grunnlagTitle"
-                value={page.grunnlagTitle}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.grunnlagP1"
-                value={page.grunnlagP1}
-                multiline
-                className="text-gray-600 leading-relaxed mb-4"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.grunnlagP2"
-                value={page.grunnlagP2}
-                multiline
-                className="text-gray-600 leading-relaxed"
-              />
-            </AnimateIn>
-          </div>
-
-          <AnimateIn variant="fadeUp" delay={120}>
-            <div className="mt-12 max-w-4xl mx-auto rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg">
+            <div className="lg:col-span-6 order-2 lg:order-1 pb-20 lg:py-28 gw-bleed-l">
               <EditableImage
-                path="helsenorsk.grunnlagImageUrl"
-                src={img(page.grunnlagImageUrl || IMAGES.claseNoruego)}
-                alt={page.grunnlagImageAlt || 'Helsenorsk undervisning og opplæring'}
-                className="w-full h-[360px] object-cover"
+                path="helsenorsk.situasjonerImageUrl"
+                src={img(page.situasjonerImageUrl || IMAGES.helseHealthTeam, 1400)}
+                alt={page.situasjonerImageAlt || 'Simulering av helsesituasjoner'}
+                className="w-full h-[300px] lg:h-[520px] object-cover rounded-panel lg:rounded-l-none"
                 loading="lazy"
               />
             </div>
-          </AnimateIn>
+
+            <div className="lg:col-span-5 lg:col-start-8 order-1 lg:order-2 pt-24 lg:py-28">
+              <EditableText
+                as="h2"
+                id="helsenorsk-situasjoner-heading"
+                path="helsenorsk.situasjonerTitle"
+                value={page.situasjonerTitle}
+                className="text-display-sm font-semibold text-navy break-words"
+              />
+              <BodyParagraph path="helsenorsk.situasjonerP1" value={page.situasjonerP1} className="mt-7" />
+              <BodyParagraph path="helsenorsk.situasjonerP2" value={page.situasjonerP2} className="mt-6" />
+            </div>
+
+          </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 lg:py-28 bg-gradient-to-br from-primary-50 via-white to-surface">
+      {/* ── Quién enseña ──────────────────────────────────────────────────
+          El argumento de confianza de la página: lo enseñan enfermeras
+          españolas que ya trabajaron en Noruega. Se lleva la banda oscura. */}
+      <section className="py-24 lg:py-32 bg-navy-deep" aria-labelledby="helsenorsk-undervisere-heading">
         <div className="container-xl">
-          <AnimateIn>
-            <div className="max-w-3xl mx-auto text-center">
-              <span className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3">
-                {page.ctaLabel}
-              </span>
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+            <div className="lg:col-span-5">
               <EditableText
                 as="h2"
+                id="helsenorsk-undervisere-heading"
+                path="helsenorsk.undervisereTitle"
+                value={page.undervisereTitle}
+                className="text-display-sm font-semibold !text-white break-words"
+              />
+            </div>
+            <div className="lg:col-span-6 lg:col-start-7 gw-measure">
+              <BodyParagraph path="helsenorsk.undervisereP1" value={page.undervisereP1} tone="dark" />
+              <BodyParagraph path="helsenorsk.undervisereP2" value={page.undervisereP2} tone="dark" className="mt-6" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Base lingüística ──────────────────────────────────────────────── */}
+      <section className="pt-24 lg:pt-32 bg-white" aria-labelledby="helsenorsk-grunnlag-heading">
+        <div className="container-xl">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+            <div className="lg:col-span-4">
+              <EditableText
+                as="h2"
+                id="helsenorsk-grunnlag-heading"
+                path="helsenorsk.grunnlagTitle"
+                value={page.grunnlagTitle}
+                className="text-display-sm font-semibold text-navy break-words"
+              />
+            </div>
+            <div className="lg:col-span-7 lg:col-start-6 gw-measure">
+              <BodyParagraph path="helsenorsk.grunnlagP1" value={page.grunnlagP1} />
+              <BodyParagraph path="helsenorsk.grunnlagP2" value={page.grunnlagP2} className="mt-6" />
+            </div>
+          </div>
+        </div>
+
+        {/* El aula, de borde a borde. Sin caja: es el cierre del argumento. */}
+        <div className="mt-20 lg:mt-28">
+          <EditableImage
+            path="helsenorsk.grunnlagImageUrl"
+            src={img(page.grunnlagImageUrl || IMAGES.claseNoruego, 1920)}
+            alt={page.grunnlagImageAlt || 'Helsenorsk undervisning og opplæring'}
+            className="w-full h-[280px] sm:h-[360px] lg:h-[460px] object-cover"
+            loading="lazy"
+          />
+        </div>
+      </section>
+
+      {/* ── Contacto ──────────────────────────────────────────────────────── */}
+      <section className="py-24 lg:py-32 bg-surface" aria-labelledby="helsenorsk-cta-heading">
+        <div className="container-xl">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+
+            <div className="lg:col-span-6">
+              <span className="gw-label text-primary-600">{page.ctaLabel}</span>
+              <EditableText
+                as="h2"
+                id="helsenorsk-cta-heading"
                 path="helsenorsk.ctaTitle"
                 value={page.ctaTitle}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight"
+                className="mt-5 text-display-sm font-semibold text-navy break-words"
               />
-              <EditableText
-                as="p"
-                path="helsenorsk.ctaP1"
-                value={page.ctaP1}
-                multiline
-                className="text-gray-600 leading-relaxed mb-4"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.ctaP2"
-                value={page.ctaP2}
-                multiline
-                className="text-gray-600 leading-relaxed mb-8"
-              />
-
-              <div className="grid sm:grid-cols-2 gap-4 max-w-lg mx-auto mb-8">
-                {(contacts || []).map((contact) => (
-                  <div key={contact.name} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm text-left">
-                    <div className="flex items-center gap-3 mb-3">
-                      {contact.imageUrl && (
-                        <img
-                          src={contact.imageUrl}
-                          alt={contact.imageAlt || contact.name}
-                          className="w-12 h-12 rounded-full object-cover shrink-0"
-                        />
-                      )}
-                      <div>
-                        <div className="font-heading font-bold text-ink text-sm leading-tight">{contact.name}</div>
-                        {contact.role && (
-                          <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mt-0.5">{contact.role}</div>
-                        )}
-                      </div>
-                    </div>
-                    <a href={`mailto:${contact.email}`} className="text-primary-600 text-xs hover:underline block">{contact.email}</a>
-                    <a href={`tel:${contact.phone.replace(/\s/g, '')}`} className="text-gray-500 text-xs hover:text-primary-600 transition-colors block">{contact.phone}</a>
-                  </div>
-                ))}
-              </div>
+              <BodyParagraph path="helsenorsk.ctaP1" value={page.ctaP1} className="mt-7" />
+              <BodyParagraph path="helsenorsk.ctaP2" value={page.ctaP2} className="mt-6" />
 
               <a
                 href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'helsenorsk_cta', cta: 'kontakt' })}
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
+                className="mt-9 gw-btn gw-btn-ember"
               >
                 {page.ctaButton}
               </a>
             </div>
-          </AnimateIn>
+
+            <div className="lg:col-span-5 lg:col-start-8">
+              <div className="border-t border-line">
+                {contacts.map((contact) => (
+                  <div key={contact.name} className="border-b border-line py-6 flex items-start gap-4">
+                    {contact.imageUrl && (
+                      <img
+                        src={contact.imageUrl}
+                        alt={contact.imageAlt || contact.name}
+                        className="w-12 h-12 rounded-pill object-cover shrink-0"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                    <div className="min-w-0">
+                      <div className="font-ui text-body-sm font-semibold text-navy leading-tight">{contact.name}</div>
+                      {contact.role && (
+                        <div className="mt-1 gw-meta">{contact.role}</div>
+                      )}
+                      <a
+                        href={`mailto:${contact.email}`}
+                        className="mt-2.5 block font-ui text-sm text-primary-600 hover:text-primary-700 transition-colors break-words"
+                      >
+                        {contact.email}
+                      </a>
+                      <a
+                        href={`tel:${contact.phone.replace(/\s/g, '')}`}
+                        className="block font-ui text-sm text-ink-muted hover:text-primary-600 transition-colors"
+                      >
+                        {contact.phone}
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 

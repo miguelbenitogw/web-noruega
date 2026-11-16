@@ -3,86 +3,78 @@ import useCounter from '../hooks/useCounter'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import { IMAGES, img, srcSet } from '../assets/images'
-import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import EditableText from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
+import RuleGrid from './ui/RuleGrid'
 
-function StatCard({ stat, active, delay, index, allStats }) {
-  const animatedValue = useCounter(stat.value, active && stat.animate, 2000)
+/**
+ * Hero — «To kyster»
+ *
+ * El hero anterior era el patrón por defecto: foto a sangre, velo navy,
+ * titular centrado con una palabra en naranja, cuatro tarjetas de cristal y
+ * un ratoncito animado. Todo eso aparece igual en cualquier landing generada.
+ *
+ * Este parte de lo que el negocio ES: un puente entre dos sitios. A la
+ * izquierda la pregunta del empleador noruego, a la derecha las dos orillas
+ * en imágenes — el trabajo en Noruega y la vida en Alicante.
+ *
+ * El acento naranja no vive en el titular, vive en el único botón que importa.
+ */
+
+function Stat({ stat, active, index }) {
+  const animatedValue = useCounter(stat.value, active && stat.animate, 1800)
   const display = stat.animate ? animatedValue : stat.value
-  const commitValue = createArrayItemCommitter({
-    basePath: 'hero.stats',
-    fallbackItems: allStats,
-    index,
-    field: 'value',
-  })
-  const commitLabel = createArrayItemCommitter({
-    basePath: 'hero.stats',
-    fallbackItems: allStats,
-    index,
-    field: 'label',
-  })
+
 
   return (
-    <div
-      className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-4 text-center transition-all duration-[400ms] ease-out"
-      style={{
-        opacity: active ? 1 : 0,
-        transform: active ? 'translateY(0)' : 'translateY(12px)',
-        transitionDelay: active ? `${delay}ms` : '0ms',
-      }}
-    >
+    <RuleGrid.Cell className="px-5 py-6 lg:px-8 lg:py-8">
       <EditableText
         as="div"
         path={`hero.stats.${index}.value`}
         value={display}
-        onCommit={commitValue}
-        className="font-heading text-2xl font-bold text-white mb-0.5"
-        inputClassName="font-heading text-2xl font-bold"
+        className="font-heading text-[1.75rem] lg:text-[2.25rem] font-semibold text-white tabular-nums tracking-[-0.03em] leading-none"
+        inputClassName="font-heading text-2xl font-semibold"
       />
       <EditableText
         as="div"
         path={`hero.stats.${index}.label`}
         value={stat.label}
-        onCommit={commitLabel}
-        className="text-blue-200 text-xs font-medium"
+        className="mt-2 text-body-sm text-primary-200 leading-snug"
       />
-    </div>
+    </RuleGrid.Cell>
   )
 }
 
 export default function Hero() {
   const [statsRef, statsVisible] = useInView({ threshold: 0.3 })
   const c = useContent('hero')
+  const stats = c.stats || []
 
   return (
     <section
-      className="relative min-h-screen flex items-center overflow-hidden"
+      className="relative bg-navy overflow-hidden"
       aria-label="Hovedseksjon – Global Working Norge"
     >
-      <div className="absolute inset-0" aria-hidden="true">
-        <EditableImage
-          path="hero.imageUrl"
-          src={img(c.imageUrl || IMAGES.teamHero, 1600)}
-          srcSet={srcSet(c.imageUrl || IMAGES.teamHero, [640, 1024, 1600])}
-          sizes="100vw"
-          alt={c.imageAlt || 'Global Working Norge – rekruttering av fagfolk'}
-          className="w-full h-full object-cover object-top scale-105"
-          loading="eager"
-          fetchPriority="high"
-          width={1600}
-          height={900}
-        />
-        <div className="absolute inset-0 bg-primary-900/70" />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-900/80 via-primary-900/50 to-transparent" />
-      </div>
+      {/* Campo de color: un solo degradado muy contenido, de navy a navy
+          profundo. Sin halos radiales ni manchas decorativas. */}
+      <div
+        className="absolute inset-0 bg-gradient-to-b from-navy via-navy to-navy-deep"
+        aria-hidden="true"
+      />
 
-      <div className="container-xl relative z-10 py-32 lg:py-40">
-        <div className="grid lg:grid-cols-1 gap-12 items-center">
-          <div className="mx-auto max-w-4xl text-center">
+      <div className="container-xl relative">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center pt-32 pb-16 lg:pt-44 lg:pb-24">
 
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 animate-[fadeInUp_0.4s_ease-out_0.1s_both]">
-              <EditableText as="span" path="hero.h1First" value={c.h1First} className="inline" />{' '}
-              <EditableText as="span" path="hero.h1Highlight" value={c.h1Highlight} className="inline text-cta" />
+          {/* ── Columna de texto ─────────────────────────────────────── */}
+          <div className="lg:col-span-7 animate-riseIn">
+            <h1 className="text-display-lg font-semibold text-white">
+              <EditableText as="span" path="hero.h1First" value={c.h1First} className="block" />
+              <EditableText
+                as="span"
+                path="hero.h1Highlight"
+                value={c.h1Highlight}
+                className="block lg:pl-[0.38em]"
+              />
             </h1>
 
             <EditableText
@@ -90,52 +82,108 @@ export default function Hero() {
               path="hero.description"
               value={c.description}
               multiline
-              className="mx-auto max-w-2xl text-lg lg:text-xl text-blue-100 leading-relaxed mb-10 animate-[fadeInUp_0.4s_ease-out_0.2s_both]"
-              inputClassName="min-h-[180px]"
+              className="mt-7 gw-measure text-body lg:text-body-lg text-primary-100 leading-[1.6]"
+              inputClassName="min-h-[160px]"
             />
 
-            <div className="flex flex-col sm:flex-row sm:justify-center gap-4 animate-[fadeInUp_0.4s_ease-out_0.3s_both]">
+            <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
               <a
                 href="/vr-rekrutteringsmodell"
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'slik_jobber_vi' })}
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-cta text-white font-semibold rounded-xl hover:bg-cta-600 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
+                className="gw-btn gw-btn-ember"
               >
                 <EditableText as="span" path="hero.cta1" value={c.cta1} className="inline" />
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
               </a>
               <a
                 href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'kontakt_oss' })}
-                className="inline-flex items-center justify-center px-7 py-4 bg-white/10 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-200 backdrop-blur-sm cursor-pointer"
+                className="gw-btn gw-btn-ghost"
               >
                 <EditableText as="span" path="hero.cta2" value={c.cta2} className="inline" />
               </a>
             </div>
+          </div>
 
-            <div ref={statsRef} className="mx-auto mt-14 grid max-w-3xl grid-cols-2 sm:grid-cols-4 gap-4">
-              {(c.stats || []).map((stat, i) => (
-                <StatCard
+          {/* ── Las dos orillas ──────────────────────────────────────────
+              La imagen grande es la editable desde el admin. Las dos
+              pequeñas son de marca, no de contenido: la vida en Alicante y
+              el trabajo en Noruega. En móvil queda solo la principal. */}
+          <div className="lg:col-span-5">
+            <div className="grid grid-cols-12 gap-3">
+              {/* width/height van en 3:2, la proporción real de team-hero
+                  (3088x2056). Antes declaraba 1200x1500 (4:5), que no coincidía
+                  con nada: hoy no salta porque la altura la fija el CSS, pero en
+                  cuanto esa altura desaparezca el salto sería enorme.
+                  Si cambiás `sizes`, cambiá también `imagesizes` en el preload
+                  de index.html, o el navegador se baja dos variantes distintas. */}
+              <div className="col-span-12 sm:col-span-8 animate-settle">
+                <div className="rounded-panel overflow-hidden bg-primary-800">
+                  <EditableImage
+                    path="hero.imageUrl"
+                    src={img(c.imageUrl || IMAGES.teamHero, 1200)}
+                    srcSet={srcSet(c.imageUrl || IMAGES.teamHero, [640, 1024, 1200])}
+                    sizes="(max-width: 640px) 100vw, 33vw"
+                    alt={c.imageAlt || 'Global Working Norge – rekruttering av fagfolk'}
+                    className="w-full h-[280px] sm:h-[420px] lg:h-[480px] object-cover object-center"
+                    loading="eager"
+                    fetchPriority="high"
+                    width={1200}
+                    height={800}
+                  />
+                </div>
+              </div>
+
+              <div
+                className="hidden sm:flex sm:col-span-4 flex-col gap-3 animate-settle [animation-delay:140ms]"
+                aria-hidden="true"
+              >
+                <div className="rounded-panel overflow-hidden bg-primary-800 flex-1">
+                  <img
+                    src={IMAGES.helseHealthTeam}
+                    alt=""
+                    className="w-full h-full min-h-[120px] object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div className="rounded-panel overflow-hidden bg-primary-800 flex-1">
+                  <img
+                    src={IMAGES.spanskAlicantePromenade}
+                    alt=""
+                    className="w-full h-full min-h-[120px] object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Tira de datos ────────────────────────────────────────────────
+          Antes eran cuatro tarjetas de cristal flotando. Ahora es una tira
+          con filetes: los números se comparan entre sí, que es para lo que
+          están. */}
+      {stats.length > 0 && (
+        <div className="relative border-t border-white/15 bg-navy-deep">
+          {/* El observador vive en el contenedor y no en la rejilla: envuelve
+              exactamente lo mismo —la tira de datos es su único hijo— y así no
+              hay que pasarle una `ref` a un componente del sistema. */}
+          <div className="container-xl" ref={statsRef}>
+            <RuleGrid cols="base2-lg4" tone="dark">
+              {stats.map((stat, i) => (
+                <Stat
                   key={`${stat.label}-${i}`}
                   stat={stat}
                   active={statsVisible}
-                  delay={i * 60}
                   index={i}
-                  allStats={c.stats || []}
                 />
               ))}
-            </div>
+            </RuleGrid>
           </div>
-
         </div>
-      </div>
-
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50" aria-hidden="true">
-        <div className="w-5 h-8 border-2 border-white/30 rounded-full flex justify-center pt-1.5">
-          <div className="w-1 h-2 bg-white/60 rounded-full animate-bounce" />
-        </div>
-      </div>
+      )}
     </section>
   )
 }

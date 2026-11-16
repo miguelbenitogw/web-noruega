@@ -12,13 +12,13 @@
       "source": "/(.*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
         { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
         { "key": "Content-Language", "value": "nb" },
         { "key": "X-DNS-Prefetch-Control", "value": "on" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://hahqimviirkkzkvmusga.supabase.co https://images.squarespace-cdn.com https://globalworking.net https://i.ytimg.com https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://hahqimviirkkzkvmusga.supabase.co https://api.emailjs.com https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; frame-src https://www.youtube.com https://youtube.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'" }
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://hahqimviirkkzkvmusga.supabase.co https://images.squarespace-cdn.com https://globalworking.net https://i.ytimg.com https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.emailjs.com https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; frame-src 'self' https://www.youtube.com https://youtube.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'" }
       ]
     },
     {
@@ -37,6 +37,16 @@
     {
       "source": "/journal/:slug",
       "destination": "/nyheter/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/nyheter/evaluering-sprakniva",
+      "destination": "/nyheter/evaluere-norsk-spraak",
+      "permanent": true
+    },
+    {
+      "source": "/nyheter/sor-fron-integrasjon",
+      "destination": "/nyheter/sor-fron-intervju",
       "permanent": true
     }
   ],

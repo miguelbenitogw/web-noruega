@@ -29,21 +29,11 @@ Rekruttering helsepersonell Norge, sykepleiere fra Spania til Norge, internasjon
 
 ## Viktige sider
 
-- Forside: https://globalworking.no
-- Rekrutteringsmodell: https://globalworking.no/vr-rekrutteringsmodell
-- Helsesektor: https://globalworking.no/helse
-- Spansk i Alicante: https://globalworking.no/spansk-i-alicante
-- Livet som student: https://globalworking.no/spansk-i-alicante/livet-som-student
-- Talentportalen: https://globalworking.no/talentportalen
-- Om oss: https://globalworking.no/om-oss
-- Kontakt: https://globalworking.no/kontakt
+<!--LLMS-PAGES-->
 
 ## Nyheter
 
-- Ny kandidatportal lansert: https://globalworking.no/nyheter/kandidatportal-lansert
-- Nye innkjøpsgrenser fra juli 2026: https://globalworking.no/nyheter/innkjopsgrense-juli-2026
-- Evaluering av språknivå: https://globalworking.no/nyheter/evaluering-sprakniva
-- Integrering i Sør-Fron: https://globalworking.no/nyheter/sor-fron-integrasjon
+<!--LLMS-NEWS-->
 
 ## Vilkår
 

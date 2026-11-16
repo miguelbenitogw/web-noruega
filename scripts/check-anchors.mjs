@@ -40,11 +40,9 @@ const run = async () => {
   for (const filePath of files) {
     const content = await readFile(filePath, 'utf8')
     const relative = path.relative(process.cwd(), filePath)
-    const fileIds = new Set()
 
     for (const match of content.matchAll(idRegex)) {
       ids.add(match[1])
-      fileIds.add(match[1])
     }
     for (const match of content.matchAll(hrefAnchorRegex)) {
       references.push({
@@ -56,7 +54,6 @@ const run = async () => {
     }
     for (const match of content.matchAll(rawHrefRegex)) {
       if (allowedRawAnchors.has(match[1])) continue
-      if (fileIds.has(match[1])) continue
       rawRefs.push({
         target: match[1],
         file: relative,
@@ -65,13 +62,19 @@ const run = async () => {
     }
   }
 
+  // El id se busca en TODO src, no solo en el archivo del enlace: una página
+  // de React se compone de varios componentes, así que el ancla y su destino
+  // casi nunca viven en el mismo archivo. Comprobarlo por archivo daba falsos
+  // positivos (p. ej. #kandidat-kontakt, enlazado desde SpanskAlicantePage y
+  // definido en KandidatKontakt.jsx).
+  const missingRaw = rawRefs.filter(ref => !ids.has(ref.target))
   const missing = references.filter(ref => !ids.has(ref.target))
   let hasErrors = false
 
-  if (rawRefs.length) {
+  if (missingRaw.length) {
     hasErrors = true
-    console.error('Found raw in-page anchors without a matching id in the same file:')
-    for (const ref of rawRefs) {
+    console.error('Found in-page anchors without a matching id anywhere in src:')
+    for (const ref of missingRaw) {
       console.error(`- ${ref.file}:${ref.line} -> #${ref.target}`)
     }
   }

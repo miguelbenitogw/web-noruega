@@ -1,35 +1,28 @@
-import { getContentLocale, isSupabaseConfigured } from './supabaseClient'
-import { listPublishedPages } from './contentServices'
+/**
+ * Rutas del sitio.
+ *
+ * Antes este módulo además buscaba en Supabase la página publicada que
+ * correspondía a cada ruta, con su caché y su resolución por alias. La tabla
+ * `content_pages` estaba vacía — esa capa nunca llegó a usarse —, así que al
+ * desconectar Supabase se fue entera y queda solo la resolución de rutas.
+ */
 
 const ROUTE_DEFINITIONS = {
-  '/': { sectionRoute: 'home', pageSlug: 'home', aliases: ['home', 'forside'] },
-  '/vr-rekrutteringsmodell': { sectionRoute: 'rekruttering', pageSlug: 'vr-rekrutteringsmodell', aliases: ['vr-rekrutteringsmodell', 'rekruttering'] },
-  '/helse': { sectionRoute: 'helse', pageSlug: 'helse', aliases: ['helse'] },
-  '/nyheter': { sectionRoute: 'nyheter', pageSlug: 'nyheter', aliases: ['nyheter', 'journal'] },
-  '/journal': { sectionRoute: 'nyheter', pageSlug: 'nyheter', aliases: ['journal', 'nyheter'] },
-  '/talentportalen': { sectionRoute: 'talentportalen', pageSlug: 'talentportalen', aliases: ['talentportalen'] },
-  '/om-oss': { sectionRoute: 'om-oss', pageSlug: 'om-oss', aliases: ['om-oss'] },
-  '/kontakt': { sectionRoute: 'kontakt', pageSlug: 'kontakt', aliases: ['kontakt'] },
-  '/spansk-i-alicante': { sectionRoute: 'spansk-i-alicante', pageSlug: 'spansk-i-alicante', aliases: ['spansk-i-alicante', 'alicante'] },
-  '/spansk-i-alicante/hvorfor': {
-    sectionRoute: 'spansk-i-alicante-hvorfor',
-    pageSlug: 'spansk-i-alicante-hvorfor',
-    aliases: ['spansk-i-alicante-hvorfor', 'spansk-i-alicante-why', 'alicante-hvorfor'],
-  },
-  '/spansk-i-alicante/livet-som-student': {
-    sectionRoute: 'spansk-i-alicante-livet-som-student',
-    pageSlug: 'spansk-i-alicante-livet-som-student',
-    aliases: ['spansk-i-alicante-livet-som-student', 'livet-som-student'],
-  },
-  '/spansk-i-alicante/helsenorsk': {
-    sectionRoute: 'spansk-i-alicante-helsenorsk',
-    pageSlug: 'spansk-i-alicante-helsenorsk',
-    aliases: ['spansk-i-alicante-helsenorsk', 'helsenorsk'],
-  },
-  '/personvern': { sectionRoute: 'personvern', pageSlug: 'personvern', aliases: ['personvern', 'privacy'] },
-  '/vilkar': { sectionRoute: 'vilkar', pageSlug: 'vilkar', aliases: ['vilkar', 'terms'] },
-  '/cookies': { sectionRoute: 'cookies', pageSlug: 'cookies', aliases: ['cookies', 'informasjonskapsler'] },
-  '/admin': { sectionRoute: 'admin', pageSlug: 'admin', aliases: ['admin'] },
+  '/': { sectionRoute: 'home' },
+  '/vr-rekrutteringsmodell': { sectionRoute: 'rekruttering' },
+  '/helse': { sectionRoute: 'helse' },
+  '/nyheter': { sectionRoute: 'nyheter' },
+  '/journal': { sectionRoute: 'nyheter' },
+  '/talentportalen': { sectionRoute: 'talentportalen' },
+  '/om-oss': { sectionRoute: 'om-oss' },
+  '/kontakt': { sectionRoute: 'kontakt' },
+  '/spansk-i-alicante': { sectionRoute: 'spansk-i-alicante' },
+  '/spansk-i-alicante/hvorfor': { sectionRoute: 'spansk-i-alicante-hvorfor' },
+  '/spansk-i-alicante/livet-som-student': { sectionRoute: 'spansk-i-alicante-livet-som-student' },
+  '/spansk-i-alicante/helsenorsk': { sectionRoute: 'spansk-i-alicante-helsenorsk' },
+  '/personvern': { sectionRoute: 'personvern' },
+  '/vilkar': { sectionRoute: 'vilkar' },
+  '/cookies': { sectionRoute: 'cookies' },
 }
 
 const normalizePath = (pathname) => {
@@ -37,46 +30,17 @@ const normalizePath = (pathname) => {
   return pathname.endsWith('/') ? pathname.slice(0, -1) : pathname
 }
 
-const normalizeLookupValue = (value) => String(value || '').trim().toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-')
-
-const unique = (values) => Array.from(new Set(values.filter(Boolean)))
-
-const getPageLookupValues = (page) => {
-  if (!page) return []
-
-  const metadata = page.metadata || {}
-  const metadataContent = metadata.content || {}
-
-  return unique([
-    page.slug,
-    metadata.slug,
-    metadata.route,
-    metadata.page_kind,
-    metadata.pageKind,
-    metadataContent.slug,
-    metadataContent.route,
-    metadataContent.page_kind,
-    metadataContent.pageKind,
-  ].map(normalizeLookupValue))
-}
-
 export const resolveRouteContext = (pathname) => {
   const normalizedPath = normalizePath(pathname)
   const newsMatch = normalizedPath.match(/^\/(?:nyheter|journal)\/([^/]+)\/?$/)
 
   if (newsMatch) {
-    const newsSlug = newsMatch[1]
     return {
       pathname: normalizedPath,
       sectionRoute: 'nyheter',
-      pageSlug: 'nyheter',
-      pageKind: 'nyheter',
-      newsSlug,
+      newsSlug: newsMatch[1],
       isNewsList: false,
       isNewsDetail: true,
-      isAdmin: false,
-      lookupSlugs: unique([newsSlug]),
-      pageLookupSlugs: [],
     }
   }
 
@@ -86,85 +50,19 @@ export const resolveRouteContext = (pathname) => {
     return {
       pathname: normalizedPath,
       sectionRoute: null,
-      pageSlug: null,
-      pageKind: null,
       newsSlug: null,
       isNewsList: false,
       isNewsDetail: false,
-      isAdmin: false,
-      lookupSlugs: [],
-      pageLookupSlugs: [],
     }
   }
-
-  const pageLookupSlugs = unique([
-    definition.pageSlug,
-    definition.sectionRoute,
-    ...(definition.aliases || []),
-  ].map(normalizeLookupValue))
 
   return {
     pathname: normalizedPath,
     sectionRoute: definition.sectionRoute,
-    pageSlug: definition.pageSlug,
-    pageKind: definition.sectionRoute,
     newsSlug: null,
     isNewsList: definition.sectionRoute === 'nyheter',
     isNewsDetail: false,
-    isAdmin: definition.sectionRoute === 'admin',
-    lookupSlugs: pageLookupSlugs,
-    pageLookupSlugs,
   }
 }
 
-const pagesCache = new Map()
-
-export const clearPagesCache = () => {
-  pagesCache.clear()
-}
-
-export const clearAllContentCaches = () => {
-  clearPagesCache()
-}
-
-const getPublishedPages = async (locale) => {
-  if (!isSupabaseConfigured) return []
-
-  const resolvedLocale = getContentLocale(locale)
-  if (pagesCache.has(resolvedLocale)) {
-    return pagesCache.get(resolvedLocale)
-  }
-
-  const promise = listPublishedPages(resolvedLocale).catch(() => [])
-  pagesCache.set(resolvedLocale, promise)
-  return promise
-}
-
-export const findPublishedPageForRoute = (pages, routeContext) => {
-  if (!Array.isArray(pages) || !routeContext || routeContext.isAdmin || routeContext.isNewsDetail) {
-    return null
-  }
-
-  const candidateSlugs = unique(routeContext.pageLookupSlugs || [])
-  if (!candidateSlugs.length) return null
-
-  const exactMatch = pages.find((page) => candidateSlugs.includes(normalizeLookupValue(page.slug)))
-  if (exactMatch) return exactMatch
-
-  return pages.find((page) => {
-    const lookupValues = getPageLookupValues(page)
-    return lookupValues.some((value) => candidateSlugs.includes(value))
-  }) || null
-}
-
-export const loadPublishedPageForPath = async (pathname, locale) => {
-  if (!isSupabaseConfigured) return null
-
-  const routeContext = resolveRouteContext(pathname)
-  if (!routeContext.sectionRoute || routeContext.isAdmin || routeContext.isNewsDetail) {
-    return null
-  }
-
-  const pages = await getPublishedPages(locale)
-  return findPublishedPageForRoute(pages, routeContext)
-}
+export const getKnownRoutes = () => Object.keys(ROUTE_DEFINITIONS)

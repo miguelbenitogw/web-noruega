@@ -1,11 +1,12 @@
-import AnimateIn from '../components/AnimateIn'
 import Helsesektor from '../components/Helsesektor'
 import GodeGrunner from '../components/GodeGrunner'
 import Nyheter from '../components/Nyheter'
 import PageEndNav from '../components/PageEndNav'
+import PageHero from '../components/ui/PageHero'
+import RuleGrid from '../components/ui/RuleGrid'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from '../components/editable/EditableText'
+import EditableText from '../components/editable/EditableText'
 import EditableImage from '../components/editable/EditableImage'
 import InlineRichText from '../components/editable/InlineRichText'
 import { IMAGES, img } from '../assets/images'
@@ -13,67 +14,51 @@ import { IMAGES, img } from '../assets/images'
 function InlineEditableParagraph({
   path,
   value,
-  onCommit,
   className,
   linkClassName,
   as = 'p',
   ...rest
 }) {
-  const visualEditEnabled = useVisualEditEnabled()
-
-  if (visualEditEnabled) {
-    return (
-      <EditableText
-        as={as}
-        path={path}
-        value={value}
-        onCommit={onCommit}
-        multiline
-        className={className}
-        {...rest}
-      />
-    )
-  }
-
   return (
     <InlineRichText
       as={as}
       value={value}
       className={className}
       linkClassName={linkClassName}
+      data-content-path={path}
       {...rest}
     />
   )
 }
 
-function PhaseDescription({ index, description, onCommit, phases }) {
-  const visualEditEnabled = useVisualEditEnabled()
-  const commitPhaseDescription = onCommit || createArrayItemCommitter({
-    basePath: 'helsePhases.phases',
-    fallbackItems: phases || [],
-    index,
-    field: 'description',
-  })
+/**
+ * Descripción de una fase.
+ *
+ * El texto de la fase 01 son dos párrafos de verdad, así que se parten. El
+ * serif pide línea corta: el contenedor de arriba le pone `.gw-measure`.
+ */
+function PhaseDescription({ index, description }) {
   const paragraphs = (description || '').split('\n\n').filter(Boolean)
 
-  if (visualEditEnabled || paragraphs.length <= 1) {
+  if (paragraphs.length <= 1) {
     return (
       <InlineEditableParagraph
         as="p"
         path={`helsePhases.phases.${index}.description`}
         value={description}
-        onCommit={commitPhaseDescription}
-        className="!text-gray-600 leading-relaxed mb-4"
+        className="!text-ink-muted text-body leading-[1.7]"
       />
     )
   }
 
   return (
-    <>
+    <div data-content-path={`helsePhases.phases.${index}.description`}>
       {paragraphs.map((para, pi) => (
-        <p key={pi} className="text-gray-600 leading-relaxed mb-3 last:mb-4">{para}</p>
+        <p key={pi} className="text-ink-muted text-body leading-[1.7] mb-4 last:mb-0">
+          {para}
+        </p>
       ))}
-    </>
+    </div>
   )
 }
 
@@ -84,186 +69,178 @@ export default function HelsePage() {
 
   return (
     <>
-      {/* Hero Banner */}
-      <section className="relative bg-gradient-to-br from-navy via-primary-900 to-primary-800 pt-32 pb-16 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(30,115,190,0.3),transparent_60%)]" aria-hidden="true" />
-        <div className="container-xl relative z-10">
-          <AnimateIn>
-            <nav className="text-blue-200/70 text-sm mb-6" aria-label="Brødsmuler">
-              <a href="/" className="hover:text-white transition-colors">Hjem</a>
-              <span className="mx-2">/</span>
-              <span className="text-white">{hero.breadcrumb}</span>
-            </nav>
-            <EditableText
-              as="h1"
-              path="helseHero.h1"
-              value={hero.h1}
-              className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight max-w-3xl"
-            />
-            <InlineEditableParagraph
-              as="p"
-              path="helseHero.description"
-              value={hero.description}
-              className="!text-blue-100 text-lg max-w-2xl leading-relaxed"
-              linkClassName="!text-blue-50 underline decoration-blue-200 underline-offset-2 transition-colors hover:!text-white hover:!decoration-blue-100"
-            />
-          </AnimateIn>
-        </div>
-      </section>
+      <PageHero
+        current={hero.breadcrumb}
+        title={hero.h1}
+        titlePath="helseHero.h1"
+        titleId="helse-hero-heading"
+        titleWidth="20ch"
+        description={hero.description}
+        descriptionPath="helseHero.description"
+        richDescription
+      />
 
       <Helsesektor />
 
-      {/* 3-Phase Recruitment Process */}
-      <section className="py-24 lg:py-32 bg-white" aria-labelledby="faser-heading">
+      {/* ── Las tres fases ───────────────────────────────────────────────
+          Aquí la numeración está justificada: es una secuencia real, no tres
+          ventajas disfrazadas de pasos. Antes era una pila de tarjetas
+          `rounded-2xl` con un círculo azul y `shadow-lg shadow-primary-200`
+          colgando a la izquierda. Ahora es un libro de cuentas: el número
+          vive en el margen y cada fase es una fila separada por un filete.
+          La línea vertical punteada tampoco hace falta — el filete ya ordena. */}
+      <section className="py-20 lg:py-28 bg-white border-t border-line" aria-labelledby="faser-heading">
         <div className="container-xl">
-          <AnimateIn>
-            <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-12 lg:mb-16">
+            <div className="lg:col-span-7">
               <EditableText
                 as="span"
                 path="helsePhases.label"
                 value={phases.label}
-                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+                className="gw-label text-primary-600"
               />
               <EditableText
                 as="h2"
+                id="faser-heading"
                 path="helsePhases.heading"
                 value={phases.heading}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
-              />
-              <InlineEditableParagraph
-                as="p"
-                path="helsePhases.description"
-                value={phases.description}
-                className="!text-gray-600 text-lg leading-relaxed"
+                className="mt-5 text-display-sm font-semibold text-navy"
               />
             </div>
-          </AnimateIn>
-
-          <div className="space-y-8 max-w-4xl mx-auto">
-            {(phases.phases || []).map((phase, i) => {
-              const commitPhaseTitle = createArrayItemCommitter({
-                basePath: 'helsePhases.phases',
-                fallbackItems: phases.phases || [],
-                index: i,
-                field: 'title',
-              })
-              const commitPhaseDescription = createArrayItemCommitter({
-                basePath: 'helsePhases.phases',
-                fallbackItems: phases.phases || [],
-                index: i,
-                field: 'description',
-              })
-
-              return (
-                <AnimateIn key={phase.number} variant="fadeUp" delay={i * 60}>
-                  <div className="relative pl-16 lg:pl-20">
-                    {i < (phases.phases || []).length - 1 && (
-                      <div className="absolute left-[1.65rem] lg:left-[1.9rem] top-14 bottom-0 w-0.5 bg-primary-100" aria-hidden="true" />
-                    )}
-                    <div className="absolute left-0 top-0 w-14 h-14 lg:w-16 lg:h-16 rounded-2xl bg-primary-600 text-white flex items-center justify-center font-heading text-xl font-bold shadow-lg shadow-primary-200">
-                      {phase.number}
-                    </div>
-
-                    <div className="bg-surface rounded-2xl border border-gray-100 p-7 lg:p-8">
-                      <h3 className="font-heading text-xl font-bold text-ink mb-3">
-                        <EditableText
-                          as="span"
-                          path={`helsePhases.phases.${i}.title`}
-                          value={phase.title}
-                          onCommit={commitPhaseTitle}
-                          className="inline"
-                        />
-                      </h3>
-                      <PhaseDescription
-                        index={i}
-                        description={phase.description}
-                        onCommit={commitPhaseDescription}
-                        phases={phases.phases}
-                      />
-
-                      {phase.formats && (
-                        <div className="grid sm:grid-cols-3 gap-3 mt-5">
-                          {phase.formats.map((f) => (
-                            <div key={f.label} className="bg-white rounded-xl border border-gray-100 p-4 text-center">
-                              <div className="font-heading font-bold text-primary-700 text-sm mb-1">{f.duration}</div>
-                              <div className="text-gray-500 text-xs">{f.label}</div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </AnimateIn>
-              )
-            })}
+            {phases.description ? (
+              <div className="lg:col-span-5">
+                <InlineEditableParagraph
+                  as="p"
+                  path="helsePhases.description"
+                  value={phases.description}
+                  className="!text-ink-muted text-body leading-[1.65]"
+                />
+              </div>
+            ) : null}
           </div>
+
+          <ol className="list-none border-t border-line">
+            {(phases.phases || []).map((phase, i) => (
+              <li
+                key={phase.number}
+                className="grid lg:grid-cols-12 gap-x-8 gap-y-3 py-9 lg:py-12 border-b border-line"
+              >
+                <div className="lg:col-span-3">
+                  <span
+                    aria-hidden="true"
+                    className="font-ui text-[2.25rem] lg:text-[3rem] font-semibold tabular-nums leading-none tracking-[-0.045em] text-primary-200"
+                  >
+                    {phase.number}
+                  </span>
+                </div>
+
+                <div className="lg:col-span-8 lg:col-start-5">
+                  <EditableText
+                    as="h3"
+                    path={`helsePhases.phases.${i}.title`}
+                    value={phase.title}
+                    className="font-heading text-[1.25rem] lg:text-[1.4375rem] font-semibold text-navy leading-snug"
+                  />
+
+                  <div className="mt-4 gw-measure">
+                    <PhaseDescription index={i} description={phase.description} />
+                  </div>
+
+                  {phase.formats && (
+                    <RuleGrid
+                      cols="sm3"
+                      as="dl"
+                      className="mt-7 rounded-panel border border-line overflow-hidden"
+                    >
+                      {phase.formats.map((f) => (
+                        <RuleGrid.Cell key={f.label} className="px-5 py-4">
+                          <dt className="font-ui text-body-sm font-semibold text-navy tabular-nums">
+                            {f.duration}
+                          </dt>
+                          <dd className="mt-1 gw-meta leading-snug">
+                            {f.label}
+                          </dd>
+                        </RuleGrid.Cell>
+                      ))}
+                    </RuleGrid>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
-      {/* Partnership Model */}
-      <section className="py-24 lg:py-32 bg-surface">
+      {/* ── Modelo de colaboración ───────────────────────────────────────
+          Banda navy: es el punto de conversión de la página y el único sitio
+          donde aparece el naranja. Antes tenía un cuadrado `bg-primary-100/60`
+          y un círculo `bg-cta/10` flotando detrás de la foto, más un
+          `shadow-xl`: decoración que no dice nada. */}
+      <section className="bg-navy" aria-labelledby="helse-partnership-heading">
         <div className="container-xl">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <AnimateIn variant="fadeRight">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+
+            <div className="lg:col-span-5 pt-20 lg:py-28">
               <EditableText
                 as="span"
                 path="helsePartnership.label"
                 value={partnership.label}
-                className="inline-block px-4 py-1.5 rounded-full bg-primary-50 text-primary-700 text-sm font-semibold mb-5"
+                className="gw-label text-white"
               />
               <EditableText
                 as="h2"
+                id="helse-partnership-heading"
                 path="helsePartnership.heading"
                 value={partnership.heading}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink leading-tight mb-6"
+                className="mt-5 text-display-sm font-semibold !text-white"
               />
-              <div className="space-y-4 text-gray-600 leading-relaxed">
-                <InlineEditableParagraph
-                  as="p"
-                  path="helsePartnership.p1"
-                  value={partnership.p1}
-                  className="!text-gray-600"
-                />
+              <InlineEditableParagraph
+                as="p"
+                path="helsePartnership.p1"
+                value={partnership.p1}
+                className="mt-6 gw-measure !text-primary-100 text-body leading-[1.65]"
+                linkClassName="!text-white underline decoration-primary-400 underline-offset-4 transition-colors hover:!decoration-white"
+              />
+              {partnership.p2 ? (
                 <InlineEditableParagraph
                   as="p"
                   path="helsePartnership.p2"
                   value={partnership.p2}
-                  className="!text-gray-600"
+                  className="mt-4 gw-measure !text-primary-100 text-body leading-[1.65]"
+                  linkClassName="!text-white underline decoration-primary-400 underline-offset-4 transition-colors hover:!decoration-white"
                 />
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+              ) : null}
+
+              <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
                 <a
                   href="/kontakt"
                   onClick={() => trackEvent('cta_click', { location: 'helse_partnership', cta: 'kontakt_oss' })}
-                  className="inline-flex items-center justify-center px-7 py-4 bg-cta text-white font-semibold rounded-xl hover:bg-cta-600 transition-all duration-200 shadow-lg hover:-translate-y-0.5 cursor-pointer"
+                  className="gw-btn gw-btn-ember"
                 >
                   <EditableText as="span" path="helsePartnership.cta1" value={partnership.cta1} className="inline" />
                 </a>
                 <a
                   href="/talentportalen"
                   onClick={() => trackEvent('cta_click', { location: 'helse_partnership', cta: 'se_portalen' })}
-                  className="inline-flex items-center justify-center px-7 py-4 bg-white border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-all duration-200 cursor-pointer"
+                  className="gw-btn gw-btn-ghost"
                 >
                   <EditableText as="span" path="helsePartnership.cta2" value={partnership.cta2} className="inline" />
                 </a>
               </div>
-            </AnimateIn>
+            </div>
 
-            <AnimateIn variant="fadeLeft" delay={120}>
-              <div className="relative">
-                <div className="rounded-3xl overflow-hidden border border-gray-100 shadow-xl">
-                  <EditableImage
-                    src={img(partnership.imageUrl || IMAGES.rekruttering, 800)}
-                    alt={partnership.imageAlt || 'Global Working rekrutteringsprosessen'}
-                    className="w-full h-auto object-cover"
-                    loading="lazy"
-                    path="helsePartnership.imageUrl"
-                  />
-                </div>
-                <div className="absolute -bottom-4 -left-4 w-24 h-24 rounded-2xl bg-primary-100/60 -z-10" aria-hidden="true" />
-                <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full bg-cta/10 -z-10" aria-hidden="true" />
-              </div>
-            </AnimateIn>
+            <div className="lg:col-span-6 lg:col-start-7 pb-20 lg:py-28">
+              <EditableImage
+                path="helsePartnership.imageUrl"
+                src={img(partnership.imageUrl || IMAGES.rekruttering, 1200)}
+                alt={partnership.imageAlt || 'Global Working rekrutteringsprosessen'}
+                className="w-full h-[280px] sm:h-[380px] lg:h-[460px] object-cover rounded-panel"
+                loading="lazy"
+                width="720"
+                height="460"
+              />
+            </div>
+
           </div>
         </div>
       </section>

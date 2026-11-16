@@ -1,25 +1,24 @@
-import AnimateIn from '../components/AnimateIn'
 import Talentportalen from '../components/Talentportalen'
 import PageEndNav from '../components/PageEndNav'
+import PageHero from '../components/ui/PageHero'
+import RuleGrid from '../components/ui/RuleGrid'
 import useContent from '../hooks/useContent'
-import EditableText, { commitOverrideValue, createArrayItemCommitter } from '../components/editable/EditableText'
+import EditableText from '../components/editable/EditableText'
 
-const stepIcons = [
-  <svg key="p1" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-  </svg>,
-  <svg key="p2" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z" />
-  </svg>,
-  <svg key="p3" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
-  </svg>,
-  <svg key="p4" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" />
-    <line x1="20" y1="8" x2="20" y2="14" /><line x1="23" y1="11" x2="17" y2="11" />
-  </svg>,
-]
-
+/**
+ * Talentportalen
+ *
+ * El hero y la «Omvisning» (el recorrido real del portal en un iframe) ya
+ * estaban rediseñados. Lo que seguía debajo era el kit por defecto: cuatro
+ * tarjetas centradas con `hover:shadow-lg`, un icono genérico dentro de un
+ * cuadrado azul y el número del paso en un 5xl casi transparente de adorno; y
+ * después cuatro beneficios en tarjetas blancas con su palomita.
+ *
+ * El 01–04 acá es un orden real —son instrucciones, se hacen una detrás de
+ * otra—, así que el número pasa a ser el ancla de cada fila en vez de
+ * decoración, y los iconos genéricos se van: no aportaban nada que el título
+ * no dijera ya.
+ */
 export default function TalentportalenPage() {
   const hero = useContent('talentportalenHero')
   const stepsSection = useContent('talentportalenSteps')
@@ -27,147 +26,151 @@ export default function TalentportalenPage() {
 
   return (
     <>
-      {/* Hero Banner */}
-      <section className="relative bg-gradient-to-br from-navy via-primary-900 to-primary-800 pt-32 pb-16 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(30,115,190,0.3),transparent_60%)]" aria-hidden="true" />
-        <div className="container-xl relative z-10">
-          <AnimateIn>
-            <nav className="text-blue-200/70 text-sm mb-6" aria-label="Brødsmuler">
-              <a href="/" className="hover:text-white transition-colors">Hjem</a>
-              <span className="mx-2">/</span>
-              <span className="text-white">{hero.breadcrumb}</span>
-            </nav>
-            <EditableText
-              as="h1"
-              path="talentportalenHero.h1"
-              value={hero.h1}
-              className="font-heading text-3xl lg:text-5xl font-bold text-white mb-4 leading-tight"
+      <PageHero
+        current={hero.breadcrumb}
+        title={hero.h1}
+        titlePath="talentportalenHero.h1"
+        titleId="talentportalen-hero-heading"
+        titleWidth="18ch"
+        description={hero.description}
+        descriptionPath="talentportalenHero.description"
+      />
+
+      {/* Omvisning — el recorrido interactivo del portal.
+          Es una página autocontenida en /public, así que entra en un iframe
+          del mismo origen. Si esto deja de cargar, revisá `X-Frame-Options`
+          y `frame-src` en vercel.json: tienen que permitir 'self'. */}
+      <section className="bg-navy-deep pb-16 lg:pb-24" aria-labelledby="omvisning-heading">
+        <div className="container-xl">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6">
+            <div>
+              <span className="gw-label text-white">Omvisning</span>
+              <h2 id="omvisning-heading" className="mt-4 font-heading text-2xl font-semibold text-white">
+                Se Talent Portal i praksis
+              </h2>
+            </div>
+            <a
+              href="/tutorial-talent-portal/index.html"
+              target="_blank"
+              rel="noopener"
+              className="shrink-0 inline-flex items-center gap-2 font-ui text-sm font-semibold text-primary-200 hover:text-white transition-colors"
+            >
+              Åpne i fullskjerm
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                <path d="M7 17L17 7M9 7h8v8" />
+              </svg>
+            </a>
+          </div>
+
+          <div className="rounded-panel overflow-hidden border border-white/15 bg-navy">
+            <iframe
+              src="/tutorial-talent-portal/index.html"
+              title="Produktomvisning av Talent Portal"
+              loading="lazy"
+              className="block w-full h-[560px] sm:h-[620px] lg:h-[720px] border-0"
             />
-            <EditableText
-              as="p"
-              path="talentportalenHero.description"
-              value={hero.description}
-              multiline
-              className="text-blue-100 text-lg max-w-2xl leading-relaxed"
-            />
-          </AnimateIn>
+          </div>
         </div>
       </section>
 
       <Talentportalen />
 
-      {/* How It Works */}
-      <section className="py-24 lg:py-32 bg-white" aria-labelledby="how-it-works-heading">
+      {/* ── Paso a paso ───────────────────────────────────────────────────
+          Cuatro instrucciones que se hacen una detrás de otra. El número deja
+          de ser un 5xl de adorno detrás del icono y pasa a ser el ancla de la
+          fila: el ojo salta 01 → 02 → 03 → 04 por los filetes. */}
+      <section className="py-20 lg:py-28 bg-white" aria-labelledby="how-it-works-heading">
         <div className="container-xl">
-          <AnimateIn>
-            <div className="text-center mb-16">
-              <EditableText
-                as="span"
-                path="talentportalenSteps.label"
-                value={stepsSection.label}
-                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
-              />
-              <EditableText
-                as="h2"
-                id="how-it-works-heading"
-                path="talentportalenSteps.heading"
-                value={stepsSection.heading}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink leading-tight"
-              />
-            </div>
-          </AnimateIn>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {(stepsSection.steps || []).map((step, i) => {
-              const commitStepTitle = createArrayItemCommitter({
-                basePath: 'talentportalenSteps.steps',
-                fallbackItems: stepsSection.steps || [],
-                index: i,
-                field: 'title',
-              })
-              const commitStepDesc = createArrayItemCommitter({
-                basePath: 'talentportalenSteps.steps',
-                fallbackItems: stepsSection.steps || [],
-                index: i,
-                field: 'desc',
-              })
-
-              return (
-                <AnimateIn key={step.number} variant="fadeUp" delay={i * 60}>
-                  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow duration-300 p-7 text-center h-full">
-                    <div className="text-primary-600/20 font-heading font-bold text-5xl mb-3">{step.number}</div>
-                    <div className="w-14 h-14 bg-primary-50 text-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                      {stepIcons[i] || stepIcons[0]}
-                    </div>
-                    <EditableText
-                      as="h3"
-                      path={`talentportalenSteps.steps.${i}.title`}
-                      value={step.title}
-                      onCommit={commitStepTitle}
-                      className="font-heading font-semibold text-ink text-lg mb-2"
-                    />
-                    <EditableText
-                      as="p"
-                      path={`talentportalenSteps.steps.${i}.desc`}
-                      value={step.desc}
-                      onCommit={commitStepDesc}
-                      multiline
-                      className="text-gray-500 text-sm leading-relaxed"
-                    />
-                  </div>
-                </AnimateIn>
-              )
-            })}
+          <div className="max-w-2xl">
+            <EditableText
+              as="span"
+              path="talentportalenSteps.label"
+              value={stepsSection.label}
+              className="gw-label text-primary-600"
+            />
+            <EditableText
+              as="h2"
+              id="how-it-works-heading"
+              path="talentportalenSteps.heading"
+              value={stepsSection.heading}
+              className="mt-5 text-display-sm font-semibold text-navy"
+            />
           </div>
+
+          <RuleGrid cols="sm2" as="ol" className="mt-12 lg:mt-16 border-t border-line">
+            {(stepsSection.steps || []).map((step, i) => (
+              <RuleGrid.Cell
+                as="li"
+                key={step.number || i}
+                className="flex gap-5 py-7 sm:px-8 sm:odd:pl-0"
+              >
+                <span className="gw-step shrink-0 pt-1 text-primary-600" aria-hidden="true">
+                  {step.number || String(i + 1).padStart(2, '0')}
+                </span>
+
+                <div>
+                  <EditableText
+                    as="h3"
+                    path={`talentportalenSteps.steps.${i}.title`}
+                    value={step.title}
+                    className="font-heading text-body font-semibold text-navy leading-snug"
+                  />
+                  <EditableText
+                    as="p"
+                    path={`talentportalenSteps.steps.${i}.desc`}
+                    value={step.desc}
+                    multiline
+                    className="mt-2 text-body-sm text-ink-muted leading-relaxed"
+                  />
+                </div>
+              </RuleGrid.Cell>
+            ))}
+          </RuleGrid>
         </div>
       </section>
 
-      {/* Benefits */}
-      <section className="py-24 lg:py-32 bg-surface" aria-labelledby="benefits-heading">
+      {/* ── Por qué el portal ─────────────────────────────────────────────
+          Cuatro afirmaciones sueltas. No son pasos ni merecen tarjeta: son
+          cuatro líneas de una misma lista, y el filete ya las separa. El
+          título se va a la izquierda para que la lista arranque siempre en
+          el mismo punto del ojo. */}
+      <section className="py-20 lg:py-28 bg-surface" aria-labelledby="benefits-heading">
         <div className="container-xl">
-          <div className="max-w-3xl mx-auto">
-            <AnimateIn>
-              <div className="text-center mb-14">
-                <EditableText
-                  as="span"
-                  path="talentportalenBenefits.label"
-                  value={benefitsSection.label}
-                  className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
-                />
-                <EditableText
-                  as="h2"
-                  id="benefits-heading"
-                  path="talentportalenBenefits.heading"
-                  value={benefitsSection.heading}
-                  className="font-heading text-3xl lg:text-4xl font-bold text-ink leading-tight"
-                />
-              </div>
-            </AnimateIn>
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+            <div className="lg:col-span-4">
+              <EditableText
+                as="span"
+                path="talentportalenBenefits.label"
+                value={benefitsSection.label}
+                className="gw-label text-primary-600"
+              />
+              <EditableText
+                as="h2"
+                id="benefits-heading"
+                path="talentportalenBenefits.heading"
+                value={benefitsSection.heading}
+                className="mt-5 text-display-sm font-semibold text-navy"
+              />
+            </div>
 
-            <ul className="space-y-5" role="list">
-              {(benefitsSection.items || []).map((benefit, i) => {
-                const commitBenefit = (nextValue) =>
-                  commitOverrideValue(`talentportalenBenefits.items.${i}`, nextValue)
-
-                return (
-                  <AnimateIn key={i} variant="fadeUp" delay={i * 60}>
-                    <li className="flex items-start gap-4 bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
-                      <div className="shrink-0 w-7 h-7 bg-primary-50 text-primary-600 rounded-full flex items-center justify-center mt-0.5">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                      </div>
-                      <EditableText
-                        as="span"
-                        path={`talentportalenBenefits.items.${i}`}
-                        value={benefit}
-                        onCommit={commitBenefit}
-                        className="text-ink font-medium leading-relaxed"
-                      />
-                    </li>
-                  </AnimateIn>
-                )
-              })}
+            <ul className="lg:col-span-7 lg:col-start-6 border-t border-line" role="list">
+              {(benefitsSection.items || []).map((benefit, i) => (
+                <li key={i} className="flex items-start gap-4 py-5 border-b border-line">
+                  <svg
+                    width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"
+                    className="shrink-0 mt-1.5 text-primary-600"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <EditableText
+                    as="span"
+                    path={`talentportalenBenefits.items.${i}`}
+                    value={benefit}
+                    className="text-body text-navy leading-[1.6]"
+                  />
+                </li>
+              ))}
             </ul>
           </div>
         </div>

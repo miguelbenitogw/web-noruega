@@ -1,163 +1,128 @@
-import AnimateIn from '../components/AnimateIn'
-import EditableText, { createArrayItemCommitter } from '../components/editable/EditableText'
+import EditableText from '../components/editable/EditableText'
 import EditableImage from '../components/editable/EditableImage'
 import PageEndNav from '../components/PageEndNav'
+import PageHero from '../components/ui/PageHero'
+import RuleList from '../components/ui/RuleList'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 
-function HighlightItem({ item, index }) {
-  return (
-    <li className="flex items-start gap-3">
-      <span className="mt-1 w-6 h-6 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center shrink-0">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-          <path d="M5 13l4 4L19 7" />
-        </svg>
-      </span>
-      <EditableText
-        as="span"
-        path={`spanskAlicanteVision.highlights.${index}`}
-        value={item}
-        className="text-gray-600 leading-relaxed"
-      />
-    </li>
-  )
-}
-
+/**
+ * SpanskAlicanteHvorforPage — el porqué del centro de Alicante.
+ *
+ * Es la página más argumentativa de la sección: dos bloques de prosa y una
+ * columna de apoyo. Antes la prosa iba en `text-lg` con `AnimateIn` por
+ * sección y el apoyo era un panel con `rounded-[2rem]`, botones azules
+ * cuadrados y la foto dentro de otra caja con sombra.
+ *
+ * Ahora el texto se lee: serif, a medida y separado por filetes. El apoyo es
+ * una superficie plana (`frost`), y la única nota naranja de la pantalla está
+ * en la acción que de verdad convierte.
+ */
 export default function SpanskAlicanteHvorforPage() {
   const vision = useContent('spanskAlicanteVision')
   const page = useContent('spanskAlicantePage')
   const hvorfor = useContent('spanskAlicanteHvorfor')
+  const highlights = vision.highlights || []
 
   return (
     <>
-      <section className="relative bg-gradient-to-br from-navy via-primary-900 to-primary-800 pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(30,115,190,0.22),transparent_60%)]" aria-hidden="true" />
-        <div className="container-xl relative z-10">
-          <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-12 items-center">
-            <AnimateIn>
-              <nav aria-label="Brødsmuler" className="mb-6">
-                <ol className="flex items-center gap-2 text-sm text-blue-200">
-                  <li><a href="/" className="hover:text-white transition-colors">Hjem</a></li>
-                  <li aria-hidden="true">/</li>
-                  <li><a href="/spansk-i-alicante" className="hover:text-white transition-colors">Spansk i Alicante</a></li>
-                  <li aria-hidden="true">/</li>
-                  <li className="text-white font-medium">
-                    <EditableText as="span" path="spanskAlicanteVision.breadcrumb" value={vision.breadcrumb} className="inline" />
-                  </li>
-                </ol>
-              </nav>
+      <PageHero
+        trail={[{ label: 'Spansk i Alicante', href: '/spansk-i-alicante' }]}
+        current={vision.breadcrumb}
+        currentPath="spanskAlicanteVision.breadcrumb"
+        titleId="spansk-alicante-hvorfor-heading"
+        title={vision.title}
+        titlePath="spanskAlicanteVision.title"
+        titleWidth="20ch"
+        description={vision.intro}
+        descriptionPath="spanskAlicanteVision.intro"
+        media={(
+          <EditableImage
+            path="spanskAlicanteVision.imageUrl"
+            src={img(vision.imageUrl || IMAGES.spanskAlicanteCastleArch, 1400)}
+            alt={vision.imageAlt || 'Historisk arkitektur og stemning i Alicante'}
+            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
+            loading="eager"
+            width={1400}
+            height={520}
+          />
+        )}
+      />
 
-              <EditableText
-                as="h1"
-                path="spanskAlicanteVision.title"
-                value={vision.title}
-                className="font-heading text-3xl lg:text-5xl font-bold text-white leading-tight mb-5"
-              />
-              <EditableText
-                as="p"
-                path="spanskAlicanteVision.intro"
-                value={vision.intro}
-                multiline
-                className="text-lg text-blue-100 leading-relaxed max-w-2xl"
-              />
-            </AnimateIn>
-
-            <AnimateIn variant="fadeLeft" delay={120}>
-              <div className="rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
-                <EditableImage
-                  path="spanskAlicanteVision.imageUrl"
-                  src={img(vision.imageUrl || IMAGES.spanskAlicanteCastleArch, 1200)}
-                  alt={vision.imageAlt || 'Historisk arkitektur og stemning i Alicante'}
-                  className="w-full h-[360px] lg:h-[440px] object-cover"
-                />
-              </div>
-            </AnimateIn>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 lg:py-28 bg-white">
+      {/* ── El argumento ──────────────────────────────────────────────────
+          Prosa a la izquierda, apoyo pegajoso a la derecha. Los filetes
+          marcan dónde empieza cada idea; no hace falta una tarjeta. */}
+      <section className="py-24 lg:py-32 bg-white">
         <div className="container-xl">
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-start">
-            <div className="space-y-10">
-              {(vision.sections || []).map((section, index) => {
-                const headingCommit = createArrayItemCommitter({
-                  basePath: 'spanskAlicanteVision.sections',
-                  fallbackItems: vision.sections || [],
-                  index,
-                  field: 'heading',
-                })
-                const bodyCommit = createArrayItemCommitter({
-                  basePath: 'spanskAlicanteVision.sections',
-                  fallbackItems: vision.sections || [],
-                  index,
-                  field: 'body',
-                })
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
 
-                return (
-                  <AnimateIn key={`vision-section-${index}`} variant="fadeUp" delay={index * 60}>
-                    <div className="py-2">
-                      <EditableText
-                        as="h2"
-                        path={`spanskAlicanteVision.sections.${index}.heading`}
-                        value={section.heading}
-                        onCommit={headingCommit}
-                        className="font-heading text-2xl lg:text-3xl font-bold text-ink mb-4"
-                      />
-                      <EditableText
-                        as="div"
-                        path={`spanskAlicanteVision.sections.${index}.body`}
-                        value={section.body}
-                        onCommit={bodyCommit}
-                        multiline
-                        richText
-                        className="text-gray-600 text-lg leading-relaxed"
-                      />
-                    </div>
-                  </AnimateIn>
-                )
-              })}
+            <div className="lg:col-span-7">
+              {(vision.sections || []).map((section, index) => (
+                <div
+                  key={`vision-section-${index}`}
+                  className="border-t border-line pt-10 lg:pt-12 mt-10 lg:mt-12 first:mt-0"
+                >
+                  <EditableText
+                    as="h2"
+                    path={`spanskAlicanteVision.sections.${index}.heading`}
+                    value={section.heading}
+                    className="text-display-sm font-semibold text-navy break-words"
+                  />
+                  <EditableText
+                    as="div"
+                    path={`spanskAlicanteVision.sections.${index}.body`}
+                    value={section.body}
+                    multiline
+                    richText
+                    className="mt-7 gw-measure text-body lg:text-[1.125rem] text-ink leading-[1.75] [&>p]:mb-6 [&>p:last-child]:mb-0 [&>p]:leading-[1.75]"
+                  />
+                </div>
+              ))}
             </div>
 
-            <AnimateIn variant="fadeLeft" delay={120}>
-              <aside className="bg-surface border border-gray-100 rounded-[2rem] p-8 sticky top-28">
-                <h2 className="font-heading text-2xl font-bold text-ink mb-6">{hvorfor.sidebarHeading}</h2>
-                <ul className="space-y-4 mb-8">
-                  {(vision.highlights || []).map((item, index) => (
-                    <HighlightItem key={`highlight-${index}`} item={item} index={index} />
-                  ))}
-                </ul>
-                <div className="flex flex-col gap-3">
+            <aside className="lg:col-span-4 lg:col-start-9 lg:sticky lg:top-28">
+              <div className="bg-frost rounded-panel p-7 lg:p-8">
+                <h2 className="font-heading text-xl font-semibold text-navy">{hvorfor.sidebarHeading}</h2>
+
+                {highlights.length > 0 && (
+                  <RuleList
+                    items={highlights}
+                    basePath="spanskAlicanteVision.highlights"
+                    tone="panel"
+                    className="mt-6"
+                  />
+                )}
+
+                <div className="mt-8 flex flex-col gap-3">
                   <a
                     href="/spansk-i-alicante"
                     onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hvorfor', cta: 'tilbake_til_programmet' })}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 cursor-pointer"
+                    className="gw-btn gw-btn-ink"
                   >
                     {hvorfor.backLabel}
                   </a>
                   <a
                     href="/kontakt"
                     onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hvorfor', cta: 'kontakt' })}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-4 border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors duration-200 cursor-pointer"
+                    className="gw-btn gw-btn-ember"
                   >
                     <EditableText as="span" path="spanskAlicantePage.ctaSecondary" value={page.ctaSecondary} className="inline" />
                   </a>
                 </div>
+              </div>
 
-                {vision.sidebarImageUrl && (
-                  <div className="mt-6 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
-                    <EditableImage
-                      path="spanskAlicanteVision.sidebarImageUrl"
-                      src={vision.sidebarImageUrl}
-                      alt={vision.sidebarImageAlt || 'Gruppe i Alicante'}
-                      className="w-full h-auto object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                )}
-              </aside>
-            </AnimateIn>
+              {vision.sidebarImageUrl && (
+                <EditableImage
+                  path="spanskAlicanteVision.sidebarImageUrl"
+                  src={vision.sidebarImageUrl}
+                  alt={vision.sidebarImageAlt || 'Gruppe i Alicante'}
+                  className="mt-4 w-full h-[260px] object-cover rounded-panel"
+                  loading="lazy"
+                />
+              )}
+            </aside>
+
           </div>
         </div>
       </section>

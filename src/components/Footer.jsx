@@ -1,6 +1,15 @@
 import useContent from '../hooks/useContent'
 import { IMAGES } from '../assets/images'
-import EditableText, { createArrayItemCommitter } from './editable/EditableText'
+import EditableText from './editable/EditableText'
+
+/**
+ * Footer
+ *
+ * Cambios: el logotipo real en blanco en lugar del nombre escrito a mano
+ * (la marca tiene un logo, usémoslo), encabezados de columna en caja normal
+ * en lugar de versalitas tracked-out, y los azules de Tailwind por defecto
+ * (`blue-200`, `blue-300`) sustituidos por los de la paleta de marca.
+ */
 
 const socialIcons = {
   LinkedIn: (
@@ -27,29 +36,34 @@ export default function Footer() {
   const links = c.links || {}
 
   return (
-    <footer className="bg-primary-900 text-white" aria-label="Nettstedets bunntekst">
-      <div className="container-xl py-16">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          <div className="sm:col-span-2 lg:col-span-1">
-            <div className="mb-5">
-              <span className="font-heading font-semibold text-lg">
-                Global Working <span className="text-primary-400">Norge</span>
-              </span>
-            </div>
+    <footer className="bg-navy-deep text-white" aria-label="Nettstedets bunntekst">
+      <div className="container-xl py-16 lg:py-20">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
+
+          <div className="sm:col-span-2 lg:col-span-4 lg:pr-10">
+            <img
+              src={IMAGES.logo}
+              alt="Global Working Norge"
+              className="h-9 w-auto mb-6"
+              width="200"
+              height="36"
+              loading="lazy"
+            />
             <EditableText
               as="p"
               path="footer.description"
               value={c.description}
               multiline
-              className="text-blue-200 text-sm leading-relaxed mb-6"
+              className="text-primary-200 text-body-sm leading-relaxed gw-measure-sm"
             />
-            <div className="flex gap-3">
+            <div className="flex gap-2.5 mt-7">
               {(c.social || []).map((s) => (
                 <a
                   key={s.label}
                   href={s.href}
                   aria-label={s.label}
-                  className="w-9 h-9 bg-white/10 hover:bg-primary-600 rounded-lg flex items-center justify-center transition-colors duration-200"
+                  className="w-10 h-10 border border-white/20 rounded-pill flex items-center justify-center
+                             text-white/80 hover:text-white hover:border-white/50 transition-colors duration-200"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
@@ -60,8 +74,8 @@ export default function Footer() {
           </div>
 
           {Object.entries(links).map(([title, items]) => (
-            <div key={title}>
-              <h3 className="font-heading font-semibold text-white text-sm uppercase tracking-wide mb-5">
+            <div key={title} className="lg:col-span-2">
+              <h3 className="font-heading font-semibold text-white text-body-sm mb-4">
                 <EditableText
                   as="span"
                   path={`footer.linkHeadings.${title}`}
@@ -69,20 +83,14 @@ export default function Footer() {
                   className="inline"
                 />
               </h3>
-              <ul className="space-y-3" role="list">
+              <ul className="space-y-2.5" role="list">
                 {(items || []).map((item, itemIndex) => {
                   const isFunctionalLink = item.href.startsWith('mailto:') || item.href.startsWith('tel:')
-                  const commitItemLabel = createArrayItemCommitter({
-                    basePath: `footer.links.${title}`,
-                    fallbackItems: items,
-                    index: itemIndex,
-                    field: 'label',
-                  })
                   return (
                     <li key={item.label}>
                       <a
                         href={item.href}
-                        className="text-blue-200 text-sm hover:text-white transition-colors duration-200"
+                        className="font-ui text-primary-200 text-[0.875rem] hover:text-white transition-colors duration-200"
                         rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                         target={item.href.startsWith('http') ? '_blank' : undefined}
                       >
@@ -91,7 +99,6 @@ export default function Footer() {
                             as="span"
                             path={`footer.links.${title}.${itemIndex}.label`}
                             value={item.label}
-                            onCommit={commitItemLabel}
                             className="inline"
                           />
                         )}
@@ -104,9 +111,9 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-blue-300 text-sm">
+        <div className="mt-14 pt-7 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between gap-4 font-ui text-primary-300 text-sm">
           <p>© {new Date().getFullYear()} {c.copyright}</p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap justify-center gap-x-7 gap-y-2">
             {(c.bottomLinks || []).map((link) => (
               <a key={link.href} href={link.href} className="hover:text-white transition-colors">
                 {link.label}

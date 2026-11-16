@@ -1,108 +1,154 @@
-import AnimateIn from './AnimateIn'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
-import EditableText, { useVisualEditEnabled } from './editable/EditableText'
-import InlineRichText from './editable/InlineRichText'
-import { IMAGES, img } from '../assets/images'
+import EditableText from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
+import InlineRichText from './editable/InlineRichText'
+import RuleGrid from './ui/RuleGrid'
+import { IMAGES, img } from '../assets/images'
 
 function InlineEditableParagraph({
   path,
   value,
-  onCommit,
   className,
   linkClassName,
   as = 'p',
   ...rest
 }) {
-  const visualEditEnabled = useVisualEditEnabled()
-
-  if (visualEditEnabled) {
-    return (
-      <EditableText
-        as={as}
-        path={path}
-        value={value}
-        onCommit={onCommit}
-        multiline
-        className={className}
-        {...rest}
-      />
-    )
-  }
-
   return (
     <InlineRichText
       as={as}
       value={value}
       className={className}
       linkClassName={linkClassName}
+      data-content-path={path}
       {...rest}
     />
+  )
+}
+
+/**
+ * Helsesektor — la presentación del área sanitaria.
+ *
+ * Antes: dos columnas con la imagen dentro de un `rounded-3xl shadow-2xl` y un
+ * degradado encima que la ensuciaba sin motivo, más un botón azul con sombra.
+ * Y, sobre todo, se tiraban a la basura los datos que este lector SÍ quiere:
+ * `stats` y `groupsValue` existen en el contenido y no se pintaban en ninguna
+ * parte. 25 000 horas de clase y 17–20 grupos al año responden a la única
+ * pregunta del responsable de personal: «¿esto es serio o es una agencia más?».
+ *
+ * Ahora la sección termina en una tira de datos con filetes, igual que el hero:
+ * las cifras se comparan entre sí, que es para lo que están.
+ */
+function Metric({ metric }) {
+  return (
+    <RuleGrid.Cell className="px-5 py-7 sm:px-6 lg:px-8">
+      <EditableText
+        as="div"
+        path={metric.valuePath}
+        value={metric.value}
+        className="font-heading text-[1.625rem] lg:text-[2rem] font-semibold text-navy tabular-nums tracking-[-0.03em] leading-none"
+      />
+      <EditableText
+        as="div"
+        path={metric.labelPath}
+        value={metric.label}
+        className="mt-2.5 font-ui text-[0.875rem] text-ink-muted leading-snug"
+      />
+    </RuleGrid.Cell>
   )
 }
 
 export default function Helsesektor() {
   const c = useContent('helsesektorComp')
 
+  const metrics = [
+    ...(c.stats || []).map((s, i) => ({
+      value: s.value,
+      label: s.label,
+      valuePath: `helsesektorComp.stats.${i}.value`,
+      labelPath: `helsesektorComp.stats.${i}.label`,
+    })),
+    ...(c.groupsValue
+      ? [{
+          value: c.groupsValue,
+          label: c.groupsLabel,
+          valuePath: 'helsesektorComp.groupsValue',
+          labelPath: 'helsesektorComp.groupsLabel',
+        }]
+      : []),
+  ]
+
   return (
-    <section id="helsesektor" className="scroll-mt-28 py-24 lg:py-32 bg-surface" aria-labelledby="helsesektor-heading">
+    <section
+      id="helsesektor"
+      className="scroll-mt-28 bg-surface"
+      aria-labelledby="helsesektor-heading"
+    >
       <div className="container-xl">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <AnimateIn variant="fadeRight">
-            <div>
-              <EditableText
-                as="span"
-                path="helsesektorComp.label"
-                value={c.label}
-                className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
-              />
-              <EditableText
-                id="helsesektor-heading"
-                as="h2"
-                path="helsesektorComp.heading"
-                value={c.heading}
-                className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-6 leading-tight"
-              />
-              <InlineEditableParagraph
-                as="p"
-                path="helsesektorComp.description"
-                value={c.description}
-                className="!text-gray-600 text-lg leading-relaxed mb-8"
-              />
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
-              <a
-                href="/kontakt"
-                onClick={() => trackEvent('cta_click', { location: 'helsesektor', cta: 'be_om_kandidater' })}
-                className="inline-flex items-center gap-2 px-7 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
+          <div className="lg:col-span-5 order-2 lg:order-1 pb-16 lg:py-24">
+            <EditableImage
+              path="helsesektorComp.imageUrl"
+              src={img(c.imageUrl || IMAGES.enfermeria, 1200)}
+              alt={c.imageAlt || 'Helsepersonell i opplæring gjennom Global Working'}
+              className="w-full h-[300px] sm:h-[400px] lg:h-[520px] object-cover rounded-panel"
+              loading="lazy"
+              width="640"
+              height="520"
+            />
+          </div>
+
+          <div className="lg:col-span-6 lg:col-start-7 order-1 lg:order-2 pt-20 lg:py-24">
+            <EditableText
+              as="span"
+              path="helsesektorComp.label"
+              value={c.label}
+              className="gw-label text-primary-600"
+            />
+            <EditableText
+              id="helsesektor-heading"
+              as="h2"
+              path="helsesektorComp.heading"
+              value={c.heading}
+              className="mt-5 text-display-sm font-semibold text-navy"
+            />
+            <InlineEditableParagraph
+              as="p"
+              path="helsesektorComp.description"
+              value={c.description}
+              className="mt-6 gw-measure !text-ink-muted text-body leading-[1.65]"
+            />
+
+            <a
+              href="/kontakt"
+              onClick={() => trackEvent('cta_click', { location: 'helsesektor', cta: 'be_om_kandidater' })}
+              className="gw-btn gw-btn-ink mt-9"
+            >
+              <EditableText as="span" path="helsesektorComp.ctaLabel" value={c.ctaLabel} className="inline" />
+              <svg
+                width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
               >
-                <EditableText as="span" path="helsesektorComp.ctaLabel" value={c.ctaLabel} className="inline" />
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </a>
-            </div>
-          </AnimateIn>
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
 
-          <AnimateIn variant="fadeLeft" delay={120}>
-            <div className="relative">
-              <div className="rounded-3xl overflow-hidden shadow-2xl">
-                <EditableImage
-                  src={img(c.imageUrl || IMAGES.enfermeria, 900)}
-                  alt={c.imageAlt || 'Helsepersonell i opplæring gjennom Global Working'}
-                  className="w-full object-cover"
-                  loading="lazy"
-                  width="640"
-                  height="480"
-                  path="helsesektorComp.imageUrl"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary-900/40 via-transparent to-transparent pointer-events-none" aria-hidden="true" />
-              </div>
-
-            </div>
-          </AnimateIn>
         </div>
       </div>
+
+      {metrics.length > 0 && (
+        <div className="border-t border-line">
+          <div className="container-xl">
+            <RuleGrid cols="base2-lg4">
+              {metrics.map((metric, i) => (
+                <Metric key={`${metric.labelPath}-${i}`} metric={metric} />
+              ))}
+            </RuleGrid>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

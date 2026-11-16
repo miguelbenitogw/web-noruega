@@ -1,39 +1,39 @@
 import { IMAGES, img, srcSet } from '../assets/images'
 import useContent from '../hooks/useContent'
-import EditableText, { createArrayItemCommitter, useVisualEditEnabled } from './editable/EditableText'
+import EditableText from './editable/EditableText'
 import InlineRichText from './editable/InlineRichText'
+import RuleGrid from './ui/RuleGrid'
+import TextLink from './ui/TextLink'
+
+/**
+ * OmOss — «Hvem er Global Working?»
+ *
+ * Antes: collage de tres imágenes con `shadow-lg`, `group-hover:scale-110` y
+ * velo navy encima, una cita dentro de una tarjeta azul redondeada, y tres
+ * valores en tarjetas con el MISMO icono repetido y `hover:shadow-md`. El kit
+ * por defecto completo.
+ *
+ * Ahora: una imagen del equipo que se ve, la sede como dato con filete, la
+ * cita como pull quote editorial, y los tres valores como columnas numeradas
+ * separadas por filetes — son pares entre sí y el filete lo dice mejor que
+ * una sombra.
+ */
 
 function InlineEditableParagraph({
   path,
   value,
-  onCommit,
   className,
   linkClassName,
   as = 'p',
   ...rest
 }) {
-  const visualEditEnabled = useVisualEditEnabled()
-
-  if (visualEditEnabled) {
-    return (
-      <EditableText
-        as={as}
-        path={path}
-        value={value}
-        onCommit={onCommit}
-        multiline
-        className={className}
-        {...rest}
-      />
-    )
-  }
-
   return (
     <InlineRichText
       as={as}
       value={value}
       className={className}
       linkClassName={linkClassName}
+      data-content-path={path}
       {...rest}
     />
   )
@@ -43,180 +43,166 @@ export default function OmOss() {
   const c = useContent('omOssComp')
 
   return (
-    <section id="om-oss" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="om-oss-heading">
+    <section
+      id="om-oss"
+      className="scroll-mt-28 py-20 lg:py-28 bg-white"
+      aria-labelledby="om-oss-heading"
+    >
       <div className="container-xl">
-        <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
-          <div>
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+
+          {/* ── Relato ─────────────────────────────────────────────────── */}
+          <div className="lg:col-span-6">
             <EditableText
               as="span"
               path="omOssComp.label"
               value={c.label}
-              className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+              className="gw-label text-primary-600"
             />
             <EditableText
               as="h2"
+              id="om-oss-heading"
               path="omOssComp.heading"
               value={c.heading}
-              className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight"
+              className="mt-5 text-display-sm font-semibold text-navy"
             />
+
             <InlineEditableParagraph
               as="p"
               path="omOssComp.p1"
               value={c.p1}
-              className="!text-gray-600 text-lg leading-relaxed mb-6"
+              className="mt-6 !text-ink-muted text-body !leading-[1.65]"
             />
             <InlineEditableParagraph
               as="p"
               path="omOssComp.p2"
               value={c.p2}
-              className="!text-gray-600 leading-relaxed mb-8"
+              className="mt-4 !text-ink-muted !leading-[1.65]"
             />
 
+            {/* Pull quote: filete y aire, no tarjeta. La voz del CEO no
+                necesita una caja azul para sonar distinta. */}
             {c.blockquote && (
-              <blockquote className="mb-8 rounded-2xl border border-primary-100 bg-primary-50/40 p-5 text-sm leading-relaxed text-gray-700">
-                "<EditableText
-                  as="span"
+              <blockquote className="mt-9 border-l border-primary-200 pl-6">
+                <EditableText
+                  as="p"
                   path="omOssComp.blockquote.text"
                   value={c.blockquote.text}
-                  className="inline"
-                />"
-                <footer className="mt-3 font-semibold text-ink">— <EditableText
-                  as="span"
-                  path="omOssComp.blockquote.author"
-                  value={c.blockquote.author}
-                  className="inline"
-                /></footer>
-                <a
-                  href="/nyheter/pablo-intervju"
-                  className="mt-3 inline-block text-primary-600 font-semibold text-sm hover:text-primary-700 transition-colors"
-                >
-                  Les hele intervjuet med Pablo her →
-                </a>
+                  className="text-body lg:text-[1.125rem] text-navy leading-[1.6]"
+                />
+                <footer className="mt-4 font-ui text-sm text-ink-soft">
+                  <EditableText
+                    as="span"
+                    path="omOssComp.blockquote.author"
+                    value={c.blockquote.author}
+                    className="inline"
+                  />
+                </footer>
+                <TextLink href="/nyheter/pablo-intervju" className="mt-4">
+                  Les hele intervjuet med Pablo her
+                </TextLink>
               </blockquote>
             )}
 
-            <div className="flex flex-wrap gap-8">
-              {(c.stats || []).map((s, i) => {
-                const commitStatValue = createArrayItemCommitter({
-                  basePath: 'omOssComp.stats',
-                  fallbackItems: c.stats || [],
-                  index: i,
-                  field: 'value',
-                })
-                const commitStatLabel = createArrayItemCommitter({
-                  basePath: 'omOssComp.stats',
-                  fallbackItems: c.stats || [],
-                  index: i,
-                  field: 'label',
-                })
-                return (
-                  <div key={s.label}>
-                    {i > 0 && <div className="hidden sm:block w-px bg-gray-100 absolute" />}
+            {/* Tira de datos: se comparan entre sí, así que van en una fila
+                con filetes, no en tres bloques sueltos con `flex-wrap`. */}
+            {(c.stats || []).length > 0 && (
+              <RuleGrid cols="base3" className="mt-10 border-t border-line">
+                {(c.stats || []).map((s, i) => (
+                  <RuleGrid.Cell
+                    key={s.label}
+                    className="py-6 pr-4 pl-4 first:pl-0 sm:pl-6"
+                  >
                     <EditableText
                       as="div"
                       path={`omOssComp.stats.${i}.value`}
                       value={s.value}
-                      onCommit={commitStatValue}
-                      className="font-heading text-3xl font-bold text-primary-600"
+                      className="font-heading text-[1.75rem] lg:text-[2rem] font-semibold text-navy tabular-nums tracking-[-0.03em] leading-none"
                     />
                     <EditableText
                       as="div"
                       path={`omOssComp.stats.${i}.label`}
                       value={s.label}
-                      onCommit={commitStatLabel}
-                      className="text-gray-400 text-sm mt-0.5"
+                      className="mt-2 gw-meta leading-snug"
                     />
-                  </div>
-                )
-              })}
-            </div>
+                  </RuleGrid.Cell>
+                ))}
+              </RuleGrid>
+            )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-2xl overflow-hidden shadow-lg row-span-2 relative group uppercase">
-              <img
-                src={img(c.teamImageUrl || IMAGES.teamGroup, 1200)}
-                srcSet={srcSet(c.teamImageUrl || IMAGES.teamGroup, [400, 800, 1200])}
-                sizes="(max-width: 768px) 50vw, 25vw"
-                alt={c.teamImageAlt || 'Global Working-teamet'}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                loading="lazy"
-                decoding="async"
-                width={600}
-                height={400}
-              />
-              <div className="absolute inset-0 bg-navy/20 group-hover:bg-transparent transition-colors duration-300" />
-            </div>
-            <div className="rounded-2xl overflow-hidden shadow-lg relative group">
+          {/* ── El equipo y la sede ────────────────────────────────────── */}
+          <div className="lg:col-span-6">
+            <img
+              src={img(c.teamImageUrl || IMAGES.teamGroup, 1200)}
+              srcSet={srcSet(c.teamImageUrl || IMAGES.teamGroup, [400, 800, 1200])}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              alt={c.teamImageAlt || 'Global Working-teamet'}
+              className="w-full h-[320px] lg:h-[460px] object-cover rounded-panel"
+              loading="lazy"
+              decoding="async"
+              width={1200}
+              height={800}
+            />
+
+            <div className="mt-3 grid grid-cols-12 gap-3">
               <img
                 src={img(c.officeImageUrl || IMAGES.oficina, 800)}
                 alt={c.officeImageAlt || 'Global Working-kontor'}
-                className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                className="col-span-5 w-full h-[130px] lg:h-[160px] object-cover rounded-panel"
                 loading="lazy"
                 decoding="async"
                 width={400}
-                height={192}
+                height={160}
               />
-              <div className="absolute inset-0 bg-navy/20 group-hover:bg-transparent transition-colors duration-300" />
-            </div>
-            <div className="rounded-2xl overflow-hidden shadow-lg bg-navy flex items-center justify-center p-6 text-center">
-              <div className="text-white">
+
+              <div className="col-span-7 flex flex-col justify-center border-l border-line pl-5">
                 <EditableText
                   as="div"
                   path="omOssComp.locationLabel"
                   value={c.locationLabel}
-                  className="font-heading text-4xl font-bold mb-1"
+                  className="font-heading text-2xl lg:text-[1.75rem] font-semibold text-navy leading-none"
                 />
                 <EditableText
                   as="div"
                   path="omOssComp.locationSub"
                   value={c.locationSub}
-                  className="text-blue-200 text-sm font-medium"
+                  className="mt-2 gw-meta leading-snug"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-3 gap-6">
-          {(c.values || []).map((v, i) => {
-            const commitValueTitle = createArrayItemCommitter({
-              basePath: 'omOssComp.values',
-              fallbackItems: c.values || [],
-              index: i,
-              field: 'title',
-            })
-            const commitValueDesc = createArrayItemCommitter({
-              basePath: 'omOssComp.values',
-              fallbackItems: c.values || [],
-              index: i,
-              field: 'desc',
-            })
-            return (
-              <div key={v.title} className="bg-surface rounded-2xl p-7 border border-gray-100 hover:shadow-md hover:border-primary-100 transition-all duration-300">
-                <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center mb-4">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E73BE" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                  </svg>
-                </div>
+        {/* ── Tres maneras de trabajar ──────────────────────────────────
+            Columnas numeradas. Antes eran tres tarjetas con el mismo icono
+            de capas repetido: un icono que se repite no informa, decora. */}
+        {(c.values || []).length > 0 && (
+          <RuleGrid cols="sm3" className="mt-20 lg:mt-28 border-t border-line">
+            {(c.values || []).map((v, i) => (
+              <RuleGrid.Cell
+                key={v.title}
+                className="py-8 sm:px-7 sm:py-9 sm:first:pl-0"
+              >
+                <span className="gw-step text-primary-600">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
                 <EditableText
                   as="h3"
                   path={`omOssComp.values.${i}.title`}
                   value={v.title}
-                  onCommit={commitValueTitle}
-                  className="font-heading text-lg font-bold text-ink mb-2"
+                  className="mt-4 font-heading text-body-lg font-semibold text-navy leading-snug"
                 />
                 <InlineEditableParagraph
                   as="p"
                   path={`omOssComp.values.${i}.desc`}
                   value={v.desc}
-                  onCommit={commitValueDesc}
-                  className="!text-gray-500 leading-relaxed text-sm"
+                  className="mt-3 !text-ink-muted text-body-sm !leading-relaxed"
                 />
-              </div>
-            )
-          })}
-        </div>
+              </RuleGrid.Cell>
+            ))}
+          </RuleGrid>
+        )}
       </div>
     </section>
   )

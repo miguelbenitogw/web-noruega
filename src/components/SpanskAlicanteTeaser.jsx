@@ -1,4 +1,3 @@
-import AnimateIn from './AnimateIn'
 import EditableText from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
 import spanskAlicanteLogo from '../assets/alicante/spansk-i-alicante-logo.webp'
@@ -6,48 +5,69 @@ import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 
+/**
+ * SpanskAlicanteTeaser — la otra orilla.
+ *
+ * Es la única sección de la web que habla de España, así que es la única que
+ * puede permitirse la foto cálida a lo grande. Antes estaba metida en una
+ * caja con `rounded-[2rem]` y `shadow-xl`: una puesta de sol dentro de una
+ * tarjeta de SaaS. Ahora la imagen manda y sale por el borde izquierdo.
+ */
 export default function SpanskAlicanteTeaser() {
   const teaser = useContent('spanskAlicanteTeaser')
   const extra = useContent('spanskAlicanteTeaserExtra')
 
   return (
-    <section className="py-24 lg:py-32 bg-white border-t border-gray-100" aria-labelledby="spansk-alicante-teaser-heading">
+    <section
+      className="bg-white overflow-hidden border-t border-line"
+      aria-labelledby="spansk-alicante-teaser-heading"
+    >
       <div className="container-xl">
-        <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-10 lg:gap-14 items-center">
-          <AnimateIn variant="fadeRight">
-            <div className="mb-4">
-              <img
-                src={spanskAlicanteLogo}
-                alt="Spansk i Alicante logo"
-                className="h-11 w-auto"
-                loading="lazy"
-              />
-            </div>
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+
+          <div className="lg:col-span-6 order-2 lg:order-1 pb-16 lg:py-20 gw-bleed-l">
+            <EditableImage
+              path="spanskAlicanteTeaser.imageUrl"
+              src={img(teaser.imageUrl || IMAGES.spanskAlicanteHeroSunset, 1400)}
+              alt={teaser.imageAlt || 'Solnedgang ved stranden i Alicante'}
+              className="w-full h-[300px] lg:h-[540px] object-cover rounded-panel lg:rounded-l-none"
+              loading="lazy"
+            />
+          </div>
+
+          <div className="lg:col-span-5 lg:col-start-8 order-1 lg:order-2 pt-20 lg:py-20">
+            <img
+              src={spanskAlicanteLogo}
+              alt="Spansk i Alicante"
+              className="h-10 w-auto mb-6"
+              loading="lazy"
+            />
             <EditableText
               as="span"
               path="spanskAlicanteTeaser.label"
               value={teaser.label}
-              className="inline-block text-primary-600 font-semibold text-sm tracking-wide uppercase mb-3"
+              className="gw-label text-primary-600"
             />
             <EditableText
               as="h2"
+              id="spansk-alicante-teaser-heading"
               path="spanskAlicanteTeaser.heading"
               value={teaser.heading}
-              className="font-heading text-3xl lg:text-4xl font-bold text-ink mb-5 leading-tight max-w-3xl"
+              className="mt-5 text-display-sm font-semibold text-navy"
             />
             <EditableText
               as="p"
               path="spanskAlicanteTeaser.description"
               value={teaser.description}
               multiline
-              className="text-gray-600 text-lg leading-relaxed max-w-2xl mb-8"
+              className="mt-6 text-body text-ink-muted leading-[1.65]"
             />
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
               <a
                 href="/spansk-i-alicante"
                 onClick={() => trackEvent('cta_click', { location: 'landing_spansk_alicante', cta: 'utforsk_spansk_i_alicante' })}
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors duration-200 shadow-md cursor-pointer"
+                className="gw-btn gw-btn-ink"
               >
                 <EditableText
                   as="span"
@@ -55,32 +75,18 @@ export default function SpanskAlicanteTeaser() {
                   value={teaser.cta}
                   className="inline"
                 />
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
               </a>
 
               <a
                 href="/spansk-i-alicante/hvorfor"
                 onClick={() => trackEvent('cta_click', { location: 'landing_spansk_alicante', cta: 'les_hvorfor' })}
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 border-2 border-primary-200 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors duration-200 cursor-pointer"
+                className="gw-btn gw-btn-line"
               >
                 {extra.secondaryCtaLabel}
               </a>
             </div>
-          </AnimateIn>
+          </div>
 
-          <AnimateIn variant="fadeLeft" delay={120}>
-            <div className="rounded-[2rem] overflow-hidden border border-gray-100 shadow-xl bg-surface">
-              <EditableImage
-                path="spanskAlicanteTeaser.imageUrl"
-                src={img(teaser.imageUrl || IMAGES.spanskAlicanteHeroSunset, 1200)}
-                alt={teaser.imageAlt || 'Solnedgang ved stranden i Alicante'}
-                className="w-full h-[320px] lg:h-[420px] object-cover"
-                loading="lazy"
-              />
-            </div>
-          </AnimateIn>
         </div>
       </div>
     </section>

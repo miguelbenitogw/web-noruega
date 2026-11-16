@@ -1,6 +1,61 @@
+# robots.txt — globalworking.no
+#
+# `User-agent: *` ya permitía todo, incluidos los rastreadores de IA. Entonces
+# por qué nombrarlos: porque la regla genérica se lee como "nadie se ha
+# planteado esto", y la específica como una decisión. Cuando alguien añada
+# mañana un Disallow al comodín —para /admin, para un parámetro, para lo que
+# sea— estos bloques siguen en pie y la visibilidad en ChatGPT, Claude y
+# Perplexity no se cae de rebote. El riesgo real no es el bloqueo deliberado,
+# es el colateral.
+
 User-agent: *
 Allow: /
 Disallow: /admin
+
+# ── Rastreadores de búsqueda con IA ─────────────────────────────────────────
+# Estos SÍ citan y mandan tráfico. Permitidos a propósito.
+# Ninguno ejecuta JavaScript: lo único que leen es el HTML que escribe
+# scripts/prerender-meta.mjs. Si ese cuerpo estático vuelve a quedarse vacío,
+# para ellos la web no existe, por mucho que esto diga Allow.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Google-Extended NO afecta a la indexación en Google ni a los AI Overviews
+# (eso es Googlebot): solo decide si el contenido puede usarse para entrenar
+# Gemini. Permitido, porque el objetivo aquí es ser citado.
+User-agent: Google-Extended
+Allow: /
+
+# ── Rastreadores de SEO de terceros ─────────────────────────────────────────
+# No traen clientes, solo consumen rastreo. Se les deja pasar despacio.
 
 User-agent: AhrefsBot
 Crawl-delay: 10
@@ -13,6 +68,8 @@ Crawl-delay: 10
 
 Sitemap: https://globalworking.no/sitemap.xml
 
-# AI crawler discovery
-# See https://llmstxt.org for specification
+# `LLMs-Txt:` no es una directiva de robots.txt: no está en el estándar y
+# ningún rastreador la lee. Se queda porque no hace daño y documenta dónde
+# está el archivo; el enlace que de verdad lo anuncia es el
+# <link rel="alternate" type="text/plain" href="/llms.txt"> de index.html.
 LLMs-Txt: https://globalworking.no/llms.txt

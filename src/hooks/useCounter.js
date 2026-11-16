@@ -17,8 +17,10 @@ export default function useCounter(end, active, duration = 1800) {
     function tick(now) {
       const elapsed = now - startTime
       const progress = Math.min(elapsed / duration, 1)
-      // easeOutExpo for a nice deceleration
-      const eased = 1 - Math.pow(2, -10 * progress)
+      // easeOutExpo for a nice deceleration.
+      // Snap to 1 at the end: 1 - 2^-10 is 0.999, so without this the counter
+      // stops just short of the target (e.g. "2500+" would render as "2498+").
+      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
       const current = Math.round(eased * num)
 
       setCount(current)

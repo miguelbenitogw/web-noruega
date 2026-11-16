@@ -1,101 +1,28 @@
-import { getContentLocale, isSupabaseConfigured } from './supabaseClient.js'
-import { getAssetById } from './contentAssetsService.js'
-import { listPublishedNews } from './contentServices.js'
+/**
+ * Noticias — Markdown local, sin red.
+ *
+ * Antes esto tenía dos caminos: los .md del repo como respaldo y una consulta
+ * a Supabase que, si devolvía algo, REEMPLAZABA por completo a los locales.
+ * En la práctica el visitante veía siempre los de Supabase y los .md del repo
+ * no los leía nadie.
+ *
+ * Al desconectar Supabase se exportaron los 10 artículos publicados a
+ * `src/content/news/*.md`, así que ahora los locales son los de verdad.
+ * Para publicar: un .md nuevo con el frontmatter de `_template.md`.
+ */
 
-const DEFAULT_CACHE_TTL_MS = 55 * 60 * 1000
-
-const markdownModules = typeof import.meta.glob === 'function'
-  ? import.meta.glob('../content/news/*.md', {
-      query: '?raw',
-      import: 'default',
-      eager: true,
-    })
-  : {}
+// Sin guard a propósito. `import.meta.glob` NO es una función en runtime:
+// Vite sustituye la llamada en tiempo de compilación. El guard que había aquí
+// (`typeof import.meta.glob === 'function'`) se evaluaba en el navegador, daba
+// falso y descartaba el resultado ya expandido, así que los .md locales nunca
+// se leían. No se notaba porque las noticias venían de Supabase.
+const markdownModules = import.meta.glob('../content/news/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+})
 
 const stripQuotes = (value) => value.replace(/^["']|["']$/g, '').trim()
-
-const getContentAssetId = (value) => {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return ''
-  const assetId = value.coverImageAssetId
-  return typeof assetId === 'string' ? assetId.trim() : ''
-}
-
-const extractCoverImageAssetId = (article) => {
-  if (!article || typeof article !== 'object' || Array.isArray(article)) return ''
-
-  const topLevel = typeof article.coverImageAssetId === 'string' ? article.coverImageAssetId.trim() : ''
-  if (topLevel) return topLevel
-
-  const contentLevel = getContentAssetId(article.content)
-  if (contentLevel) return contentLevel
-
-  const metadataRootLevel = getContentAssetId(article.metadata)
-  if (metadataRootLevel) return metadataRootLevel
-
-  const metadataLevel = getContentAssetId(article.metadata?.content)
-  if (metadataLevel) return metadataLevel
-
-  return ''
-}
-
-const applyCoverImageAsset = (article, asset) => {
-  if (!article) return null
-
-  const assetId = extractCoverImageAssetId(article)
-  const resolvedUrl = asset?.publicUrl || article.coverImageAssetUrl || article.coverImage || ''
-
-  return {
-    ...article,
-    coverImageAssetId: assetId || article.coverImageAssetId || '',
-    coverImageAsset: asset || article.coverImageAsset || null,
-    coverImageAssetUrl: resolvedUrl,
-    coverImage: resolvedUrl || article.coverImage || '',
-  }
-}
-
-const createTimedPromiseCache = (ttlMs = DEFAULT_CACHE_TTL_MS, now = () => Date.now()) => {
-  const cache = new Map()
-
-  const get = (key, loader) => {
-    const entry = cache.get(key)
-    if (entry && entry.expiresAt > now()) {
-      return entry.promise
-    }
-
-    if (entry) {
-      cache.delete(key)
-    }
-
-    const promise = Promise.resolve().then(loader)
-    cache.set(key, {
-      promise,
-      expiresAt: now() + ttlMs,
-    })
-    return promise
-  }
-
-  const clear = () => {
-    cache.clear()
-  }
-
-  return { get, clear }
-}
-
-const assetResolutionCache = createTimedPromiseCache()
-
-const loadAssetForCoverImage = async (assetId) => {
-  if (!assetId) return null
-
-  return assetResolutionCache.get(assetId, () => getAssetById(assetId).catch(() => null))
-}
-
-const resolveCoverImageAsset = async (article) => {
-  const assetId = extractCoverImageAssetId(article)
-  if (!assetId) return applyCoverImageAsset(article, null)
-
-  const asset = await loadAssetForCoverImage(assetId)
-  return applyCoverImageAsset(article, asset)
-}
 
 const parseFrontmatter = (raw) => {
   const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/)
@@ -135,7 +62,6 @@ const formatNorwegianDate = (value) => {
 const normalizeLocalNews = (filePath, rawContent) => {
   const { meta, body } = parseFrontmatter(rawContent)
   const slugFromPath = filePath.split('/').pop().replace(/\.md$/, '')
-  const coverImageAssetId = extractCoverImageAssetId(meta)
 
   const slug = meta.slug || slugFromPath
   const title = meta.title || slug.replace(/-/g, ' ')
@@ -151,7 +77,9 @@ const normalizeLocalNews = (filePath, rawContent) => {
     tag: meta.tag || 'Nyhet',
     readTime: meta.readTime || '3 min',
     coverImage: meta.coverImage || '',
-    coverImageAssetId,
+    // `featured` venía del campo metadata de Supabase y ordenaba la lista.
+    // Se conserva como bandera del frontmatter para no perder ese orden.
+    featured: meta.featured === 'true',
     status: meta.status || 'published',
     publishAt: meta.publishAt || '',
     author: meta.author || 'Global Working',
@@ -163,41 +91,12 @@ const normalizeLocalNews = (filePath, rawContent) => {
   }
 }
 
-const normalizeRemoteNews = (row) => {
-  if (!row) return null
-
-  const publishedValue = row.publishedAt || row.publishAt || row.updatedAt || row.createdAt || ''
-  const dateValue = publishedValue ? String(publishedValue).slice(0, 10) : ''
-  const coverImageAssetId = extractCoverImageAssetId(row)
-
-  return {
-    slug: row.slug,
-    title: row.title,
-    excerpt: row.excerpt || '',
-    date: dateValue,
-    dateLabel: formatNorwegianDate(publishedValue || dateValue || row.updatedAt || row.createdAt || row.slug),
-    tag: row.tag || 'Nyhet',
-    readTime: row.readTime || '3 min',
-    coverImage: row.coverImage || '',
-    coverImageAssetId,
-    status: row.status || 'published',
-    publishAt: row.publishAt || '',
-    author: row.author || 'Global Working',
-    seoTitle: row.seoTitle || row.title,
-    seoDescription: row.seoDescription || row.excerpt || '',
-    body: row.body || '',
-    published: true,
-    source: 'remote',
-    id: row.id || null,
-    metadata: row.metadata || {},
-    createdAt: row.createdAt || null,
-    updatedAt: row.updatedAt || null,
-  }
-}
-
+// Destacados primero, luego por fecha descendente — el mismo orden que
+// aplicaba el backend.
 const sortNews = (articles) => articles.slice().sort((a, b) => {
-  const left = new Date(a.publishAt || a.date || a.updatedAt || a.createdAt || 0).getTime()
-  const right = new Date(b.publishAt || b.date || b.updatedAt || b.createdAt || 0).getTime()
+  if (a.featured !== b.featured) return a.featured ? -1 : 1
+  const left = new Date(a.publishAt || a.date || 0).getTime()
+  const right = new Date(b.publishAt || b.date || 0).getTime()
   return right - left
 })
 
@@ -212,38 +111,16 @@ export const getNewsBySlug = (slug) => localNewsSorted.find((article) => article
 export const getFeaturedNews = () => localNewsSorted[0] || null
 export const getSecondaryNews = (limit = 3) => localNewsSorted.slice(1, 1 + limit)
 
-const newsCache = createTimedPromiseCache()
-
-export async function loadPublishedNews(locale) {
-  if (!isSupabaseConfigured) {
-    return { source: 'local', articles: localNewsSorted }
-  }
-
-  const resolvedLocale = getContentLocale(locale)
-  return newsCache.get(resolvedLocale, async () => {
-    try {
-      const rows = await listPublishedNews(resolvedLocale)
-      const resolvedArticles = await Promise.all(rows.map(async (row) => {
-        const article = normalizeRemoteNews(row)
-        return article ? resolveCoverImageAsset(article) : null
-      }))
-      const articles = sortNews(resolvedArticles.filter(Boolean))
-      return articles.length > 0
-        ? { source: 'remote', articles }
-        : { source: 'local', articles: localNewsSorted }
-    } catch {
-      return { source: 'local', articles: localNewsSorted }
-    }
-  })
+export async function loadPublishedNews() {
+  return { source: 'local', articles: localNewsSorted }
 }
 
-export async function loadPublishedNewsBySlug(slug, locale) {
-  const collection = await loadPublishedNews(locale)
-  return collection.articles.find((article) => article.slug === slug) || null
+export async function loadPublishedNewsBySlug(slug) {
+  return getNewsBySlug(slug)
 }
 
 export const __newsTestables = {
-  applyCoverImageAsset,
-  extractCoverImageAssetId,
-  createTimedPromiseCache,
+  parseFrontmatter,
+  normalizeLocalNews,
+  sortNews,
 }
