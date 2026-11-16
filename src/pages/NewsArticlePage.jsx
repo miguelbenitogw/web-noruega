@@ -59,11 +59,6 @@ const getCoverImage = (article) => {
   return IMAGES.platformHero
 }
 
-// El rubro de la noticia en versalitas pequeñas: es el único sitio de la web
-// donde la caja alta está permitida, porque es el gesto del cintillo de prensa.
-const KICKER_CLASS = 'font-ui text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-primary-700'
-const META_CLASS = 'font-ui text-[0.8125rem] text-ink-soft'
-
 export default function NewsArticlePage({ slug }) {
   const { article, articles: allNews, loading } = useNewsArticle(slug)
   const nyheter = useContent('nyheterSection')
@@ -126,7 +121,7 @@ export default function NewsArticlePage({ slug }) {
         <div className="mx-auto max-w-[56rem]">
           <a
             href="/nyheter#nyheter-arkiv"
-            className="group inline-flex items-center gap-2 font-ui text-[0.8125rem] font-semibold text-ink-soft hover:text-navy transition-colors"
+            className="group inline-flex items-center gap-2 font-ui text-body-xs font-semibold text-ink-soft hover:text-navy transition-colors"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
               <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -140,7 +135,7 @@ export default function NewsArticlePage({ slug }) {
                 as="span"
                 path={`news.${effectiveArticle.slug}.tag`}
                 value={effectiveArticle.tag}
-                className={KICKER_CLASS}
+                className="gw-kicker"
               />
               {/* El único naranja de esta pantalla: el mismo filete corto de
                   `.gw-label`, que acá no se usa porque el rubro ya hace de
@@ -148,7 +143,7 @@ export default function NewsArticlePage({ slug }) {
                   porque allá el naranja se lo gasta el `.gw-label` del título
                   de sección. */}
               <span className="h-px w-5 bg-cta" aria-hidden="true" />
-              <span className={META_CLASS}>
+              <span className="gw-meta">
                 <time dateTime={effectiveArticle.date}>{effectiveArticle.dateLabel}</time>
               </span>
             </div>
@@ -169,9 +164,9 @@ export default function NewsArticlePage({ slug }) {
             />
 
             <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-line pt-4">
-              <span className="font-ui text-[0.8125rem] font-semibold text-ink">{effectiveArticle.author}</span>
-              <span className={META_CLASS} aria-hidden="true">·</span>
-              <span className={META_CLASS}>
+              <span className="font-ui text-body-xs font-semibold text-ink">{effectiveArticle.author}</span>
+              <span className="gw-meta" aria-hidden="true">·</span>
+              <span className="gw-meta">
                 <EditableText as="span" path={`news.${effectiveArticle.slug}.readTime`} value={effectiveArticle.readTime} className="inline" />
                 {' '}{nyheter.readTimeSuffix}
               </span>
@@ -190,7 +185,8 @@ export default function NewsArticlePage({ slug }) {
             sizes="(max-width: 1024px) 100vw, 960px"
             alt={effectiveArticle.title}
             className="w-full h-[220px] sm:h-[340px] lg:h-[440px] object-cover"
-            loading="lazy"
+            loading="eager"
+            fetchPriority="high"
             decoding="async"
             width={1200}
             height={440}
@@ -211,7 +207,7 @@ export default function NewsArticlePage({ slug }) {
               className="mb-12 border-t border-line pt-5 lg:mb-0 lg:col-span-4 lg:col-start-9 lg:row-start-1
                          lg:sticky lg:top-28 lg:self-start"
             >
-              <p className="font-ui text-[0.8125rem] font-semibold text-ink-soft">
+              <p className="font-ui text-body-xs font-semibold text-ink-soft">
                 {nyheter.jumpToSectionLabel}
               </p>
               <ol className="mt-4 space-y-2.5">
@@ -253,14 +249,14 @@ export default function NewsArticlePage({ slug }) {
                   onClick={() => trackEvent('news_related_click', { from_slug: article.slug, to_slug: item.slug })}
                   className="group flex flex-col bg-surface p-6 transition-colors hover:bg-white"
                 >
-                  <span className={KICKER_CLASS}>{item.tag}</span>
+                  <span className="gw-kicker">{item.tag}</span>
                   <h3 className="mt-3 font-heading text-body font-semibold leading-snug text-navy">
                     {item.title}
                   </h3>
-                  <p className="mt-2.5 flex-1 text-[0.9375rem] leading-[1.6] text-ink-muted line-clamp-3">
+                  <p className="mt-2.5 flex-1 text-body-sm leading-[1.6] text-ink-muted line-clamp-3">
                     {item.excerpt}
                   </p>
-                  <span className={`mt-5 ${META_CLASS}`}>
+                  <span className="mt-5 gw-meta">
                     <time dateTime={item.date}>{item.dateLabel}</time>
                   </span>
                 </a>

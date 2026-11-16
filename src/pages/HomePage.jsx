@@ -6,6 +6,8 @@ import SpanskAlicanteTeaser from '../components/SpanskAlicanteTeaser'
 import EditableText from '../components/editable/EditableText'
 import EditableImage from '../components/editable/EditableImage'
 import InlineRichText from '../components/editable/InlineRichText'
+import RuleGrid from '../components/ui/RuleGrid'
+import TextLink from '../components/ui/TextLink'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import { IMAGES, img } from '../assets/images'
@@ -49,13 +51,11 @@ function InlineEditableParagraph({
 function ServiceColumn({ section, index, readMoreLabel }) {
 
   return (
-    <a
+    <RuleGrid.Cell
+      as="a"
       href={section.href}
       onClick={() => trackEvent('cta_click', { location: 'landing_summary', cta: section.href })}
-      className="group flex flex-col h-full px-0 py-8 sm:px-7 sm:py-9 border-line
-                 [&:nth-child(even)]:sm:border-l [&:nth-child(n+3)]:sm:border-t
-                 lg:[&:nth-child(n+2)]:border-l lg:[&:nth-child(n+3)]:border-t-0
-                 [&:nth-child(n+2)]:border-t sm:[&:nth-child(2)]:border-t-0
+      className="group flex flex-col h-full px-0 py-8 sm:px-7 sm:py-9
                  transition-colors duration-200 hover:bg-surface"
     >
       <span className="text-primary-600 mb-4" aria-hidden="true">
@@ -66,7 +66,7 @@ function ServiceColumn({ section, index, readMoreLabel }) {
         as="h3"
         path={`homeServices.sections.${index}.title`}
         value={section.title}
-        className="font-heading text-[1.1875rem] font-semibold text-navy leading-snug
+        className="font-heading text-body-lg font-semibold text-navy leading-snug
                    group-hover:text-primary-600 transition-colors duration-200"
       />
 
@@ -75,20 +75,13 @@ function ServiceColumn({ section, index, readMoreLabel }) {
         path={`homeServices.sections.${index}.description`}
         value={section.description}
         multiline
-        className="mt-3 text-[0.9375rem] text-ink-muted leading-relaxed flex-1"
+        className="mt-3 text-body-sm text-ink-muted leading-relaxed flex-1"
       />
 
-      <span className="mt-6 inline-flex items-center gap-2 font-ui text-sm font-semibold text-primary-600">
-        {readMoreLabel}
-        <svg
-          width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
-          className="transition-transform duration-200 group-hover:translate-x-1"
-        >
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
-      </span>
-    </a>
+      {/* Dentro de una tarjeta que ya es `group`, así que reacciona al pasar
+          el ratón por la columna entera, no solo por el enlace. */}
+      <TextLink as="span" className="mt-6">{readMoreLabel}</TextLink>
+    </RuleGrid.Cell>
   )
 }
 
@@ -143,7 +136,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 border-t border-line">
+          <RuleGrid cols="sm2-lg4" className="border-t border-line">
             {(hs.sections || []).map((section, i) => (
               <ServiceColumn
                 key={section.href}
@@ -152,7 +145,7 @@ export default function HomePage() {
                 readMoreLabel={hs.readMoreLabel}
               />
             ))}
-          </div>
+          </RuleGrid>
         </div>
       </section>
 
@@ -287,13 +280,13 @@ export default function HomePage() {
                       as="div"
                       path={`contacts.${i}.email`}
                       value={c.email}
-                      className="block text-primary-600 text-[0.9375rem]"
+                      className="block text-primary-600 text-body-sm"
                     />
                     <EditableText
                       as="div"
                       path={`contacts.${i}.phone`}
                       value={c.phone}
-                      className="block text-ink-muted text-[0.9375rem] tabular-nums"
+                      className="block text-ink-muted text-body-sm tabular-nums"
                     />
                   </div>
                 </div>

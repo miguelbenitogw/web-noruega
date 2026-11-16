@@ -43,7 +43,7 @@ export default function PageEndNav({ current }) {
                   <a
                     href={s.href}
                     onClick={() => trackEvent('cta_click', { location: 'page_end_nav', cta: s.href })}
-                    className="font-ui text-[0.9375rem] text-ink-muted border-b border-transparent pb-0.5
+                    className="font-ui text-body-sm text-ink-muted border-b border-transparent pb-0.5
                                hover:text-navy hover:border-navy transition-colors"
                   >
                     {s.label}

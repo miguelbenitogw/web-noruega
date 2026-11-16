@@ -1,5 +1,6 @@
 import useContent from '../hooks/useContent'
 import EditableText from './editable/EditableText'
+import RuleGrid from './ui/RuleGrid'
 
 /**
  * Rekruttering — el modelo, como secuencia.
@@ -69,23 +70,14 @@ export default function Rekruttering() {
             de él. En móvil la secuencia se apila y los filetes pasan a ser
             horizontales entre etapas: sigue leyéndose como un orden. */}
         {steps.length > 0 && (
-          <ol className="mt-12 lg:mt-16 grid sm:grid-cols-2 lg:grid-cols-4 border-t border-line">
+          <RuleGrid cols="sm2-lg4" as="ol" className="mt-12 lg:mt-16 border-t border-line">
             {steps.map((step, i) => (
-              <li
+              <RuleGrid.Cell
+                as="li"
                 key={step.title || i}
-                className="py-7 sm:px-7 lg:px-6 sm:first:pl-0 lg:first:pl-0 lg:last:pr-0
-                           border-line
-                           [&:nth-child(n+2)]:border-t
-                           sm:[&:nth-child(2)]:border-t-0
-                           [&:nth-child(even)]:sm:border-l
-                           [&:nth-child(n+3)]:sm:border-t
-                           lg:[&:nth-child(n+2)]:border-l
-                           lg:[&:nth-child(n+3)]:border-t-0"
+                className="py-7 sm:px-7 lg:px-6 sm:first:pl-0 lg:first:pl-0 lg:last:pr-0"
               >
-                <span
-                  className="block font-ui text-[0.8125rem] font-semibold tabular-nums text-primary-600"
-                  aria-hidden="true"
-                >
+                <span className="gw-step block text-primary-600" aria-hidden="true">
                   {String(i + 1).padStart(2, '0')}
                 </span>
 
@@ -102,12 +94,12 @@ export default function Rekruttering() {
                     path={`rekrutteringComp.steps.${i}.description`}
                     value={step.description}
                     multiline
-                    className="mt-2.5 text-[0.9375rem] text-ink-muted leading-relaxed"
+                    className="mt-2.5 text-body-sm text-ink-muted leading-relaxed"
                   />
                 )}
-              </li>
+              </RuleGrid.Cell>
             ))}
-          </ol>
+          </RuleGrid>
         )}
 
         {/* ── El detalle ──────────────────────────────────────────────────

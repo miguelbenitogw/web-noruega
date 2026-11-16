@@ -54,7 +54,7 @@ export default function Footer() {
               path="footer.description"
               value={c.description}
               multiline
-              className="text-primary-200 text-[0.9375rem] leading-relaxed gw-measure-sm"
+              className="text-primary-200 text-body-sm leading-relaxed gw-measure-sm"
             />
             <div className="flex gap-2.5 mt-7">
               {(c.social || []).map((s) => (
@@ -75,7 +75,7 @@ export default function Footer() {
 
           {Object.entries(links).map(([title, items]) => (
             <div key={title} className="lg:col-span-2">
-              <h3 className="font-heading font-semibold text-white text-[0.9375rem] mb-4">
+              <h3 className="font-heading font-semibold text-white text-body-sm mb-4">
                 <EditableText
                   as="span"
                   path={`footer.linkHeadings.${title}`}

@@ -2,6 +2,8 @@ import Helsesektor from '../components/Helsesektor'
 import GodeGrunner from '../components/GodeGrunner'
 import Nyheter from '../components/Nyheter'
 import PageEndNav from '../components/PageEndNav'
+import PageHero from '../components/ui/PageHero'
+import RuleGrid from '../components/ui/RuleGrid'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import EditableText from '../components/editable/EditableText'
@@ -67,31 +69,16 @@ export default function HelsePage() {
 
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────────────────────
-          Navy plano, sin velo ni mancha radial. El deck lleva medida de
-          lectura: el serif a ancho completo sobre navy no se lee. */}
-      <section className="bg-navy pt-32 pb-16 lg:pt-40 lg:pb-20">
-        <div className="container-xl">
-          <nav className="font-ui text-sm text-primary-200 mb-7" aria-label="Brødsmuler">
-            <a href="/" className="transition-colors hover:text-white">Hjem</a>
-            <span className="mx-2 text-primary-200/60">/</span>
-            <span className="text-white">{hero.breadcrumb}</span>
-          </nav>
-          <EditableText
-            as="h1"
-            path="helseHero.h1"
-            value={hero.h1}
-            className="text-display-sm sm:text-display font-semibold !text-white max-w-[20ch] break-words"
-          />
-          <InlineEditableParagraph
-            as="p"
-            path="helseHero.description"
-            value={hero.description}
-            className="mt-7 gw-measure !text-primary-100 text-body lg:text-[1.1875rem] leading-[1.6]"
-            linkClassName="!text-white underline decoration-primary-400 underline-offset-4 transition-colors hover:!decoration-white"
-          />
-        </div>
-      </section>
+      <PageHero
+        current={hero.breadcrumb}
+        title={hero.h1}
+        titlePath="helseHero.h1"
+        titleId="helse-hero-heading"
+        titleWidth="20ch"
+        description={hero.description}
+        descriptionPath="helseHero.description"
+        richDescription
+      />
 
       <Helsesektor />
 
@@ -160,24 +147,22 @@ export default function HelsePage() {
                   </div>
 
                   {phase.formats && (
-                    <dl className="mt-7 grid sm:grid-cols-3 rounded-panel border border-line overflow-hidden">
+                    <RuleGrid
+                      cols="sm3"
+                      as="dl"
+                      className="mt-7 rounded-panel border border-line overflow-hidden"
+                    >
                       {phase.formats.map((f) => (
-                        <div
-                          key={f.label}
-                          className="px-5 py-4 border-line
-                                     [&:not(:first-child)]:border-t
-                                     sm:[&:not(:first-child)]:border-t-0
-                                     sm:[&:not(:first-child)]:border-l"
-                        >
-                          <dt className="font-ui text-[0.9375rem] font-semibold text-navy tabular-nums">
+                        <RuleGrid.Cell key={f.label} className="px-5 py-4">
+                          <dt className="font-ui text-body-sm font-semibold text-navy tabular-nums">
                             {f.duration}
                           </dt>
-                          <dd className="mt-1 font-ui text-[0.8125rem] text-ink-soft leading-snug">
+                          <dd className="mt-1 gw-meta leading-snug">
                             {f.label}
                           </dd>
-                        </div>
+                        </RuleGrid.Cell>
                       ))}
-                    </dl>
+                    </RuleGrid>
                   )}
                 </div>
               </li>

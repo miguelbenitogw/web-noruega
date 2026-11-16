@@ -2,6 +2,7 @@ import { IMAGES, img } from '../assets/images'
 import useContent from '../hooks/useContent'
 import EditableText from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
+import TextLink from './ui/TextLink'
 
 /**
  * GodeGrunner — por qué trabajar con nosotros.
@@ -59,24 +60,14 @@ export default function GodeGrunner() {
               multiline
               className="mt-6 gw-measure text-ink-muted text-body leading-[1.65]"
             />
-            <a
-              href={c.articleLink}
-              className="group mt-8 inline-flex items-center gap-2 font-ui text-[0.9375rem] font-semibold text-primary-600"
-            >
+            <TextLink href={c.articleLink} className="mt-8">
               <EditableText
                 as="span"
                 path="godeGrunner.articleLinkLabel"
                 value={c.articleLinkLabel}
                 className="inline"
               />
-              <svg
-                width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
-                className="transition-transform duration-200 group-hover:translate-x-1"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </a>
+            </TextLink>
           </div>
 
           {testimonials.length > 0 && (

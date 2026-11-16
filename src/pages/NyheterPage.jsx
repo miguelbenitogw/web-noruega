@@ -1,6 +1,6 @@
 ﻿import Nyheter from '../components/Nyheter'
 import PageEndNav from '../components/PageEndNav'
-import EditableText from '../components/editable/EditableText'
+import PageHero from '../components/ui/PageHero'
 import useContent from '../hooks/useContent'
 
 /**
@@ -15,28 +15,15 @@ export default function NyheterPage() {
 
   return (
     <>
-      <section className="bg-navy pt-32 pb-16 lg:pt-40 lg:pb-20">
-        <div className="container-xl">
-          <nav className="font-ui text-primary-300 text-sm mb-7" aria-label="Brødsmuler">
-            <a href="/" className="hover:text-white transition-colors">Hjem</a>
-            <span className="mx-2 text-primary-400" aria-hidden="true">/</span>
-            <span className="text-white">{hero.breadcrumb}</span>
-          </nav>
-          <EditableText
-            as="h1"
-            path="nyheterHero.h1"
-            value={hero.h1}
-            className="text-display font-semibold !text-white max-w-[20ch]"
-          />
-          <EditableText
-            as="p"
-            path="nyheterHero.description"
-            value={hero.description}
-            multiline
-            className="mt-6 gw-measure text-body lg:text-[1.1875rem] text-primary-100 leading-[1.6]"
-          />
-        </div>
-      </section>
+      <PageHero
+        current={hero.breadcrumb}
+        title={hero.h1}
+        titlePath="nyheterHero.h1"
+        titleId="nyheter-hero-heading"
+        titleWidth="20ch"
+        description={hero.description}
+        descriptionPath="nyheterHero.description"
+      />
 
       <Nyheter />
       <PageEndNav current="/nyheter" />

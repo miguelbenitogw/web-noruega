@@ -24,6 +24,7 @@ const ROUTES = {
     bodyExtra: '<h2>Rekruttering av helsepersonell til Norge</h2><p>Norsk helsevesen trenger kvalifiserte sykepleiere, helsefagarbeidere og spesialistpersonell. Global Working spesialiserer seg på å rekruttere helsepersonell fra Sør-Europa og forberede dem for det norske arbeidsmarkedet. Programmet vårt inkluderer helsenorsk-opplæring, støtte gjennom autorisasjonsprosessen hos Helsedirektoratet, kulturell forberedelse og tett oppfølging det første året i Norge. Vi samarbeider med kommuner, sykehus og private helseinstitusjoner over hele landet.</p>',
   },
   '/nyheter': {
+    schemaType: 'CollectionPage',
     title: 'Nyheter & artikler | Global Working Norge',
     description: 'Følg siste nytt, artikler og oppdateringer fra Global Working om rekruttering, språk og arbeidsliv i Norge.',
     keywords: 'Global Working nyheter, rekruttering nyheter Norge, arbeidsliv Norge',
@@ -38,6 +39,7 @@ const ROUTES = {
     bodyExtra: '<h2>Hvordan Talentportalen fungerer</h2><p>Talentportalen gir norske arbeidsgivere direkte tilgang til forhåndsgodkjente kandidater fra Global Workings nettverk. Du kan filtrere etter fagområde, språknivå og tilgjengelighet, lese kandidatprofiler og invitere til intervju — alt på én plattform. Kandidatene er allerede kvalitetssikret gjennom vår rekrutteringsprosess, noe som gjør at du kan gå fra behov til intervju på kort tid.</p>',
   },
   '/om-oss': {
+    schemaType: 'AboutPage',
     title: 'Rekrutteringsbyrå for helsesektoren | Global Working Norge',
     description: 'Global Working er et rekrutteringsbyrå spesialisert på helsepersonell fra Sør-Europa. Møt teamet og se hvordan vi jobber med språk, autorisasjon og kvalitet.',
     keywords: 'rekrutteringsbyrå helsepersonell, rekrutteringsbyrå helse, om Global Working, internasjonal rekruttering',
@@ -45,6 +47,7 @@ const ROUTES = {
     bodyExtra: '<h2>Hvem er Global Working?</h2><p>Global Working ble grunnlagt i 2014 med et mål: å bygge bro mellom kvalifiserte fagfolk i Sør-Europa og arbeidsgivere i Norge som trenger kompetanse. Med hovedkontor i Alicante og representasjon i Oslo har vi over 50 ansatte som jobber daglig med rekruttering, språkopplæring og integrering. Vi tror på langvarige ansettelser bygget på grundig forberedelse — både faglig, språklig og kulturelt.</p>',
   },
   '/kontakt': {
+    schemaType: 'ContactPage',
     title: 'Kontakt oss om rekruttering av helsepersonell | Global Working',
     description: 'Trenger dere sykepleiere eller helsefagarbeidere? Ta kontakt for en uforpliktende samtale om rekruttering, samarbeid eller kandidatportalen.',
     keywords: 'kontakt Global Working, rekruttering kontakt, samarbeid Norge',
@@ -146,6 +149,36 @@ const FOOTER_LINKS = [
  * React hydration will replace this with the full interactive UI, but crawlers
  * that don't execute JS will see meaningful content and navigation.
  */
+// ── Inyección del cuerpo ─────────────────────────────────────────────────────
+// Marcadores en index.html. Antes se buscaba la cadena exacta
+// '<div id="root"></div>'; cuando el loader se metió dentro del root, el
+// replace dejó de encontrar nada y el cuerpo prerenderizado desapareció de
+// TODAS las rutas sin que el build se quejara. Un marcador explícito más un
+// guard que revienta hace que eso no pueda repetirse en silencio.
+const BODY_MARKER = '<!--PRERENDER-->'
+const PRELOAD_START = '<!--HOME-PRELOAD-START-->'
+const PRELOAD_END = '<!--HOME-PRELOAD-END-->'
+
+const injectBody = (html, body, label) => {
+  if (!html.includes(BODY_MARKER)) {
+    throw new Error(
+      `prerender: no se encontró ${BODY_MARKER} en el HTML de ${label}. ` +
+      'Alguien tocó <div id="root"> en index.html. El cuerpo estático no se ' +
+      'inyectó, así que los crawlers que no ejecutan JS verían una página vacía.',
+    )
+  }
+  return html.replace(BODY_MARKER, body)
+}
+
+// El preload del hero solo sirve en la portada: en el resto de rutas esa
+// imagen no se usa y serían ~128 KB descargados para nada.
+const stripHomePreload = (html) => {
+  const start = html.indexOf(PRELOAD_START)
+  const end = html.indexOf(PRELOAD_END)
+  if (start === -1 || end === -1) return html
+  return html.slice(0, start) + html.slice(end + PRELOAD_END.length)
+}
+
 const buildBodySkeleton = ({ h1, description, breadcrumbs, extraContent }) => {
   const nav = NAV_LINKS.map(l => `<a href="${l.href}">${l.label}</a>`).join(' ')
   const crumbs = breadcrumbs
@@ -156,13 +189,23 @@ const buildBodySkeleton = ({ h1, description, breadcrumbs, extraContent }) => {
   return `<header><a href="/" aria-label="Global Working Norge – hjem">Global Working Norge</a><nav aria-label="Hovedmeny">${nav}</nav></header><main id="main-content">${crumbs}<h1>${h1}</h1><p>${description}</p>${extraContent || ''}</main><footer><p>© ${new Date().getFullYear()} Global Working Norge AS</p><p>E-post: kontakt@globalworking.no | Telefon: +47 919 00 649</p><nav aria-label="Bunntekst">${footer}</nav></footer>`
 }
 
-const buildNewsArticleSchema = (article) => JSON.stringify({
+// `Article`, no `NewsArticle`: eso último es para medios de comunicación.
+// Global Working es una reclutadora que publica notas y entrevistas; fuera de
+// Google News (donde no está dada de alta) declararse medio no aporta nada y
+// sí abre un desajuste entre lo declarado y lo que hay. `Article` es el padre
+// de ambos y describe lo que es sin afirmar nada falso.
+//
+// Tiene que coincidir con buildArticleSchema en src/lib/seo.js. Google lee
+// ESTE, el estático; el de seo.js solo se inyecta después, por JS.
+const buildArticleSchema = (article) => JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'NewsArticle',
+  '@type': 'Article',
   headline: article.title,
   description: article.description,
   datePublished: article.publishAt || `${article.date}T08:00:00Z`,
-  dateModified: article.publishAt || `${article.date}T08:00:00Z`,
+  // Sin `dateModified`: antes se emitía igual que datePublished en los diez
+  // artículos, que no dice «no se editó», dice «no lo sé». Ausente, Google
+  // asume que no se ha tocado desde que salió, que es la verdad.
   author: { '@type': 'Organization', name: article.author || 'Global Working' },
   publisher: {
     '@type': 'Organization',
@@ -186,7 +229,9 @@ const buildBreadcrumbSchema = (items) => JSON.stringify({
 
 const buildWebPageSchema = (route) => JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'WebPage',
+  // Afinado por ruta: AboutPage, ContactPage o CollectionPage donde aplica.
+  // Mismo criterio que SECTION_SEO en src/lib/seo.js.
+  '@type': route.schemaType || 'WebPage',
   name: route.title,
   description: route.description,
   url: `${SITE_URL}${route.pathname}`,
@@ -264,7 +309,8 @@ const injectMeta = (html, pathname, route) => {
   // Inject body skeleton — gives crawlers real content (nav, H1, description, footer)
   const h1 = route.title.split(' | ')[0]
   const body = buildBodySkeleton({ h1, description: route.description, breadcrumbs, extraContent: route.bodyExtra })
-  result = result.replace('<div id="root"></div>', `<div id="root">${body}</div>`)
+  result = injectBody(result, body, pathname)
+  result = stripHomePreload(result)
 
   return result
 }
@@ -297,7 +343,7 @@ const injectArticleMeta = (html, article) => {
     { name: 'Nyheter', url: `${SITE_URL}/nyheter` },
     { name: article.title, url },
   ])
-  const articleSchema = buildNewsArticleSchema({ ...article, description, image })
+  const articleSchema = buildArticleSchema({ ...article, description, image })
 
   const schemas = `
     <script type="application/ld+json">${articleSchema}</script>
@@ -333,7 +379,8 @@ const injectArticleMeta = (html, article) => {
     breadcrumbs: breadcrumbsList,
     extraContent: `${dateLabel}${excerptHtml}${bodyPreview}`,
   })
-  result = result.replace('<div id="root"></div>', `<div id="root">${body}</div>`)
+  result = injectBody(result, body, `/nyheter/${article.slug}`)
+  result = stripHomePreload(result)
 
   return result
 }
@@ -353,52 +400,13 @@ const loadLocalArticles = async () => {
   return articles
 }
 
-const loadRemoteArticles = async () => {
-  const url = process.env.VITE_SUPABASE_URL?.trim()
-  const key = process.env.VITE_SUPABASE_ANON_KEY?.trim()
-  if (!url || !key) return []
-
-  try {
-    const endpoint = `${url}/rest/v1/news?status=eq.published&select=slug,title,excerpt,body,date,tag,author,coverImage,seoTitle,seoDescription,publishAt&order=publishAt.desc`
-    const res = await fetch(endpoint, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` },
-    })
-    if (!res.ok) {
-      console.warn(`  ⚠ Supabase fetch: ${res.status} ${res.statusText}`)
-      return []
-    }
-    const rows = await res.json()
-    return rows.map((row) => ({
-      slug: row.slug,
-      title: row.seoTitle || row.title,
-      excerpt: row.excerpt || '',
-      description: row.seoDescription || row.excerpt || '',
-      date: row.date || (row.publishAt ? row.publishAt.slice(0, 10) : ''),
-      tag: row.tag || 'Nyhet',
-      author: row.author || 'Global Working',
-      coverImage: row.coverImage || '',
-      body: row.body || '',
-      publishAt: row.publishAt || '',
-      seoTitle: row.seoTitle || '',
-      seoDescription: row.seoDescription || '',
-    }))
-  } catch (error) {
-    console.warn(`  ⚠ Supabase fetch failed: ${error.message}`)
-    return []
-  }
-}
-
+// Antes esto también consultaba news_posts en Supabase y lo remoto pisaba a lo
+// local. Supabase se desconectó: las noticias son ahora los .md del repo, que
+// es lo mismo que lee la web en src/lib/news.js.
 const loadArticles = async () => {
-  const local = await loadLocalArticles()
-  const remote = await loadRemoteArticles()
-
-  // Merge: remote articles take priority over local (by slug)
-  const bySlug = new Map()
-  for (const article of local) bySlug.set(article.slug, article)
-  for (const article of remote) bySlug.set(article.slug, article)
-
-  console.log(`  Articles: ${local.length} local, ${remote.length} remote, ${bySlug.size} total`)
-  return [...bySlug.values()]
+  const articles = await loadLocalArticles()
+  console.log(`  Articles: ${articles.length} desde src/content/news`)
+  return articles
 }
 
 const run = async () => {
@@ -444,10 +452,27 @@ const run = async () => {
     ].join(''),
   })
   let homeHtml = await readFile(INDEX_PATH, 'utf8')
-  homeHtml = homeHtml.replace('<div id="root"></div>', `<div id="root">${homeSkeleton}</div>`)
+  // La portada conserva el preload: es la única ruta donde el hero se usa.
+  // Solo se quitan los comentarios que lo delimitan, que ya no pintan nada.
+  homeHtml = injectBody(homeHtml, homeSkeleton, '/')
+    .replace(PRELOAD_START, '')
+    .replace(PRELOAD_END, '')
   await writeFile(INDEX_PATH, homeHtml, 'utf8')
 
+  // Comprobación final: que lo escrito en disco tenga de verdad un <h1>. El
+  // guard de injectBody cubre el marcador, esto cubre el resultado.
+  const written = [INDEX_PATH, ...Object.keys(ROUTES).map(
+    (p) => path.join(DIST_DIR, ...p.split('/').filter(Boolean), 'index.html'),
+  )]
+  for (const file of written) {
+    const html = await readFile(file, 'utf8')
+    if (!html.includes('<h1>')) {
+      throw new Error(`prerender: ${path.relative(DIST_DIR, file)} se escribió sin <h1>.`)
+    }
+  }
+
   console.log(`Prerender meta: generated ${generated} HTML files (${Object.keys(ROUTES).length} pages + ${articles.length} articles) + homepage skeleton.`)
+  console.log(`  Cuerpo estático verificado en ${written.length} archivos.`)
 }
 
 run().catch((error) => {

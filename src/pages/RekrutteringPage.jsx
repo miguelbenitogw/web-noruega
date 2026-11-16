@@ -2,6 +2,9 @@ import HvaGjor from '../components/HvaGjor'
 import Rekruttering from '../components/Rekruttering'
 import GodeGrunner from '../components/GodeGrunner'
 import PageEndNav from '../components/PageEndNav'
+import PageHero from '../components/ui/PageHero'
+import RuleGrid from '../components/ui/RuleGrid'
+import TextLink from '../components/ui/TextLink'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
@@ -31,36 +34,15 @@ export default function RekrutteringPage() {
 
   return (
     <>
-      {/* ── Hero ──────────────────────────────────────────────────────────
-          Plano, navy sólido, sin degradado ni mancha radial: el mismo que
-          /talentportalen y el resto de las internas. */}
-      <section className="bg-navy pt-32 pb-16 lg:pt-40 lg:pb-20">
-        <div className="container-xl">
-          <nav aria-label="Brødsmuler" className="mb-7">
-            <ol className="flex items-center gap-2 font-ui text-sm text-primary-300">
-              <li>
-                <a href="/" className="hover:text-white transition-colors">Hjem</a>
-              </li>
-              <li className="text-primary-400" aria-hidden="true">/</li>
-              <li className="text-white">{hero.breadcrumb}</li>
-            </ol>
-          </nav>
-
-          <EditableText
-            as="h1"
-            path="rekrutteringHero.h1"
-            value={hero.h1}
-            className="text-display font-semibold !text-white max-w-[20ch]"
-          />
-          <EditableText
-            as="p"
-            path="rekrutteringHero.description"
-            value={hero.description}
-            multiline
-            className="mt-6 gw-measure text-body lg:text-[1.1875rem] text-primary-100 leading-[1.6]"
-          />
-        </div>
-      </section>
+      <PageHero
+        current={hero.breadcrumb}
+        title={hero.h1}
+        titlePath="rekrutteringHero.h1"
+        titleId="rekruttering-hero-heading"
+        titleWidth="20ch"
+        description={hero.description}
+        descriptionPath="rekrutteringHero.description"
+      />
 
       <HvaGjor />
       <Rekruttering />
@@ -104,7 +86,7 @@ export default function RekrutteringPage() {
                 <a
                   href="/talentportalen"
                   onClick={() => trackEvent('cta_click', { location: 'collaboration_model', cta: 'se_kandidatportalen' })}
-                  className="gw-btn gw-btn-line bg-white"
+                  className="gw-btn gw-btn-line"
                 >
                   <EditableText as="span" path="rekrutteringCollab.cta2" value={collab.cta2} className="inline" />
                 </a>
@@ -144,31 +126,23 @@ export default function RekrutteringPage() {
                   {nyheter.headingPreview}
                 </h2>
               </div>
-              <a
+              <TextLink
                 href="/nyheter"
                 onClick={() => trackEvent('cta_click', { location: 'rekruttering_news', cta: 'se_alle_nyheter' })}
-                className="group shrink-0 inline-flex items-center gap-2 font-ui text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                className="shrink-0"
               >
                 {nyheter.ctaLabel}
-                <svg
-                  width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
-                  className="transition-transform duration-200 group-hover:translate-x-1"
-                >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </a>
+              </TextLink>
             </div>
 
-            <div className="grid md:grid-cols-2 border-t border-line">
+            <RuleGrid cols="md2" className="border-t border-line">
               {latestNews.map((article) => (
-                <article
+                <RuleGrid.Cell
+                  as="article"
                   key={article.slug}
-                  className="group flex flex-col py-8 md:px-8 md:first:pl-0 md:last:pr-0
-                             border-line [&:nth-child(n+2)]:border-t md:[&:nth-child(n+2)]:border-t-0
-                             md:[&:nth-child(n+2)]:border-l"
+                  className="group flex flex-col py-8 md:px-8 md:first:pl-0 md:last:pr-0"
                 >
-                  <div className="flex items-center gap-3 font-ui text-[0.8125rem]">
+                  <div className="flex items-center gap-3 font-ui text-body-xs">
                     <EditableText
                       as="span"
                       path={`news.${article.slug}.tag`}
@@ -194,23 +168,16 @@ export default function RekrutteringPage() {
                     className="mt-3 flex-1 text-body text-ink-muted leading-[1.65]"
                   />
 
-                  <a
+                  <TextLink
                     href={`/nyheter/${article.slug}`}
                     onClick={() => trackEvent('news_open', { slug: article.slug, location: 'rekruttering' })}
-                    className="mt-6 inline-flex items-center gap-2 font-ui text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                    className="mt-6"
                   >
                     {nyheter.readMoreLabel}
-                    <svg
-                      width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
-                      className="transition-transform duration-200 group-hover:translate-x-1"
-                    >
-                      <path d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                </article>
+                  </TextLink>
+                </RuleGrid.Cell>
               ))}
-            </div>
+            </RuleGrid>
           </div>
         </section>
       )}

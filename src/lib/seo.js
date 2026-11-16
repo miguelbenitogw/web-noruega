@@ -45,6 +45,8 @@ const SECTION_SEO = {
     description:
       'Følg siste nytt, artikler og oppdateringer fra Global Working om rekruttering, språk og arbeidsliv i Norge.',
     pathname: '/nyheter',
+    // Es un índice de artículos, no una página de contenido: CollectionPage.
+    schemaType: 'CollectionPage',
     breadcrumbName: 'Nyheter',
     keywords: 'Global Working nyheter, rekruttering nyheter Norge, arbeidsliv Norge',
   },
@@ -66,6 +68,7 @@ const SECTION_SEO = {
     description:
       'Global Working er et rekrutteringsbyrå spesialisert på helsepersonell fra Sør-Europa. Møt teamet og se hvordan vi jobber med språk, autorisasjon og kvalitet.',
     pathname: '/om-oss',
+    schemaType: 'AboutPage',
     breadcrumbName: 'Om oss',
     keywords: 'rekrutteringsbyrå helsepersonell, rekrutteringsbyrå helse, om Global Working, internasjonal rekruttering',
   },
@@ -74,6 +77,7 @@ const SECTION_SEO = {
     description:
       'Trenger dere sykepleiere eller helsefagarbeidere? Ta kontakt for en uforpliktende samtale om rekruttering, samarbeid eller kandidatportalen.',
     pathname: '/kontakt',
+    schemaType: 'ContactPage',
     breadcrumbName: 'Kontakt',
     keywords: 'kontakt Global Working, rekruttering kontakt, samarbeid Norge',
   },
@@ -222,9 +226,16 @@ const buildBreadcrumbSchema = (items) => ({
   })),
 })
 
-const buildWebPageSchema = ({ title, description, url, image }) => ({
+/**
+ * `WebPage` es el tipo genérico, el "por defecto" de schema.org. Decirle a Google que
+ * /kontakt es una ContactPage y /om-oss una AboutPage no es decorar: son los tipos que
+ * usa para entender qué ENTIDAD describe la página (la organización, sus datos de
+ * contacto) en vez de tratarla como un documento cualquiera. `type` llega desde
+ * `schemaType` en SECTION_SEO, y si la sección no lo declara se queda en WebPage.
+ */
+const buildWebPageSchema = ({ title, description, url, image, type = 'WebPage' }) => ({
   '@context': 'https://schema.org',
-  '@type': 'WebPage',
+  '@type': type,
   name: title,
   description,
   url,
@@ -326,6 +337,7 @@ export function setSectionSEO(sectionRoute) {
     description: page.description,
     url,
     image: DEFAULT_IMAGE,
+    type: page.schemaType,
   }))
 
   const breadcrumbItems = [{ name: 'Forside', url: SITE_URL }]
@@ -366,13 +378,31 @@ export function setArticleSEO(article) {
   })
   clearAllDynamicSchemas()
 
+  // `datePublished` siempre; `dateModified` SOLO si hay una fecha de edición real y
+  // distinta. Antes caía a `publishAt`, así que los dos campos salían idénticos en los 10
+  // artículos: eso no es información, es ruido. Un `dateModified` igual al de publicación
+  // no dice "no se ha editado", dice "no sé", y si algún día se edita uno de verdad la
+  // señal ya no vale nada. Ausente, Google asume que no se ha tocado desde que salió, que
+  // es exactamente la verdad: ningún `.md` de `src/content/news/` tiene hoy `updatedAt`.
+  const datePublished = article.publishAt || `${article.date}T08:00:00Z`
+  const dateModified =
+    article.updatedAt && article.updatedAt !== datePublished ? article.updatedAt : null
+
   setJsonLd('news-article-schema', {
     '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
+    // `Article`, no `NewsArticle`. NewsArticle es para medios de comunicación, y Global
+    // Working es una empresa de reclutamiento: lo que publica son notas de empresa y
+    // entrevistas a clientes. Declararse medio no da ninguna ventaja fuera de Google News
+    // —donde no está ni va a estar, eso exige alta en Publisher Center— y sí expone a que
+    // Google vea un desajuste entre el tipo declarado y el contenido real. `BlogPosting`
+    // se descartó por lo mismo en espejo: esto no es un blog personal ni editorial, la
+    // propia sección se llama "Nyheter & artikler". `Article` es el padre de los dos y
+    // describe lo que hay sin afirmar nada que no sea cierto.
+    '@type': 'Article',
     headline: article.title,
     description,
-    datePublished: article.publishAt || `${article.date}T08:00:00Z`,
-    dateModified: article.updatedAt || article.publishAt || `${article.date}T08:00:00Z`,
+    datePublished,
+    ...(dateModified ? { dateModified } : {}),
     author: {
       '@type': 'Organization',
       name: article.author || 'Global Working',

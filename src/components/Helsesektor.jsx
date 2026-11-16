@@ -3,6 +3,7 @@ import useContent from '../hooks/useContent'
 import EditableText from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
 import InlineRichText from './editable/InlineRichText'
+import RuleGrid from './ui/RuleGrid'
 import { IMAGES, img } from '../assets/images'
 
 function InlineEditableParagraph({
@@ -40,11 +41,7 @@ function InlineEditableParagraph({
  */
 function Metric({ metric }) {
   return (
-    <div
-      className="px-5 py-7 sm:px-6 lg:px-8 border-line
-                 [&:nth-child(even)]:border-l [&:nth-child(n+3)]:border-t
-                 lg:[&:nth-child(n+2)]:border-l lg:[&:nth-child(n+3)]:border-t-0"
-    >
+    <RuleGrid.Cell className="px-5 py-7 sm:px-6 lg:px-8">
       <EditableText
         as="div"
         path={metric.valuePath}
@@ -57,7 +54,7 @@ function Metric({ metric }) {
         value={metric.label}
         className="mt-2.5 font-ui text-[0.875rem] text-ink-muted leading-snug"
       />
-    </div>
+    </RuleGrid.Cell>
   )
 }
 
@@ -144,11 +141,11 @@ export default function Helsesektor() {
       {metrics.length > 0 && (
         <div className="border-t border-line">
           <div className="container-xl">
-            <div className="grid grid-cols-2 lg:grid-cols-4">
+            <RuleGrid cols="base2-lg4">
               {metrics.map((metric, i) => (
                 <Metric key={`${metric.labelPath}-${i}`} metric={metric} />
               ))}
-            </div>
+            </RuleGrid>
           </div>
         </div>
       )}

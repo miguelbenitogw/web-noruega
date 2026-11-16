@@ -2,6 +2,7 @@ import { IMAGES, img } from '../assets/images'
 import OmOss from '../components/OmOss'
 import FAQ from '../components/FAQ'
 import PageEndNav from '../components/PageEndNav'
+import PageHero from '../components/ui/PageHero'
 import useContent from '../hooks/useContent'
 import EditableText from '../components/editable/EditableText'
 import EditableImage from '../components/editable/EditableImage'
@@ -74,7 +75,7 @@ function TeamMember({ member, index, basePath }) {
         as="p"
         path={`${basePath}.${index}.role`}
         value={member.role}
-        className="mt-1 font-ui text-[0.8125rem] text-ink-soft leading-snug"
+        className="mt-1 gw-meta leading-snug"
       />
     </div>
   )
@@ -87,32 +88,15 @@ export default function OmOssPage() {
 
   return (
     <>
-      {/* ── Cabecera de página ───────────────────────────────────────────
-          Banda navy sólida, sin mancha radial. La migaja en Poppins: es
-          navegación, no lectura. */}
-      <section className="bg-navy pt-32 pb-16 lg:pt-40 lg:pb-20">
-        <div className="container-xl">
-          <nav className="font-ui text-[0.8125rem] text-primary-200 mb-7" aria-label="Brødsmuler">
-            <a href="/" className="transition-colors hover:text-white">Hjem</a>
-            <span className="mx-2 text-primary-300/70" aria-hidden="true">/</span>
-            <span className="text-white">{hero.breadcrumb}</span>
-          </nav>
-
-          <EditableText
-            as="h1"
-            path="omOssHero.h1"
-            value={hero.h1}
-            className="text-display font-semibold !text-white"
-          />
-          <InlineEditableParagraph
-            as="p"
-            path="omOssHero.description"
-            value={hero.description}
-            className="mt-6 gw-measure !text-primary-100 text-body lg:text-[1.1875rem] !leading-[1.6]"
-            linkClassName="!text-white underline decoration-primary-400 underline-offset-4 transition-colors hover:!decoration-white"
-          />
-        </div>
-      </section>
+      <PageHero
+        current={hero.breadcrumb}
+        title={hero.h1}
+        titlePath="omOssHero.h1"
+        titleId="om-oss-hero-heading"
+        description={hero.description}
+        descriptionPath="omOssHero.description"
+        richDescription
+      />
 
       <OmOss />
 

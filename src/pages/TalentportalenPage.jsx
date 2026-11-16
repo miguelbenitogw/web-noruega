@@ -1,5 +1,7 @@
 import Talentportalen from '../components/Talentportalen'
 import PageEndNav from '../components/PageEndNav'
+import PageHero from '../components/ui/PageHero'
+import RuleGrid from '../components/ui/RuleGrid'
 import useContent from '../hooks/useContent'
 import EditableText from '../components/editable/EditableText'
 
@@ -24,29 +26,15 @@ export default function TalentportalenPage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="bg-navy pt-32 pb-16 lg:pt-40 lg:pb-20">
-        <div className="container-xl">
-          <nav className="font-ui text-primary-300 text-sm mb-7" aria-label="Brødsmuler">
-            <a href="/" className="hover:text-white transition-colors">Hjem</a>
-            <span className="mx-2 text-primary-400" aria-hidden="true">/</span>
-            <span className="text-white">{hero.breadcrumb}</span>
-          </nav>
-          <EditableText
-            as="h1"
-            path="talentportalenHero.h1"
-            value={hero.h1}
-            className="text-display font-semibold !text-white max-w-[18ch]"
-          />
-          <EditableText
-            as="p"
-            path="talentportalenHero.description"
-            value={hero.description}
-            multiline
-            className="mt-6 gw-measure text-body lg:text-[1.1875rem] text-primary-100 leading-[1.6]"
-          />
-        </div>
-      </section>
+      <PageHero
+        current={hero.breadcrumb}
+        title={hero.h1}
+        titlePath="talentportalenHero.h1"
+        titleId="talentportalen-hero-heading"
+        titleWidth="18ch"
+        description={hero.description}
+        descriptionPath="talentportalenHero.description"
+      />
 
       {/* Omvisning — el recorrido interactivo del portal.
           Es una página autocontenida en /public, así que entra en un iframe
@@ -109,20 +97,14 @@ export default function TalentportalenPage() {
             />
           </div>
 
-          <ol className="mt-12 lg:mt-16 grid sm:grid-cols-2 border-t border-line">
+          <RuleGrid cols="sm2" as="ol" className="mt-12 lg:mt-16 border-t border-line">
             {(stepsSection.steps || []).map((step, i) => (
-              <li
+              <RuleGrid.Cell
+                as="li"
                 key={step.number || i}
-                className="flex gap-5 py-7 sm:px-8 sm:first:pl-0 sm:[&:nth-child(3)]:pl-0
-                           border-line
-                           [&:nth-child(n+2)]:border-t
-                           sm:[&:nth-child(2)]:border-t-0
-                           [&:nth-child(even)]:sm:border-l"
+                className="flex gap-5 py-7 sm:px-8 sm:odd:pl-0"
               >
-                <span
-                  className="shrink-0 font-ui text-[0.8125rem] font-semibold tabular-nums text-primary-600 pt-1"
-                  aria-hidden="true"
-                >
+                <span className="gw-step shrink-0 pt-1 text-primary-600" aria-hidden="true">
                   {step.number || String(i + 1).padStart(2, '0')}
                 </span>
 
@@ -138,12 +120,12 @@ export default function TalentportalenPage() {
                     path={`talentportalenSteps.steps.${i}.desc`}
                     value={step.desc}
                     multiline
-                    className="mt-2 text-[0.9375rem] text-ink-muted leading-relaxed"
+                    className="mt-2 text-body-sm text-ink-muted leading-relaxed"
                   />
                 </div>
-              </li>
+              </RuleGrid.Cell>
             ))}
-          </ol>
+          </RuleGrid>
         </div>
       </section>
 

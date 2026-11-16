@@ -1,9 +1,12 @@
 import EditableText from '../components/editable/EditableText'
 import EditableImage from '../components/editable/EditableImage'
 import PageEndNav from '../components/PageEndNav'
+import PageHero from '../components/ui/PageHero'
+import RuleList from '../components/ui/RuleList'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
+import BodyParagraph from '../components/ui/BodyParagraph'
 
 /**
  * HelsenorskPage — las 650 horas de noruego sanitario.
@@ -19,36 +22,6 @@ import useContent from '../hooks/useContent'
  * banda oscura de la página.
  */
 
-function BodyParagraph({ path, value, className = '', tone = 'light' }) {
-  const color = tone === 'dark' ? 'text-primary-100' : 'text-ink-muted'
-  return (
-    <EditableText
-      as="p"
-      path={path}
-      value={value}
-      multiline
-      className={`text-body lg:text-[1.125rem] ${color} leading-[1.75] ${className}`}
-    />
-  )
-}
-
-/* Lista de filetes, sin el circulito azul con check de siempre. */
-function RuleList({ items, basePath, className = '' }) {
-  return (
-    <ul className={`border-t border-line ${className}`}>
-      {items.map((item, index) => (
-        <li key={`${basePath}-${index}`} className="border-b border-line py-3.5">
-          <EditableText
-            as="span"
-            path={`${basePath}.${index}`}
-            value={item}
-            className="font-ui text-[0.9375rem] leading-snug text-ink"
-          />
-        </li>
-      ))}
-    </ul>
-  )
-}
 
 export default function HelsenorskPage() {
   const page = useContent('helsenorsk')
@@ -57,56 +30,28 @@ export default function HelsenorskPage() {
 
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="bg-navy overflow-hidden" aria-labelledby="helsenorsk-heading">
-        <div className="container-xl">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center pt-32 pb-16 lg:pt-40 lg:pb-20">
-
-            <div className="lg:col-span-6 animate-riseIn">
-              <nav className="font-ui text-primary-300 text-sm mb-7" aria-label="Brødsmuler">
-                <a href="/" className="hover:text-white transition-colors">Hjem</a>
-                <span className="mx-2 text-primary-400" aria-hidden="true">/</span>
-                <a href="/spansk-i-alicante" className="hover:text-white transition-colors">Spansk i Alicante</a>
-                <span className="mx-2 text-primary-400" aria-hidden="true">/</span>
-                <EditableText
-                  as="span"
-                  path="helsenorsk.breadcrumb"
-                  value={page.breadcrumb}
-                  className="text-white"
-                />
-              </nav>
-
-              <EditableText
-                as="h1"
-                id="helsenorsk-heading"
-                path="helsenorsk.heroTitle"
-                value={page.heroTitle}
-                className="text-display-sm sm:text-display font-semibold !text-white break-words max-w-[18ch]"
-              />
-              <EditableText
-                as="p"
-                path="helsenorsk.heroSubtitle"
-                value={page.heroSubtitle}
-                multiline
-                className="mt-6 gw-measure text-body lg:text-[1.1875rem] text-primary-100 leading-[1.6]"
-              />
-            </div>
-
-            <div className="lg:col-span-6 animate-settle gw-bleed-r">
-              <EditableImage
-                path="helsenorsk.heroImageUrl"
-                src={img(page.heroImageUrl || IMAGES.enfermeria, 1400)}
-                alt={page.heroImageAlt || 'Helsenorsk undervisning'}
-                className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
-                loading="eager"
-                width={1400}
-                height={520}
-              />
-            </div>
-
-          </div>
-        </div>
-      </section>
+      <PageHero
+        trail={[{ label: 'Spansk i Alicante', href: '/spansk-i-alicante' }]}
+        current={page.breadcrumb}
+        currentPath="helsenorsk.breadcrumb"
+        titleId="helsenorsk-heading"
+        title={page.heroTitle}
+        titlePath="helsenorsk.heroTitle"
+        titleWidth="18ch"
+        description={page.heroSubtitle}
+        descriptionPath="helsenorsk.heroSubtitle"
+        media={(
+          <EditableImage
+            path="helsenorsk.heroImageUrl"
+            src={img(page.heroImageUrl || IMAGES.enfermeria, 1400)}
+            alt={page.heroImageAlt || 'Helsenorsk undervisning'}
+            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
+            loading="eager"
+            width={1400}
+            height={520}
+          />
+        )}
+      />
 
       {/* ── Intro ─────────────────────────────────────────────────────────── */}
       <section className="py-24 lg:py-32 bg-white" aria-labelledby="helsenorsk-intro-heading">
@@ -152,7 +97,7 @@ export default function HelsenorskPage() {
                   as="p"
                   path="helsenorsk.praksisListIntro"
                   value={page.praksisListIntro}
-                  className="mt-8 font-ui text-[0.9375rem] font-semibold text-navy"
+                  className="mt-8 font-ui text-body-sm font-semibold text-navy"
                 />
               )}
               <RuleList items={page.praksisItems || []} basePath="helsenorsk.praksisItems" className="mt-4" />
@@ -288,9 +233,9 @@ export default function HelsenorskPage() {
                       />
                     )}
                     <div className="min-w-0">
-                      <div className="font-ui text-[0.9375rem] font-semibold text-navy leading-tight">{contact.name}</div>
+                      <div className="font-ui text-body-sm font-semibold text-navy leading-tight">{contact.name}</div>
                       {contact.role && (
-                        <div className="mt-1 font-ui text-[0.8125rem] text-ink-soft">{contact.role}</div>
+                        <div className="mt-1 gw-meta">{contact.role}</div>
                       )}
                       <a
                         href={`mailto:${contact.email}`}

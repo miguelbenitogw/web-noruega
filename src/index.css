@@ -68,11 +68,37 @@
      Filete naranja + etiqueta en caja normal. Es el gesto de marca de
      globalworking.net, sin las versalitas tracked-out. */
   .gw-label {
-    @apply inline-flex items-center gap-3 font-ui text-[0.8125rem] font-semibold;
+    @apply inline-flex items-center gap-3 font-ui text-body-xs font-semibold;
   }
   .gw-label::before {
     content: '';
     @apply block h-[2px] w-7 bg-cta shrink-0;
+  }
+
+  /* ── Cintillo de prensa ───────────────────────────────────────────────
+     Versalitas pequeñas con tracking abierto. Es la ÚNICA caja alta
+     permitida del sistema y es deliberada: es el gesto del cintillo de un
+     diario. Vivía como `KICKER_CLASS` en `Nyheter.jsx` y otra vez, palabra
+     por palabra, en `NewsArticlePage.jsx`. */
+  .gw-kicker {
+    @apply font-ui text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-primary-700;
+  }
+
+  /* ── Metadato ─────────────────────────────────────────────────────────
+     Fecha, rol, tiempo de lectura: el dato que acompaña sin competir.
+     Estaba escrito a mano en dieciocho sitios de nueve archivos, dos de
+     ellos como constante `META_CLASS`. */
+  .gw-meta {
+    @apply font-ui text-body-xs text-ink-soft;
+  }
+
+  /* ── Marcador de paso ─────────────────────────────────────────────────
+     El `01`, `02`… de una secuencia. `tabular-nums` para que los dígitos
+     no bailen de fila en fila. El color NO va acá: es naranja apagado en
+     una secuencia viva, gris en un documento legal, y eso sí quiere decir
+     algo distinto en cada sitio. */
+  .gw-step {
+    @apply font-ui text-body-xs font-semibold tabular-nums;
   }
 
   /* ── Botones ──────────────────────────────────────────────────────────
@@ -80,13 +106,16 @@
      el color ya dice que es pulsable. */
   .gw-btn {
     @apply inline-flex items-center justify-center gap-2 font-ui font-semibold
-           rounded-pill px-7 py-3.5 text-[0.9375rem] leading-none
+           rounded-pill px-7 py-3.5 text-body-sm leading-none
            transition-colors duration-200 cursor-pointer;
   }
   .gw-btn-ember { @apply bg-cta text-white hover:bg-cta-600; }
   .gw-btn-ink   { @apply bg-navy text-white hover:bg-primary-800; }
   .gw-btn-ghost { @apply border border-white/35 text-white hover:bg-white/10; }
-  .gw-btn-line  { @apply border border-line text-navy hover:bg-frost; }
+  /* El fondo blanco es parte del botón, no del sitio donde cae: sin él, sobre
+     `bg-surface` el contorno se transparenta y el botón desaparece. Dos de los
+     cuatro sitios que lo usan le añadían `bg-white` a mano. */
+  .gw-btn-line  { @apply border border-line bg-white text-navy hover:bg-frost; }
 
   /* ── Superficie plana ─────────────────────────────────────────────────
      Panel sin sombra. Las tarjetas flotantes con shadow-lg son el tic de

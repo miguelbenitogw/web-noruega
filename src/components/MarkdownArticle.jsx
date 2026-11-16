@@ -24,7 +24,7 @@ import { parseInlineLinkTokens } from '../utils/inlineLinkParser'
 // Escala del cuerpo. El ancho de columna NO vive acá: lo decide la página.
 export const ARTICLE_BODY_MEASURE_CLASS = 'text-body lg:text-[1.125rem] leading-[1.78]'
 
-const LEAD_CLASS = 'text-[1.1875rem] lg:text-[1.3125rem] leading-[1.58] text-navy'
+const LEAD_CLASS = 'text-body-lg lg:text-[1.3125rem] leading-[1.58] text-navy'
 
 const LINK_CLASS = 'text-primary-700 underline decoration-primary-300 decoration-1 underline-offset-[3px] hover:text-navy hover:decoration-navy transition-colors'
 
@@ -130,7 +130,7 @@ export default function MarkdownArticle({ markdown }) {
         <ol
           key={key}
           className={`${ARTICLE_BODY_MEASURE_CLASS} mb-7 list-decimal space-y-2.5 pl-7 text-ink
-                      marker:font-ui marker:text-[0.9375rem] marker:font-semibold marker:text-primary-600`}
+                      marker:font-ui marker:text-body-sm marker:font-semibold marker:text-primary-600`}
         >
           {items.map((item, i) => <li key={`${key}-${i}`}>{renderInline(item, `${key}-${i}`)}</li>)}
         </ol>,
@@ -165,7 +165,7 @@ export default function MarkdownArticle({ markdown }) {
     nodes.push(
       <blockquote
         key={key}
-        className="my-9 border-l-2 border-primary-300 pl-6 text-[1.1875rem] lg:text-[1.3125rem]
+        className="my-9 border-l-2 border-primary-300 pl-6 text-body-lg lg:text-[1.3125rem]
                    leading-[1.55] text-navy"
       >
         {renderInline(text, key)}
@@ -213,7 +213,7 @@ export default function MarkdownArticle({ markdown }) {
         <h3
           id={headingId}
           key={`h3-${keyIndex++}`}
-          className="scroll-mt-28 mt-10 mb-3.5 font-heading text-[1.125rem] lg:text-[1.1875rem]
+          className="scroll-mt-28 mt-10 mb-3.5 font-heading text-[1.125rem] lg:text-body-lg
                      font-semibold text-ink"
         >
           {renderInline(headingText, `h3-${keyIndex}`)}

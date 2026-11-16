@@ -55,8 +55,14 @@ function ActiveRule({ visible }) {
   )
 }
 
+// Sin salto en xl. Nueve enlaces más el logo y el botón necesitaban 1315 px,
+// y `.container-xl` da como mucho 1296 (max-w-7xl son 1360 px con el rem a 17,
+// menos el padding): la barra no entraba en NINGÚN viewport, ni en un 4K — el
+// botón «Kontakt» quedaba cortado. El `xl:px-3` la ensanchaba justo donde más
+// sitio parecía haber. Si algún día entra un décimo enlace, esto no se arregla
+// apretando píxeles: hay que agrupar en un desplegable.
 const linkClasses = (scrolled, active) =>
-  `relative whitespace-nowrap px-2 xl:px-3 py-5 font-ui text-[0.8125rem] xl:text-[0.875rem] transition-colors duration-200 ${
+  `relative whitespace-nowrap px-2 py-5 font-ui text-body-xs transition-colors duration-200 ${
     scrolled
       ? active ? 'text-navy font-semibold' : 'text-ink-muted hover:text-navy font-medium'
       : active ? 'text-white font-semibold' : 'text-white/80 hover:text-white font-medium'
@@ -153,7 +159,7 @@ export default function Navbar() {
       }`}
     >
       <div className="container-xl">
-        <div className="flex items-center justify-between h-16 lg:h-[4.5rem]">
+        <div className="flex items-center justify-between h-16 xl:h-[4.5rem]">
 
           <a href="/" aria-label="Global Working Norge – hjem" className="shrink-0">
             <img
@@ -168,7 +174,7 @@ export default function Navbar() {
           </a>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center" aria-label="Primær navigasjon">
+          <nav className="hidden xl:flex items-center" aria-label="Primær navigasjon">
             {navLinks.map((link, index) => {
               if (link.children?.length) {
                 return (
@@ -187,7 +193,7 @@ export default function Navbar() {
                   <a
                     key={link.href}
                     href={link.href}
-                    className={`ml-3 xl:ml-4 gw-btn whitespace-nowrap px-5 py-2.5 text-sm ${
+                    className={`ml-3 gw-btn whitespace-nowrap px-5 py-2.5 text-sm ${
                       scrolled ? 'gw-btn-ink' : 'gw-btn-ghost'
                     }`}
                   >
@@ -219,7 +225,7 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button
-            className={`lg:hidden p-2 -mr-2 transition-colors ${scrolled ? 'text-navy' : 'text-white'}`}
+            className={`xl:hidden p-2 -mr-2 transition-colors ${scrolled ? 'text-navy' : 'text-white'}`}
             onClick={() => setMenuOpen(v => !v)}
             aria-expanded={menuOpen}
             aria-label={menuOpen ? 'Lukk meny' : 'Åpne meny'}
@@ -236,7 +242,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="lg:hidden bg-white border-t border-line max-h-[calc(100vh-4rem)] overflow-y-auto">
+        <div className="xl:hidden bg-white border-t border-line max-h-[calc(100vh-4rem)] overflow-y-auto">
           <nav className="container-xl py-3 flex flex-col" aria-label="Mobil navigasjon">
             {navLinks.map((link, index) => {
 

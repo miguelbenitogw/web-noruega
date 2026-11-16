@@ -1,6 +1,7 @@
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import EditableText from './editable/EditableText'
+import RuleGrid from './ui/RuleGrid'
 
 /**
  * Talentportalen — qué es el portal y qué se hace dentro.
@@ -89,7 +90,7 @@ export default function Talentportalen() {
               <a
                 href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'talentportalen', cta: 'kontakt_oss' })}
-                className="gw-btn gw-btn-line bg-white"
+                className="gw-btn gw-btn-line"
               >
                 <EditableText
                   as="span"
@@ -106,15 +107,17 @@ export default function Talentportalen() {
               no hay números—, separadas por filetes en vez de por cuatro
               tarjetas iguales con sombra. */}
           {benefits.length > 0 && (
-            <ul className="lg:col-span-6 lg:col-start-7 grid sm:grid-cols-2 border-t border-line" role="list">
+            <RuleGrid
+              cols="sm2"
+              as="ul"
+              role="list"
+              className="lg:col-span-6 lg:col-start-7 border-t border-line"
+            >
               {benefits.map((b, i) => (
-                <li
+                <RuleGrid.Cell
+                  as="li"
                   key={b.title || i}
-                  className="py-7 sm:px-7 sm:first:pl-0 sm:[&:nth-child(3)]:pl-0
-                             border-line
-                             [&:nth-child(n+2)]:border-t
-                             sm:[&:nth-child(2)]:border-t-0
-                             [&:nth-child(even)]:sm:border-l"
+                  className="py-7 sm:px-7 sm:odd:pl-0"
                 >
                   <span className="block text-primary-600" aria-hidden="true">
                     {benefitIcons[i] || benefitIcons[0]}
@@ -130,11 +133,11 @@ export default function Talentportalen() {
                     path={`talentportalenComp.benefits.${i}.desc`}
                     value={b.desc}
                     multiline
-                    className="mt-2 text-[0.9375rem] text-ink-muted leading-relaxed"
+                    className="mt-2 text-body-sm text-ink-muted leading-relaxed"
                   />
-                </li>
+                </RuleGrid.Cell>
               ))}
-            </ul>
+            </RuleGrid>
           )}
 
         </div>

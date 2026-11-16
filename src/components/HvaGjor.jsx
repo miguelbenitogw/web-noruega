@@ -107,7 +107,7 @@ export default function HvaGjor() {
                     as="h3"
                     path={`hvaGjor.services.${i}.title`}
                     value={s.title}
-                    className="font-heading text-[1.1875rem] font-semibold text-navy leading-snug"
+                    className="font-heading text-body-lg font-semibold text-navy leading-snug"
                   />
                   <InlineEditableParagraph
                     as="p"

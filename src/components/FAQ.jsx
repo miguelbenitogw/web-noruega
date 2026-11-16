@@ -2,6 +2,7 @@ import { useState } from 'react'
 import useContent from '../hooks/useContent'
 import EditableText from './editable/EditableText'
 import InlineRichText from './editable/InlineRichText'
+import TextLink from './ui/TextLink'
 
 /**
  * FAQ
@@ -85,7 +86,7 @@ function AccordionItem({ faq, index, basePath, isOpen, onToggle }) {
           as="p"
           path={`${basePath}.${index}.a`}
           value={faq.a}
-          className="pb-6 pr-8 gw-measure !text-ink-muted text-[0.9375rem] !leading-[1.7]"
+          className="pb-6 pr-8 gw-measure !text-ink-muted text-body-sm !leading-[1.7]"
         />
       </div>
     </div>
@@ -121,19 +122,9 @@ export default function FAQ() {
               value={c.description}
               className="mt-6 !text-ink-muted !leading-[1.65]"
             />
-            <a
-              href="/kontakt"
-              className="group mt-8 inline-flex items-center gap-2 font-ui text-[0.9375rem] font-semibold text-primary-600 transition-colors hover:text-navy"
-            >
+            <TextLink href="/kontakt" className="mt-8">
               <EditableText as="span" path="faq.ctaText" value={c.ctaText} className="inline" />
-              <svg
-                width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
-                className="shrink-0 transition-transform duration-200 group-hover:translate-x-1"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </a>
+            </TextLink>
           </div>
 
           <div className="lg:col-span-7 lg:col-start-6 border-t border-line">

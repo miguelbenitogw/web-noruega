@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import emailjs from '@emailjs/browser'
 import { trackEvent } from '../lib/analytics'
+import FormField from './ui/FormField'
+import FormAlert from './ui/FormAlert'
 
 /**
  * Formulario de candidatos.
@@ -39,61 +41,6 @@ const TABS = [
 ]
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-/* Mismas clases de campo que `Kontakt.jsx`. Están duplicadas a propósito:
-   extraer un `<FormField>` compartido es refactor de componentes, no rediseño,
-   y toca archivos que ahora mismo están en manos de otros. */
-const FIELD_CLASS =
-  'w-full font-ui text-[0.9375rem] text-ink bg-white rounded-panel border px-4 py-3 ' +
-  'placeholder:text-ink-soft/80 outline-none transition-colors'
-const FIELD_OK = 'border-line focus:border-primary-600'
-const FIELD_ERROR = 'border-red-500 bg-red-50/50 focus:border-red-600'
-
-function FieldNote({ id, children }) {
-  return (
-    <p id={id} className="mt-2 flex items-start gap-1.5 font-ui text-[0.8125rem] text-red-700">
-      <svg
-        width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        strokeWidth="2.5" strokeLinecap="round" aria-hidden="true" className="shrink-0 mt-[3px]"
-      >
-        <path d="M12 8v5M12 17h.01" />
-        <circle cx="12" cy="12" r="9" strokeWidth="1.75" />
-      </svg>
-      {children}
-    </p>
-  )
-}
-
-function Field({
-  id, name, label, type = 'text', rows,
-  required = false, autoComplete, value, onChange, placeholder, error,
-}) {
-  const errorId = `${id}-error`
-  const shared = {
-    id,
-    name,
-    value,
-    onChange,
-    placeholder,
-    required,
-    'aria-required': required || undefined,
-    'aria-invalid': error ? true : undefined,
-    'aria-describedby': error ? errorId : undefined,
-    className: `${FIELD_CLASS} ${error ? FIELD_ERROR : FIELD_OK}${rows ? ' resize-y min-h-[120px]' : ''}`,
-  }
-
-  return (
-    <div>
-      <label htmlFor={id} className="block font-ui text-[0.8125rem] font-semibold text-navy mb-2">
-        {label}
-      </label>
-      {rows
-        ? <textarea rows={rows} {...shared} />
-        : <input type={type} autoComplete={autoComplete} {...shared} />}
-      {error && <FieldNote id={errorId}>{error}</FieldNote>}
-    </div>
-  )
-}
 
 const validate = (f) => {
   const next = {}
@@ -269,30 +216,21 @@ export default function KandidatKontakt() {
                   />
 
                   {status === 'error' && (
-                    <div
-                      className="font-ui text-sm text-red-800 bg-red-50 border border-red-300 rounded-panel px-4 py-3"
-                      role="alert"
-                    >
+                    <FormAlert>
                       {isEmailConfigured
                         ? 'Noe gikk galt. Prøv igjen eller kontakt oss direkte per e-post.'
                         : 'Kontaktskjema er midlertidig utilgjengelig. Kontakt oss direkte på e-post eller telefon.'}
-                    </div>
+                    </FormAlert>
                   )}
                   {status === 'rate_limited' && (
-                    <div
-                      className="font-ui text-sm text-amber-900 bg-amber-50 border border-amber-300 rounded-panel px-4 py-3"
-                      role="alert"
-                    >
+                    <FormAlert tone="warn">
                       For mange forsøk på kort tid. Vent litt og prøv igjen.
-                    </div>
+                    </FormAlert>
                   )}
                   {status === 'invalid' && (
-                    <div
-                      className="font-ui text-sm text-red-800 bg-red-50 border border-red-300 rounded-panel px-4 py-3"
-                      role="alert"
-                    >
+                    <FormAlert>
                       Sjekk de merkede feltene og prøv igjen.
-                    </div>
+                    </FormAlert>
                   )}
 
                   {/* Dos caminos, un control. Pastilla plana: el seleccionado
@@ -319,7 +257,7 @@ export default function KandidatKontakt() {
                     ))}
                   </div>
 
-                  <Field
+                  <FormField
                     id="kandidat_from_name"
                     name="from_name"
                     label="Fullt navn *"
@@ -331,7 +269,7 @@ export default function KandidatKontakt() {
                     error={errors.from_name}
                   />
 
-                  <Field
+                  <FormField
                     id="kandidat_from_email"
                     name="from_email"
                     type="email"
@@ -344,7 +282,7 @@ export default function KandidatKontakt() {
                     error={errors.from_email}
                   />
 
-                  <Field
+                  <FormField
                     id="kandidat_phone"
                     name="phone"
                     type="tel"
@@ -356,7 +294,7 @@ export default function KandidatKontakt() {
                     error={errors.phone}
                   />
 
-                  <Field
+                  <FormField
                     id="kandidat_message"
                     name="message"
                     label="Melding *"

@@ -46,6 +46,27 @@ export default {
           DEFAULT: '#062A6A',
           deep: '#041E4D', // fondo de pie de página y bandas profundas
         },
+        // Estados de validación. Son los ÚNICOS colores no-marca de la
+        // pantalla, y hasta ahora se escribían como `red-*` / `amber-*` de
+        // Tailwind directamente en los formularios: el sistema no tenía dónde
+        // decir «esto está mal». Los valores son los mismos de Tailwind, así
+        // que nada cambia de aspecto; lo que cambia es que ahora se pueden
+        // reteñir desde acá sin recorrer los dos formularios.
+        // Solo los tonos que la interfaz usa de verdad: una paleta completa
+        // de once pasos para tres avisos sería inventario muerto.
+        danger: {
+          50:  '#FEF2F2', // fondo de aviso y del campo en error
+          300: '#FCA5A5', // filete del aviso
+          500: '#EF4444', // borde del campo en error
+          600: '#DC2626', // borde del campo en error, con foco
+          700: '#B91C1C', // texto de la nota bajo el campo
+          800: '#991B1B', // texto del aviso
+        },
+        warn: {
+          50:  '#FFFBEB',
+          300: '#FCD34D',
+          900: '#78350F',
+        },
         // Neutros fríos
         surface: '#F1F4F9', // fondo de sección alterno
         frost:   '#E7EDF6', // panel plano, sustituye a la tarjeta con sombra
@@ -65,10 +86,18 @@ export default {
         ui: ['Poppins', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        // Cuerpo de lectura. Sin line-height a propósito: hay sitios que
-        // acompañan con su propio `leading-*` y un valor aquí se los pisaría.
-        // Estaba escrito como `text-[1.0625rem]` por media web.
-        body: '1.0625rem',
+        // ── Escala de cuerpo e interfaz ───────────────────────────────────
+        // Ninguna lleva line-height a propósito: hay sitios que acompañan con
+        // su propio `leading-*` y un valor aquí se los pisaría.
+        //
+        // `body` ya existía porque estaba escrito como `text-[1.0625rem]` por
+        // media web. Los otros tres tenían exactamente el mismo problema y
+        // seguían sueltos: 22 `text-[1.1875rem]`, 34 `text-[0.9375rem]` y 31
+        // `text-[0.8125rem]` repartidos por casi todos los archivos.
+        'body-lg': '1.1875rem', // bajada de hero y entradilla
+        body:      '1.0625rem', // cuerpo de lectura
+        'body-sm': '0.9375rem', // interfaz: campos, botones, listas de filete
+        'body-xs': '0.8125rem', // metadatos, roles, migas de pan
 
         // Escala de display con tracking ya calibrado
         'display-sm': ['clamp(2rem, 4vw, 2.75rem)',   { lineHeight: '1.08', letterSpacing: '-0.025em' }],

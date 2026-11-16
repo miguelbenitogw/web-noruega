@@ -1,6 +1,8 @@
 import EditableText from '../components/editable/EditableText'
 import KandidatKontakt from '../components/KandidatKontakt'
 import PageEndNav from '../components/PageEndNav'
+import PageHero from '../components/ui/PageHero'
+import RuleList from '../components/ui/RuleList'
 import { IMAGES, img, srcSet } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
@@ -18,107 +20,62 @@ import useContent from '../hooks/useContent'
  * pantalla, alternando izquierda y derecha como en el teaser de la home.
  */
 
-/* Lista de filetes. Sustituye al patrón «círculo azul + check», que es el tic
-   de cualquier landing generada: aquí lo que separa es la línea, no el icono. */
-function RuleList({ items, basePath }) {
-  return (
-    <ul className="border-t border-line">
-      {items.map((item, index) => (
-        <li key={`${basePath}-${index}`} className="border-b border-line py-3.5">
-          <EditableText
-            as="span"
-            path={`${basePath}.${index}`}
-            value={item}
-            className="font-ui text-[0.9375rem] leading-snug text-ink"
-          />
-        </li>
-      ))}
-    </ul>
-  )
-}
-
 export default function SpanskAlicantePage() {
   const page = useContent('spanskAlicantePage')
   const processSteps = page.processSteps || []
 
   return (
     <>
-      {/* ── Hero ──────────────────────────────────────────────────────────
-          Navy plano y la foto saliendo por el borde derecho. Sin tarjeta,
-          sin sombra: el borde de la pantalla es el marco. */}
-      <section className="bg-navy overflow-hidden" aria-labelledby="spansk-alicante-hero-heading">
-        <div className="container-xl">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center pt-32 pb-16 lg:pt-40 lg:pb-20">
+      {/* La foto sale por el borde derecho de la pantalla: sin tarjeta y sin
+          sombra, el borde es el marco. Eso lo pone PageHero cuando hay foto. */}
+      <PageHero
+        current={page.breadcrumb}
+        currentPath="spanskAlicantePage.breadcrumb"
+        titleId="spansk-alicante-hero-heading"
+        title={page.heroTitle}
+        titlePath="spanskAlicantePage.heroTitle"
+        titleWidth="18ch"
+        description={page.heroSubtitle}
+        descriptionPath="spanskAlicantePage.heroSubtitle"
+        media={(
+          <img
+            src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1400)}
+            srcSet={srcSet(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, [640, 1024, 1400])}
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            alt={page.heroImageAlt || 'Strand og palmer i Alicante'}
+            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
+            loading="eager"
+            decoding="sync"
+            width={1400}
+            height={520}
+          />
+        )}
+      >
+        <EditableText
+          as="p"
+          path="spanskAlicantePage.intro"
+          value={page.intro}
+          multiline
+          className="mt-5 gw-measure text-body text-primary-200 leading-[1.65]"
+        />
 
-            <div className="lg:col-span-6 animate-riseIn">
-              <nav className="font-ui text-primary-300 text-sm mb-7" aria-label="Brødsmuler">
-                <a href="/" className="hover:text-white transition-colors">Hjem</a>
-                <span className="mx-2 text-primary-400" aria-hidden="true">/</span>
-                <EditableText
-                  as="span"
-                  path="spanskAlicantePage.breadcrumb"
-                  value={page.breadcrumb}
-                  className="text-white"
-                />
-              </nav>
-
-              <EditableText
-                as="h1"
-                id="spansk-alicante-hero-heading"
-                path="spanskAlicantePage.heroTitle"
-                value={page.heroTitle}
-                className="text-display-sm sm:text-display font-semibold !text-white break-words max-w-[18ch]"
-              />
-              <EditableText
-                as="p"
-                path="spanskAlicantePage.heroSubtitle"
-                value={page.heroSubtitle}
-                multiline
-                className="mt-6 gw-measure text-body lg:text-[1.1875rem] text-primary-100 leading-[1.6]"
-              />
-              <EditableText
-                as="p"
-                path="spanskAlicantePage.intro"
-                value={page.intro}
-                multiline
-                className="mt-5 gw-measure text-body text-primary-200 leading-[1.65]"
-              />
-
-              <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
-                <a
-                  href="#kandidat-kontakt"
-                  onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hero', cta: 'kandidat_kontakt' })}
-                  className="gw-btn gw-btn-ember"
-                >
-                  <EditableText as="span" path="spanskAlicantePage.ctaSecondary" value={page.ctaSecondary} className="inline" />
-                </a>
-                <a
-                  href="#spansk-alicante-process"
-                  onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hero', cta: 'process' })}
-                  className="gw-btn gw-btn-ghost"
-                >
-                  <EditableText as="span" path="spanskAlicantePage.ctaPrimary" value={page.ctaPrimary} className="inline" />
-                </a>
-              </div>
-            </div>
-
-            <div className="lg:col-span-6 animate-settle gw-bleed-r">
-              <img
-                src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1400)}
-                srcSet={srcSet(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, [640, 1024, 1400])}
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                alt={page.heroImageAlt || 'Strand og palmer i Alicante'}
-                className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
-                loading="eager"
-                decoding="sync"
-                width={1400}
-                height={520}
-              />
-            </div>
-
-          </div>
+        <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
+          <a
+            href="#kandidat-kontakt"
+            onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hero', cta: 'kandidat_kontakt' })}
+            className="gw-btn gw-btn-ember"
+          >
+            <EditableText as="span" path="spanskAlicantePage.ctaSecondary" value={page.ctaSecondary} className="inline" />
+          </a>
+          <a
+            href="#spansk-alicante-process"
+            onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hero', cta: 'process' })}
+            className="gw-btn gw-btn-ghost"
+          >
+            <EditableText as="span" path="spanskAlicantePage.ctaPrimary" value={page.ctaPrimary} className="inline" />
+          </a>
         </div>
-      </section>
+      </PageHero>
 
       {/* ── El relato ─────────────────────────────────────────────────────
           Cinco párrafos corridos: esto se lee, así que va en serif, a medida
@@ -132,7 +89,7 @@ export default function SpanskAlicantePage() {
               value={page.exchangeNote}
               multiline
               richText
-              className="text-body lg:text-[1.1875rem] text-ink leading-[1.75] [&>p]:mb-6 [&>p:last-child]:mb-0 [&>p]:leading-[1.75]"
+              className="text-body lg:text-body-lg text-ink leading-[1.75] [&>p]:mb-6 [&>p:last-child]:mb-0 [&>p]:leading-[1.75]"
             />
           </div>
         </div>
@@ -163,9 +120,7 @@ export default function SpanskAlicantePage() {
                 value={page.roleTitle}
                 className="text-display-sm font-semibold text-navy break-words"
               />
-              <div className="mt-8">
-                <RuleList items={page.roleItems || []} basePath="spanskAlicantePage.roleItems" />
-              </div>
+              <RuleList items={page.roleItems || []} basePath="spanskAlicantePage.roleItems" className="mt-8" />
             </div>
 
           </div>
@@ -183,9 +138,7 @@ export default function SpanskAlicantePage() {
                 value={page.benefitsTitle}
                 className="text-display-sm font-semibold text-navy break-words"
               />
-              <div className="mt-8">
-                <RuleList items={page.benefitsItems || []} basePath="spanskAlicantePage.benefitsItems" />
-              </div>
+              <RuleList items={page.benefitsItems || []} basePath="spanskAlicantePage.benefitsItems" className="mt-8" />
             </div>
 
             <div>
@@ -195,9 +148,7 @@ export default function SpanskAlicantePage() {
                 value={page.weekTitle}
                 className="text-display-sm font-semibold text-navy break-words"
               />
-              <div className="mt-8">
-                <RuleList items={page.weekItems || []} basePath="spanskAlicantePage.weekItems" />
-              </div>
+              <RuleList items={page.weekItems || []} basePath="spanskAlicantePage.weekItems" className="mt-8" />
             </div>
           </div>
         </div>
@@ -265,9 +216,7 @@ export default function SpanskAlicantePage() {
                 value={page.spanishCourseTitle}
                 className="text-display-sm font-semibold text-navy break-words"
               />
-              <div className="mt-8">
-                <RuleList items={page.spanishCourseItems || []} basePath="spanskAlicantePage.spanishCourseItems" />
-              </div>
+              <RuleList items={page.spanishCourseItems || []} basePath="spanskAlicantePage.spanishCourseItems" className="mt-8" />
             </div>
 
             <div>
@@ -277,9 +226,7 @@ export default function SpanskAlicantePage() {
                 value={page.fitTitle}
                 className="text-display-sm font-semibold text-navy break-words"
               />
-              <div className="mt-8">
-                <RuleList items={page.fitItems || []} basePath="spanskAlicantePage.fitItems" />
-              </div>
+              <RuleList items={page.fitItems || []} basePath="spanskAlicantePage.fitItems" className="mt-8" />
             </div>
           </div>
         </div>
@@ -298,9 +245,7 @@ export default function SpanskAlicantePage() {
                 value={page.cityTitle}
                 className="text-display-sm font-semibold text-navy break-words"
               />
-              <div className="mt-8">
-                <RuleList items={page.cityItems || []} basePath="spanskAlicantePage.cityItems" />
-              </div>
+              <RuleList items={page.cityItems || []} basePath="spanskAlicantePage.cityItems" className="mt-8" />
 
               <div className="mt-10">
                 <EditableText
@@ -314,7 +259,7 @@ export default function SpanskAlicantePage() {
                     href={page.instagramUrl || 'https://www.instagram.com/globalworking'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2 font-ui text-[0.9375rem] font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                    className="group inline-flex items-center gap-2 font-ui text-body-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                   >
                     <EditableText
                       as="span"
@@ -330,7 +275,7 @@ export default function SpanskAlicantePage() {
                     href={page.tiktokUrl || 'https://www.tiktok.com/@globalworking'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2 font-ui text-[0.9375rem] font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                    className="group inline-flex items-center gap-2 font-ui text-body-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                   >
                     <EditableText
                       as="span"
@@ -383,7 +328,7 @@ export default function SpanskAlicantePage() {
                   key={`process-${index}`}
                   className="border-b border-line py-7 lg:border-l lg:first:border-l-0 lg:pl-6 lg:first:pl-0"
                 >
-                  <span className="font-ui text-[0.8125rem] font-semibold tabular-nums text-primary-300">
+                  <span className="gw-step text-primary-300">
                     {String(index + 1).padStart(2, '0')}
                   </span>
                   <EditableText

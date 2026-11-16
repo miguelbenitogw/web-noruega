@@ -5,6 +5,9 @@ import { IMAGES, img } from '../assets/images'
 import useContent from '../hooks/useContent'
 import EditableText from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
+import FormField from './ui/FormField'
+import FormAlert from './ui/FormAlert'
+import TextLink from './ui/TextLink'
 
 /**
  * Kontakt — el formulario del empleador noruego.
@@ -45,59 +48,6 @@ const RATE_LIMIT_MAX = 3
 const MIN_FORM_FILL_MS = 3000
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-/* Interfaz en Poppins: un campo en serif se lee peor y se opera peor. */
-const FIELD_CLASS =
-  'w-full font-ui text-[0.9375rem] text-ink bg-white rounded-panel border px-4 py-3 ' +
-  'placeholder:text-ink-soft/80 outline-none transition-colors'
-const FIELD_OK = 'border-line focus:border-primary-600'
-const FIELD_ERROR = 'border-red-500 bg-red-50/50 focus:border-red-600'
-
-function FieldNote({ id, children }) {
-  return (
-    <p id={id} className="mt-2 flex items-start gap-1.5 font-ui text-[0.8125rem] text-red-700">
-      <svg
-        width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        strokeWidth="2.5" strokeLinecap="round" aria-hidden="true" className="shrink-0 mt-[3px]"
-      >
-        <path d="M12 8v5M12 17h.01" />
-        <circle cx="12" cy="12" r="9" strokeWidth="1.75" />
-      </svg>
-      {children}
-    </p>
-  )
-}
-
-function Field({
-  id, name, label, type = 'text', rows,
-  required = false, autoComplete, value, onChange, placeholder, error,
-}) {
-  const errorId = `${id}-error`
-  const shared = {
-    id,
-    name,
-    value,
-    onChange,
-    placeholder,
-    required,
-    'aria-required': required || undefined,
-    'aria-invalid': error ? true : undefined,
-    'aria-describedby': error ? errorId : undefined,
-    className: `${FIELD_CLASS} ${error ? FIELD_ERROR : FIELD_OK}${rows ? ' resize-y min-h-[120px]' : ''}`,
-  }
-
-  return (
-    <div>
-      <label htmlFor={id} className="block font-ui text-[0.8125rem] font-semibold text-navy mb-2">
-        {label}
-      </label>
-      {rows
-        ? <textarea rows={rows} {...shared} />
-        : <input type={type} autoComplete={autoComplete} {...shared} />}
-      {error && <FieldNote id={errorId}>{error}</FieldNote>}
-    </div>
-  )
-}
 
 const validate = (f) => {
   const next = {}
@@ -287,19 +237,19 @@ export default function Kontakt() {
                     as="div"
                     path={`contacts.${i}.role`}
                     value={contact.role}
-                    className="mt-0.5 font-ui text-[0.8125rem] text-ink-soft"
+                    className="mt-0.5 gw-meta"
                   />
 
                   <div className="mt-4 pt-4 border-t border-line space-y-1.5">
                     <a
                       href={`mailto:${contact.email}`}
-                      className="block font-ui text-[0.8125rem] text-primary-600 break-words transition-colors hover:text-navy"
+                      className="block font-ui text-body-xs text-primary-600 break-words transition-colors hover:text-navy"
                     >
                       {contact.email}
                     </a>
                     <a
                       href={`tel:${contact.phone.replace(/\s/g, '')}`}
-                      className="block font-ui text-[0.8125rem] text-ink-muted tabular-nums transition-colors hover:text-primary-600"
+                      className="block font-ui text-body-xs text-ink-muted tabular-nums transition-colors hover:text-primary-600"
                     >
                       {contact.phone}
                     </a>
@@ -331,21 +281,14 @@ export default function Kontakt() {
                   multiline
                   className="mt-1.5 font-ui text-sm text-ink-muted leading-relaxed"
                 />
-                <a
+                <TextLink
                   href="https://maps.google.com/?q=Avenida+de+la+Albufereta+44+Alicante"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group mt-4 inline-flex items-center gap-2 font-ui text-sm font-semibold text-primary-600 transition-colors hover:text-navy"
+                  className="mt-4"
                 >
                   {c.mapsLabel}
-                  <svg
-                    width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
-                    className="shrink-0 transition-transform duration-200 group-hover:translate-x-1"
-                  >
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </a>
+                </TextLink>
               </div>
             </div>
           </div>
@@ -375,30 +318,21 @@ export default function Kontakt() {
                   </div>
 
                   {status === 'error' && (
-                    <div
-                      className="font-ui text-sm text-red-800 bg-red-50 border border-red-300 rounded-panel px-4 py-3"
-                      role="alert"
-                    >
+                    <FormAlert>
                       {isEmailConfigured
                         ? 'Noe gikk galt. Prøv igjen eller kontakt oss direkte per e-post.'
                         : 'Kontaktskjema er midlertidig utilgjengelig. Kontakt oss direkte på e-post eller telefon.'}
-                    </div>
+                    </FormAlert>
                   )}
                   {status === 'rate_limited' && (
-                    <div
-                      className="font-ui text-sm text-amber-900 bg-amber-50 border border-amber-300 rounded-panel px-4 py-3"
-                      role="alert"
-                    >
+                    <FormAlert tone="warn">
                       For mange forsøk på kort tid. Vent litt og prøv igjen.
-                    </div>
+                    </FormAlert>
                   )}
                   {status === 'invalid' && (
-                    <div
-                      className="font-ui text-sm text-red-800 bg-red-50 border border-red-300 rounded-panel px-4 py-3"
-                      role="alert"
-                    >
+                    <FormAlert>
                       Sjekk de merkede feltene og prøv igjen.
-                    </div>
+                    </FormAlert>
                   )}
 
                   <input
@@ -412,7 +346,7 @@ export default function Kontakt() {
                     className="absolute -left-[9999px] opacity-0 pointer-events-none"
                   />
 
-                  <Field
+                  <FormField
                     id="from_name"
                     name="from_name"
                     label="Fullt navn *"
@@ -424,7 +358,7 @@ export default function Kontakt() {
                     error={errors.from_name}
                   />
 
-                  <Field
+                  <FormField
                     id="from_email"
                     name="from_email"
                     type="email"
@@ -437,7 +371,7 @@ export default function Kontakt() {
                     error={errors.from_email}
                   />
 
-                  <Field
+                  <FormField
                     id="phone"
                     name="phone"
                     type="tel"
@@ -449,7 +383,7 @@ export default function Kontakt() {
                     error={errors.phone}
                   />
 
-                  <Field
+                  <FormField
                     id="message"
                     name="message"
                     label="Melding *"

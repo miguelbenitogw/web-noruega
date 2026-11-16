@@ -1,6 +1,8 @@
 import EditableText from '../components/editable/EditableText'
 import EditableImage from '../components/editable/EditableImage'
 import PageEndNav from '../components/PageEndNav'
+import PageHero from '../components/ui/PageHero'
+import RuleList from '../components/ui/RuleList'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
@@ -25,56 +27,28 @@ export default function SpanskAlicanteHvorforPage() {
 
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="bg-navy overflow-hidden" aria-labelledby="spansk-alicante-hvorfor-heading">
-        <div className="container-xl">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center pt-32 pb-16 lg:pt-40 lg:pb-20">
-
-            <div className="lg:col-span-6 animate-riseIn">
-              <nav className="font-ui text-primary-300 text-sm mb-7" aria-label="Brødsmuler">
-                <a href="/" className="hover:text-white transition-colors">Hjem</a>
-                <span className="mx-2 text-primary-400" aria-hidden="true">/</span>
-                <a href="/spansk-i-alicante" className="hover:text-white transition-colors">Spansk i Alicante</a>
-                <span className="mx-2 text-primary-400" aria-hidden="true">/</span>
-                <EditableText
-                  as="span"
-                  path="spanskAlicanteVision.breadcrumb"
-                  value={vision.breadcrumb}
-                  className="text-white"
-                />
-              </nav>
-
-              <EditableText
-                as="h1"
-                id="spansk-alicante-hvorfor-heading"
-                path="spanskAlicanteVision.title"
-                value={vision.title}
-                className="text-display-sm sm:text-display font-semibold !text-white break-words max-w-[20ch]"
-              />
-              <EditableText
-                as="p"
-                path="spanskAlicanteVision.intro"
-                value={vision.intro}
-                multiline
-                className="mt-6 gw-measure text-body lg:text-[1.1875rem] text-primary-100 leading-[1.6]"
-              />
-            </div>
-
-            <div className="lg:col-span-6 animate-settle gw-bleed-r">
-              <EditableImage
-                path="spanskAlicanteVision.imageUrl"
-                src={img(vision.imageUrl || IMAGES.spanskAlicanteCastleArch, 1400)}
-                alt={vision.imageAlt || 'Historisk arkitektur og stemning i Alicante'}
-                className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
-                loading="eager"
-                width={1400}
-                height={520}
-              />
-            </div>
-
-          </div>
-        </div>
-      </section>
+      <PageHero
+        trail={[{ label: 'Spansk i Alicante', href: '/spansk-i-alicante' }]}
+        current={vision.breadcrumb}
+        currentPath="spanskAlicanteVision.breadcrumb"
+        titleId="spansk-alicante-hvorfor-heading"
+        title={vision.title}
+        titlePath="spanskAlicanteVision.title"
+        titleWidth="20ch"
+        description={vision.intro}
+        descriptionPath="spanskAlicanteVision.intro"
+        media={(
+          <EditableImage
+            path="spanskAlicanteVision.imageUrl"
+            src={img(vision.imageUrl || IMAGES.spanskAlicanteCastleArch, 1400)}
+            alt={vision.imageAlt || 'Historisk arkitektur og stemning i Alicante'}
+            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
+            loading="eager"
+            width={1400}
+            height={520}
+          />
+        )}
+      />
 
       {/* ── El argumento ──────────────────────────────────────────────────
           Prosa a la izquierda, apoyo pegajoso a la derecha. Los filetes
@@ -112,18 +86,12 @@ export default function SpanskAlicanteHvorforPage() {
                 <h2 className="font-heading text-xl font-semibold text-navy">{hvorfor.sidebarHeading}</h2>
 
                 {highlights.length > 0 && (
-                  <ul className="mt-6 border-t border-primary-200/70">
-                    {highlights.map((item, index) => (
-                      <li key={`highlight-${index}`} className="border-b border-primary-200/70 py-3.5">
-                        <EditableText
-                          as="span"
-                          path={`spanskAlicanteVision.highlights.${index}`}
-                          value={item}
-                          className="font-ui text-[0.9375rem] leading-snug text-ink"
-                        />
-                      </li>
-                    ))}
-                  </ul>
+                  <RuleList
+                    items={highlights}
+                    basePath="spanskAlicanteVision.highlights"
+                    tone="panel"
+                    className="mt-6"
+                  />
                 )}
 
                 <div className="mt-8 flex flex-col gap-3">

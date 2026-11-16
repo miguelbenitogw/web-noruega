@@ -49,7 +49,7 @@ export default function CookieConsent() {
         <div className="bg-navy border border-white/10 rounded-panel px-5 py-5 sm:px-7 sm:py-6
                         flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
           <div className="flex-1">
-            <p className="font-heading text-[0.9375rem] font-semibold text-white">{cookie.title}</p>
+            <p className="font-heading text-body-sm font-semibold text-white">{cookie.title}</p>
             <p className="mt-1.5 max-w-measure text-[0.875rem] leading-[1.6] text-primary-200">
               {cookie.description}
             </p>

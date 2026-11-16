@@ -5,6 +5,7 @@ import useContent from '../hooks/useContent'
 import { IMAGES, img, srcSet } from '../assets/images'
 import EditableText from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
+import RuleGrid from './ui/RuleGrid'
 
 /**
  * Hero — «To kyster»
@@ -26,11 +27,7 @@ function Stat({ stat, active, index }) {
 
 
   return (
-    <div
-      className="px-5 py-6 lg:px-8 lg:py-8 border-white/15
-                 [&:nth-child(even)]:border-l [&:nth-child(n+3)]:border-t
-                 lg:[&:nth-child(n+2)]:border-l lg:[&:nth-child(n+3)]:border-t-0"
-    >
+    <RuleGrid.Cell className="px-5 py-6 lg:px-8 lg:py-8">
       <EditableText
         as="div"
         path={`hero.stats.${index}.value`}
@@ -42,9 +39,9 @@ function Stat({ stat, active, index }) {
         as="div"
         path={`hero.stats.${index}.label`}
         value={stat.label}
-        className="mt-2 text-[0.9375rem] text-primary-200 leading-snug"
+        className="mt-2 text-body-sm text-primary-200 leading-snug"
       />
-    </div>
+    </RuleGrid.Cell>
   )
 }
 
@@ -85,7 +82,7 @@ export default function Hero() {
               path="hero.description"
               value={c.description}
               multiline
-              className="mt-7 gw-measure text-body lg:text-[1.1875rem] text-primary-100 leading-[1.6]"
+              className="mt-7 gw-measure text-body lg:text-body-lg text-primary-100 leading-[1.6]"
               inputClassName="min-h-[160px]"
             />
 
@@ -170,11 +167,11 @@ export default function Hero() {
           están. */}
       {stats.length > 0 && (
         <div className="relative border-t border-white/15 bg-navy-deep">
-          <div className="container-xl">
-            <div
-              ref={statsRef}
-              className="grid grid-cols-2 lg:grid-cols-4"
-            >
+          {/* El observador vive en el contenedor y no en la rejilla: envuelve
+              exactamente lo mismo —la tira de datos es su único hijo— y así no
+              hay que pasarle una `ref` a un componente del sistema. */}
+          <div className="container-xl" ref={statsRef}>
+            <RuleGrid cols="base2-lg4" tone="dark">
               {stats.map((stat, i) => (
                 <Stat
                   key={`${stat.label}-${i}`}
@@ -183,7 +180,7 @@ export default function Hero() {
                   index={i}
                 />
               ))}
-            </div>
+            </RuleGrid>
           </div>
         </div>
       )}

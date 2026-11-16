@@ -1,9 +1,13 @@
 import EditableText from '../components/editable/EditableText'
 import EditableImage from '../components/editable/EditableImage'
 import PageEndNav from '../components/PageEndNav'
+import PageHero from '../components/ui/PageHero'
+import RuleList from '../components/ui/RuleList'
+import TextLink from '../components/ui/TextLink'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
+import BodyParagraph from '../components/ui/BodyParagraph'
 
 /**
  * LivetSomStudentPage — cómo es estar en Alicante.
@@ -19,51 +23,6 @@ import useContent from '../hooks/useContent'
  */
 
 /* Párrafo de lectura. Serif, medida corta, interlineado de libro. */
-function BodyParagraph({ path, value, className = '' }) {
-  return (
-    <EditableText
-      as="p"
-      path={path}
-      value={value}
-      multiline
-      className={`text-body lg:text-[1.125rem] text-ink-muted leading-[1.75] ${className}`}
-    />
-  )
-}
-
-/* Lista de filetes: sin circulito azul con check, que es el tic de toda
-   landing generada. Lo que separa es la línea. */
-function RuleList({ items, basePath, className = '' }) {
-  return (
-    <ul className={`border-t border-line ${className}`}>
-      {items.map((item, index) => (
-        <li key={`${basePath}-${index}`} className="border-b border-line py-3.5">
-          <EditableText
-            as="span"
-            path={`${basePath}.${index}`}
-            value={item}
-            className="font-ui text-[0.9375rem] leading-snug text-ink"
-          />
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-function TextLink({ href, onClick, children, className = '' }) {
-  return (
-    <a
-      href={href}
-      onClick={onClick}
-      className={`inline-flex items-center gap-2 font-ui text-[0.9375rem] font-semibold text-primary-600 hover:text-primary-700 transition-colors ${className}`}
-    >
-      {children}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-        <path d="M5 12h14M12 5l7 7-7 7" />
-      </svg>
-    </a>
-  )
-}
 
 export default function LivetSomStudentPage() {
   const page = useContent('livetSomStudent')
@@ -72,54 +31,27 @@ export default function LivetSomStudentPage() {
 
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="bg-navy overflow-hidden" aria-labelledby="livet-som-student-heading">
-        <div className="container-xl">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center pt-32 pb-16 lg:pt-40 lg:pb-20">
-
-            <div className="lg:col-span-6 animate-riseIn">
-              <nav className="font-ui text-primary-300 text-sm mb-7" aria-label="Brødsmuler">
-                <a href="/" className="hover:text-white transition-colors">Hjem</a>
-                <span className="mx-2 text-primary-400" aria-hidden="true">/</span>
-                <EditableText
-                  as="span"
-                  path="livetSomStudent.breadcrumb"
-                  value={page.breadcrumb}
-                  className="text-white"
-                />
-              </nav>
-
-              <EditableText
-                as="h1"
-                id="livet-som-student-heading"
-                path="livetSomStudent.heroTitle"
-                value={page.heroTitle}
-                className="text-display-sm sm:text-display font-semibold !text-white break-words max-w-[18ch]"
-              />
-              <EditableText
-                as="p"
-                path="livetSomStudent.heroSubtitle"
-                value={page.heroSubtitle}
-                multiline
-                className="mt-6 gw-measure text-body lg:text-[1.1875rem] text-primary-100 leading-[1.6]"
-              />
-            </div>
-
-            <div className="lg:col-span-6 animate-settle gw-bleed-r">
-              <EditableImage
-                path="livetSomStudent.heroImageUrl"
-                src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1400)}
-                alt={page.heroImageAlt || 'Studentlivet i Alicante'}
-                className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
-                loading="eager"
-                width={1400}
-                height={520}
-              />
-            </div>
-
-          </div>
-        </div>
-      </section>
+      <PageHero
+        current={page.breadcrumb}
+        currentPath="livetSomStudent.breadcrumb"
+        titleId="livet-som-student-heading"
+        title={page.heroTitle}
+        titlePath="livetSomStudent.heroTitle"
+        titleWidth="18ch"
+        description={page.heroSubtitle}
+        descriptionPath="livetSomStudent.heroSubtitle"
+        media={(
+          <EditableImage
+            path="livetSomStudent.heroImageUrl"
+            src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1400)}
+            alt={page.heroImageAlt || 'Studentlivet i Alicante'}
+            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
+            loading="eager"
+            width={1400}
+            height={520}
+          />
+        )}
+      />
 
       {/* ── Intro ─────────────────────────────────────────────────────────── */}
       <section className="py-24 lg:py-32 bg-white" aria-labelledby="livet-intro-heading">
@@ -284,7 +216,7 @@ export default function LivetSomStudentPage() {
                 as="p"
                 path="livetSomStudent.fellesskapLabel"
                 value={page.fellesskapLabel}
-                className="mt-8 font-ui text-[0.9375rem] font-semibold text-navy"
+                className="mt-8 font-ui text-body-sm font-semibold text-navy"
               />
               <RuleList items={page.fellesskapItems || []} basePath="livetSomStudent.fellesskapItems" className="mt-4" />
               <BodyParagraph path="livetSomStudent.fellesskapP3" value={page.fellesskapP3} className="mt-8" />
@@ -344,9 +276,9 @@ export default function LivetSomStudentPage() {
                       />
                     )}
                     <div className="min-w-0">
-                      <div className="font-ui text-[0.9375rem] font-semibold text-navy leading-tight">{contact.name}</div>
+                      <div className="font-ui text-body-sm font-semibold text-navy leading-tight">{contact.name}</div>
                       {contact.role && (
-                        <div className="mt-1 font-ui text-[0.8125rem] text-ink-soft">{contact.role}</div>
+                        <div className="mt-1 gw-meta">{contact.role}</div>
                       )}
                       <a
                         href={`mailto:${contact.email}`}

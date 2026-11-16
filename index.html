@@ -44,7 +44,13 @@
     <!-- LCP de la Home: el hero lo pinta React despues del bundle, asi que sin
          este preload el navegador lo descubre tarde. Tiene que coincidir con
          HOME_HERO_PRELOAD en src/assets/images.js y con el sizes del <img> en
-         src/components/Hero.jsx, o se descargan dos variantes distintas. -->
+         src/components/Hero.jsx, o se descargan dos variantes distintas.
+
+         Los marcadores no son decoracion: scripts/prerender-meta.mjs borra
+         todo lo que hay entre ellos en las rutas que NO son la portada, donde
+         esta imagen no se usa y el preload seria 128 KB tirados. Si los quitas,
+         el preload vuelve a dispararse en las catorce rutas. -->
+    <!--HOME-PRELOAD-START-->
     <link
       rel="preload"
       as="image"
@@ -54,6 +60,7 @@
       imagesizes="(max-width: 640px) 100vw, 33vw"
       fetchpriority="high"
     />
+    <!--HOME-PRELOAD-END-->
     <!-- Fonts loaded async (non-render-blocking). Replaces the @import in index.css. -->
     <link
       rel="preload"
@@ -185,6 +192,18 @@
   </head>
   <body style="background-color:#F8FAFC;margin:0">
     <div id="root">
+      <!-- scripts/prerender-meta.mjs sustituye este marcador por el cuerpo
+           estatico de cada ruta (h1, texto, nav, enlaces). Es lo unico que ven
+           Bing, GPTBot, ClaudeBot y PerplexityBot, que no ejecutan JavaScript.
+
+           NO lo quites, y NO cambies la forma de <div id="root">: el script
+           antes buscaba la cadena exacta '<div id="root"></div>' y dejo de
+           encontrarla cuando el loader se metio aqui dentro, asi que el cuerpo
+           dejo de inyectarse sin que nada fallara. Ahora el build revienta si
+           este marcador no aparece.
+
+           React lo borra al montar: createRoot() limpia el contenedor. -->
+      <!--PRERENDER-->
       <div id="gw-loader" style="position:fixed;inset:0;background:#F8FAFC;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;">
         <img src="/favicon.svg" alt="" width="56" height="56" style="margin-bottom:24px;opacity:0.85;" />
         <div style="width:36px;height:36px;border:3px solid #DBEAFE;border-top-color:#1E73BE;border-radius:50%;animation:gw-spin 0.8s linear infinite;"></div>

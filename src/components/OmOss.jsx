@@ -2,6 +2,8 @@ import { IMAGES, img, srcSet } from '../assets/images'
 import useContent from '../hooks/useContent'
 import EditableText from './editable/EditableText'
 import InlineRichText from './editable/InlineRichText'
+import RuleGrid from './ui/RuleGrid'
+import TextLink from './ui/TextLink'
 
 /**
  * OmOss — «Hvem er Global Working?»
@@ -96,30 +98,20 @@ export default function OmOss() {
                     className="inline"
                   />
                 </footer>
-                <a
-                  href="/nyheter/pablo-intervju"
-                  className="group mt-4 inline-flex items-center gap-2 font-ui text-sm font-semibold text-primary-600 transition-colors hover:text-navy"
-                >
+                <TextLink href="/nyheter/pablo-intervju" className="mt-4">
                   Les hele intervjuet med Pablo her
-                  <svg
-                    width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
-                    className="transition-transform duration-200 group-hover:translate-x-1"
-                  >
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </a>
+                </TextLink>
               </blockquote>
             )}
 
             {/* Tira de datos: se comparan entre sí, así que van en una fila
                 con filetes, no en tres bloques sueltos con `flex-wrap`. */}
             {(c.stats || []).length > 0 && (
-              <div className="mt-10 grid grid-cols-3 border-t border-line">
+              <RuleGrid cols="base3" className="mt-10 border-t border-line">
                 {(c.stats || []).map((s, i) => (
-                  <div
+                  <RuleGrid.Cell
                     key={s.label}
-                    className="py-6 pr-4 border-line [&:nth-child(n+2)]:border-l [&:nth-child(n+2)]:pl-4 sm:[&:nth-child(n+2)]:pl-6"
+                    className="py-6 pr-4 pl-4 first:pl-0 sm:pl-6"
                   >
                     <EditableText
                       as="div"
@@ -131,11 +123,11 @@ export default function OmOss() {
                       as="div"
                       path={`omOssComp.stats.${i}.label`}
                       value={s.label}
-                      className="mt-2 font-ui text-[0.8125rem] text-ink-soft leading-snug"
+                      className="mt-2 gw-meta leading-snug"
                     />
-                  </div>
+                  </RuleGrid.Cell>
                 ))}
-              </div>
+              </RuleGrid>
             )}
           </div>
 
@@ -175,7 +167,7 @@ export default function OmOss() {
                   as="div"
                   path="omOssComp.locationSub"
                   value={c.locationSub}
-                  className="mt-2 font-ui text-[0.8125rem] text-ink-soft leading-snug"
+                  className="mt-2 gw-meta leading-snug"
                 />
               </div>
             </div>
@@ -186,33 +178,30 @@ export default function OmOss() {
             Columnas numeradas. Antes eran tres tarjetas con el mismo icono
             de capas repetido: un icono que se repite no informa, decora. */}
         {(c.values || []).length > 0 && (
-          <div className="mt-20 lg:mt-28 grid sm:grid-cols-3 border-t border-line">
+          <RuleGrid cols="sm3" className="mt-20 lg:mt-28 border-t border-line">
             {(c.values || []).map((v, i) => (
-              <div
+              <RuleGrid.Cell
                 key={v.title}
-                className="py-8 sm:px-7 sm:py-9 border-line
-                           [&:nth-child(n+2)]:border-t
-                           sm:[&:nth-child(n+2)]:border-t-0 sm:[&:nth-child(n+2)]:border-l
-                           sm:[&:nth-child(1)]:pl-0"
+                className="py-8 sm:px-7 sm:py-9 sm:first:pl-0"
               >
-                <span className="font-ui text-[0.8125rem] font-semibold text-primary-600 tabular-nums">
+                <span className="gw-step text-primary-600">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <EditableText
                   as="h3"
                   path={`omOssComp.values.${i}.title`}
                   value={v.title}
-                  className="mt-4 font-heading text-[1.1875rem] font-semibold text-navy leading-snug"
+                  className="mt-4 font-heading text-body-lg font-semibold text-navy leading-snug"
                 />
                 <InlineEditableParagraph
                   as="p"
                   path={`omOssComp.values.${i}.desc`}
                   value={v.desc}
-                  className="mt-3 !text-ink-muted text-[0.9375rem] !leading-relaxed"
+                  className="mt-3 !text-ink-muted text-body-sm !leading-relaxed"
                 />
-              </div>
+              </RuleGrid.Cell>
             ))}
-          </div>
+          </RuleGrid>
         )}
       </div>
     </section>
