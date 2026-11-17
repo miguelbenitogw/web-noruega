@@ -4,8 +4,8 @@ import { IMAGES, img, srcSet } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import { setArticleSEO } from '../lib/seo'
 import { useNewsArticle } from '../hooks/useNews'
-import EditableText from '../components/editable/EditableText'
 import useContent from '../hooks/useContent'
+import RichText from '../components/ui/RichText'
 
 /**
  * NewsArticlePage — la página de prensa.
@@ -131,12 +131,7 @@ export default function NewsArticlePage({ slug }) {
 
           <div className="mt-10 max-w-measure">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <EditableText
-                as="span"
-                path={`news.${effectiveArticle.slug}.tag`}
-                value={effectiveArticle.tag}
-                className="gw-kicker"
-              />
+              <span className="gw-kicker">{effectiveArticle.tag}</span>
               {/* El único naranja de esta pantalla: el mismo filete corto de
                   `.gw-label`, que acá no se usa porque el rubro ya hace de
                   etiqueta. En la portada de noticias este filete va en gris,
@@ -148,18 +143,10 @@ export default function NewsArticlePage({ slug }) {
               </span>
             </div>
 
-            <EditableText
-              as="h1"
-              path={`news.${effectiveArticle.slug}.title`}
-              value={effectiveArticle.title}
-              className="mt-5 text-display-sm font-semibold text-navy"
-            />
+            <h1 className="mt-5 text-display-sm font-semibold text-navy">{effectiveArticle.title}</h1>
 
-            <EditableText
-              as="p"
-              path={`news.${effectiveArticle.slug}.excerpt`}
+            <RichText
               value={effectiveArticle.excerpt}
-              multiline
               className="mt-6 text-[1.125rem] lg:text-[1.25rem] leading-[1.6] text-ink-muted"
             />
 
@@ -167,7 +154,7 @@ export default function NewsArticlePage({ slug }) {
               <span className="font-ui text-body-xs font-semibold text-ink">{effectiveArticle.author}</span>
               <span className="gw-meta" aria-hidden="true">·</span>
               <span className="gw-meta">
-                <EditableText as="span" path={`news.${effectiveArticle.slug}.readTime`} value={effectiveArticle.readTime} className="inline" />
+                <span>{effectiveArticle.readTime}</span>
                 {' '}{nyheter.readTimeSuffix}
               </span>
             </div>

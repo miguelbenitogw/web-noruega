@@ -1,9 +1,8 @@
-import EditableText from './editable/EditableText'
-import EditableImage from './editable/EditableImage'
 import spanskAlicanteLogo from '../assets/alicante/spansk-i-alicante-logo.webp'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
+import RichText from './ui/RichText'
 
 /**
  * SpanskAlicanteTeaser — la otra orilla.
@@ -26,12 +25,12 @@ export default function SpanskAlicanteTeaser() {
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
           <div className="lg:col-span-6 order-2 lg:order-1 pb-16 lg:py-20 gw-bleed-l">
-            <EditableImage
-              path="spanskAlicanteTeaser.imageUrl"
+            <img
               src={img(teaser.imageUrl || IMAGES.spanskAlicanteHeroSunset, 1400)}
               alt={teaser.imageAlt || 'Solnedgang ved stranden i Alicante'}
               className="w-full h-[300px] lg:h-[540px] object-cover rounded-panel lg:rounded-l-none"
               loading="lazy"
+              decoding="async"
             />
           </div>
 
@@ -42,24 +41,12 @@ export default function SpanskAlicanteTeaser() {
               className="h-10 w-auto mb-6"
               loading="lazy"
             />
-            <EditableText
-              as="span"
-              path="spanskAlicanteTeaser.label"
-              value={teaser.label}
-              className="gw-label text-primary-600"
-            />
-            <EditableText
-              as="h2"
-              id="spansk-alicante-teaser-heading"
-              path="spanskAlicanteTeaser.heading"
-              value={teaser.heading}
-              className="mt-5 text-display-sm font-semibold text-navy"
-            />
-            <EditableText
-              as="p"
-              path="spanskAlicanteTeaser.description"
+            <span className="gw-label text-primary-600">{teaser.label}</span>
+            <h2 id="spansk-alicante-teaser-heading" className="mt-5 text-display-sm font-semibold text-navy">
+              {teaser.heading}
+            </h2>
+            <RichText
               value={teaser.description}
-              multiline
               className="mt-6 text-body text-ink-muted leading-[1.65]"
             />
 
@@ -69,12 +56,7 @@ export default function SpanskAlicanteTeaser() {
                 onClick={() => trackEvent('cta_click', { location: 'landing_spansk_alicante', cta: 'utforsk_spansk_i_alicante' })}
                 className="gw-btn gw-btn-ink"
               >
-                <EditableText
-                  as="span"
-                  path="spanskAlicanteTeaser.cta"
-                  value={teaser.cta}
-                  className="inline"
-                />
+                <span>{teaser.cta}</span>
               </a>
 
               <a

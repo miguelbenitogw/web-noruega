@@ -1,5 +1,3 @@
-import EditableText from '../components/editable/EditableText'
-import EditableImage from '../components/editable/EditableImage'
 import PageEndNav from '../components/PageEndNav'
 import PageHero from '../components/ui/PageHero'
 import RuleList from '../components/ui/RuleList'
@@ -33,22 +31,19 @@ export default function HelsenorskPage() {
       <PageHero
         trail={[{ label: 'Spansk i Alicante', href: '/spansk-i-alicante' }]}
         current={page.breadcrumb}
-        currentPath="helsenorsk.breadcrumb"
         titleId="helsenorsk-heading"
         title={page.heroTitle}
-        titlePath="helsenorsk.heroTitle"
         titleWidth="18ch"
         description={page.heroSubtitle}
-        descriptionPath="helsenorsk.heroSubtitle"
         media={(
-          <EditableImage
-            path="helsenorsk.heroImageUrl"
+          <img
             src={img(page.heroImageUrl || IMAGES.enfermeria, 1400)}
             alt={page.heroImageAlt || 'Helsenorsk undervisning'}
             className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
             loading="eager"
             width={1400}
             height={520}
+            decoding="sync"
           />
         )}
       />
@@ -58,18 +53,17 @@ export default function HelsenorskPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
-              <EditableText
-                as="h2"
+              <h2
                 id="helsenorsk-intro-heading"
-                path="helsenorsk.introTitle"
-                value={page.introTitle}
                 className="text-display-sm font-semibold text-navy break-words"
-              />
+              >
+                {page.introTitle}
+              </h2>
             </div>
-            <div className="lg:col-span-7 lg:col-start-6 gw-measure">
-              <BodyParagraph path="helsenorsk.introP1" value={page.introP1} />
-              <BodyParagraph path="helsenorsk.introP2" value={page.introP2} className="mt-6" />
-              <BodyParagraph path="helsenorsk.introP3" value={page.introP3} className="mt-6" />
+            <div className="gw-stack lg:col-span-7 lg:col-start-6 gw-measure">
+              <BodyParagraph value={page.introP1} />
+              <BodyParagraph value={page.introP2} />
+              <BodyParagraph value={page.introP3} />
             </div>
           </div>
         </div>
@@ -80,28 +74,22 @@ export default function HelsenorskPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
-              <EditableText
-                as="h2"
+              <h2
                 id="helsenorsk-praksis-heading"
-                path="helsenorsk.praksisTitle"
-                value={page.praksisTitle}
                 className="text-display-sm font-semibold text-navy break-words"
-              />
+              >
+                {page.praksisTitle}
+              </h2>
             </div>
-            <div className="lg:col-span-7 lg:col-start-6 gw-measure">
-              <BodyParagraph path="helsenorsk.praksisP1" value={page.praksisP1} />
-              <BodyParagraph path="helsenorsk.praksisP2" value={page.praksisP2} className="mt-6" />
-              <BodyParagraph path="helsenorsk.praksisP3" value={page.praksisP3} className="mt-6" />
+            <div className="gw-stack lg:col-span-7 lg:col-start-6 gw-measure">
+              <BodyParagraph value={page.praksisP1} />
+              <BodyParagraph value={page.praksisP2} />
+              <BodyParagraph value={page.praksisP3} />
               {page.praksisListIntro && (
-                <EditableText
-                  as="p"
-                  path="helsenorsk.praksisListIntro"
-                  value={page.praksisListIntro}
-                  className="mt-8 font-ui text-body-sm font-semibold text-navy"
-                />
+                <p className="mt-8 font-ui text-body-sm font-semibold text-navy">{page.praksisListIntro}</p>
               )}
-              <RuleList items={page.praksisItems || []} basePath="helsenorsk.praksisItems" className="mt-4" />
-              <BodyParagraph path="helsenorsk.praksisP4" value={page.praksisP4} className="mt-8" />
+              <RuleList items={page.praksisItems || []} className="mt-4" />
+              <BodyParagraph value={page.praksisP4} className="mt-8" />
             </div>
           </div>
         </div>
@@ -113,25 +101,24 @@ export default function HelsenorskPage() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
             <div className="lg:col-span-6 order-2 lg:order-1 pb-20 lg:py-28 gw-bleed-l">
-              <EditableImage
-                path="helsenorsk.situasjonerImageUrl"
+              <img
                 src={img(page.situasjonerImageUrl || IMAGES.helseHealthTeam, 1400)}
                 alt={page.situasjonerImageAlt || 'Simulering av helsesituasjoner'}
                 className="w-full h-[300px] lg:h-[520px] object-cover rounded-panel lg:rounded-l-none"
                 loading="lazy"
+                decoding="async"
               />
             </div>
 
-            <div className="lg:col-span-5 lg:col-start-8 order-1 lg:order-2 pt-24 lg:py-28">
-              <EditableText
-                as="h2"
+            <div className="gw-stack lg:col-span-5 lg:col-start-8 order-1 lg:order-2 pt-24 lg:py-28">
+              <h2
                 id="helsenorsk-situasjoner-heading"
-                path="helsenorsk.situasjonerTitle"
-                value={page.situasjonerTitle}
                 className="text-display-sm font-semibold text-navy break-words"
-              />
-              <BodyParagraph path="helsenorsk.situasjonerP1" value={page.situasjonerP1} className="mt-7" />
-              <BodyParagraph path="helsenorsk.situasjonerP2" value={page.situasjonerP2} className="mt-6" />
+              >
+                {page.situasjonerTitle}
+              </h2>
+              <BodyParagraph value={page.situasjonerP1} className="mt-7" />
+              <BodyParagraph value={page.situasjonerP2} />
             </div>
 
           </div>
@@ -145,17 +132,16 @@ export default function HelsenorskPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-5">
-              <EditableText
-                as="h2"
+              <h2
                 id="helsenorsk-undervisere-heading"
-                path="helsenorsk.undervisereTitle"
-                value={page.undervisereTitle}
                 className="text-display-sm font-semibold !text-white break-words"
-              />
+              >
+                {page.undervisereTitle}
+              </h2>
             </div>
-            <div className="lg:col-span-6 lg:col-start-7 gw-measure">
-              <BodyParagraph path="helsenorsk.undervisereP1" value={page.undervisereP1} tone="dark" />
-              <BodyParagraph path="helsenorsk.undervisereP2" value={page.undervisereP2} tone="dark" className="mt-6" />
+            <div className="gw-stack lg:col-span-6 lg:col-start-7 gw-measure">
+              <BodyParagraph value={page.undervisereP1} tone="dark" />
+              <BodyParagraph value={page.undervisereP2} tone="dark" />
             </div>
           </div>
         </div>
@@ -166,29 +152,28 @@ export default function HelsenorskPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
-              <EditableText
-                as="h2"
+              <h2
                 id="helsenorsk-grunnlag-heading"
-                path="helsenorsk.grunnlagTitle"
-                value={page.grunnlagTitle}
                 className="text-display-sm font-semibold text-navy break-words"
-              />
+              >
+                {page.grunnlagTitle}
+              </h2>
             </div>
-            <div className="lg:col-span-7 lg:col-start-6 gw-measure">
-              <BodyParagraph path="helsenorsk.grunnlagP1" value={page.grunnlagP1} />
-              <BodyParagraph path="helsenorsk.grunnlagP2" value={page.grunnlagP2} className="mt-6" />
+            <div className="gw-stack lg:col-span-7 lg:col-start-6 gw-measure">
+              <BodyParagraph value={page.grunnlagP1} />
+              <BodyParagraph value={page.grunnlagP2} />
             </div>
           </div>
         </div>
 
         {/* El aula, de borde a borde. Sin caja: es el cierre del argumento. */}
         <div className="mt-20 lg:mt-28">
-          <EditableImage
-            path="helsenorsk.grunnlagImageUrl"
+          <img
             src={img(page.grunnlagImageUrl || IMAGES.claseNoruego, 1920)}
             alt={page.grunnlagImageAlt || 'Helsenorsk undervisning og opplæring'}
             className="w-full h-[280px] sm:h-[360px] lg:h-[460px] object-cover"
             loading="lazy"
+            decoding="async"
           />
         </div>
       </section>
@@ -198,17 +183,16 @@ export default function HelsenorskPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
 
-            <div className="lg:col-span-6">
+            <div className="gw-stack lg:col-span-6">
               <span className="gw-label text-primary-600">{page.ctaLabel}</span>
-              <EditableText
-                as="h2"
+              <h2
                 id="helsenorsk-cta-heading"
-                path="helsenorsk.ctaTitle"
-                value={page.ctaTitle}
                 className="mt-5 text-display-sm font-semibold text-navy break-words"
-              />
-              <BodyParagraph path="helsenorsk.ctaP1" value={page.ctaP1} className="mt-7" />
-              <BodyParagraph path="helsenorsk.ctaP2" value={page.ctaP2} className="mt-6" />
+              >
+                {page.ctaTitle}
+              </h2>
+              <BodyParagraph value={page.ctaP1} className="mt-7" />
+              <BodyParagraph value={page.ctaP2} />
 
               <a
                 href="/kontakt"

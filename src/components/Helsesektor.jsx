@@ -1,30 +1,8 @@
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
-import EditableText from './editable/EditableText'
-import EditableImage from './editable/EditableImage'
-import InlineRichText from './editable/InlineRichText'
 import RuleGrid from './ui/RuleGrid'
 import { IMAGES, img } from '../assets/images'
-
-function InlineEditableParagraph({
-  path,
-  value,
-  className,
-  linkClassName,
-  as = 'p',
-  ...rest
-}) {
-  return (
-    <InlineRichText
-      as={as}
-      value={value}
-      className={className}
-      linkClassName={linkClassName}
-      data-content-path={path}
-      {...rest}
-    />
-  )
-}
+import RichText from './ui/RichText'
 
 /**
  * Helsesektor — la presentación del área sanitaria.
@@ -42,18 +20,18 @@ function InlineEditableParagraph({
 function Metric({ metric }) {
   return (
     <RuleGrid.Cell className="px-5 py-7 sm:px-6 lg:px-8">
-      <EditableText
-        as="div"
-        path={metric.valuePath}
-        value={metric.value}
+      <div
         className="font-heading text-[1.625rem] lg:text-[2rem] font-semibold text-navy tabular-nums tracking-[-0.03em] leading-none"
-      />
-      <EditableText
-        as="div"
-        path={metric.labelPath}
-        value={metric.label}
-        className="mt-2.5 font-ui text-[0.875rem] text-ink-muted leading-snug"
-      />
+      >
+        {metric.value}
+      </div>
+      {/* «undervisningstimer» es una sola palabra de 143 px y a 375 la celda
+          deja 123: se salía de su caja. `hyphens-auto` la parte con guion
+          (el documento es `lang="nb"`) y `overflow-wrap:anywhere` es la red
+          si el navegador no trae diccionario noruego. */}
+      <div className="mt-2.5 font-ui text-[0.875rem] text-ink-muted leading-snug hyphens-auto [overflow-wrap:anywhere]">
+        {metric.label}
+      </div>
     </RuleGrid.Cell>
   )
 }
@@ -62,20 +40,8 @@ export default function Helsesektor() {
   const c = useContent('helsesektorComp')
 
   const metrics = [
-    ...(c.stats || []).map((s, i) => ({
-      value: s.value,
-      label: s.label,
-      valuePath: `helsesektorComp.stats.${i}.value`,
-      labelPath: `helsesektorComp.stats.${i}.label`,
-    })),
-    ...(c.groupsValue
-      ? [{
-          value: c.groupsValue,
-          label: c.groupsLabel,
-          valuePath: 'helsesektorComp.groupsValue',
-          labelPath: 'helsesektorComp.groupsLabel',
-        }]
-      : []),
+    ...(c.stats || []).map((s) => ({ value: s.value, label: s.label })),
+    ...(c.groupsValue ? [{ value: c.groupsValue, label: c.groupsLabel }] : []),
   ]
 
   return (
@@ -88,36 +54,25 @@ export default function Helsesektor() {
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
           <div className="lg:col-span-5 order-2 lg:order-1 pb-16 lg:py-24">
-            <EditableImage
-              path="helsesektorComp.imageUrl"
+            <img
               src={img(c.imageUrl || IMAGES.enfermeria, 1200)}
               alt={c.imageAlt || 'Helsepersonell i opplæring gjennom Global Working'}
               className="w-full h-[300px] sm:h-[400px] lg:h-[520px] object-cover rounded-panel"
               loading="lazy"
               width="640"
               height="520"
+              decoding="async"
             />
           </div>
 
           <div className="lg:col-span-6 lg:col-start-7 order-1 lg:order-2 pt-20 lg:py-24">
-            <EditableText
-              as="span"
-              path="helsesektorComp.label"
-              value={c.label}
-              className="gw-label text-primary-600"
-            />
-            <EditableText
-              id="helsesektor-heading"
-              as="h2"
-              path="helsesektorComp.heading"
-              value={c.heading}
-              className="mt-5 text-display-sm font-semibold text-navy"
-            />
-            <InlineEditableParagraph
-              as="p"
-              path="helsesektorComp.description"
+            <span className="gw-label text-primary-600">{c.label}</span>
+            <h2 id="helsesektor-heading" className="mt-5 text-display-sm font-semibold text-navy">
+              {c.heading}
+            </h2>
+            <RichText
               value={c.description}
-              className="mt-6 gw-measure !text-ink-muted text-body leading-[1.65]"
+              className="mt-6 gw-measure text-ink-muted text-body leading-[1.65]"
             />
 
             <a
@@ -125,7 +80,7 @@ export default function Helsesektor() {
               onClick={() => trackEvent('cta_click', { location: 'helsesektor', cta: 'be_om_kandidater' })}
               className="gw-btn gw-btn-ink mt-9"
             >
-              <EditableText as="span" path="helsesektorComp.ctaLabel" value={c.ctaLabel} className="inline" />
+              <span>{c.ctaLabel}</span>
               <svg
                 width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
@@ -143,7 +98,7 @@ export default function Helsesektor() {
           <div className="container-xl">
             <RuleGrid cols="base2-lg4">
               {metrics.map((metric, i) => (
-                <Metric key={`${metric.labelPath}-${i}`} metric={metric} />
+                <Metric key={`${metric.label}-${i}`} metric={metric} />
               ))}
             </RuleGrid>
           </div>

@@ -3,9 +3,8 @@ import useCounter from '../hooks/useCounter'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import { IMAGES, img, srcSet } from '../assets/images'
-import EditableText from './editable/EditableText'
-import EditableImage from './editable/EditableImage'
 import RuleGrid from './ui/RuleGrid'
+import RichText from './ui/RichText'
 
 /**
  * Hero — «To kyster»
@@ -21,26 +20,19 @@ import RuleGrid from './ui/RuleGrid'
  * El acento naranja no vive en el titular, vive en el único botón que importa.
  */
 
-function Stat({ stat, active, index }) {
+function Stat({ stat, active }) {
   const animatedValue = useCounter(stat.value, active && stat.animate, 1800)
   const display = stat.animate ? animatedValue : stat.value
 
 
   return (
     <RuleGrid.Cell className="px-5 py-6 lg:px-8 lg:py-8">
-      <EditableText
-        as="div"
-        path={`hero.stats.${index}.value`}
-        value={display}
+      <div
         className="font-heading text-[1.75rem] lg:text-[2.25rem] font-semibold text-white tabular-nums tracking-[-0.03em] leading-none"
-        inputClassName="font-heading text-2xl font-semibold"
-      />
-      <EditableText
-        as="div"
-        path={`hero.stats.${index}.label`}
-        value={stat.label}
-        className="mt-2 text-body-sm text-primary-200 leading-snug"
-      />
+      >
+        {display}
+      </div>
+      <div className="mt-2 text-body-sm text-primary-200 leading-snug">{stat.label}</div>
     </RuleGrid.Cell>
   )
 }
@@ -68,22 +60,14 @@ export default function Hero() {
           {/* ── Columna de texto ─────────────────────────────────────── */}
           <div className="lg:col-span-7 animate-riseIn">
             <h1 className="text-display-lg font-semibold text-white">
-              <EditableText as="span" path="hero.h1First" value={c.h1First} className="block" />
-              <EditableText
-                as="span"
-                path="hero.h1Highlight"
-                value={c.h1Highlight}
-                className="block lg:pl-[0.38em]"
-              />
+              <span className="block">{c.h1First}</span>
+              <span className="block lg:pl-[0.38em]">{c.h1Highlight}</span>
             </h1>
 
-            <EditableText
-              as="p"
-              path="hero.description"
+            <RichText
               value={c.description}
-              multiline
               className="mt-7 gw-measure text-body lg:text-body-lg text-primary-100 leading-[1.6]"
-              inputClassName="min-h-[160px]"
+              tone="dark"
             />
 
             <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
@@ -92,20 +76,20 @@ export default function Hero() {
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'slik_jobber_vi' })}
                 className="gw-btn gw-btn-ember"
               >
-                <EditableText as="span" path="hero.cta1" value={c.cta1} className="inline" />
+                <span>{c.cta1}</span>
               </a>
               <a
                 href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'kontakt_oss' })}
                 className="gw-btn gw-btn-ghost"
               >
-                <EditableText as="span" path="hero.cta2" value={c.cta2} className="inline" />
+                <span>{c.cta2}</span>
               </a>
             </div>
           </div>
 
           {/* ── Las dos orillas ──────────────────────────────────────────
-              La imagen grande es la editable desde el admin. Las dos
+              La imagen grande sale del contenido (`hero.imageUrl`). Las dos
               pequeñas son de marca, no de contenido: la vida en Alicante y
               el trabajo en Noruega. En móvil queda solo la principal. */}
           <div className="lg:col-span-5">
@@ -118,8 +102,7 @@ export default function Hero() {
                   de index.html, o el navegador se baja dos variantes distintas. */}
               <div className="col-span-12 sm:col-span-8 animate-settle">
                 <div className="rounded-panel overflow-hidden bg-primary-800">
-                  <EditableImage
-                    path="hero.imageUrl"
+                  <img
                     src={img(c.imageUrl || IMAGES.teamHero, 1200)}
                     srcSet={srcSet(c.imageUrl || IMAGES.teamHero, [640, 1024, 1200])}
                     sizes="(max-width: 640px) 100vw, 33vw"
@@ -129,6 +112,7 @@ export default function Hero() {
                     fetchPriority="high"
                     width={1200}
                     height={800}
+                    decoding="sync"
                   />
                 </div>
               </div>
@@ -177,7 +161,6 @@ export default function Hero() {
                   key={`${stat.label}-${i}`}
                   stat={stat}
                   active={statsVisible}
-                  index={i}
                 />
               ))}
             </RuleGrid>

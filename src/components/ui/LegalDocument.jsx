@@ -1,4 +1,4 @@
-import EditableText from '../editable/EditableText'
+import RichText from './RichText'
 import PageHero from './PageHero'
 
 /**
@@ -13,7 +13,7 @@ import PageHero from './PageHero'
  * blanco, cada apartado numerado en una columna de interfaz a la izquierda y
  * el texto a la medida de lectura a la derecha, con un filete por apartado.
  */
-export default function LegalDocument({ contentKey, content }) {
+export default function LegalDocument({ content }) {
   const blocks = content.blocks || []
 
   return (
@@ -21,10 +21,8 @@ export default function LegalDocument({ contentKey, content }) {
       <PageHero
         current={content.breadcrumb}
         title={content.title}
-        titlePath={`${contentKey}.title`}
         titleWidth="20ch"
         description={content.intro}
-        descriptionPath={`${contentKey}.intro`}
       />
 
       <section className="bg-white py-16 lg:py-24">
@@ -41,17 +39,11 @@ export default function LegalDocument({ contentKey, content }) {
                   </span>
                 </div>
                 <div className="lg:col-span-10">
-                  <EditableText
-                    as="h2"
-                    path={`${contentKey}.blocks.${index}.heading`}
-                    value={block.heading}
-                    className="font-heading text-[1.25rem] lg:text-[1.375rem] font-semibold text-navy"
-                  />
-                  <EditableText
-                    as="p"
-                    path={`${contentKey}.blocks.${index}.body`}
+                  <h2 className="font-heading text-[1.25rem] lg:text-[1.375rem] font-semibold text-navy">
+                    {block.heading}
+                  </h2>
+                  <RichText
                     value={block.body}
-                    multiline
                     className="mt-3.5 max-w-measure text-body leading-[1.75] text-ink"
                   />
                 </div>

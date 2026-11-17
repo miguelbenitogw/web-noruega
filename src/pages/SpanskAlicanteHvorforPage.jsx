@@ -1,11 +1,11 @@
-import EditableText from '../components/editable/EditableText'
-import EditableImage from '../components/editable/EditableImage'
 import PageEndNav from '../components/PageEndNav'
 import PageHero from '../components/ui/PageHero'
 import RuleList from '../components/ui/RuleList'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
+import RichText from '../components/ui/RichText'
+import MarkdownText from '../components/ui/MarkdownText'
 
 /**
  * SpanskAlicanteHvorforPage — el porqué del centro de Alicante.
@@ -30,22 +30,19 @@ export default function SpanskAlicanteHvorforPage() {
       <PageHero
         trail={[{ label: 'Spansk i Alicante', href: '/spansk-i-alicante' }]}
         current={vision.breadcrumb}
-        currentPath="spanskAlicanteVision.breadcrumb"
         titleId="spansk-alicante-hvorfor-heading"
         title={vision.title}
-        titlePath="spanskAlicanteVision.title"
         titleWidth="20ch"
         description={vision.intro}
-        descriptionPath="spanskAlicanteVision.intro"
         media={(
-          <EditableImage
-            path="spanskAlicanteVision.imageUrl"
+          <img
             src={img(vision.imageUrl || IMAGES.spanskAlicanteCastleArch, 1400)}
             alt={vision.imageAlt || 'Historisk arkitektur og stemning i Alicante'}
             className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
             loading="eager"
             width={1400}
             height={520}
+            decoding="sync"
           />
         )}
       />
@@ -63,19 +60,10 @@ export default function SpanskAlicanteHvorforPage() {
                   key={`vision-section-${index}`}
                   className="border-t border-line pt-10 lg:pt-12 mt-10 lg:mt-12 first:mt-0"
                 >
-                  <EditableText
-                    as="h2"
-                    path={`spanskAlicanteVision.sections.${index}.heading`}
-                    value={section.heading}
-                    className="text-display-sm font-semibold text-navy break-words"
-                  />
-                  <EditableText
-                    as="div"
-                    path={`spanskAlicanteVision.sections.${index}.body`}
+                  <h2 className="text-display-sm font-semibold text-navy break-words">{section.heading}</h2>
+                  <MarkdownText
                     value={section.body}
-                    multiline
-                    richText
-                    className="mt-7 gw-measure text-body lg:text-[1.125rem] text-ink leading-[1.75] [&>p]:mb-6 [&>p:last-child]:mb-0 [&>p]:leading-[1.75]"
+                    className="mt-7 gw-measure text-body lg:text-[1.125rem] text-ink leading-[1.75]"
                   />
                 </div>
               ))}
@@ -88,7 +76,6 @@ export default function SpanskAlicanteHvorforPage() {
                 {highlights.length > 0 && (
                   <RuleList
                     items={highlights}
-                    basePath="spanskAlicanteVision.highlights"
                     tone="panel"
                     className="mt-6"
                   />
@@ -107,18 +94,18 @@ export default function SpanskAlicanteHvorforPage() {
                     onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hvorfor', cta: 'kontakt' })}
                     className="gw-btn gw-btn-ember"
                   >
-                    <EditableText as="span" path="spanskAlicantePage.ctaSecondary" value={page.ctaSecondary} className="inline" />
+                    <span>{page.ctaSecondary}</span>
                   </a>
                 </div>
               </div>
 
               {vision.sidebarImageUrl && (
-                <EditableImage
-                  path="spanskAlicanteVision.sidebarImageUrl"
+                <img
                   src={img(vision.sidebarImageUrl, 932)}
                   alt={vision.sidebarImageAlt || 'Gruppe i Alicante'}
                   className="mt-4 w-full h-[260px] object-cover rounded-panel"
                   loading="lazy"
+                  decoding="async"
                 />
               )}
             </aside>

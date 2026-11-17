@@ -6,61 +6,8 @@ import PageHero from '../components/ui/PageHero'
 import RuleGrid from '../components/ui/RuleGrid'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
-import EditableText from '../components/editable/EditableText'
-import EditableImage from '../components/editable/EditableImage'
-import InlineRichText from '../components/editable/InlineRichText'
 import { IMAGES, img } from '../assets/images'
-
-function InlineEditableParagraph({
-  path,
-  value,
-  className,
-  linkClassName,
-  as = 'p',
-  ...rest
-}) {
-  return (
-    <InlineRichText
-      as={as}
-      value={value}
-      className={className}
-      linkClassName={linkClassName}
-      data-content-path={path}
-      {...rest}
-    />
-  )
-}
-
-/**
- * Descripción de una fase.
- *
- * El texto de la fase 01 son dos párrafos de verdad, así que se parten. El
- * serif pide línea corta: el contenedor de arriba le pone `.gw-measure`.
- */
-function PhaseDescription({ index, description }) {
-  const paragraphs = (description || '').split('\n\n').filter(Boolean)
-
-  if (paragraphs.length <= 1) {
-    return (
-      <InlineEditableParagraph
-        as="p"
-        path={`helsePhases.phases.${index}.description`}
-        value={description}
-        className="!text-ink-muted text-body leading-[1.7]"
-      />
-    )
-  }
-
-  return (
-    <div data-content-path={`helsePhases.phases.${index}.description`}>
-      {paragraphs.map((para, pi) => (
-        <p key={pi} className="text-ink-muted text-body leading-[1.7] mb-4 last:mb-0">
-          {para}
-        </p>
-      ))}
-    </div>
-  )
-}
+import RichText from '../components/ui/RichText'
 
 export default function HelsePage() {
   const hero = useContent('helseHero')
@@ -72,12 +19,9 @@ export default function HelsePage() {
       <PageHero
         current={hero.breadcrumb}
         title={hero.h1}
-        titlePath="helseHero.h1"
         titleId="helse-hero-heading"
         titleWidth="20ch"
         description={hero.description}
-        descriptionPath="helseHero.description"
-        richDescription
       />
 
       <Helsesektor />
@@ -91,36 +35,29 @@ export default function HelsePage() {
           La línea vertical punteada tampoco hace falta — el filete ya ordena. */}
       <section className="py-20 lg:py-28 bg-white border-t border-line" aria-labelledby="faser-heading">
         <div className="container-xl">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-12 lg:mb-16">
+          {/* Mismo criterio que «Vårt tilbud» en la portada: las dos columnas
+              de una cabecera arrancan en la misma línea. Con `items-end` la
+              bajada quedaba 90 px por debajo de la etiqueta, colgando del pie
+              del titular, y cada cabecera de la web se alineaba distinto. */}
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-12 lg:mb-16">
             <div className="lg:col-span-7">
-              <EditableText
-                as="span"
-                path="helsePhases.label"
-                value={phases.label}
-                className="gw-label text-primary-600"
-              />
-              <EditableText
-                as="h2"
-                id="faser-heading"
-                path="helsePhases.heading"
-                value={phases.heading}
-                className="mt-5 text-display-sm font-semibold text-navy"
-              />
+              <span className="gw-label text-primary-600">{phases.label}</span>
+              <h2 id="faser-heading" className="mt-5 text-display-sm font-semibold text-navy">
+                {phases.heading}
+              </h2>
             </div>
             {phases.description ? (
               <div className="lg:col-span-5">
-                <InlineEditableParagraph
-                  as="p"
-                  path="helsePhases.description"
+                <RichText
                   value={phases.description}
-                  className="!text-ink-muted text-body leading-[1.65]"
+                  className="text-ink-muted text-body leading-[1.65]"
                 />
               </div>
             ) : null}
           </div>
 
           <ol className="list-none border-t border-line">
-            {(phases.phases || []).map((phase, i) => (
+            {(phases.phases || []).map((phase) => (
               <li
                 key={phase.number}
                 className="grid lg:grid-cols-12 gap-x-8 gap-y-3 py-9 lg:py-12 border-b border-line"
@@ -135,15 +72,17 @@ export default function HelsePage() {
                 </div>
 
                 <div className="lg:col-span-8 lg:col-start-5">
-                  <EditableText
-                    as="h3"
-                    path={`helsePhases.phases.${i}.title`}
-                    value={phase.title}
+                  <h3
                     className="font-heading text-[1.25rem] lg:text-[1.4375rem] font-semibold text-navy leading-snug"
-                  />
+                  >
+                    {phase.title}
+                  </h3>
 
                   <div className="mt-4 gw-measure">
-                    <PhaseDescription index={i} description={phase.description} />
+                    {/* Antes había un componente propio que partía por `\n\n` a mano:
+                        la fase 01 trae dos párrafos. RichText ya lo hace y
+                        con el mismo aire que el resto de la web. */}
+                    <RichText value={phase.description} className="text-body text-ink-muted leading-[1.7]" />
                   </div>
 
                   {phase.formats && (
@@ -181,35 +120,17 @@ export default function HelsePage() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
             <div className="lg:col-span-5 pt-20 lg:py-28">
-              <EditableText
-                as="span"
-                path="helsePartnership.label"
-                value={partnership.label}
-                className="gw-label text-white"
-              />
-              <EditableText
-                as="h2"
-                id="helse-partnership-heading"
-                path="helsePartnership.heading"
-                value={partnership.heading}
-                className="mt-5 text-display-sm font-semibold !text-white"
-              />
-              <InlineEditableParagraph
-                as="p"
-                path="helsePartnership.p1"
-                value={partnership.p1}
-                className="mt-6 gw-measure !text-primary-100 text-body leading-[1.65]"
-                linkClassName="!text-white underline decoration-primary-400 underline-offset-4 transition-colors hover:!decoration-white"
-              />
-              {partnership.p2 ? (
-                <InlineEditableParagraph
-                  as="p"
-                  path="helsePartnership.p2"
-                  value={partnership.p2}
-                  className="mt-4 gw-measure !text-primary-100 text-body leading-[1.65]"
-                  linkClassName="!text-white underline decoration-primary-400 underline-offset-4 transition-colors hover:!decoration-white"
-                />
-              ) : null}
+              <span className="gw-label text-white">{partnership.label}</span>
+              <h2 id="helse-partnership-heading" className="mt-5 text-display-sm font-semibold !text-white">
+                {partnership.heading}
+              </h2>
+              {/* p1 y p2 son un mismo texto: el bloque lleva el estilo y los
+                  dos lo heredan, con el aire de párrafo de `gw-stack` (antes
+                  `mt-4` entre ellos, distinto del resto de la web). */}
+              <div className="mt-6 gw-measure gw-stack text-body text-primary-100 leading-[1.65]">
+                <RichText value={partnership.p1} tone="dark" />
+                {partnership.p2 ? <RichText value={partnership.p2} tone="dark" /> : null}
+              </div>
 
               <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
                 <a
@@ -217,27 +138,27 @@ export default function HelsePage() {
                   onClick={() => trackEvent('cta_click', { location: 'helse_partnership', cta: 'kontakt_oss' })}
                   className="gw-btn gw-btn-ember"
                 >
-                  <EditableText as="span" path="helsePartnership.cta1" value={partnership.cta1} className="inline" />
+                  <span>{partnership.cta1}</span>
                 </a>
                 <a
                   href="/talentportalen"
                   onClick={() => trackEvent('cta_click', { location: 'helse_partnership', cta: 'se_portalen' })}
                   className="gw-btn gw-btn-ghost"
                 >
-                  <EditableText as="span" path="helsePartnership.cta2" value={partnership.cta2} className="inline" />
+                  <span>{partnership.cta2}</span>
                 </a>
               </div>
             </div>
 
             <div className="lg:col-span-6 lg:col-start-7 pb-20 lg:py-28">
-              <EditableImage
-                path="helsePartnership.imageUrl"
+              <img
                 src={img(partnership.imageUrl || IMAGES.rekruttering, 1200)}
                 alt={partnership.imageAlt || 'Global Working rekrutteringsprosessen'}
                 className="w-full h-[280px] sm:h-[380px] lg:h-[460px] object-cover rounded-panel"
                 loading="lazy"
                 width="720"
                 height="460"
+                decoding="async"
               />
             </div>
 

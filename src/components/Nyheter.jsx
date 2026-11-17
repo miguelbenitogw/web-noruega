@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { IMAGES, img, srcSet } from '../assets/images'
-import EditableText from './editable/EditableText'
 import TextLink from './ui/TextLink'
 import { trackEvent } from '../lib/analytics'
 import { useNewsCollection } from '../hooks/useNews'
 import useContent from '../hooks/useContent'
+import RichText from './ui/RichText'
 
 /**
  * Nyheter — la sección de prensa.
@@ -138,31 +138,22 @@ export default function Nyheter() {
 
             <div className="lg:col-span-5">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-                <EditableText
-                  as="span"
-                  path={`news.${featured.slug}.tag`}
-                  value={featuredTag}
-                  className="gw-kicker"
-                />
+                <span className="gw-kicker">{featuredTag}</span>
                 <span className="h-px w-5 bg-line" aria-hidden="true" />
                 <span className="gw-meta">
                   <time dateTime={featured.date}>{featured.dateLabel}</time>
                 </span>
               </div>
 
-              <EditableText
-                as="h3"
-                path={`news.${featured.slug}.title`}
-                value={featuredTitle}
+              <h3
                 className="mt-4 font-heading text-[1.625rem] lg:text-[2rem] font-semibold leading-[1.12]
                            tracking-[-0.025em] text-navy group-hover:text-primary-700 transition-colors"
-              />
+              >
+                {featuredTitle}
+              </h3>
 
-              <EditableText
-                as="p"
-                path={`news.${featured.slug}.excerpt`}
+              <RichText
                 value={featuredExcerpt}
-                multiline
                 className="mt-5 text-body leading-[1.65] text-ink-muted line-clamp-3"
               />
 
@@ -170,7 +161,7 @@ export default function Nyheter() {
                 <TextLink as="span">{nyheter.readMoreLabel}</TextLink>
                 <span className="gw-meta" aria-hidden="true">·</span>
                 <span className="gw-meta">
-                  <EditableText as="span" path={`news.${featured.slug}.readTime`} value={featuredReadTime} className="inline" />
+                  <span>{featuredReadTime}</span>
                   {' '}{nyheter.readTimeSuffix}
                 </span>
               </div>
@@ -191,12 +182,7 @@ export default function Nyheter() {
               return (
                 <article key={article.slug} className="sm:px-7 sm:first:pl-0 sm:last:pr-0">
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                    <EditableText
-                      as="span"
-                      path={`news.${article.slug}.tag`}
-                      value={tag}
-                      className="gw-kicker"
-                    />
+                    <span className="gw-kicker">{tag}</span>
                     <span className="gw-meta">
                       <time dateTime={article.date}>{article.dateLabel}</time>
                     </span>
@@ -207,19 +193,11 @@ export default function Nyheter() {
                       onClick={() => trackEvent('cta_click', { location: 'nyheter', cta: `les_mer_${article.slug}` })}
                       className="font-heading text-body font-semibold leading-snug text-navy hover:text-primary-700 transition-colors"
                     >
-                      <EditableText
-                        as="span"
-                        path={`news.${article.slug}.title`}
-                        value={title}
-                        className="inline"
-                      />
+                      <span>{title}</span>
                     </a>
                   </h3>
-                  <EditableText
-                    as="p"
-                    path={`news.${article.slug}.excerpt`}
+                  <RichText
                     value={excerpt}
-                    multiline
                     className="mt-2.5 text-body-sm leading-[1.6] text-ink-muted line-clamp-2"
                   />
                 </article>
@@ -260,35 +238,26 @@ export default function Nyheter() {
                       <span className="gw-meta block tabular-nums">
                         <time dateTime={article.date}>{article.dateLabel}</time>
                       </span>
-                      <EditableText
-                        as="span"
-                        path={`news.${article.slug}.tag`}
-                        value={tag}
-                        className="gw-kicker mt-1.5 block"
-                      />
+                      <span className="gw-kicker mt-1.5 block">{tag}</span>
                     </div>
 
                     <div className="sm:col-span-9 lg:col-span-10 lg:flex lg:items-start lg:gap-10">
                       <div className="lg:flex-1">
-                        <EditableText
-                          as="h3"
-                          path={`news.${article.slug}.title`}
-                          value={title}
+                        <h3
                           className="font-heading text-body-lg lg:text-[1.3125rem] font-semibold leading-snug text-navy
                                      group-hover:text-primary-700 transition-colors"
-                        />
-                        <EditableText
-                          as="p"
-                          path={`news.${article.slug}.excerpt`}
+                        >
+                          {title}
+                        </h3>
+                        <RichText
                           value={excerpt}
-                          multiline
                           className="mt-2 max-w-measure text-body-sm leading-[1.6] text-ink-muted line-clamp-2"
                         />
                       </div>
 
                       <div className="flex items-center gap-3 lg:shrink-0 lg:pt-1">
                         <span className="gw-meta">
-                          <EditableText as="span" path={`news.${article.slug}.readTime`} value={readTime} className="inline" />
+                          <span>{readTime}</span>
                           {' '}{nyheter.readTimeSuffix}
                         </span>
                         <span className="text-line group-hover:text-primary-600 transition-colors" aria-hidden="true">

@@ -26,5 +26,3 @@ export default function useContent(section) {
   if (section) return content[section] ?? defaultContent[section] ?? {}
   return content
 }
-
-export { content as siteContent }

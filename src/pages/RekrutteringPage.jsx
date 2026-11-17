@@ -8,9 +8,8 @@ import TextLink from '../components/ui/TextLink'
 import { IMAGES, img } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
-import EditableText from '../components/editable/EditableText'
-import EditableImage from '../components/editable/EditableImage'
 import { useNewsCollection } from '../hooks/useNews'
+import RichText from '../components/ui/RichText'
 
 /**
  * Vår rekrutteringsmodell
@@ -37,11 +36,9 @@ export default function RekrutteringPage() {
       <PageHero
         current={hero.breadcrumb}
         title={hero.h1}
-        titlePath="rekrutteringHero.h1"
         titleId="rekruttering-hero-heading"
         titleWidth="20ch"
         description={hero.description}
-        descriptionPath="rekrutteringHero.description"
       />
 
       <HvaGjor />
@@ -55,24 +52,18 @@ export default function RekrutteringPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
             <div className="lg:col-span-6">
-              <EditableText
-                as="span"
-                path="rekrutteringCollab.label"
-                value={collab.label}
-                className="gw-label text-primary-600"
-              />
-              <EditableText
-                as="h2"
-                id="samarbeid-heading"
-                path="rekrutteringCollab.heading"
-                value={collab.heading}
-                className="mt-5 text-display-sm font-semibold text-navy"
-              />
+              <span className="gw-label text-primary-600">{collab.label}</span>
+              <h2 id="samarbeid-heading" className="mt-5 text-display-sm font-semibold text-navy">
+                {collab.heading}
+              </h2>
 
-              <div className="mt-6 gw-measure space-y-4 text-body text-ink-muted leading-[1.7]">
-                <EditableText as="p" path="rekrutteringCollab.p1" value={collab.p1} multiline />
-                <EditableText as="p" path="rekrutteringCollab.p2" value={collab.p2} multiline />
-                <EditableText as="p" path="rekrutteringCollab.p3" value={collab.p3} multiline />
+              {/* Tres campos, un solo texto: `gw-stack` les da el mismo aire
+                  que a los párrafos dentro de un campo (antes `space-y-4`,
+                  que no coincidía con la línea en blanco de los datos). */}
+              <div className="mt-6 gw-measure gw-stack text-body text-ink-muted leading-[1.7]">
+                <RichText value={collab.p1} />
+                <RichText value={collab.p2} />
+                <RichText value={collab.p3} />
               </div>
 
               <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
@@ -81,25 +72,25 @@ export default function RekrutteringPage() {
                   onClick={() => trackEvent('cta_click', { location: 'collaboration_model', cta: 'kontakt_oss' })}
                   className="gw-btn gw-btn-ember"
                 >
-                  <EditableText as="span" path="rekrutteringCollab.cta1" value={collab.cta1} className="inline" />
+                  <span>{collab.cta1}</span>
                 </a>
                 <a
                   href="/talentportalen"
                   onClick={() => trackEvent('cta_click', { location: 'collaboration_model', cta: 'se_kandidatportalen' })}
                   className="gw-btn gw-btn-line"
                 >
-                  <EditableText as="span" path="rekrutteringCollab.cta2" value={collab.cta2} className="inline" />
+                  <span>{collab.cta2}</span>
                 </a>
               </div>
             </div>
 
             <div className="lg:col-span-5 lg:col-start-8">
-              <EditableImage
-                path="rekrutteringCollab.imageUrl"
+              <img
                 src={img(collab.imageUrl || IMAGES.rekruttering, 900)}
                 alt={collab.imageAlt || 'Global Working rekrutteringsprosessen'}
                 className="w-full h-[280px] lg:h-[460px] object-cover rounded-panel"
                 loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -143,28 +134,16 @@ export default function RekrutteringPage() {
                   className="group flex flex-col py-8 md:px-8 md:first:pl-0 md:last:pr-0"
                 >
                   <div className="flex items-center gap-3 font-ui text-body-xs">
-                    <EditableText
-                      as="span"
-                      path={`news.${article.slug}.tag`}
-                      value={article.tag}
-                      className="font-semibold text-primary-600"
-                    />
+                    <span className="font-semibold text-primary-600">{article.tag}</span>
                     <span className="text-line" aria-hidden="true">·</span>
                     <time className="text-ink-soft">{article.dateLabel}</time>
                   </div>
 
-                  <EditableText
-                    as="h3"
-                    path={`news.${article.slug}.title`}
-                    value={article.title}
-                    className="mt-4 font-heading text-[1.3125rem] font-semibold text-navy leading-snug"
-                  />
-                  <EditableText
-                    as="p"
-                    path={`news.${article.slug}.excerpt`}
+                  <h3 className="mt-4 font-heading text-[1.3125rem] font-semibold text-navy leading-snug">
+                    {article.title}
+                  </h3>
+                  <RichText
                     value={article.excerpt}
-                    multiline
-                    inputClassName="min-h-[180px]"
                     className="mt-3 flex-1 text-body text-ink-muted leading-[1.65]"
                   />
 
