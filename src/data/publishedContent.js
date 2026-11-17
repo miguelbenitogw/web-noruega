@@ -258,7 +258,7 @@ const publishedContent = {
         "description": "Grunnlagt i 2014, med hovedkontor i Alicante og kontor i Oslo, over 50 ansatte og ISO 9001:2015-sertifisert av TÜV Nord."
       }
     ],
-    "description": "Global Working er verdens største språkskole som underviser i norsk utenfor Skandinavia.\n\nVi spesialiserer oss på norsk språk og kulturopplæring for søreuropeiske fagfolk. Samtidig arbeider vi med rekruttering og kobler kandidatene med arbeidsgivere i Norge. \n\nVi følger studentene tett gjennom hele prosessen, fra de første norsktimene til de er trygt i gang med jobb i Norge. \n\n             Vil du få tilgang til det europeiske markedet av arbeidstakere?"
+    "description": "Global Working er verdens største språkskole som underviser i norsk utenfor Skandinavia.\n\nVi spesialiserer oss på norsk språk og kulturopplæring for søreuropeiske fagfolk. Samtidig arbeider vi med rekruttering og kobler kandidatene med arbeidsgivere i Norge.\n\nVi følger studentene tett gjennom hele prosessen, fra de første norsktimene til de er trygt i gang med jobb i Norge.\n\nVil du få tilgang til det europeiske markedet av arbeidstakere?"
   },
   "omOssOffices": {
     "description": "Global Working har hovedkontor i Alicante, Spania, og kontor i Oslo, Norge."
