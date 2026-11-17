@@ -18,16 +18,41 @@ const LOGO_ID = `${SITE_URL}/#logo`
 const ORG_REF = { '@id': ORG_ID }
 const NORWAY = { '@type': 'Country', name: 'Norway' }
 
+// La certificación es el dato que más pesa para quien firma en una kommune, y
+// hasta ahora solo existía como texto suelto en /om-oss. Como nodo la puede
+// leer un buscador o un LLM sin tener que interpretar una frase.
+const ISO_CERTIFICATION = {
+  '@type': 'Certification',
+  name: 'ISO 9001:2015',
+  about: 'Språkundervisning og internasjonal rekruttering',
+  issuedBy: { '@type': 'Organization', name: 'TÜV Nord' },
+}
+
 const buildEntityNodes = () => [
   {
-    '@type': 'EmploymentAgency',
+    // `Organization`, ya no `EmploymentAgency`. En schema.org ese tipo es la
+    // agencia de colocación/ETT — en noruego, justo el bemanningsbyrå con el que
+    // NO queremos que nos confundan — y encima cuelga de LocalBusiness, que pide
+    // una dirección física que en Oslo no tenemos completa. Lo que somos lo dicen
+    // `description`, `knowsAbout` y la certificación.
+    '@type': 'Organization',
     '@id': ORG_ID,
     name: SITE_NAME,
+    // Search Console: `global working` trae el 39 % de los clics. Es el nombre con
+    // el que nos busca la gente, y sin esto el grafo solo conocía «… Norge».
+    alternateName: 'Global Working',
     legalName: 'Global Working Norge AS',
     url: SITE_URL,
     logo: { '@type': 'ImageObject', '@id': LOGO_ID, url: 'https://globalworking.no/assets/media/logo-512.jpg' },
     image: { '@id': LOGO_ID },
-    description: 'Rekruttering og språkopplæring for kvalifiserte fagfolk fra Sør-Europa til det norske arbeidsmarkedet.',
+    description: 'Rekrutteringsselskap med egen språkskole i Alicante. Vi rekrutterer og lærer opp sykepleiere og andre fagfolk fra Sør-Europa til faste stillinger hos norske arbeidsgivere, som ansetter kandidaten direkte. Vi er ikke et vikarbyrå.',
+    hasCertification: ISO_CERTIFICATION,
+    knowsAbout: [
+      'Rekruttering av sykepleiere',
+      'Rekruttering av helsepersonell fra utlandet',
+      'Helsenorsk',
+      'Norskopplæring for fagfolk',
+    ],
     foundingDate: '2014',
     numberOfEmployees: { '@type': 'QuantitativeValue', minValue: 50 },
     areaServed: NORWAY,
@@ -66,12 +91,15 @@ const buildEntityNodes = () => [
     publisher: ORG_REF,
   },
   {
-    '@type': 'LocalBusiness',
+    // Alicante no es solo una oficina: es la escuela donde se dan las 650 horas.
+    // Que la escuela sea propia es lo que separa esto de un bemanningsbyrå, así
+    // que el nodo lo declara con su tipo.
+    '@type': ['LocalBusiness', 'EducationalOrganization'],
     '@id': ALICANTE_ID,
     name: 'Global Working – Alicante',
     url: SITE_URL,
     image: { '@id': LOGO_ID },
-    description: 'Global Workings hovedkontor for rekruttering av fagfolk til Norge.',
+    description: 'Global Workings hovedkontor og egen språkskole i Alicante, der kandidatene får opptil 650 timer norskundervisning før oppstart i Norge.',
     parentOrganization: ORG_REF,
     address: {
       '@type': 'PostalAddress',
@@ -115,6 +143,28 @@ const EXTRAS = {
     audienceType: 'Sykepleiere og helsefagarbeidere',
   },
   '/om-oss': { kind: 'faq' },
+  '/kontakt': { kind: 'contacts' },
+}
+
+// Personas con nombre: la consulta `anette nordskog` ya aparece en Search
+// Console (posición 1). Un rådgiver con nombre, cargo y teléfono es la prueba
+// más barata de que detrás hay una empresa y no un formulario. Salen de
+// `contacts` en publishedContent, los mismos que pinta /kontakt.
+const slugify = (s) => String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
+const buildContactNodes = (url) => {
+  const people = Array.isArray(publishedContent?.contacts) ? publishedContent.contacts : []
+  return people
+    .filter((p) => p && p.name)
+    .map((p) => ({
+      '@type': 'Person',
+      '@id': `${url}#${slugify(p.name)}`,
+      name: p.name,
+      ...(p.role ? { jobTitle: p.role } : {}),
+      ...(p.email ? { email: p.email } : {}),
+      ...(p.phone ? { telephone: p.phone } : {}),
+      worksFor: ORG_REF,
+    }))
 }
 
 const buildServiceNode = (extras, url) => ({
@@ -193,19 +243,21 @@ const buildExtraNodes = (pathname, url) => {
     const faq = buildFaqNode(url)
     return faq ? [faq] : []
   }
+  if (extras.kind === 'contacts') return buildContactNodes(url)
   return []
 }
 
 const DEFAULT_SEO = {
-  // LA PALABRA QUE BUSCA EL CLIENTE VA PRIMERO, LA MARCA AL FINAL.
-  // Antes empezaba por "Global Working Norge", y los primeros caracteres de un título son
-  // los que más pesan tanto para Google como para el que decide si hace clic. Gastarlos en
-  // el nombre propio solo sirve si ya te conocen — y el 94% de los clics de esta web ya
-  // eran de gente que la conocía. El problema no era la marca: era que no había nada para
-  // los que NO la conocen.
-  title: 'Rekruttering av sykepleiere fra utlandet | Global Working Norge',
+  // Antes: «Rekruttering av sykepleiere fra utlandet | …», casi el mismo título que
+  // /helse. Search Console (16-08 → 15-11-2026) dice que la portada vive de la
+  // marca —`global working` + `globalworking` = 64 de sus 104 clics, posición 6–8—
+  // y que las consultas `rekrutter*` ya las sirve /helse (14 impresiones contra 3).
+  // Dos páginas peleando por la misma frase se reparten la señal y ninguna sube.
+  // La portada se queda con lo que busca quien ya nos nombra (la empresa y la
+  // escuela propia) y /helse con «rekruttering av sykepleiere».
+  title: 'Global Working Norge – rekruttering med egen språkskole',
   description:
-    'Vi rekrutterer sykepleiere og helsefagarbeidere fra Sør-Europa til norske kommuner og sykehus. 650 timer helsenorsk, hjelp med autorisasjon og oppfølging helt frem til oppstart.',
+    'Ikke et vikarbyrå: dere ansetter sykepleiere og fagfolk fra Sør-Europa direkte. Egen språkskole i Alicante, ISO 9001:2015-sertifisert, siden 2014.',
   pathname: '/',
   image: DEFAULT_IMAGE,
   type: 'website',
@@ -225,12 +277,17 @@ const SECTION_SEO = {
   helse: {
     // "Helsesektor" describe el sector, no lo que alguien escribe cuando tiene el problema.
     // Nadie busca "helsesektor" para contratar a nadie.
+    // El título se queda: es la página a la que Google ya manda `rekruttering
+    // sykepleiere` y `rekruttering helsepersonell`. Lo que cambia es la
+    // descripción: 82 impresiones y 0 clics en tres meses. Ahora dice lo que
+    // separa esto de un vikarbyrå (contratación directa) y nombra dos kommuner
+    // reales con artículo propio, que es la prueba que busca quien decide.
     title: 'Rekruttering av sykepleiere til Norge | Global Working',
     description:
-      'Mangel på sykepleiere? Vi finner, forbereder og følger opp utenlandske sykepleiere og helsefagarbeidere til norske kommuner og sykehus — med språk, autorisasjon og trygg oppstart.',
+      'Sykepleiere fra Sør-Europa med opptil 650 timer norsk, ansatt direkte hos dere – ikke via vikarbyrå. Slik fikk Vågå og Sør-Fron kommune faste sykepleiere.',
     pathname: '/helse',
     breadcrumbName: 'Helsesektor',
-    keywords: 'rekruttering av sykepleiere, utenlandske sykepleiere i Norge, rekrutteringsbyrå helsepersonell, mangel på sykepleiere',
+    keywords: 'rekruttering sykepleiere, rekruttering helsepersonell, utenlandske sykepleiere i Norge, faste sykepleiere kommune, mangel på sykepleiere',
   },
   nyheter: {
     title: 'Nyheter & artikler | Global Working Norge',
@@ -254,32 +311,44 @@ const SECTION_SEO = {
     keywords: 'kandidatportal, kandidatportalen, talentportalen, tilgjengelige sykepleiere, rekrutteringsportal',
   },
   'om-oss': {
-    // `rekrutteringsbyrå helse` y `rekrutteringsbyrå helsepersonell` son búsquedas reales.
-    // "Om oss" a secas no las capta ninguna.
-    title: 'Rekrutteringsbyrå for helsesektoren | Global Working Norge',
+    // Antes apostaba por `rekrutteringsbyrå helse(personell)`, que en Search Console
+    // tiene CERO impresiones. Lo que sí hay: 262 impresiones a posición 7,2 y 1 clic
+    // (CTR 0,4 %), casi todo búsquedas de marca. Quien busca «Global Working» y ve
+    // «Om …» quiere saber si la empresa es seria: eso es lo que dice ahora. Y
+    // «byrå» se fue: en noruego suena a bemanningsbyrå, lo contrario de lo que somos.
+    title: 'Om Global Working – rekruttering og språkskole siden 2014',
     description:
-      'Global Working er et rekrutteringsbyrå spesialisert på helsepersonell fra Sør-Europa. Møt teamet og se hvordan vi jobber med språk, autorisasjon og kvalitet.',
+      'Ikke et vikarbyrå: dere ansetter kandidaten direkte. Grunnlagt 2014, egen språkskole i Alicante, kontor i Oslo, 50+ ansatte og ISO 9001:2015-sertifisert av TÜV Nord.',
     pathname: '/om-oss',
     schemaType: 'AboutPage',
     breadcrumbName: 'Om oss',
-    keywords: 'rekrutteringsbyrå helsepersonell, rekrutteringsbyrå helse, om Global Working, internasjonal rekruttering',
+    keywords: 'om Global Working, rekrutteringsselskap helsepersonell, ISO 9001 rekruttering, språkskole Alicante, internasjonal rekruttering',
   },
   kontakt: {
+    // 197 impresiones (con la variante www) y CTR 1,9 %. La gente que llega aquí ya
+    // nos busca por nombre —`anette nordskog` sale en Search Console—, así que la
+    // descripción nombra a las personas que contestan. Si cambia el equipo en
+    // publishedContent.contacts, cambia esto también: es texto, no se genera.
     title: 'Kontakt oss om rekruttering av helsepersonell | Global Working',
     description:
-      'Trenger dere sykepleiere eller helsefagarbeidere? Ta kontakt for en uforpliktende samtale om rekruttering, samarbeid eller kandidatportalen.',
+      'Snakk med rådgiverne Miriam Svendsen og Gro Anette Nordskog om rekruttering av sykepleiere og helsefagarbeidere. Uforpliktende samtale, svar innen én virkedag.',
     pathname: '/kontakt',
     schemaType: 'ContactPage',
     breadcrumbName: 'Kontakt',
     keywords: 'kontakt Global Working, rekruttering kontakt, samarbeid Norge',
   },
   'spansk-i-alicante': {
-    title: 'Spansk i Alicante | Global Working Norge',
+    // 186 impresiones, CTR 4,3 %, posición 12. `lær spansk i alicante` (pos. 16,6)
+    // y `spanski i alicante` (pos. 4, 0 clics) buscan un curso de español, y el
+    // título viejo prometía justo eso. El programa es otro: vivir gratis como
+    // samtaleassistent en nuestra escuela. Decirlo en el título pierde algún clic
+    // equivocado y gana los de quien sí encaja.
+    title: 'Spansk i Alicante: bo gratis som samtaleassistent | Global Working',
     description:
-      'Bo gratis i Alicante og bli samtaleassistent i et internasjonalt miljø gjennom Spansk i Alicante-programmet.',
+      'Bo gratis i Alicante og jobb rundt 15 timer i uken som samtaleassistent på vår språkskole. Resten av tiden er din – til spanskkurs, jobb eller studier.',
     pathname: '/spansk-i-alicante',
     breadcrumbName: 'Spansk i Alicante',
-    keywords: 'spansk i Alicante, samtaleassistent, språkopphold Spania, bo gratis Alicante',
+    keywords: 'spansk i Alicante, lær spansk i Alicante, bli samtaleassistent, bo gratis Alicante, språkopphold Spania',
   },
   'spansk-i-alicante-hvorfor': {
     title: 'Hvorfor finnes Spansk i Alicante? | Global Working Norge',
@@ -300,13 +369,18 @@ const SECTION_SEO = {
     keywords: 'livet som student Alicante, hverdagen i Alicante, helsenorsk, samtaleassistenter, sosialt fellesskap',
   },
   'spansk-i-alicante-helsenorsk': {
-    title: 'Helsenorsk – Yrkesrettet norsk for helsesektoren | Global Working Norge',
+    // La consulta con más impresiones fuera de la marca: `helsenorsk`, 165
+    // impresiones, posición 10,9, CTR 3,6 %. El título viejo tenía 71 caracteres y
+    // Google lo cortaba. Ahora cabe, y añade `norskkurs for helsepersonell` (pos.
+    // 28,8) y `norsk for helsepersonell` (pos. 24,3), que llegan aquí sin título que
+    // las nombre. La descripción dice dónde se enseña y quién enseña.
+    title: 'Helsenorsk – norskkurs for helsepersonell | Global Working',
     description:
-      'Helsenorsk er Global Workings spesialiserte språkprogram for sykepleiere og helsefagarbeidere. 650 timer yrkesrettet norsk tilpasset norsk helsetjeneste.',
+      'Helsenorsk ved vår egen språkskole i Alicante: opptil 650 timer norsk, fagterminologi og pasientkommunikasjon – undervist av sykepleiere som har jobbet i Norge.',
     pathname: '/spansk-i-alicante/helsenorsk',
     breadcrumbName: 'Helsenorsk',
     parentSection: 'spansk-i-alicante',
-    keywords: 'helsenorsk, norsk for helsepersonell, yrkesrettet norsk, sykepleier norskopplæring, helsenorsk Alicante',
+    keywords: 'helsenorsk, helsenorsk kurs, norskkurs for helsepersonell, norsk for helsepersonell, norskkurs for helseassistenter, helsenorsk Alicante',
   },
   personvern: {
     title: 'Personvern | Global Working Norge',

@@ -10,8 +10,8 @@ featured: false
 status: "published"
 publishAt: "2026-04-21T13:14:47.382+00:00"
 author: "Global Working"
-seoTitle: "Sykepleiere til sommervikariater – slik kan Global Working hjelpe"
-seoDescription: "Sliter kommunen med å dekke sommervaktene? Global Working tilbyr kvalifiserte sykepleiere fra Sør-Europa som er språklig forberedt og klare for oppstart."
+seoTitle: "Sykepleiere til sommervikariat – ansatt direkte"
+seoDescription: "Kommunen ansetter sykepleieren selv – ikke via vikarbyrå. Sykepleiere fra Sør-Europa med opptil 650 timer norsk, og mulighet for fast stilling etterpå."
 ---
 
 Hver sommer søker norske kommuner etter kvalifiserte sykepleiere til å dekke ferieavvikling. Mangel på kapasitet ender ofte med kortsiktige og kostbare løsninger. 
