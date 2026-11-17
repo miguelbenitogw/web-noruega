@@ -111,16 +111,11 @@ const localNewsSorted = sortNews(localNews)
 
 export const getAllNews = () => localNewsSorted
 export const getNewsBySlug = (slug) => localNewsSorted.find((article) => article.slug === slug) || null
-export const getFeaturedNews = () => localNewsSorted[0] || null
-export const getSecondaryNews = (limit = 3) => localNewsSorted.slice(1, 1 + limit)
-
-export async function loadPublishedNews() {
-  return { source: 'local', articles: localNewsSorted }
-}
-
-export async function loadPublishedNewsBySlug(slug) {
-  return getNewsBySlug(slug)
-}
+// Aquí vivían getFeaturedNews, getSecondaryNews, loadPublishedNews y
+// loadPublishedNewsBySlug. Las dos últimas eran async porque consultaban
+// Supabase; sin Supabase devolvían exactamente lo mismo que getAllNews y
+// getNewsBySlug, o sea dos formas de hacer lo mismo esperando a que alguien
+// usara la peor. Ninguna de las cuatro tenía un solo consumidor.
 
 export const __newsTestables = {
   parseFrontmatter,

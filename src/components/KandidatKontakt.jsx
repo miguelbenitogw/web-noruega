@@ -9,9 +9,20 @@ import FormAlert from './ui/FormAlert'
  *
  * La subida del CV se eliminó al desconectar Supabase: el archivo iba a un
  * bucket `cv-uploads` de Supabase Storage y el correo solo llevaba el enlace.
- * Ahora el candidato manda el CV por correo. Si en algún momento se quiere
- * recuperar el adjunto sin volver a Supabase, EmailJS admite adjuntos en sus
- * planes de pago.
+ * Ahora el candidato manda el CV por correo, y es una decisión tomada, no un
+ * pendiente. Se evaluaron las dos alternativas el 17/11/2026:
+ *
+ *   · EmailJS con adjunto: funciona, pero los adjuntos solo están en los planes
+ *     de pago (Personal, 9 USD/mes) y el techo son 500 kb por envío. Los siete
+ *     CV que había iban de 25 a 235 kb, así que habría bastado; el problema es
+ *     el que no está en esa muestra, el CV escaneado que no cabe y hace que el
+ *     candidato se vaya sin que nadie se entere.
+ *   · Función serverless con Resend: gratis y con techo de 40 MB, pero obliga a
+ *     montar un endpoint y a verificar el DNS del dominio.
+ *
+ * Se eligió no montar ninguna de las dos. El coste conocido de esta decisión es
+ * que se pierden los candidatos que no abren el correo para mandar el CV; si
+ * algún día entran menos CV de los esperados, el motivo está aquí escrito.
  *
  * Diseño: antes era un bloque centrado (`max-w-2xl mx-auto`, todo el texto al
  * medio) con el panel flotando en `shadow-xl rounded-3xl`, pestañas con

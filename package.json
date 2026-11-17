@@ -20,8 +20,7 @@
     "@emailjs/browser": "^4.4.1",
     "@phosphor-icons/react": "^2.1.10",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "react-ga4": "^2.1.0"
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -33,7 +32,6 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
-    "playwright": "^1.60.0",
     "postcss": "^8.5.8",
     "sharp": "^0.34.5",
     "tailwindcss": "^3.4.19",

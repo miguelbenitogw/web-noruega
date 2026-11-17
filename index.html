@@ -73,27 +73,6 @@
       />
     </noscript>
     <meta name="theme-color" content="#062A6A" />
-    <script>
-      (function () {
-        try {
-          var isAdmin = location.pathname === '/admin' || location.pathname.indexOf('/admin/') === 0
-          if (!isAdmin) return
-
-          var html = document.documentElement
-          html.classList.add('notranslate')
-          html.setAttribute('translate', 'no')
-          html.setAttribute('lang', 'nb')
-
-          document.addEventListener('DOMContentLoaded', function () {
-            if (!document.body) return
-            document.body.classList.add('notranslate')
-            document.body.setAttribute('translate', 'no')
-          }, { once: true })
-        } catch (error) {
-          // Ignore browser-specific translate hardening errors.
-        }
-      })()
-    </script>
 
     <script type="application/ld+json">
     {

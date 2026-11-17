@@ -1,6 +1,14 @@
 import { IMAGES } from '../assets/images.js'
 
-// Contenido central de toda la web. Edita desde /admin.
+// Contenido central de toda la web.
+//
+// Se edita AQUÍ, en el fichero, y se publica con un commit. El panel /admin que
+// mencionaba este comentario se eliminó junto con Supabase y esa ruta devuelve
+// 404 desde entonces.
+//
+// Ojo: lo que escribas aquí puede estar pisado por src/data/publishedContent.js,
+// que es el volcado del contenido que estaba publicado y que gana en el merge
+// de src/hooks/useContent.js. Si cambias algo y no se ve, miralo ahí.
 const siteContent = {
   hero: {
     badge: 'Norges ledende rekrutteringspartner',
