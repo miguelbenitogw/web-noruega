@@ -10,8 +10,8 @@ featured: false
 status: "published"
 publishAt: "2026-02-01T08:00:00+00:00"
 author: "Global Working"
-seoTitle: "Innkjøpsgrensen heves fra juli 2026"
-seoDescription: "Oppdatert oversikt over endringen i innkjøpsgrensen fra 1. juli 2026 og hva dette betyr for offentlig sektor."
+seoTitle: "Innkjøpsgrensen blir 500 000 kr fra juli 2026"
+seoDescription: "Fra 1. juli 2026 heves terskelverdien for offentlige anskaffelser fra 100 000 til 500 000 kr. Slik skiller regelverket rekruttering fra innleie av vikarer."
 ---
 
 Fra 1. juli 2026 øker terskelverdien – hva betyr det for kommunene?

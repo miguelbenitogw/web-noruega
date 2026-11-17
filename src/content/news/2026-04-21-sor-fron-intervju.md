@@ -10,8 +10,8 @@ featured: true
 status: "published"
 publishAt: "2026-04-21T10:18:23.184+00:00"
 author: "Global Working"
-seoTitle: "Internasjonal rekruttering ga Sør-Fron faste sykepleiere"
-seoDescription: "Da kommunen sto i en krevende bemanningssituasjon, valgte de å satse på en løsning i samarbeid med Global Working."
+seoTitle: "Sør-Fron fikk faste sykepleiere fra Sør-Europa"
+seoDescription: "Sør-Fron kommune startet med to sykepleiere fra Global Working og endte med fire sykepleiere og to assistenter. Tidligere kommunalsjef forteller hvordan."
 ---
 
 Da Sør-Fron kommune sto i en krevende bemanningssituasjon, valgte de å satse på en løsning som krevde både overbevisning internt og vilje til å investere. Resultatet ble ikke bare flere sykepleiere – men et styrket fagmiljø og et mer levende lokalsamfunn.

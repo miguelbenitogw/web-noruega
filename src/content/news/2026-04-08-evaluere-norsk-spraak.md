@@ -10,8 +10,8 @@ featured: false
 status: "published"
 publishAt: "2026-04-08T10:12:34.859+00:00"
 author: "Global Working"
-seoTitle: "Vurdering av norsk språknivå i praksis"
-seoDescription: "Er norsk språknivå godt nok? Mange kommuner blir positivt overrasket når de møter kandidatene fra Global Working."
+seoTitle: "Norsk språknivå B1 og B2 i helsetjenesten"
+seoDescription: "Hva betyr B1 og B2 i norsk for sykepleiere? Kandidatene våre består B1-eksamen. Slik vurderer kommuner språknivået i praksis – best gjennom et intervju."
 ---
 
 ## Hvor godt norsk kan kandidatene?

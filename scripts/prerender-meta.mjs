@@ -1,6 +1,8 @@
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import publishedContent from '../src/data/publishedContent.js'
+import siteContent from '../src/data/siteContent.js'
+import { deepMergeContent } from '../src/lib/contentMappers.js'
 
 const DIST_DIR = path.resolve('dist')
 const INDEX_PATH = path.join(DIST_DIR, 'index.html')
@@ -8,6 +10,14 @@ const NEWS_DIR = path.resolve('src/content/news')
 const SITE_URL = 'https://globalworking.no'
 const DEFAULT_IMAGE = 'https://globalworking.no/assets/media/og-default.jpg'
 const SITE_NAME = 'Global Working Norge'
+
+// El MISMO contenido que pinta la web: siteContent con publishedContent encima,
+// con la misma función que usa src/hooks/useContent.js. Las cifras del hero, los
+// contactos y los vídeos salen de aquí, no de copias escritas a mano en este
+// script: si alguien cambia «2500+» en publishedContent, el HTML estático cambia
+// con él. Antes la portada estática decía «over 50 norske arbeidsgivere» —una
+// lectura equivocada de «50+ ansatte»— mientras la web decía otra cosa.
+const content = deepMergeContent(siteContent, publishedContent)
 
 // ── Identidad de la entidad ──────────────────────────────────────────────────
 // UNA empresa, UN nodo, UN identificador. Antes `index.html` declaraba tres
@@ -26,15 +36,37 @@ const NORWAY = { '@type': 'Country', name: 'Norway' }
 
 // Los datos salen de los tres bloques que había en index.html, sin perder nada:
 // este grafo los sustituye en el HTML servido (ver stripLegacyJsonLd).
+// La certificación es el dato que más pesa para quien firma en una kommune, y
+// hasta ahora solo existía como texto suelto en /om-oss. Espejo de seo.js.
+const ISO_CERTIFICATION = {
+  '@type': 'Certification',
+  name: 'ISO 9001:2015',
+  about: 'Språkundervisning og internasjonal rekruttering',
+  issuedBy: { '@type': 'Organization', name: 'TÜV Nord' },
+}
+
 const buildOrganizationNode = () => ({
-  '@type': 'EmploymentAgency',
+  // `Organization`, ya no `EmploymentAgency`: en schema.org ese tipo es la
+  // agencia de colocación/ETT —el bemanningsbyrå con el que NO queremos que nos
+  // confundan— y además cuelga de LocalBusiness. Lo que somos lo dicen
+  // `description`, `knowsAbout` y la certificación. Espejo de seo.js.
+  '@type': 'Organization',
   '@id': ORG_ID,
   name: SITE_NAME,
+  // `global working` es la consulta que trae el 39 % de los clics.
+  alternateName: 'Global Working',
   legalName: 'Global Working Norge AS',
   url: SITE_URL,
   logo: { '@type': 'ImageObject', '@id': `${SITE_URL}/#logo`, url: 'https://globalworking.no/assets/media/logo-512.jpg' },
   image: { '@id': `${SITE_URL}/#logo` },
-  description: 'Rekruttering og språkopplæring for kvalifiserte fagfolk fra Sør-Europa til det norske arbeidsmarkedet.',
+  description: 'Rekrutteringsselskap med egen språkskole i Alicante. Vi rekrutterer og lærer opp sykepleiere og andre fagfolk fra Sør-Europa til faste stillinger hos norske arbeidsgivere, som ansetter kandidaten direkte. Vi er ikke et vikarbyrå.',
+  hasCertification: ISO_CERTIFICATION,
+  knowsAbout: [
+    'Rekruttering av sykepleiere',
+    'Rekruttering av helsepersonell fra utlandet',
+    'Helsenorsk',
+    'Norskopplæring for fagfolk',
+  ],
   foundingDate: '2014',
   numberOfEmployees: { '@type': 'QuantitativeValue', minValue: 50 },
   areaServed: NORWAY,
@@ -75,12 +107,14 @@ const buildWebSiteNode = () => ({
 })
 
 const buildAlicanteNode = () => ({
-  '@type': 'LocalBusiness',
+  // Alicante es también la escuela donde se dan las 650 horas. Que sea propia es
+  // lo que nos separa de un bemanningsbyrå: el tipo lo declara.
+  '@type': ['LocalBusiness', 'EducationalOrganization'],
   '@id': ALICANTE_ID,
   name: 'Global Working – Alicante',
   url: SITE_URL,
   image: { '@id': `${SITE_URL}/#logo` },
-  description: 'Global Workings hovedkontor for rekruttering av fagfolk til Norge.',
+  description: 'Global Workings hovedkontor og egen språkskole i Alicante, der kandidatene får opptil 650 timer norskundervisning før oppstart i Norge.',
   parentOrganization: ORG_REF,
   address: {
     '@type': 'PostalAddress',
@@ -183,6 +217,24 @@ const buildFaqNode = (url) => {
   }
 }
 
+// Personas con nombre: `anette nordskog` ya aparece como consulta en Search
+// Console (posición 1). Un rådgiver con nombre, cargo y teléfono es la prueba más
+// barata de que detrás hay una empresa y no un formulario. Salen de `contacts`,
+// los mismos que pinta /kontakt. Espejo de buildContactNodes en seo.js.
+const slugify = (s) => String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
+const contactPeople = () => (Array.isArray(content.contacts) ? content.contacts : []).filter((p) => p && p.name)
+
+const buildContactNodes = (url) => contactPeople().map((p) => ({
+  '@type': 'Person',
+  '@id': `${url}#${slugify(p.name)}`,
+  name: p.name,
+  ...(p.role ? { jobTitle: p.role } : {}),
+  ...(p.email ? { email: p.email } : {}),
+  ...(p.phone ? { telephone: p.phone } : {}),
+  worksFor: ORG_REF,
+}))
+
 const buildExtraNodes = (route, url) => {
   const extras = route.extras
   if (!extras) return []
@@ -192,7 +244,17 @@ const buildExtraNodes = (route, url) => {
     const faq = buildFaqNode(url)
     return faq ? [faq] : []
   }
+  if (extras.kind === 'contacts') return buildContactNodes(url)
   return []
+}
+
+// Texto que separa a Global Working de un vikarbyrå, sacado de la pregunta que
+// ya está publicada en el FAQ. No se reescribe aquí: si el cliente cambia la
+// respuesta, cambia en todas partes.
+const vikarbyraAnswer = () => {
+  const items = Array.isArray(publishedContent?.faq?.items) ? publishedContent.faq.items : []
+  const hit = items.find((i) => /vikarbyrå/i.test(String(i?.q ?? '')))
+  return hit ? flattenAnswer(hit.a) : ''
 }
 
 const ROUTES = {
@@ -201,7 +263,10 @@ const ROUTES = {
     description: 'Hvordan rekruttere helsepersonell fra utlandet? Se hele prosessen steg for steg: utvelgelse, 650 timer helsenorsk, autorisasjon og oppfølging frem til første arbeidsdag.',
     keywords: 'hvordan rekruttere helsepersonell, internasjonal rekruttering, rekruttering av sykepleiere, arbeidsinnvandring',
     breadcrumbName: 'Rekrutteringsmodell',
-    bodyExtra: '<h2>Slik fungerer rekrutteringsprosessen</h2><p>Global Workings rekrutteringsmodell er bygd opp i fire faser: identifisering av kandidater, språklig og faglig kvalifisering, dokumenthåndtering og autorisasjon, og til slutt tett oppfølging etter oppstart i Norge. Vi samarbeider med universiteter og fagmiljøer i Spania, Portugal og andre søreuropeiske land for å finne kandidater som matcher norske arbeidsgiveres behov. Alle kandidater gjennomgår norskopplæring opp til B2-nivå før de starter i jobb.</p>',
+    // Corregido contra el contenido publicado: decía «opp til B2-nivå» para TODOS
+    // (el artículo de evaluación dice que el mínimo es aprobar el B1) y hablaba de
+    // «universiteter» que no aparecen en ningún otro sitio de la web.
+    bodyExtra: '<h2>Slik fungerer rekrutteringsprosessen</h2><p>Global Workings rekrutteringsmodell er bygd opp i fire faser: utvelgelse av kandidater, språklig og faglig forberedelse på vår egen språkskole, dokumenthåndtering og autorisasjon, og oppfølging etter oppstart i Norge. Kandidatene kommer hovedsakelig fra Spania, Italia og Frankrike. De får opptil 650 undervisningstimer i norsk, må bestå B1-eksamen og kan nå opp mot B2 når rollen krever det. Opplæringen tar 5 måneder fysisk i Alicante, 7 måneder kombinert eller 9 måneder nettbasert.</p><p>Arbeidsgiveren intervjuer så mange kandidater den ønsker, uten forpliktelse, og ansetter kandidaten direkte. Global Working er ikke et vikarbyrå og har ikke arbeidsgiveransvar.</p>',
     related: ['/helse', '/spansk-i-alicante/helsenorsk', '/talentportalen', 'news:hvordan-lykkes', 'news:rekrutteringspartner'],
     extras: {
       kind: 'service',
@@ -212,11 +277,16 @@ const ROUTES = {
     },
   },
   '/helse': {
+    // Descripción: 82 impresiones y 0 clics en tres meses. Ahora dice lo que nos
+    // separa de un vikarbyrå y nombra dos kommuner reales. Espejo de seo.js.
     title: 'Rekruttering av sykepleiere til Norge | Global Working',
-    description: 'Mangel på sykepleiere? Vi finner, forbereder og følger opp utenlandske sykepleiere og helsefagarbeidere til norske kommuner og sykehus — med språk, autorisasjon og trygg oppstart.',
-    keywords: 'rekruttering av sykepleiere, utenlandske sykepleiere i Norge, rekrutteringsbyrå helsepersonell, mangel på sykepleiere',
+    description: 'Sykepleiere fra Sør-Europa med opptil 650 timer norsk, ansatt direkte hos dere – ikke via vikarbyrå. Slik fikk Vågå og Sør-Fron kommune faste sykepleiere.',
+    keywords: 'rekruttering sykepleiere, rekruttering helsepersonell, utenlandske sykepleiere i Norge, faste sykepleiere kommune, mangel på sykepleiere',
     breadcrumbName: 'Helsesektor',
-    bodyExtra: '<h2>Rekruttering av helsepersonell til Norge</h2><p>Norsk helsevesen trenger kvalifiserte sykepleiere, helsefagarbeidere og spesialistpersonell. Global Working spesialiserer seg på å rekruttere helsepersonell fra Sør-Europa og forberede dem for det norske arbeidsmarkedet. Programmet vårt inkluderer helsenorsk-opplæring, støtte gjennom autorisasjonsprosessen hos Helsedirektoratet, kulturell forberedelse og tett oppfølging det første året i Norge. Vi samarbeider med kommuner, sykehus og private helseinstitusjoner over hele landet.</p>',
+    // «tett oppfølging det første året» no lo dice ningún texto publicado: el FAQ
+    // habla de la prøveperiode. Los dos casos salen de los artículos de Vågå y
+    // Sør-Fron, con sus cifras.
+    bodyExtra: '<h2>Rekruttering av helsepersonell til Norge</h2><p>Global Working rekrutterer sykepleiere og helsefagarbeidere fra Sør-Europa til faste stillinger i norske kommuner og helseforetak. Før oppstart får kandidatene opptil 650 timer norsk og helsenorsk på vår egen språkskole i Alicante. Vi hjelper med autorisasjon hos Helsedirektoratet, dokumenter og papirarbeid, og følger opp kandidat og arbeidsgiver gjennom prøveperioden. Kommunen ansetter kandidaten direkte – vi er ikke et vikarbyrå.</p><h2>Kommuner som har gjort det</h2><p>Vågå kommune ansatte seks sykepleiere fra Spania som hadde lært norsk i Alicante; alle seks har i dag fast jobb ved helsehjemmet. I Sør-Fron startet samarbeidet med to sykepleiere og endte med fire sykepleiere og to assistenter.</p>',
     related: ['/vr-rekrutteringsmodell', '/spansk-i-alicante/helsenorsk', '/talentportalen', 'news:vaga', 'news:sor-fron-intervju', 'news:hvordan-lykkes', 'news:sommervikarer'],
     extras: {
       kind: 'service',
@@ -251,11 +321,16 @@ const ROUTES = {
   },
   '/om-oss': {
     schemaType: 'AboutPage',
-    title: 'Rekrutteringsbyrå for helsesektoren | Global Working Norge',
-    description: 'Global Working er et rekrutteringsbyrå spesialisert på helsepersonell fra Sør-Europa. Møt teamet og se hvordan vi jobber med språk, autorisasjon og kvalitet.',
-    keywords: 'rekrutteringsbyrå helsepersonell, rekrutteringsbyrå helse, om Global Working, internasjonal rekruttering',
+    // 262 impresiones, 1 clic (CTR 0,4 %): búsquedas de marca que no encontraban
+    // lo que buscaban, que es saber si la empresa es seria. «byrå» fuera: suena a
+    // bemanningsbyrå. Espejo de seo.js.
+    title: 'Om Global Working – rekruttering og språkskole siden 2014',
+    description: 'Ikke et vikarbyrå: dere ansetter kandidaten direkte. Grunnlagt 2014, egen språkskole i Alicante, kontor i Oslo, 50+ ansatte og ISO 9001:2015-sertifisert av TÜV Nord.',
+    keywords: 'om Global Working, rekrutteringsselskap helsepersonell, ISO 9001 rekruttering, språkskole Alicante, internasjonal rekruttering',
     breadcrumbName: 'Om oss',
-    bodyExtra: '<h2>Hvem er Global Working?</h2><p>Global Working ble grunnlagt i 2014 med et mål: å bygge bro mellom kvalifiserte fagfolk i Sør-Europa og arbeidsgivere i Norge som trenger kompetanse. Med hovedkontor i Alicante og representasjon i Oslo har vi over 50 ansatte som jobber daglig med rekruttering, språkopplæring og integrering. Vi tror på langvarige ansettelser bygget på grundig forberedelse — både faglig, språklig og kulturelt.</p>',
+    // Los porcentajes del equipo y la certificación salen de omOssComp en
+    // publishedContent: es lo que pinta /om-oss después de JavaScript.
+    bodyExtra: '<h2>Hvem er Global Working?</h2><p>Global Working ble grunnlagt i 2014 og har hovedkontor og egen språkskole i Alicante, Spania, og kontor i Oslo. Vi er over 50 ansatte: 25 % av teamet er psykologer som jobber med seleksjon og oppfølging, og 50 % er språklærere. Prosessene våre er ISO 9001:2015-sertifisert av TÜV Nord for språkundervisning og internasjonal rekruttering.</p><p>Vi er et rekrutteringsselskap, ikke et vikarbyrå: virksomheten som ansetter kandidaten blir arbeidsgiver, og målet er faste, langvarige ansettelser.</p>',
     related: ['/helse', '/vr-rekrutteringsmodell', 'news:pablo-intervju'],
     // El <FAQ /> de esta página solo existe después de que corra React. Las seis
     // preguntas —incluida «Hva koster det å bruke Global Working?»— son
@@ -270,16 +345,23 @@ const ROUTES = {
   },
   '/kontakt': {
     schemaType: 'ContactPage',
+    // La gente llega buscando nombres (`anette nordskog`): la descripción nombra
+    // a quien contesta. Espejo de seo.js; si cambia `contacts`, cambiar esto.
     title: 'Kontakt oss om rekruttering av helsepersonell | Global Working',
-    description: 'Trenger dere sykepleiere eller helsefagarbeidere? Ta kontakt for en uforpliktende samtale om rekruttering, samarbeid eller kandidatportalen.',
+    description: 'Snakk med rådgiverne Miriam Svendsen og Gro Anette Nordskog om rekruttering av sykepleiere og helsefagarbeidere. Uforpliktende samtale, svar innen én virkedag.',
     keywords: 'kontakt Global Working, rekruttering kontakt, samarbeid Norge',
     breadcrumbName: 'Kontakt',
     bodyExtra: '<h2>Ta kontakt med oss</h2><p>Har du spørsmål om rekruttering, samarbeid eller kandidatportalen? Vi svarer gjerne. E-post: kontakt@globalworking.no. Telefon: +47 919 00 649. Besøksadresse: Carrer de Periodista Pirula Arderius, 4, 03001 Alicante, Spania.</p>',
+    // La lista de personas se genera de `contacts` (ver buildContactsBody).
+    contactsBody: true,
+    extras: { kind: 'contacts' },
   },
   '/spansk-i-alicante': {
-    title: 'Spansk i Alicante | Global Working Norge',
-    description: 'Bo gratis i Alicante og bli samtaleassistent i et internasjonalt miljø gjennom Spansk i Alicante-programmet.',
-    keywords: 'spansk i Alicante, samtaleassistent, språkopphold Spania, bo gratis Alicante',
+    // `lær spansk i alicante` y `spanski i alicante` esperaban un curso de
+    // español; el título viejo lo prometía. Ahora dice qué es. Espejo de seo.js.
+    title: 'Spansk i Alicante: bo gratis som samtaleassistent | Global Working',
+    description: 'Bo gratis i Alicante og jobb rundt 15 timer i uken som samtaleassistent på vår språkskole. Resten av tiden er din – til spanskkurs, jobb eller studier.',
+    keywords: 'spansk i Alicante, lær spansk i Alicante, bli samtaleassistent, bo gratis Alicante, språkopphold Spania',
     breadcrumbName: 'Spansk i Alicante',
     bodyExtra: '<h2>Hva er Spansk i Alicante?</h2><p>Spansk i Alicante er et unikt program der norske deltakere bor gratis i Alicante og fungerer som samtaleassistenter for kandidater som lærer norsk. Du trenger ingen forkunnskaper i spansk — programmet er for deg som vil oppleve Alicante, bidra i et internasjonalt miljø og hjelpe fagfolk med å bli trygge i norsk. Oppholdet inkluderer fri bolig, sosialt fellesskap og mulighet til å lære spansk på fritiden.</p>',
   },
@@ -300,12 +382,14 @@ const ROUTES = {
     bodyExtra: '<h2>Hverdagen i Alicante</h2><p>Kandidatene våre følger et strukturert program med norskundervisning, helsenorsk, samtalegrupper med norske assistenter og sosialt fellesskap. Dagene er en blanding av klasseromsundervisning, praktiske øvelser og kulturelle aktiviteter. Alicante tilbyr et trygt og sosialt miljø med mildt klima, noe som gjør forberedelsesperioden til en positiv opplevelse.</p>',
   },
   '/spansk-i-alicante/helsenorsk': {
-    title: 'Helsenorsk – Yrkesrettet norsk for helsesektoren | Global Working Norge',
-    description: 'Helsenorsk er Global Workings spesialiserte språkprogram for sykepleiere og helsefagarbeidere. 650 timer yrkesrettet norsk tilpasset norsk helsetjeneste.',
-    keywords: 'helsenorsk, norsk for helsepersonell, yrkesrettet norsk, sykepleier norskopplæring, helsenorsk Alicante',
+    // `helsenorsk`: 165 impresiones, posición 10,9, CTR 3,6 %. El título viejo
+    // (71 caracteres) salía cortado. Espejo de seo.js.
+    title: 'Helsenorsk – norskkurs for helsepersonell | Global Working',
+    description: 'Helsenorsk ved vår egen språkskole i Alicante: opptil 650 timer norsk, fagterminologi og pasientkommunikasjon – undervist av sykepleiere som har jobbet i Norge.',
+    keywords: 'helsenorsk, helsenorsk kurs, norskkurs for helsepersonell, norsk for helsepersonell, norskkurs for helseassistenter, helsenorsk Alicante',
     breadcrumbName: 'Helsenorsk',
     parent: { name: 'Spansk i Alicante', path: '/spansk-i-alicante' },
-    bodyExtra: '<h2>Helsenorsk: yrkesrettet norsk for helsesektoren</h2><p>Helsenorsk er et sentralt spor i Global Workings opplæringsprogram. Gjennom 650 timer med yrkesrettet norskopplæring bygger sykepleiere og helsefagarbeidere opp et fagspråk knyttet til situasjoner de vil møte i norsk helsetjeneste. Programmet inkluderer simuleringer av realistiske arbeidssituasjoner, og undervises av spanske sykepleiere som selv har jobbet i Norge.</p>',
+    bodyExtra: '<h2>Helsenorsk: yrkesrettet norsk for helsesektoren</h2><p>Helsenorsk er et sentralt spor i Global Workings opplæringsprogram. Gjennom 650 timer med yrkesrettet norskopplæring bygger sykepleiere og helsefagarbeidere opp et fagspråk knyttet til situasjoner de vil møte i norsk helsetjeneste. Programmet inkluderer simuleringer av realistiske arbeidssituasjoner, og undervises av spanske sykepleiere som selv har gått gjennom Global Working-programmet og jobbet i Norge.</p><p>Alle kandidatene må bestå B1-eksamen i norsk; målet settes ut fra rollen, ofte opp mot B2. Kommunen kan intervjue kandidatene og vurdere språket selv før ansettelse.</p>',
     related: ['/helse', '/vr-rekrutteringsmodell', 'news:praktisk-norsk', 'news:evaluere-norsk-spraak'],
     extras: {
       kind: 'course',
@@ -562,23 +646,55 @@ const buildFaqBody = () => {
   return `<section>${blocks}</section>`
 }
 
-// ── Vídeos de la portada: PENDIENTE, y conviene saber por qué ────────────────
-// `src/lib/seo.js` construye tres VideoObject para el carrusel de la portada,
-// pero lo hace desde JavaScript: Google no los ha visto nunca, y los
-// rastreadores de IA tampoco. Son datos estructurados escritos que no cuentan
-// para nada, y espejarlos aquí sería el arreglo.
-//
-// No se puede todavía. Los vídeos viven en `src/data/siteContent.js`, que
-// importa `'../assets/images'` SIN extensión: Vite lo resuelve, Node a secas
-// no, así que este script no puede importar ese archivo
-// (ERR_MODULE_NOT_FOUND). Se arregla con un carácter —`'../assets/images.js'`—
-// en src/data/siteContent.js, y entonces esto puede importarlo igual que
-// publishedContent.js.
-//
-// La alternativa era copiar aquí los ids y los textos de los vídeos. No se ha
-// hecho a propósito: dos copias de los mismos datos acaban diciendo cosas
-// distintas, que es exactamente el problema que este script existe para
-// evitar. Mejor que falte y se sepa que falta.
+// ── Vídeos de la portada ────────────────────────────────────────────────────
+// Antes esto estaba PENDIENTE porque src/data/siteContent.js importaba
+// '../assets/images' sin extensión y Node no podía cargarlo. Ya lleva `.js`, así
+// que los VideoObject se arman aquí con los mismos datos que usa seo.js
+// (buildVideoNodes): mismo `@id`, mismos campos. Hasta ahora solo existían en el
+// JavaScript del navegador, invisibles para cualquier rastreador que no lo ejecute.
+const VIDEO_PROVIDERS = {
+  youtube: {
+    thumb: (id) => `https://i.ytimg.com/vi/${id}/oardefault.jpg`,
+    embed: (id) => `https://www.youtube.com/embed/${id}`,
+    watch: (id) => `https://www.youtube.com/watch?v=${id}`,
+  },
+  vimeo: {
+    thumb: () => null,
+    embed: (id) => `https://player.vimeo.com/video/${id}`,
+    watch: (id) => `https://vimeo.com/${id}`,
+  },
+}
+
+const buildVideoNodes = (fallbackDescription) => {
+  const data = content.homeVideos
+  const items = Array.isArray(data?.items) ? data.items.filter((it) => it && it.id) : []
+  if (items.length === 0) return []
+  const builder = VIDEO_PROVIDERS[data.provider] || VIDEO_PROVIDERS.youtube
+  return items.map((item) => ({
+    '@type': 'VideoObject',
+    '@id': `${SITE_URL}/#video-${item.id}`,
+    name: item.title || data.heading || SITE_NAME,
+    description: item.description || data.description || fallbackDescription,
+    thumbnailUrl: [item.poster || builder.thumb(item.id) || DEFAULT_IMAGE],
+    uploadDate: item.uploadDate || '2026-06-17',
+    contentUrl: builder.watch(item.id),
+    embedUrl: builder.embed(item.id),
+    publisher: ORG_REF,
+  }))
+}
+
+/** Las personas de /kontakt, desde `contacts`: nombre, cargo, teléfono y correo. */
+const buildContactsBody = () => {
+  const people = contactPeople()
+  if (people.length === 0) return ''
+  const items = people
+    .map((p) => {
+      const bits = [p.role, p.phone, p.email].filter(Boolean).map((b) => escapeHtml(String(b)))
+      return `<li>${escapeHtml(p.name)}${bits.length ? ` – ${bits.join(', ')}` : ''}</li>`
+    })
+    .join('')
+  return `<h2>Rådgiverne våre</h2><ul>${items}</ul>`
+}
 
 /** Índice de noticias generado de los .md, nunca a mano. */
 const buildNewsIndexBody = (articles) => {
@@ -663,6 +779,7 @@ const injectMeta = (html, pathname, route, articles) => {
     route.bodyExtra || '',
     route.newsIndex ? buildNewsIndexBody(articles) : '',
     route.faqBody ? buildFaqBody() : '',
+    route.contactsBody ? buildContactsBody() : '',
     buildRelatedNav(route.related, articles),
   ].join('')
   const body = buildBodySkeleton({ h1, description: route.description, breadcrumbs, extraContent })
@@ -833,6 +950,10 @@ const LLMS_SRC = path.resolve('public/llms.txt')
 const LLMS_OUT = path.join(DIST_DIR, 'llms.txt')
 const LLMS_PAGES_MARKER = '<!--LLMS-PAGES-->'
 const LLMS_NEWS_MARKER = '<!--LLMS-NEWS-->'
+// Las cifras del hero también, por el mismo motivo que en la portada: un
+// «2500+» escrito a mano en llms.txt se queda viejo el día que cambie en
+// publishedContent, y ese archivo es justo el que leen los LLM.
+const LLMS_STATS_MARKER = '<!--LLMS-STATS-->'
 
 // El orden importa: quien paga es el responsable de personal de una kommune,
 // así que lo que contrata va arriba y el programa de Alicante —que interesa al
@@ -852,7 +973,7 @@ const LLMS_PAGE_ORDER = [
 
 const writeLlmsTxt = async (articles) => {
   const raw = await readFile(LLMS_SRC, 'utf8')
-  for (const marker of [LLMS_PAGES_MARKER, LLMS_NEWS_MARKER]) {
+  for (const marker of [LLMS_PAGES_MARKER, LLMS_NEWS_MARKER, LLMS_STATS_MARKER]) {
     if (!raw.includes(marker)) {
       throw new Error(
         `prerender: public/llms.txt no contiene ${marker}. Las listas de páginas y ` +
@@ -874,9 +995,16 @@ const writeLlmsTxt = async (articles) => {
     ? articles.map((a) => `- ${a.title}: ${SITE_URL}/nyheter/${a.slug}`).join('\n')
     : '- (ingen artikler)'
 
+  const stats = (Array.isArray(content.hero?.stats) ? content.hero.stats : [])
+    .filter((st) => st && st.value && st.label)
+    .map((st) => `- ${st.label}: ${st.value}`)
+    .join('\n')
+  if (!stats) throw new Error('prerender: hero.stats vacío; llms.txt se publicaría sin cifras.')
+
   const out = raw
     .replace(LLMS_PAGES_MARKER, pages)
     .replace(LLMS_NEWS_MARKER, news)
+    .replace(LLMS_STATS_MARKER, stats)
 
   await writeFile(LLMS_OUT, out, 'utf8')
   return { pages: LLMS_PAGE_ORDER.length + 1, news: articles.length }
@@ -910,46 +1038,87 @@ const run = async () => {
     generated++
   }
 
-  // Inject body skeleton into the root index.html (homepage)
-  // This file is NOT in ROUTES, so it doesn't go through injectMeta.
+  // ── Portada ──────────────────────────────────────────────────────────────
+  // No está en ROUTES (sale de index.html), así que su título y descripción se
+  // repiten aquí. TIENEN que ser los de DEFAULT_SEO en seo.js y los de
+  // index.html; check-seo-sync compara esos dos.
+  const HOME_TITLE = 'Global Working Norge – rekruttering med egen språkskole'
+  const HOME_DESCRIPTION = 'Ikke et vikarbyrå: dere ansetter sykepleiere og fagfolk fra Sør-Europa direkte. Egen språkskole i Alicante, ISO 9001:2015-sertifisert, siden 2014.'
+
+  // Las cifras del hero (año, empleados, candidatos, kommuner) las pinta React
+  // con un contador animado: en el HTML servido no estaba NINGUNA. Para GPTBot,
+  // ClaudeBot o PerplexityBot —que no ejecutan JS— la empresa no tenía tamaño.
+  // Salen de `hero.stats` del contenido fusionado, el mismo array que lee
+  // src/components/Hero.jsx. Si desaparecen, el build falla: es justo el tipo de
+  // dato que se pierde sin que nadie lo note.
+  const heroStats = (Array.isArray(content.hero?.stats) ? content.hero.stats : [])
+    .filter((st) => st && st.value && st.label)
+  if (heroStats.length === 0) {
+    throw new Error('prerender: hero.stats está vacío; la portada estática se quedaría sin cifras.')
+  }
+  const statsHtml = `<h2>Global Working i tall</h2><ul>${heroStats
+    .map((st) => `<li>${escapeHtml(String(st.label))}: ${escapeHtml(String(st.value))}</li>`)
+    .join('')}</ul>`
+
+  // Consultas reales en Search Console que esta portada no contestaba:
+  // `hvilke globale kontorer har de i dag?`, `hvor mange?`, `konkrete prosjekter`.
+  // Tienen pinta de venir de respuestas generadas; se contestan con hechos ya
+  // publicados en la web y en los artículos de Vågå y Sør-Fron.
+  const vikar = vikarbyraAnswer()
+  const caseLinks = ['vaga', 'sor-fron-intervju']
+    .map((slug) => articles.find((a) => a.slug === slug))
+    .filter(Boolean)
+    .map((a) => `<li><a href="/nyheter/${a.slug}">${escapeHtml(a.title)}</a></li>`)
+    .join('')
+  // Solo los nombres: la frase ya dice «rådgiverne», y el cargo con teléfono
+  // está en /kontakt.
+  const people = contactPeople()
+    .map((p) => escapeHtml(p.name))
+    .join(' og ')
+
   const homeSkeleton = buildBodySkeleton({
     h1: 'Rekruttering av helsepersonell og fagfolk til Norge',
-    description: 'Global Working hjelper norske arbeidsgivere med rekruttering av kvalifiserte fagfolk fra Sør-Europa. Språkopplæring, integrering og dokumentert oppfølging fra første kontakt til oppstart.',
+    description: HOME_DESCRIPTION,
     breadcrumbs: null,
     extraContent: [
+      statsHtml,
       '<h2>Våre tjenester</h2>',
       '<ul>',
-      '<li><a href="/vr-rekrutteringsmodell">Rekrutteringsmodell</a> — Vi identifiserer, kvalifiserer og følger opp fagfolk fra Sør-Europa til trygge ansettelser i Norge.</li>',
-      '<li><a href="/helse">Helsesektor</a> — Spesialisert rekruttering av sykepleiere og helsefagarbeidere med autorisasjonsstøtte og helsenorsk.</li>',
-      '<li><a href="/spansk-i-alicante">Spansk i Alicante</a> — Samtaleassistentprogram der norske deltakere bor gratis og hjelper kandidater med norsk språktrening.</li>',
-      '<li><a href="/talentportalen">Talentportalen</a> — Digital plattform der arbeidsgivere ser tilgjengelige kandidater og inviterer til intervju.</li>',
+      '<li><a href="/helse">Rekruttering av sykepleiere til Norge</a> — sykepleiere og helsefagarbeidere fra Sør-Europa, forberedt med helsenorsk og hjelp med autorisasjon.</li>',
+      '<li><a href="/vr-rekrutteringsmodell">Slik rekrutterer vi</a> — utvelgelse, opptil 650 timer norsk, autorisasjon og oppfølging frem til første arbeidsdag.</li>',
+      '<li><a href="/spansk-i-alicante/helsenorsk">Helsenorsk</a> — yrkesrettet norsk for helsepersonell på vår egen språkskole i Alicante.</li>',
+      '<li><a href="/talentportalen">Talentportalen</a> — se tilgjengelige kandidater og inviter til intervju.</li>',
       '</ul>',
-      '<h2>Hvorfor Global Working?</h2>',
-      '<p>Siden 2014 har vi hjulpet over 50 norske arbeidsgivere med å rekruttere kvalifiserte fagfolk. Vårt program inkluderer språkopplæring (norsk opp til B2), kulturell forberedelse, dokumenthåndtering og tett oppfølging gjennom hele prosessen — fra første kontakt til oppstart i Norge.</p>',
+      '<h2>Rekrutteringsselskap, ikke vikarbyrå</h2>',
+      vikar ? `<p>${escapeHtml(vikar)}</p>` : '',
+      '<p>Global Working ble grunnlagt i 2014 og har hovedkontor og egen språkskole i Alicante, Spania, og kontor i Oslo. Prosessene våre er ISO 9001:2015-sertifisert av TÜV Nord for språkundervisning og internasjonal rekruttering. Kandidatene får opptil 650 timer norskundervisning og må bestå B1-eksamen før oppstart.</p>',
+      caseLinks ? `<h2>Kommuner som har gjort det</h2><ul>${caseLinks}</ul>` : '',
       '<h2>Kontakt oss</h2>',
+      people ? `<p>Rådgiverne ${people} svarer på spørsmål om rekruttering og samarbeid.</p>` : '',
       '<p>E-post: kontakt@globalworking.no | Telefon: +47 919 00 649</p>',
-      '<p><a href="/kontakt">Ta kontakt for spørsmål om rekruttering og samarbeid</a></p>',
+      '<p><a href="/kontakt">Ta kontakt for en uforpliktende samtale</a></p>',
       buildNewsIndexBody(articles.slice(0, 4)),
     ].join(''),
   })
 
   // La portada es la única ruta que no pasa por injectMeta, así que su grafo se
-  // arma aquí: las mismas entidades que el resto más su propia WebPage y los
-  // VideoObject, que hasta ahora solo existían en el JavaScript de seo.js.
+  // arma aquí: las mismas entidades que el resto, su propia WebPage y los
+  // VideoObject del carrusel — el mismo grafo que setDefaultSEO() en seo.js.
   const homeUrl = `${SITE_URL}/`
   const homeGraph = buildGraph([
     ...entityNodes(),
     {
       '@type': 'WebPage',
       '@id': `${homeUrl}#webpage`,
-      name: 'Rekruttering av sykepleiere fra utlandet | Global Working Norge',
-      description: 'Vi rekrutterer sykepleiere og helsefagarbeidere fra Sør-Europa til norske kommuner og sykehus. 650 timer helsenorsk, hjelp med autorisasjon og oppfølging helt frem til oppstart.',
+      name: HOME_TITLE,
+      description: HOME_DESCRIPTION,
       url: homeUrl,
       inLanguage: 'nb-NO',
       isPartOf: { '@id': WEBSITE_ID },
       about: ORG_REF,
       primaryImageOfPage: { '@id': `${SITE_URL}/#logo` },
     },
+    ...buildVideoNodes(HOME_DESCRIPTION),
   ])
 
   // La portada conserva el preload: es la única ruta donde el hero se usa.
