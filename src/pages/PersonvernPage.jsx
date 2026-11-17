@@ -12,5 +12,5 @@ import LegalDocument from '../components/ui/LegalDocument'
 export default function PersonvernPage() {
   const content = useContent('legalPersonvern')
 
-  return <LegalDocument contentKey="legalPersonvern" content={content} />
+  return <LegalDocument content={content} />
 }

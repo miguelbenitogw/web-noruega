@@ -130,6 +130,19 @@
   .gw-measure    { @apply max-w-measure; }
   .gw-measure-sm { @apply max-w-measure-sm; }
 
+  /* ── Pila de párrafos ─────────────────────────────────────────────────
+     Un bloque de texto que viene de los datos con varios párrafos se pinta
+     como varios <p> hermanos dentro de un contenedor con esta clase. El
+     contenedor lleva color, tamaño, medida e interlineado; los <p> heredan
+     todo y solo reciben el aire entre ellos. Así es imposible que un párrafo
+     del mismo bloque salga con otro estilo que el de al lado: no tienen
+     estilo propio. El hueco es `1lh`, una línea de su propio interlineado:
+     escala con el cuerpo (body-sm en tarjetas, body-lg en bajadas) y es
+     exactamente la línea en blanco que dejaba el editor viejo entre
+     párrafos, así que el ritmo de las páginas no cambia. `1em` queda de red
+     para navegadores sin la unidad `lh`. */
+  .gw-stack > * + * { margin-top: 1em; margin-top: 1lh; }
+
   /* ── Sangrado al borde de la pantalla ─────────────────────────────────
      Saca una imagen fuera de `.container-xl` hasta el borde del viewport.
      El `+2rem` cancela el padding del contenedor en lg; el `max(0px, …)`

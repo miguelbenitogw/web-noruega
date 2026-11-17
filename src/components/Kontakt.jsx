@@ -3,11 +3,11 @@ import emailjs from '@emailjs/browser'
 import { trackEvent } from '../lib/analytics'
 import { IMAGES, img } from '../assets/images'
 import useContent from '../hooks/useContent'
-import EditableText from './editable/EditableText'
-import EditableImage from './editable/EditableImage'
 import FormField from './ui/FormField'
 import FormAlert from './ui/FormAlert'
 import TextLink from './ui/TextLink'
+import RichText from './ui/RichText'
+import EmailText from './ui/EmailText'
 
 /**
  * Kontakt — el formulario del empleador noruego.
@@ -184,30 +184,16 @@ export default function Kontakt() {
 
           {/* ── Con quién hablás ───────────────────────────────────────── */}
           <div className="lg:col-span-5">
-            <EditableText
-              as="span"
-              path="kontaktComp.label"
-              value={c.label}
-              className="gw-label text-primary-600"
-            />
-            <EditableText
-              as="h2"
-              id="kontakt-heading"
-              path="kontaktComp.heading"
-              value={c.heading}
-              className="mt-5 text-display-sm font-semibold text-navy"
-            />
-            <EditableText
-              as="p"
-              path="kontaktComp.description"
+            <span className="gw-label text-primary-600">{c.label}</span>
+            <h2 id="kontakt-heading" className="mt-5 text-display-sm font-semibold text-navy">{c.heading}</h2>
+            <RichText
               value={c.description}
-              multiline
               className="mt-6 text-ink-muted text-body leading-[1.65]"
             />
 
             {/* Si la promesa es «hablás con una persona», la persona se ve. */}
             <div className="mt-10 grid sm:grid-cols-2 gap-5">
-              {(contacts || []).map((contact, i) => (
+              {(contacts || []).map((contact) => (
                 <div key={contact.name} className="gw-panel bg-white border-line p-6">
                   {resolveContactPhoto(contact) ? (
                     <img
@@ -227,18 +213,8 @@ export default function Kontakt() {
                     </div>
                   )}
 
-                  <EditableText
-                    as="div"
-                    path={`contacts.${i}.name`}
-                    value={contact.name}
-                    className="font-heading font-semibold text-navy leading-snug"
-                  />
-                  <EditableText
-                    as="div"
-                    path={`contacts.${i}.role`}
-                    value={contact.role}
-                    className="mt-0.5 gw-meta"
-                  />
+                  <div className="font-heading font-semibold text-navy leading-snug">{contact.name}</div>
+                  <div className="mt-0.5 gw-meta">{contact.role}</div>
 
                   {/* El correo y el teléfono son, en un móvil, los dos únicos
                       gestos que importan de esta ficha: abren el cliente de
@@ -249,9 +225,9 @@ export default function Kontakt() {
                   <div className="mt-4 pt-4 border-t border-line">
                     <a
                       href={`mailto:${contact.email}`}
-                      className="flex min-h-[44px] items-center font-ui text-body-xs text-primary-600 break-words transition-colors hover:text-navy"
+                      className="flex min-h-[44px] items-center font-ui text-body-xs text-primary-600 transition-colors hover:text-navy"
                     >
-                      {contact.email}
+                      <EmailText email={contact.email} />
                     </a>
                     <a
                       href={`tel:${contact.phone.replace(/\s/g, '')}`}
@@ -266,25 +242,17 @@ export default function Kontakt() {
 
             {/* La sede: foto entera y la dirección como dato, bajo filete. */}
             <div className="mt-10">
-              <EditableImage
-                path="kontaktComp.imageUrl"
+              <img
                 src={img(c.imageUrl || IMAGES.alicanteOffice, 1200)}
                 alt={c.imageAlt || 'Global Working-kontoret i Alicante'}
                 className="w-full h-56 lg:h-64 object-cover rounded-panel"
                 loading="lazy"
+                decoding="async"
               />
               <div className="mt-5 pt-5 border-t border-line">
-                <EditableText
-                  as="h3"
-                  path="kontaktComp.officeTitle"
-                  value={c.officeTitle}
-                  className="font-heading text-body font-semibold text-navy"
-                />
-                <EditableText
-                  as="p"
-                  path="kontaktComp.officeAddress"
+                <h3 className="font-heading text-body font-semibold text-navy">{c.officeTitle}</h3>
+                <RichText
                   value={c.officeAddress}
-                  multiline
                   className="mt-1.5 font-ui text-sm text-ink-muted leading-relaxed"
                 />
                 <TextLink

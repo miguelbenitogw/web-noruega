@@ -1,5 +1,4 @@
-import EditableText from '../editable/EditableText'
-import InlineRichText from '../editable/InlineRichText'
+import RichText from './RichText'
 
 /**
  * PageHero — la cabecera navy de las páginas internas.
@@ -23,9 +22,9 @@ import InlineRichText from '../editable/InlineRichText'
  *  · `title`      — el `<h1>`. `titleId` sirve de `aria-labelledby` de la
  *                   sección, igual que antes.
  *  · `titleWidth` — '18ch' o '20ch', la medida que ya tenía cada titular.
- *  · `richDescription` — la bajada lleva enlaces en línea (dos páginas). El
- *                   tinte de esos enlaces sobre navy es siempre el mismo, así
- *                   que vive acá y no en cada página.
+ *  · `description` — la bajada. Admite enlaces en línea y párrafos; el tinte
+ *                   de esos enlaces sobre navy es siempre el mismo, así que
+ *                   vive acá y no en cada página.
  *  · `media`      — la foto del hero. Si viene, la banda pasa a dos columnas.
  *  · `children`   — lo que cuelgue debajo de la bajada (botones, un segundo
  *                   párrafo). Solo lo usa Spansk i Alicante.
@@ -42,12 +41,7 @@ const DESCRIPTION_CLASS = 'mt-6 gw-measure text-body lg:text-body-lg leading-[1.
 
 const join = (...values) => values.filter(Boolean).join(' ')
 
-/* Un enlace dentro de la bajada, sobre navy: blanco con el subrayado en azul
-   claro, que se aclara al pasar el ratón. */
-const DARK_LINK_CLASS =
-  '!text-white underline decoration-primary-400 underline-offset-4 transition-colors hover:!decoration-white'
-
-function Breadcrumb({ trail, current, currentPath }) {
+function Breadcrumb({ trail, current }) {
   return (
     <nav className="mb-7" aria-label="Brødsmuler">
       {/* Las migas eran enlaces de 20,7 px de alto: por debajo incluso del
@@ -66,7 +60,7 @@ function Breadcrumb({ trail, current, currentPath }) {
         ))}
 
         <Separator>
-          <EditableText as="span" path={currentPath} value={current} className="text-white" />
+          <span className="text-white" aria-current="page">{current}</span>
         </Separator>
       </ol>
     </nav>
@@ -88,50 +82,35 @@ function Separator({ children }) {
 export default function PageHero({
   trail = [],
   current,
-  currentPath,
   title,
-  titlePath,
   titleId,
   titleWidth,
   description,
-  descriptionPath,
-  richDescription = false,
   media,
   children,
 }) {
   const body = (
     <>
-      <Breadcrumb trail={trail} current={current} currentPath={currentPath} />
+      <Breadcrumb trail={trail} current={current} />
 
-      <EditableText
-        as="h1"
+      <h1
         id={titleId}
-        path={titlePath}
-        value={title}
         className={join(
           media ? 'text-display-sm sm:text-display' : 'text-display',
           'font-semibold !text-white break-words',
           TITLE_WIDTHS[titleWidth],
         )}
-      />
+      >
+        {title}
+      </h1>
 
-      {richDescription ? (
-        <InlineRichText
-          as="p"
-          value={description}
-          data-content-path={descriptionPath}
-          className={join(DESCRIPTION_CLASS, '!text-primary-100 !leading-[1.6]')}
-          linkClassName={DARK_LINK_CLASS}
-        />
-      ) : (
-        <EditableText
-          as="p"
-          path={descriptionPath}
-          value={description}
-          multiline
-          className={join(DESCRIPTION_CLASS, 'text-primary-100')}
-        />
-      )}
+      {/* Antes había dos ramas (texto plano o con enlaces) que pintaban la
+          bajada con distinto `whitespace` según la página. Ahora es una. */}
+      <RichText
+        value={description}
+        className={join(DESCRIPTION_CLASS, 'text-primary-100')}
+        tone="dark"
+      />
 
       {children}
     </>

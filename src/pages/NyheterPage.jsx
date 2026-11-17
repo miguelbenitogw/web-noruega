@@ -18,11 +18,9 @@ export default function NyheterPage() {
       <PageHero
         current={hero.breadcrumb}
         title={hero.h1}
-        titlePath="nyheterHero.h1"
         titleId="nyheter-hero-heading"
         titleWidth="20ch"
         description={hero.description}
-        descriptionPath="nyheterHero.description"
       />
 
       <Nyheter />

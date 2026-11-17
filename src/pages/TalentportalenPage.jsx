@@ -3,7 +3,7 @@ import PageEndNav from '../components/PageEndNav'
 import PageHero from '../components/ui/PageHero'
 import RuleGrid from '../components/ui/RuleGrid'
 import useContent from '../hooks/useContent'
-import EditableText from '../components/editable/EditableText'
+import RichText from '../components/ui/RichText'
 
 /**
  * Talentportalen
@@ -29,11 +29,9 @@ export default function TalentportalenPage() {
       <PageHero
         current={hero.breadcrumb}
         title={hero.h1}
-        titlePath="talentportalenHero.h1"
         titleId="talentportalen-hero-heading"
         titleWidth="18ch"
         description={hero.description}
-        descriptionPath="talentportalenHero.description"
       />
 
       {/* Omvisning — el recorrido interactivo del portal.
@@ -82,19 +80,10 @@ export default function TalentportalenPage() {
       <section className="py-20 lg:py-28 bg-white" aria-labelledby="how-it-works-heading">
         <div className="container-xl">
           <div className="max-w-2xl">
-            <EditableText
-              as="span"
-              path="talentportalenSteps.label"
-              value={stepsSection.label}
-              className="gw-label text-primary-600"
-            />
-            <EditableText
-              as="h2"
-              id="how-it-works-heading"
-              path="talentportalenSteps.heading"
-              value={stepsSection.heading}
-              className="mt-5 text-display-sm font-semibold text-navy"
-            />
+            <span className="gw-label text-primary-600">{stepsSection.label}</span>
+            <h2 id="how-it-works-heading" className="mt-5 text-display-sm font-semibold text-navy">
+              {stepsSection.heading}
+            </h2>
           </div>
 
           <RuleGrid cols="sm2" as="ol" className="mt-12 lg:mt-16 border-t border-line">
@@ -109,17 +98,11 @@ export default function TalentportalenPage() {
                 </span>
 
                 <div>
-                  <EditableText
-                    as="h3"
-                    path={`talentportalenSteps.steps.${i}.title`}
-                    value={step.title}
-                    className="font-heading text-body font-semibold text-navy leading-snug"
-                  />
-                  <EditableText
-                    as="p"
-                    path={`talentportalenSteps.steps.${i}.desc`}
+                  <h3 className="font-heading text-body font-semibold text-navy leading-snug">
+                    {step.title}
+                  </h3>
+                  <RichText
                     value={step.desc}
-                    multiline
                     className="mt-2 text-body-sm text-ink-muted leading-relaxed"
                   />
                 </div>
@@ -137,20 +120,14 @@ export default function TalentportalenPage() {
       <section className="py-20 lg:py-28 bg-surface" aria-labelledby="benefits-heading">
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-start">
-            <div className="lg:col-span-4">
-              <EditableText
-                as="span"
-                path="talentportalenBenefits.label"
-                value={benefitsSection.label}
-                className="gw-label text-primary-600"
-              />
-              <EditableText
-                as="h2"
-                id="benefits-heading"
-                path="talentportalenBenefits.heading"
-                value={benefitsSection.heading}
-                className="mt-5 text-display-sm font-semibold text-navy"
-              />
+            {/* Cinco columnas y no cuatro: «kandidatportalen» es una sola
+                palabra de 400 px en display-sm y la columna de 4/12 medía
+                385 a 1440, así que el titular se salía de su caja. */}
+            <div className="lg:col-span-5">
+              <span className="gw-label text-primary-600">{benefitsSection.label}</span>
+              <h2 id="benefits-heading" className="mt-5 text-display-sm font-semibold text-navy">
+                {benefitsSection.heading}
+              </h2>
             </div>
 
             <ul className="lg:col-span-7 lg:col-start-6 border-t border-line" role="list">
@@ -163,12 +140,7 @@ export default function TalentportalenPage() {
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <EditableText
-                    as="span"
-                    path={`talentportalenBenefits.items.${i}`}
-                    value={benefit}
-                    className="text-body text-navy leading-[1.6]"
-                  />
+                  <span className="text-body text-navy leading-[1.6]">{benefit}</span>
                 </li>
               ))}
             </ul>

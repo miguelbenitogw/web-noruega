@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import useContent from '../hooks/useContent'
 import { trackEvent } from '../lib/analytics'
-import EditableText from './editable/EditableText'
+import RichText from './ui/RichText'
 
 // Provider URL builders. Keeps the carousel agnostic of the video host so we can
 // switch YouTube → Vimeo later by flipping `homeVideos.provider` — no rewrite.
@@ -207,26 +207,9 @@ export default function VideoCarousel() {
     <section className="overflow-hidden py-20 lg:py-28 bg-surface" aria-labelledby={headingId}>
       <div className="container-xl">
         <div className="mb-12 gw-measure">
-          <EditableText
-            as="span"
-            path="homeVideos.label"
-            value={c.label}
-            className="gw-label text-primary-600"
-          />
-          <EditableText
-            as="h2"
-            path="homeVideos.heading"
-            value={c.heading}
-            id={headingId}
-            className="mt-5 text-display-sm font-semibold text-navy"
-          />
-          <EditableText
-            as="p"
-            path="homeVideos.description"
-            value={c.description}
-            multiline
-            className="mt-5 text-body leading-[1.65] text-ink-muted"
-          />
+          <span className="gw-label text-primary-600">{c.label}</span>
+          <h2 id={headingId} className="mt-5 text-display-sm font-semibold text-navy">{c.heading}</h2>
+          <RichText value={c.description} className="mt-5 text-body leading-[1.65] text-ink-muted" />
         </div>
 
         <div className="relative">

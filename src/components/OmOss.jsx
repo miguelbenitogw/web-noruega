@@ -1,9 +1,8 @@
 import { IMAGES, img, srcSet } from '../assets/images'
 import useContent from '../hooks/useContent'
-import EditableText from './editable/EditableText'
-import InlineRichText from './editable/InlineRichText'
 import RuleGrid from './ui/RuleGrid'
 import TextLink from './ui/TextLink'
+import RichText from './ui/RichText'
 
 /**
  * OmOss — «Hvem er Global Working?»
@@ -19,26 +18,6 @@ import TextLink from './ui/TextLink'
  * una sombra.
  */
 
-function InlineEditableParagraph({
-  path,
-  value,
-  className,
-  linkClassName,
-  as = 'p',
-  ...rest
-}) {
-  return (
-    <InlineRichText
-      as={as}
-      value={value}
-      className={className}
-      linkClassName={linkClassName}
-      data-content-path={path}
-      {...rest}
-    />
-  )
-}
-
 export default function OmOss() {
   const c = useContent('omOssComp')
 
@@ -53,50 +32,24 @@ export default function OmOss() {
 
           {/* ── Relato ─────────────────────────────────────────────────── */}
           <div className="lg:col-span-6">
-            <EditableText
-              as="span"
-              path="omOssComp.label"
-              value={c.label}
-              className="gw-label text-primary-600"
-            />
-            <EditableText
-              as="h2"
-              id="om-oss-heading"
-              path="omOssComp.heading"
-              value={c.heading}
-              className="mt-5 text-display-sm font-semibold text-navy"
-            />
+            <span className="gw-label text-primary-600">{c.label}</span>
+            <h2 id="om-oss-heading" className="mt-5 text-display-sm font-semibold text-navy">{c.heading}</h2>
 
-            <InlineEditableParagraph
-              as="p"
-              path="omOssComp.p1"
-              value={c.p1}
-              className="mt-6 !text-ink-muted text-body !leading-[1.65]"
-            />
-            <InlineEditableParagraph
-              as="p"
-              path="omOssComp.p2"
-              value={c.p2}
-              className="mt-4 !text-ink-muted !leading-[1.65]"
-            />
+            {/* p1 y p2 son un mismo texto: el segundo iba sin `text-body` (un
+                punto más chico) y con `mt-4`. Ahora el bloque lleva el estilo
+                y los dos párrafos lo heredan. */}
+            <div className="mt-6 gw-stack text-body text-ink-muted leading-[1.65]">
+              <RichText value={c.p1} />
+              <RichText value={c.p2} />
+            </div>
 
             {/* Pull quote: filete y aire, no tarjeta. La voz del CEO no
                 necesita una caja azul para sonar distinta. */}
             {c.blockquote && (
               <blockquote className="mt-9 border-l border-primary-200 pl-6">
-                <EditableText
-                  as="p"
-                  path="omOssComp.blockquote.text"
-                  value={c.blockquote.text}
-                  className="text-body lg:text-[1.125rem] text-navy leading-[1.6]"
-                />
+                <p className="text-body lg:text-[1.125rem] text-navy leading-[1.6]">{c.blockquote.text}</p>
                 <footer className="mt-4 font-ui text-sm text-ink-soft">
-                  <EditableText
-                    as="span"
-                    path="omOssComp.blockquote.author"
-                    value={c.blockquote.author}
-                    className="inline"
-                  />
+                  <span>{c.blockquote.author}</span>
                 </footer>
                 <TextLink href="/nyheter/pablo-intervju" className="mt-4">
                   Les hele intervjuet med Pablo her
@@ -108,23 +61,17 @@ export default function OmOss() {
                 con filetes, no en tres bloques sueltos con `flex-wrap`. */}
             {(c.stats || []).length > 0 && (
               <RuleGrid cols="base3" className="mt-10 border-t border-line">
-                {(c.stats || []).map((s, i) => (
+                {(c.stats || []).map((s) => (
                   <RuleGrid.Cell
                     key={s.label}
                     className="py-6 pr-4 pl-4 first:pl-0 sm:pl-6"
                   >
-                    <EditableText
-                      as="div"
-                      path={`omOssComp.stats.${i}.value`}
-                      value={s.value}
+                    <div
                       className="font-heading text-[1.75rem] lg:text-[2rem] font-semibold text-navy tabular-nums tracking-[-0.03em] leading-none"
-                    />
-                    <EditableText
-                      as="div"
-                      path={`omOssComp.stats.${i}.label`}
-                      value={s.label}
-                      className="mt-2 gw-meta leading-snug"
-                    />
+                    >
+                      {s.value}
+                    </div>
+                    <div className="mt-2 gw-meta leading-snug">{s.label}</div>
                   </RuleGrid.Cell>
                 ))}
               </RuleGrid>
@@ -157,18 +104,10 @@ export default function OmOss() {
               />
 
               <div className="col-span-7 flex flex-col justify-center border-l border-line pl-5">
-                <EditableText
-                  as="div"
-                  path="omOssComp.locationLabel"
-                  value={c.locationLabel}
-                  className="font-heading text-2xl lg:text-[1.75rem] font-semibold text-navy leading-none"
-                />
-                <EditableText
-                  as="div"
-                  path="omOssComp.locationSub"
-                  value={c.locationSub}
-                  className="mt-2 gw-meta leading-snug"
-                />
+                <div className="font-heading text-2xl lg:text-[1.75rem] font-semibold text-navy leading-none">
+                  {c.locationLabel}
+                </div>
+                <div className="mt-2 gw-meta leading-snug">{c.locationSub}</div>
               </div>
             </div>
           </div>
@@ -187,17 +126,12 @@ export default function OmOss() {
                 <span className="gw-step text-primary-600">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <EditableText
-                  as="h3"
-                  path={`omOssComp.values.${i}.title`}
-                  value={v.title}
-                  className="mt-4 font-heading text-body-lg font-semibold text-navy leading-snug"
-                />
-                <InlineEditableParagraph
-                  as="p"
-                  path={`omOssComp.values.${i}.desc`}
+                <h3 className="mt-4 font-heading text-body-lg font-semibold text-navy leading-snug">
+                  {v.title}
+                </h3>
+                <RichText
                   value={v.desc}
-                  className="mt-3 !text-ink-muted text-body-sm !leading-relaxed"
+                  className="mt-3 text-ink-muted text-body-sm leading-relaxed"
                 />
               </RuleGrid.Cell>
             ))}

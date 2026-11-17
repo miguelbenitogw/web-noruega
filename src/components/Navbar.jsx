@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { IMAGES } from '../assets/images'
 import useContent from '../hooks/useContent'
-import EditableText from './editable/EditableText'
 
 /**
  * Navbar
@@ -69,7 +68,7 @@ const linkClasses = (scrolled, active) =>
   }`
 
 // ─── Desktop dropdown ────────────────────────────────────────────────────────
-function DropdownMenu({ link, scrolled, index, activeHref }) {
+function DropdownMenu({ link, scrolled, activeHref }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
 
@@ -99,12 +98,7 @@ function DropdownMenu({ link, scrolled, index, activeHref }) {
         className={`${linkClasses(scrolled, parentActive)} flex items-center gap-1`}
         onClick={() => setOpen(v => !v)}
       >
-        <EditableText
-          as="span"
-          path={`navbar.links.${index}.label`}
-          value={link.label}
-          className="inline"
-        />
+        <span>{link.label}</span>
         <svg
           width="13" height="13" viewBox="0 0 24 24"
           fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
@@ -175,14 +169,13 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <nav className="hidden xl:flex items-center" aria-label="Primær navigasjon">
-            {navLinks.map((link, index) => {
+            {navLinks.map((link) => {
               if (link.children?.length) {
                 return (
                   <DropdownMenu
                     key={link.href}
                     link={link}
                     scrolled={scrolled}
-                    index={index}
                     activeHref={activeHref}
                   />
                 )
@@ -197,12 +190,7 @@ export default function Navbar() {
                       scrolled ? 'gw-btn-ink' : 'gw-btn-ghost'
                     }`}
                   >
-                    <EditableText
-                      as="span"
-                      path={`navbar.links.${index}.label`}
-                      value={link.label}
-                      className="inline"
-                    />
+                    <span>{link.label}</span>
                   </a>
                 )
               }
@@ -211,12 +199,7 @@ export default function Navbar() {
 
               return (
                 <a key={link.href} href={link.href} className={linkClasses(scrolled, active)}>
-                  <EditableText
-                    as="span"
-                    path={`navbar.links.${index}.label`}
-                    value={link.label}
-                    className="inline"
-                  />
+                  <span>{link.label}</span>
                   <ActiveRule visible={active} />
                 </a>
               )
@@ -248,7 +231,7 @@ export default function Navbar() {
       {menuOpen && (
         <div className="xl:hidden bg-white border-t border-line max-h-[calc(100vh-4rem)] overflow-y-auto">
           <nav className="container-xl py-3 flex flex-col" aria-label="Mobil navigasjon">
-            {navLinks.map((link, index) => {
+            {navLinks.map((link) => {
 
               if (link.children?.length) {
                 const isOpen = mobileOpenDropdown === link.href
@@ -263,7 +246,7 @@ export default function Navbar() {
                       onClick={() => setMobileOpenDropdown(isOpen ? null : link.href)}
                       aria-expanded={isOpen}
                     >
-                      <EditableText as="span" path={`navbar.links.${index}.label`} value={link.label}className="inline" />
+                      <span>{link.label}</span>
                       <svg
                         width="16" height="16" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
@@ -318,12 +301,7 @@ export default function Navbar() {
                     active ? 'text-navy font-semibold' : 'text-ink-muted'
                   }`}
                 >
-                  <EditableText
-                    as="span"
-                    path={`navbar.links.${index}.label`}
-                    value={link.label}
-                    className="inline"
-                  />
+                  <span>{link.label}</span>
                 </a>
               )
             })}

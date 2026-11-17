@@ -10,5 +10,5 @@ import LegalDocument from '../components/ui/LegalDocument'
 export default function VilkarPage() {
   const content = useContent('legalVilkar')
 
-  return <LegalDocument contentKey="legalVilkar" content={content} />
+  return <LegalDocument content={content} />
 }

@@ -10,5 +10,5 @@ import LegalDocument from '../components/ui/LegalDocument'
 export default function CookiesPage() {
   const content = useContent('legalCookies')
 
-  return <LegalDocument contentKey="legalCookies" content={content} />
+  return <LegalDocument content={content} />
 }

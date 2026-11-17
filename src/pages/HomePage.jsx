@@ -3,15 +3,14 @@ import VideoCarousel from '../components/VideoCarousel'
 import Nyheter from '../components/Nyheter'
 import CTABanner from '../components/CTABanner'
 import SpanskAlicanteTeaser from '../components/SpanskAlicanteTeaser'
-import EditableText from '../components/editable/EditableText'
-import EditableImage from '../components/editable/EditableImage'
-import InlineRichText from '../components/editable/InlineRichText'
 import RuleGrid from '../components/ui/RuleGrid'
 import TextLink from '../components/ui/TextLink'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import { IMAGES, img } from '../assets/images'
 import { UsersThree, Heart, MagnifyingGlass, Buildings } from '@phosphor-icons/react'
+import RichText from '../components/ui/RichText'
+import EmailText from '../components/ui/EmailText'
 
 const sectionIcons = [
   <UsersThree key="i0" size={24} weight="regular" aria-hidden="true" />,
@@ -19,26 +18,6 @@ const sectionIcons = [
   <MagnifyingGlass key="i2" size={24} weight="regular" aria-hidden="true" />,
   <Buildings key="i3" size={24} weight="regular" aria-hidden="true" />,
 ]
-
-function InlineEditableParagraph({
-  path,
-  value,
-  className,
-  linkClassName,
-  as = 'p',
-  ...rest
-}) {
-  return (
-    <InlineRichText
-      as={as}
-      value={value}
-      className={className}
-      linkClassName={linkClassName}
-      data-content-path={path}
-      {...rest}
-    />
-  )
-}
 
 /**
  * Columna de servicio.
@@ -62,19 +41,15 @@ function ServiceColumn({ section, index, readMoreLabel }) {
         {sectionIcons[index] ?? sectionIcons[0]}
       </span>
 
-      <EditableText
-        as="h3"
-        path={`homeServices.sections.${index}.title`}
-        value={section.title}
+      <h3
         className="font-heading text-body-lg font-semibold text-navy leading-snug
                    group-hover:text-primary-600 transition-colors duration-200"
-      />
+      >
+        {section.title}
+      </h3>
 
-      <EditableText
-        as="p"
-        path={`homeServices.sections.${index}.description`}
+      <RichText
         value={section.description}
-        multiline
         className="mt-3 text-body-sm text-ink-muted leading-relaxed flex-1"
       />
 
@@ -110,44 +85,39 @@ export default function HomePage() {
           arranque de cada línea. */}
       <section className="py-20 lg:py-28 bg-white" aria-labelledby="tilbud-heading">
         <div className="container-xl">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-12 lg:mb-16">
+          {/* `items-start` y no `items-end`: con `items-end` la columna de
+              texto se alineaba con el PIE de la izquierda (foto + titular) y
+              arrancaba ~300 px más abajo que la etiqueta, flotando sin ancla.
+              Ahora las dos columnas arrancan en la misma línea: etiqueta y
+              párrafo a la misma altura, y la foto va debajo del titular, que
+              es donde estaba el hueco. */}
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-12 lg:mb-16">
             <div className="lg:col-span-6">
-              {/* La columna izquierda solo llevaba etiqueta y titular, y con
-                  `items-end` quedaba un vacío grande encima. La foto es la
-                  clase de noruego: de las cuatro columnas de abajo, la
-                  preparación lingüística es la que de verdad distingue a la
-                  empresa, así que vale más que un retrato de equipo. */}
+              <span className="gw-label text-primary-600">{hs.label}</span>
+              <h2 id="tilbud-heading" className="mt-5 text-display-sm font-semibold text-navy">
+                {hs.heading}
+              </h2>
+              {/* La foto es la clase de noruego: de las cuatro columnas de
+                  abajo, la preparación lingüística es la que de verdad
+                  distingue a la empresa, así que vale más que un retrato. */}
               <img
                 src={img(IMAGES.claseNoruego, 900)}
                 alt="Norskundervisning ved Global Workings språkskole i Alicante"
-                className="w-full h-[200px] lg:h-[300px] object-cover rounded-panel mb-10"
+                className="mt-10 w-full h-[200px] lg:h-[300px] object-cover rounded-panel"
                 loading="lazy"
                 decoding="async"
                 width={900}
                 height={600}
               />
-              <EditableText
-                as="span"
-                path="homeServices.label"
-                value={hs.label}
-                className="gw-label text-primary-600"
-              />
-              <EditableText
-                as="h2"
-                id="tilbud-heading"
-                path="homeServices.heading"
-                value={hs.heading}
-                className="mt-5 text-display-sm font-semibold text-navy"
-              />
             </div>
-            <div className="lg:col-span-5 lg:col-start-8">
-              <InlineEditableParagraph
-                as="p"
-                path="homeServices.description"
-                value={hs.description}
-                className="!text-ink-muted text-body leading-[1.65]"
-              />
-            </div>
+            {/* El texto trae cuatro párrafos separados por líneas en blanco, y
+                el último con espacios delante en los datos. RichText los
+                parte en <p> hermanos y recorta cada uno, así que comparten
+                alineación, medida, color y aire sin excepción. */}
+            <RichText
+              value={hs.description}
+              className="lg:col-span-5 lg:col-start-8 text-body text-ink-muted leading-[1.65]"
+            />
           </div>
 
           <RuleGrid cols="sm2-lg4" className="border-t border-line">
@@ -173,42 +143,31 @@ export default function HomePage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="lg:col-span-5 py-20 lg:py-28">
-              <EditableText
-                as="span"
-                path="homeHealth.label"
-                value={hHealth.label}
-                className="gw-label text-white"
-              />
-              <EditableText
-                as="h2"
-                id="helse-heading"
-                path="homeHealth.heading"
-                value={hHealth.heading}
-                className="mt-5 text-display-sm font-semibold !text-white"
-              />
-              <InlineEditableParagraph
-                as="p"
-                path="homeHealth.description"
+              <span className="gw-label text-white">{hHealth.label}</span>
+              <h2 id="helse-heading" className="mt-5 text-display-sm font-semibold text-white">
+                {hHealth.heading}
+              </h2>
+              <RichText
                 value={hHealth.description}
-                className="mt-6 !text-primary-100 text-body leading-[1.65]"
-                linkClassName="!text-white underline decoration-primary-400 underline-offset-4 transition-colors hover:!decoration-white"
+                className="mt-6 text-body text-primary-100 leading-[1.65]"
+                tone="dark"
               />
               <a
                 href="/helse"
                 onClick={() => trackEvent('cta_click', { location: 'landing_health', cta: 'les_mer_helse' })}
                 className="gw-btn gw-btn-ember mt-9"
               >
-                <EditableText as="span" path="homeHealth.cta" value={hHealth.cta} className="inline" />
+                {hHealth.cta}
               </a>
             </div>
 
             <div className="lg:col-span-6 lg:col-start-7 pb-16 lg:py-16 gw-bleed-r">
-              <EditableImage
-                path="homeHealth.imageUrl"
+              <img
                 src={img(hHealth.imageUrl || IMAGES.homeMetricsTeam, 1200)}
                 alt={hHealth.imageAlt || 'Global Working team i samarbeid med norske arbeidsgivere'}
                 className="w-full h-[300px] lg:h-[520px] object-cover rounded-panel lg:rounded-r-none"
                 loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -228,31 +187,20 @@ export default function HomePage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-5">
-              <EditableText
-                as="span"
-                path="homeContact.label"
-                value={hContact.label}
-                className="gw-label text-primary-600"
-              />
-              <EditableText
-                as="h2"
-                id="quick-contact-heading"
-                path="homeContact.heading"
-                value={hContact.heading}
-                className="mt-5 text-display-sm font-semibold text-navy"
-              />
-              <InlineEditableParagraph
-                as="p"
-                path="homeContact.description"
+              <span className="gw-label text-primary-600">{hContact.label}</span>
+              <h2 id="quick-contact-heading" className="mt-5 text-display-sm font-semibold text-navy">
+                {hContact.heading}
+              </h2>
+              <RichText
                 value={hContact.description}
-                className="mt-6 !text-ink-muted text-body leading-[1.65]"
+                className="mt-6 text-body text-ink-muted leading-[1.65]"
               />
               <a
                 href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'landing_quick_contact', cta: 'send_melding' })}
                 className="gw-btn gw-btn-ink mt-8"
               >
-                <EditableText as="span" path="homeContact.cta" value={hContact.cta} className="inline" />
+                {hContact.cta}
               </a>
             </div>
 
@@ -276,32 +224,12 @@ export default function HomePage() {
                     </div>
                   )}
 
-                  <EditableText
-                    as="div"
-                    path={`contacts.${i}.name`}
-                    value={c.name}
-                    className="font-heading font-semibold text-navy"
-                  />
-                  <EditableText
-                    as="div"
-                    path={`contacts.${i}.role`}
-                    value={c.role}
-                    className="text-ink-soft text-sm mt-0.5"
-                  />
+                  <div className="font-heading font-semibold text-navy">{c.name}</div>
+                  <div className="text-ink-soft text-sm mt-0.5">{c.role}</div>
 
                   <div className="mt-4 pt-4 border-t border-line space-y-1">
-                    <EditableText
-                      as="div"
-                      path={`contacts.${i}.email`}
-                      value={c.email}
-                      className="block text-primary-600 text-body-sm"
-                    />
-                    <EditableText
-                      as="div"
-                      path={`contacts.${i}.phone`}
-                      value={c.phone}
-                      className="block text-ink-muted text-body-sm tabular-nums"
-                    />
+                    <div className="block text-primary-600 text-body-sm"><EmailText email={c.email} /></div>
+                    <div className="block text-ink-muted text-body-sm tabular-nums">{c.phone}</div>
                   </div>
                 </div>
               ))}

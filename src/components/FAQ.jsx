@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import useContent from '../hooks/useContent'
-import EditableText from './editable/EditableText'
-import InlineRichText from './editable/InlineRichText'
 import TextLink from './ui/TextLink'
+import RichText from './ui/RichText'
 
 /**
  * FAQ
@@ -18,27 +17,7 @@ import TextLink from './ui/TextLink'
  * no se corta a media línea.
  */
 
-function InlineEditableParagraph({
-  path,
-  value,
-  className,
-  linkClassName,
-  as = 'p',
-  ...rest
-}) {
-  return (
-    <InlineRichText
-      as={as}
-      value={value}
-      className={className}
-      linkClassName={linkClassName}
-      data-content-path={path}
-      {...rest}
-    />
-  )
-}
-
-function AccordionItem({ faq, index, basePath, isOpen, onToggle }) {
+function AccordionItem({ faq, index, isOpen, onToggle }) {
   const buttonId = `faq-q-${index}`
   const panelId = `faq-a-${index}`
 
@@ -53,14 +32,13 @@ function AccordionItem({ faq, index, basePath, isOpen, onToggle }) {
           aria-controls={panelId}
           className="group w-full flex items-start justify-between gap-5 py-5 text-left cursor-pointer"
         >
-          <EditableText
-            as="span"
-            path={`${basePath}.${index}.q`}
-            value={faq.q}
+          <span
             className={`font-heading text-body font-semibold leading-snug transition-colors ${
               isOpen ? 'text-primary-600' : 'text-navy group-hover:text-primary-600'
             }`}
-          />
+          >
+            {faq.q}
+          </span>
           <span
             aria-hidden="true"
             className="shrink-0 mt-1 text-primary-600 transition-colors"
@@ -82,11 +60,9 @@ function AccordionItem({ faq, index, basePath, isOpen, onToggle }) {
         aria-labelledby={buttonId}
         hidden={!isOpen}
       >
-        <InlineEditableParagraph
-          as="p"
-          path={`${basePath}.${index}.a`}
+        <RichText
           value={faq.a}
-          className="pb-6 pr-8 gw-measure !text-ink-muted text-body-sm !leading-[1.7]"
+          className="pb-6 pr-8 gw-measure text-ink-muted text-body-sm leading-[1.7]"
         />
       </div>
     </div>
@@ -103,27 +79,11 @@ export default function FAQ() {
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
 
           <div className="lg:col-span-4 lg:sticky lg:top-28">
-            <EditableText
-              as="span"
-              path="faq.label"
-              value={c.label}
-              className="gw-label text-primary-600"
-            />
-            <EditableText
-              as="h2"
-              id="faq-heading"
-              path="faq.heading"
-              value={c.heading}
-              className="mt-5 text-display-sm font-semibold text-navy"
-            />
-            <InlineEditableParagraph
-              as="p"
-              path="faq.description"
-              value={c.description}
-              className="mt-6 !text-ink-muted !leading-[1.65]"
-            />
+            <span className="gw-label text-primary-600">{c.label}</span>
+            <h2 id="faq-heading" className="mt-5 text-display-sm font-semibold text-navy">{c.heading}</h2>
+            <RichText value={c.description} className="mt-6 text-body text-ink-muted leading-[1.65]" />
             <TextLink href="/kontakt" className="mt-8">
-              <EditableText as="span" path="faq.ctaText" value={c.ctaText} className="inline" />
+              <span>{c.ctaText}</span>
             </TextLink>
           </div>
 
@@ -133,7 +93,6 @@ export default function FAQ() {
                 key={faq.q || i}
                 faq={faq}
                 index={i}
-                basePath="faq.items"
                 isOpen={openIndex === i}
                 onToggle={() => setOpenIndex(openIndex === i ? -1 : i)}
               />

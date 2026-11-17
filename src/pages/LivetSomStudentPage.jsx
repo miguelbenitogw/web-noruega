@@ -1,5 +1,3 @@
-import EditableText from '../components/editable/EditableText'
-import EditableImage from '../components/editable/EditableImage'
 import PageEndNav from '../components/PageEndNav'
 import PageHero from '../components/ui/PageHero'
 import RuleList from '../components/ui/RuleList'
@@ -33,22 +31,19 @@ export default function LivetSomStudentPage() {
     <>
       <PageHero
         current={page.breadcrumb}
-        currentPath="livetSomStudent.breadcrumb"
         titleId="livet-som-student-heading"
         title={page.heroTitle}
-        titlePath="livetSomStudent.heroTitle"
         titleWidth="18ch"
         description={page.heroSubtitle}
-        descriptionPath="livetSomStudent.heroSubtitle"
         media={(
-          <EditableImage
-            path="livetSomStudent.heroImageUrl"
+          <img
             src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1400)}
             alt={page.heroImageAlt || 'Studentlivet i Alicante'}
             className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
             loading="eager"
             width={1400}
             height={520}
+            decoding="sync"
           />
         )}
       />
@@ -58,17 +53,13 @@ export default function LivetSomStudentPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
-              <EditableText
-                as="h2"
-                id="livet-intro-heading"
-                path="livetSomStudent.introTitle"
-                value={page.introTitle}
-                className="text-display-sm font-semibold text-navy break-words"
-              />
+              <h2 id="livet-intro-heading" className="text-display-sm font-semibold text-navy break-words">
+                {page.introTitle}
+              </h2>
             </div>
-            <div className="lg:col-span-7 lg:col-start-6 gw-measure">
-              <BodyParagraph path="livetSomStudent.introP1" value={page.introP1} />
-              <BodyParagraph path="livetSomStudent.introP2" value={page.introP2} className="mt-6" />
+            <div className="gw-stack lg:col-span-7 lg:col-start-6 gw-measure">
+              <BodyParagraph value={page.introP1} />
+              <BodyParagraph value={page.introP2} />
             </div>
           </div>
         </div>
@@ -80,25 +71,24 @@ export default function LivetSomStudentPage() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
             <div className="lg:col-span-6 order-2 lg:order-1 pb-20 lg:py-28 gw-bleed-l">
-              <EditableImage
-                path="livetSomStudent.undervisningImageUrl"
+              <img
                 src={img(page.undervisningImageUrl || IMAGES.spanskAlicantePromenade, 1400)}
                 alt={page.undervisningImageAlt || 'Undervisning i Alicante'}
                 className="w-full h-[300px] lg:h-[520px] object-cover rounded-panel lg:rounded-l-none"
                 loading="lazy"
+                decoding="async"
               />
             </div>
 
-            <div className="lg:col-span-5 lg:col-start-8 order-1 lg:order-2 pt-24 lg:py-28">
-              <EditableText
-                as="h2"
+            <div className="gw-stack lg:col-span-5 lg:col-start-8 order-1 lg:order-2 pt-24 lg:py-28">
+              <h2
                 id="livet-undervisning-heading"
-                path="livetSomStudent.undervisningTitle"
-                value={page.undervisningTitle}
                 className="text-display-sm font-semibold text-navy break-words"
-              />
-              <BodyParagraph path="livetSomStudent.undervisningP1" value={page.undervisningP1} className="mt-7" />
-              <BodyParagraph path="livetSomStudent.undervisningP2" value={page.undervisningP2} className="mt-6" />
+              >
+                {page.undervisningTitle}
+              </h2>
+              <BodyParagraph value={page.undervisningP1} className="mt-7" />
+              <BodyParagraph value={page.undervisningP2} />
               <TextLink
                 href="/spansk-i-alicante/hvorfor"
                 onClick={() => trackEvent('cta_click', { location: 'livet_undervisning', cta: 'hvorfor' })}
@@ -117,20 +107,16 @@ export default function LivetSomStudentPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
-              <EditableText
-                as="h2"
-                id="livet-helse-heading"
-                path="livetSomStudent.helseTitle"
-                value={page.helseTitle}
-                className="text-display-sm font-semibold text-navy break-words"
-              />
+              <h2 id="livet-helse-heading" className="text-display-sm font-semibold text-navy break-words">
+                {page.helseTitle}
+              </h2>
             </div>
-            <div className="lg:col-span-7 lg:col-start-6 gw-measure">
-              <BodyParagraph path="livetSomStudent.helseP1" value={page.helseP1} />
-              <BodyParagraph path="livetSomStudent.helseP2" value={page.helseP2} className="mt-6" />
-              <BodyParagraph path="livetSomStudent.helseP3" value={page.helseP3} className="mt-6" />
-              <RuleList items={page.helseItems || []} basePath="livetSomStudent.helseItems" className="mt-8" />
-              <BodyParagraph path="livetSomStudent.helseP4" value={page.helseP4} className="mt-8" />
+            <div className="gw-stack lg:col-span-7 lg:col-start-6 gw-measure">
+              <BodyParagraph value={page.helseP1} />
+              <BodyParagraph value={page.helseP2} />
+              <BodyParagraph value={page.helseP3} />
+              <RuleList items={page.helseItems || []} className="mt-8" />
+              <BodyParagraph value={page.helseP4} className="mt-8" />
               <TextLink
                 href="/spansk-i-alicante/helsenorsk"
                 onClick={() => trackEvent('cta_click', { location: 'livet_helse', cta: 'helsenorsk' })}
@@ -145,12 +131,12 @@ export default function LivetSomStudentPage() {
         {/* La foto cruza la pantalla entera: no es una ilustración dentro de
             una tarjeta, es el cambio de aire entre dos bloques de lectura. */}
         <div className="mt-20 lg:mt-28">
-          <EditableImage
-            path="livetSomStudent.helseImageUrl"
+          <img
             src={img(page.helseImageUrl || IMAGES.spanskAlicantePromenade, 1920)}
             alt={page.helseImageAlt || 'Helsenorsk undervisning'}
             className="w-full h-[280px] sm:h-[360px] lg:h-[460px] object-cover"
             loading="lazy"
+            decoding="async"
           />
         </div>
       </section>
@@ -160,19 +146,15 @@ export default function LivetSomStudentPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
-            <div className="lg:col-span-5 pt-24 lg:py-28">
-              <EditableText
-                as="h2"
-                id="livet-samtale-heading"
-                path="livetSomStudent.samtaleTitle"
-                value={page.samtaleTitle}
-                className="text-display-sm font-semibold text-navy break-words"
-              />
-              <BodyParagraph path="livetSomStudent.samtaleP1" value={page.samtaleP1} className="mt-7" />
-              <BodyParagraph path="livetSomStudent.samtaleP2" value={page.samtaleP2} className="mt-6" />
-              <RuleList items={page.samtaleItems || []} basePath="livetSomStudent.samtaleItems" className="mt-8" />
-              <BodyParagraph path="livetSomStudent.samtaleP3" value={page.samtaleP3} className="mt-8" />
-              <BodyParagraph path="livetSomStudent.samtaleP4" value={page.samtaleP4} className="mt-6" />
+            <div className="gw-stack lg:col-span-5 pt-24 lg:py-28">
+              <h2 id="livet-samtale-heading" className="text-display-sm font-semibold text-navy break-words">
+                {page.samtaleTitle}
+              </h2>
+              <BodyParagraph value={page.samtaleP1} className="mt-7" />
+              <BodyParagraph value={page.samtaleP2} />
+              <RuleList items={page.samtaleItems || []} className="mt-8" />
+              <BodyParagraph value={page.samtaleP3} className="mt-8" />
+              <BodyParagraph value={page.samtaleP4} />
               <TextLink
                 href="/spansk-i-alicante"
                 onClick={() => trackEvent('cta_click', { location: 'livet_samtale', cta: 'spansk_alicante' })}
@@ -183,12 +165,12 @@ export default function LivetSomStudentPage() {
             </div>
 
             <div className="lg:col-span-6 lg:col-start-7 pb-20 lg:py-28 gw-bleed-r">
-              <EditableImage
-                path="livetSomStudent.samtaleImageUrl"
+              <img
                 src={img(page.samtaleImageUrl || IMAGES.spanskAlicantePromenade, 1400)}
                 alt={page.samtaleImageAlt || 'Samtaleassistenter i Alicante'}
                 className="w-full h-[300px] lg:h-[560px] object-cover rounded-panel lg:rounded-r-none"
                 loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -201,34 +183,28 @@ export default function LivetSomStudentPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
-              <EditableText
-                as="h2"
+              <h2
                 id="livet-fellesskap-heading"
-                path="livetSomStudent.fellesskapTitle"
-                value={page.fellesskapTitle}
                 className="text-display-sm font-semibold text-navy break-words"
-              />
+              >
+                {page.fellesskapTitle}
+              </h2>
             </div>
-            <div className="lg:col-span-7 lg:col-start-6 gw-measure">
-              <BodyParagraph path="livetSomStudent.fellesskapP1" value={page.fellesskapP1} />
-              <BodyParagraph path="livetSomStudent.fellesskapP2" value={page.fellesskapP2} className="mt-6" />
-              <EditableText
-                as="p"
-                path="livetSomStudent.fellesskapLabel"
-                value={page.fellesskapLabel}
-                className="mt-8 font-ui text-body-sm font-semibold text-navy"
-              />
-              <RuleList items={page.fellesskapItems || []} basePath="livetSomStudent.fellesskapItems" className="mt-4" />
-              <BodyParagraph path="livetSomStudent.fellesskapP3" value={page.fellesskapP3} className="mt-8" />
+            <div className="gw-stack lg:col-span-7 lg:col-start-6 gw-measure">
+              <BodyParagraph value={page.fellesskapP1} />
+              <BodyParagraph value={page.fellesskapP2} />
+              <p className="mt-8 font-ui text-body-sm font-semibold text-navy">{page.fellesskapLabel}</p>
+              <RuleList items={page.fellesskapItems || []} className="mt-4" />
+              <BodyParagraph value={page.fellesskapP3} className="mt-8" />
             </div>
           </div>
 
-          <EditableImage
-            path="livetSomStudent.fellesskapImageUrl"
+          <img
             src={img(page.fellesskapImageUrl || IMAGES.spanskAlicanteBeachPalms, 1600)}
             alt={page.fellesskapImageAlt || 'Fellesskap og aktiviteter i Alicante'}
             className="mt-16 lg:mt-24 w-full h-[280px] lg:h-[440px] object-cover rounded-panel"
             loading="lazy"
+            decoding="async"
           />
         </div>
       </section>
@@ -241,17 +217,13 @@ export default function LivetSomStudentPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
 
-            <div className="lg:col-span-6">
+            <div className="gw-stack lg:col-span-6">
               <span className="gw-label text-primary-600">{page.ctaLabel}</span>
-              <EditableText
-                as="h2"
-                id="livet-cta-heading"
-                path="livetSomStudent.ctaTitle"
-                value={page.ctaTitle}
-                className="mt-5 text-display-sm font-semibold text-navy break-words"
-              />
-              <BodyParagraph path="livetSomStudent.ctaP1" value={page.ctaP1} className="mt-7" />
-              <BodyParagraph path="livetSomStudent.ctaP2" value={page.ctaP2} className="mt-6" />
+              <h2 id="livet-cta-heading" className="mt-5 text-display-sm font-semibold text-navy break-words">
+                {page.ctaTitle}
+              </h2>
+              <BodyParagraph value={page.ctaP1} className="mt-7" />
+              <BodyParagraph value={page.ctaP2} />
 
               <a
                 href="/kontakt"

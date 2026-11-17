@@ -64,5 +64,3 @@ export const resolveRouteContext = (pathname) => {
     isNewsDetail: false,
   }
 }
-
-export const getKnownRoutes = () => Object.keys(ROUTE_DEFINITIONS)

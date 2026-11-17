@@ -1,4 +1,3 @@
-import EditableText from '../components/editable/EditableText'
 import KandidatKontakt from '../components/KandidatKontakt'
 import PageEndNav from '../components/PageEndNav'
 import PageHero from '../components/ui/PageHero'
@@ -6,6 +5,8 @@ import RuleList from '../components/ui/RuleList'
 import { IMAGES, img, srcSet } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
+import RichText from '../components/ui/RichText'
+import MarkdownText from '../components/ui/MarkdownText'
 
 /**
  * SpanskAlicantePage — la otra orilla, a página completa.
@@ -30,13 +31,10 @@ export default function SpanskAlicantePage() {
           sombra, el borde es el marco. Eso lo pone PageHero cuando hay foto. */}
       <PageHero
         current={page.breadcrumb}
-        currentPath="spanskAlicantePage.breadcrumb"
         titleId="spansk-alicante-hero-heading"
         title={page.heroTitle}
-        titlePath="spanskAlicantePage.heroTitle"
         titleWidth="18ch"
         description={page.heroSubtitle}
-        descriptionPath="spanskAlicantePage.heroSubtitle"
         media={(
           <img
             src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1400)}
@@ -51,12 +49,12 @@ export default function SpanskAlicantePage() {
           />
         )}
       >
-        <EditableText
-          as="p"
-          path="spanskAlicantePage.intro"
+        {/* Cuerpo sobre navy: `primary-100`, como en todas las bandas navy de
+            la web. Era la única que lo llevaba en `primary-200`. */}
+        <RichText
           value={page.intro}
-          multiline
-          className="mt-5 gw-measure text-body text-primary-200 leading-[1.65]"
+          className="mt-5 gw-measure text-body text-primary-100 leading-[1.65]"
+          tone="dark"
         />
 
         <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
@@ -65,14 +63,14 @@ export default function SpanskAlicantePage() {
             onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hero', cta: 'kandidat_kontakt' })}
             className="gw-btn gw-btn-ember"
           >
-            <EditableText as="span" path="spanskAlicantePage.ctaSecondary" value={page.ctaSecondary} className="inline" />
+            <span>{page.ctaSecondary}</span>
           </a>
           <a
             href="#spansk-alicante-process"
             onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_hero', cta: 'process' })}
             className="gw-btn gw-btn-ghost"
           >
-            <EditableText as="span" path="spanskAlicantePage.ctaPrimary" value={page.ctaPrimary} className="inline" />
+            <span>{page.ctaPrimary}</span>
           </a>
         </div>
       </PageHero>
@@ -83,13 +81,9 @@ export default function SpanskAlicantePage() {
       <section className="py-24 lg:py-32 bg-white">
         <div className="container-xl">
           <div className="gw-measure border-t border-line pt-10 lg:pt-12">
-            <EditableText
-              as="div"
-              path="spanskAlicantePage.exchangeNote"
+            <MarkdownText
               value={page.exchangeNote}
-              multiline
-              richText
-              className="text-body lg:text-body-lg text-ink leading-[1.75] [&>p]:mb-6 [&>p:last-child]:mb-0 [&>p]:leading-[1.75]"
+              className="text-body lg:text-body-lg text-ink leading-[1.75]"
             />
           </div>
         </div>
@@ -113,14 +107,13 @@ export default function SpanskAlicantePage() {
             </div>
 
             <div className="lg:col-span-5 lg:col-start-8 order-1 lg:order-2 pt-24 lg:py-28">
-              <EditableText
-                as="h2"
+              <h2
                 id="spansk-alicante-role-heading"
-                path="spanskAlicantePage.roleTitle"
-                value={page.roleTitle}
                 className="text-display-sm font-semibold text-navy break-words"
-              />
-              <RuleList items={page.roleItems || []} basePath="spanskAlicantePage.roleItems" className="mt-8" />
+              >
+                {page.roleTitle}
+              </h2>
+              <RuleList items={page.roleItems || []} className="mt-8" />
             </div>
 
           </div>
@@ -132,23 +125,13 @@ export default function SpanskAlicantePage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-2 gap-14 lg:gap-20">
             <div>
-              <EditableText
-                as="h2"
-                path="spanskAlicantePage.benefitsTitle"
-                value={page.benefitsTitle}
-                className="text-display-sm font-semibold text-navy break-words"
-              />
-              <RuleList items={page.benefitsItems || []} basePath="spanskAlicantePage.benefitsItems" className="mt-8" />
+              <h2 className="text-display-sm font-semibold text-navy break-words">{page.benefitsTitle}</h2>
+              <RuleList items={page.benefitsItems || []} className="mt-8" />
             </div>
 
             <div>
-              <EditableText
-                as="h2"
-                path="spanskAlicantePage.weekTitle"
-                value={page.weekTitle}
-                className="text-display-sm font-semibold text-navy break-words"
-              />
-              <RuleList items={page.weekItems || []} basePath="spanskAlicantePage.weekItems" className="mt-8" />
+              <h2 className="text-display-sm font-semibold text-navy break-words">{page.weekTitle}</h2>
+              <RuleList items={page.weekItems || []} className="mt-8" />
             </div>
           </div>
         </div>
@@ -172,19 +155,12 @@ export default function SpanskAlicantePage() {
               </div>
             )}
             <div className="lg:col-span-7 lg:col-start-6">
-              <EditableText
+              <RichText
                 as="blockquote"
-                path="spanskAlicantePage.testimonialQuote"
                 value={page.testimonialQuote}
-                multiline
                 className="text-[1.375rem] lg:text-[1.75rem] text-navy leading-[1.45]"
               />
-              <EditableText
-                as="figcaption"
-                path="spanskAlicantePage.testimonialAuthor"
-                value={page.testimonialAuthor}
-                className="mt-7 font-ui text-sm text-ink-soft"
-              />
+              <figcaption className="mt-7 font-ui text-sm text-ink-soft">{page.testimonialAuthor}</figcaption>
             </div>
           </figure>
         </div>
@@ -210,23 +186,15 @@ export default function SpanskAlicantePage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-2 gap-14 lg:gap-20">
             <div>
-              <EditableText
-                as="h2"
-                path="spanskAlicantePage.spanishCourseTitle"
-                value={page.spanishCourseTitle}
-                className="text-display-sm font-semibold text-navy break-words"
-              />
-              <RuleList items={page.spanishCourseItems || []} basePath="spanskAlicantePage.spanishCourseItems" className="mt-8" />
+              <h2 className="text-display-sm font-semibold text-navy break-words">
+                {page.spanishCourseTitle}
+              </h2>
+              <RuleList items={page.spanishCourseItems || []} className="mt-8" />
             </div>
 
             <div>
-              <EditableText
-                as="h2"
-                path="spanskAlicantePage.fitTitle"
-                value={page.fitTitle}
-                className="text-display-sm font-semibold text-navy break-words"
-              />
-              <RuleList items={page.fitItems || []} basePath="spanskAlicantePage.fitItems" className="mt-8" />
+              <h2 className="text-display-sm font-semibold text-navy break-words">{page.fitTitle}</h2>
+              <RuleList items={page.fitItems || []} className="mt-8" />
             </div>
           </div>
         </div>
@@ -238,22 +206,16 @@ export default function SpanskAlicantePage() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
             <div className="lg:col-span-5 pt-24 lg:py-28">
-              <EditableText
-                as="h2"
+              <h2
                 id="spansk-alicante-city-heading"
-                path="spanskAlicantePage.cityTitle"
-                value={page.cityTitle}
                 className="text-display-sm font-semibold text-navy break-words"
-              />
-              <RuleList items={page.cityItems || []} basePath="spanskAlicantePage.cityItems" className="mt-8" />
+              >
+                {page.cityTitle}
+              </h2>
+              <RuleList items={page.cityItems || []} className="mt-8" />
 
               <div className="mt-10">
-                <EditableText
-                  as="h3"
-                  path="spanskAlicantePage.socialTitle"
-                  value={page.socialTitle}
-                  className="font-heading text-lg font-semibold text-navy"
-                />
+                <h3 className="font-heading text-lg font-semibold text-navy">{page.socialTitle}</h3>
                 <div className="mt-4 flex flex-col items-start gap-2.5">
                   <a
                     href={page.instagramUrl || 'https://www.instagram.com/globalworking'}
@@ -261,12 +223,7 @@ export default function SpanskAlicantePage() {
                     rel="noopener noreferrer"
                     className="group inline-flex items-center gap-2 font-ui text-body-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                   >
-                    <EditableText
-                      as="span"
-                      path="spanskAlicantePage.socialInstagram"
-                      value={page.socialInstagram}
-                      className="inline"
-                    />
+                    <span>{page.socialInstagram}</span>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                       <path d="M7 17L17 7M9 7h8v8" />
                     </svg>
@@ -277,12 +234,7 @@ export default function SpanskAlicantePage() {
                     rel="noopener noreferrer"
                     className="group inline-flex items-center gap-2 font-ui text-body-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                   >
-                    <EditableText
-                      as="span"
-                      path="spanskAlicantePage.socialTikTok"
-                      value={page.socialTikTok}
-                      className="inline"
-                    />
+                    <span>{page.socialTikTok}</span>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                       <path d="M7 17L17 7M9 7h8v8" />
                     </svg>
@@ -313,13 +265,12 @@ export default function SpanskAlicantePage() {
           número en blanco decían «plantilla». */}
       <section id="spansk-alicante-process" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="spansk-alicante-process-heading">
         <div className="container-xl">
-          <EditableText
-            as="h2"
+          <h2
             id="spansk-alicante-process-heading"
-            path="spanskAlicantePage.processTitle"
-            value={page.processTitle}
             className="text-display-sm font-semibold text-navy break-words max-w-[24ch]"
-          />
+          >
+            {page.processTitle}
+          </h2>
 
           {processSteps.length > 0 && (
             <ol className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 border-t border-line">
@@ -331,12 +282,7 @@ export default function SpanskAlicantePage() {
                   <span className="gw-step text-primary-300">
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  <EditableText
-                    as="p"
-                    path={`spanskAlicantePage.processSteps.${index}`}
-                    value={step}
-                    className="mt-3 font-heading text-body font-semibold text-navy leading-snug"
-                  />
+                  <p className="mt-3 font-heading text-body font-semibold text-navy leading-snug">{step}</p>
                 </li>
               ))}
             </ol>
@@ -348,14 +294,14 @@ export default function SpanskAlicantePage() {
               onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_process', cta: 'kandidat_kontakt' })}
               className="gw-btn gw-btn-ink"
             >
-              <EditableText as="span" path="spanskAlicantePage.ctaSecondary" value={page.ctaSecondary} className="inline" />
+              <span>{page.ctaSecondary}</span>
             </a>
             <a
               href="/spansk-i-alicante/hvorfor"
               onClick={() => trackEvent('cta_click', { location: 'spansk_alicante_process', cta: 'hvorfor' })}
               className="gw-btn gw-btn-line"
             >
-              <EditableText as="span" path="spanskAlicantePage.visionLinkLabel" value={page.visionLinkLabel} className="inline" />
+              <span>{page.visionLinkLabel}</span>
             </a>
           </div>
         </div>

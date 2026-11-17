@@ -4,31 +4,9 @@ import FAQ from '../components/FAQ'
 import PageEndNav from '../components/PageEndNav'
 import PageHero from '../components/ui/PageHero'
 import useContent from '../hooks/useContent'
-import EditableText from '../components/editable/EditableText'
-import EditableImage from '../components/editable/EditableImage'
-import InlineRichText from '../components/editable/InlineRichText'
+import RichText from '../components/ui/RichText'
 const miriamPhoto = IMAGES.contactMiriam
 const groPhoto = IMAGES.contactGro
-
-function InlineEditableParagraph({
-  path,
-  value,
-  className,
-  linkClassName,
-  as = 'p',
-  ...rest
-}) {
-  return (
-    <InlineRichText
-      as={as}
-      value={value}
-      className={className}
-      linkClassName={linkClassName}
-      data-content-path={path}
-      {...rest}
-    />
-  )
-}
 
 /**
  * Ficha de equipo.
@@ -39,7 +17,7 @@ function InlineEditableParagraph({
  * Si la promesa de la empresa es «detrás hay personas», la persona tiene que
  * verse: retrato vertical a toda la columna, nombre y rol debajo. Sin caja.
  */
-function TeamMember({ member, index, basePath }) {
+function TeamMember({ member }) {
   const normalizedName = (member.name || '').toLowerCase()
   let portrait = member.imageUrl || null
 
@@ -65,18 +43,8 @@ function TeamMember({ member, index, basePath }) {
         </div>
       )}
 
-      <EditableText
-        as="h3"
-        path={`${basePath}.${index}.name`}
-        value={member.name}
-        className="mt-4 font-heading text-body font-semibold text-navy leading-snug"
-      />
-      <EditableText
-        as="p"
-        path={`${basePath}.${index}.role`}
-        value={member.role}
-        className="mt-1 gw-meta leading-snug"
-      />
+      <h3 className="mt-4 font-heading text-body font-semibold text-navy leading-snug">{member.name}</h3>
+      <p className="mt-1 gw-meta leading-snug">{member.role}</p>
     </div>
   )
 }
@@ -91,11 +59,8 @@ export default function OmOssPage() {
       <PageHero
         current={hero.breadcrumb}
         title={hero.h1}
-        titlePath="omOssHero.h1"
         titleId="om-oss-hero-heading"
         description={hero.description}
-        descriptionPath="omOssHero.description"
-        richDescription
       />
 
       <OmOss />
@@ -105,40 +70,28 @@ export default function OmOssPage() {
           ojo a buscar el arranque de cada línea. */}
       <section className="py-20 lg:py-28 bg-surface" aria-labelledby="om-oss-team-heading">
         <div className="container-xl">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-12 lg:mb-14">
+          {/* Mismo criterio que «Vårt tilbud» en la portada: las dos columnas
+              de una cabecera arrancan en la misma línea. Con `items-end` la
+              bajada quedaba 90 px por debajo de la etiqueta, colgando del pie
+              del titular, y cada cabecera de la web se alineaba distinto. */}
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-12 lg:mb-14">
             <div className="lg:col-span-6">
-              <EditableText
-                as="span"
-                path="omOssTeam.label"
-                value={teamSection.label}
-                className="gw-label text-primary-600"
-              />
-              <EditableText
-                as="h2"
-                id="om-oss-team-heading"
-                path="omOssTeam.heading"
-                value={teamSection.heading}
-                className="mt-5 text-display-sm font-semibold text-navy"
-              />
+              <span className="gw-label text-primary-600">{teamSection.label}</span>
+              <h2 id="om-oss-team-heading" className="mt-5 text-display-sm font-semibold text-navy">
+                {teamSection.heading}
+              </h2>
             </div>
             <div className="lg:col-span-5 lg:col-start-8">
-              <InlineEditableParagraph
-                as="p"
-                path="omOssTeam.description"
+              <RichText
                 value={teamSection.description}
-                className="!text-ink-muted text-body !leading-[1.65]"
+                className="text-ink-muted text-body leading-[1.65]"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
-            {(teamSection.members || []).map((member, i) => (
-              <TeamMember
-                key={member.name}
-                member={member}
-                index={i}
-                basePath="omOssTeam.members"
-              />
+            {(teamSection.members || []).map((member) => (
+              <TeamMember key={member.name} member={member} />
             ))}
           </div>
         </div>
@@ -151,10 +104,7 @@ export default function OmOssPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="lg:col-span-6">
-              <h2
-                id="om-oss-video-heading"
-                className="text-display-sm font-semibold text-navy"
-              >
+              <h2 id="om-oss-video-heading" className="text-display-sm font-semibold text-navy">
                 {teamSection.videoHeading || 'Møt teamet i Global Working'}
               </h2>
             </div>
@@ -189,49 +139,30 @@ export default function OmOssPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="lg:col-span-5 pt-20 lg:py-28">
-              <EditableText
-                as="span"
-                path="omOssOffices.label"
-                value={offices.label}
-                className="gw-label text-primary-600"
-              />
-              <EditableText
-                as="h2"
-                id="om-oss-offices-heading"
-                path="omOssOffices.heading"
-                value={offices.heading}
-                className="mt-5 text-display-sm font-semibold text-navy"
-              />
-              <InlineEditableParagraph
-                as="p"
-                path="omOssOffices.description"
+              <span className="gw-label text-primary-600">{offices.label}</span>
+              <h2 id="om-oss-offices-heading" className="mt-5 text-display-sm font-semibold text-navy">
+                {offices.heading}
+              </h2>
+              <RichText
                 value={offices.description}
-                className="mt-6 !text-ink-muted text-body !leading-[1.65]"
+                className="mt-6 text-ink-muted text-body leading-[1.65]"
               />
 
               <div className="mt-8 pt-6 border-t border-line">
-                <EditableText
-                  as="h3"
-                  path="omOssOffices.officeName"
-                  value={offices.officeName}
-                  className="font-heading text-body font-semibold text-navy"
-                />
-                <EditableText
-                  as="p"
-                  path="omOssOffices.officeAddress"
-                  value={offices.officeAddress}
-                  className="mt-1.5 font-ui text-sm text-ink-muted leading-relaxed"
-                />
+                <h3 className="font-heading text-body font-semibold text-navy">{offices.officeName}</h3>
+                <p className="mt-1.5 font-ui text-sm text-ink-muted leading-relaxed">
+                  {offices.officeAddress}
+                </p>
               </div>
             </div>
 
             <div className="lg:col-span-6 lg:col-start-7 pb-16 lg:py-24 gw-bleed-r">
-              <EditableImage
-                path="omOssOffices.imageUrl"
+              <img
                 src={img(offices.imageUrl || IMAGES.alicanteOffice, 1200)}
                 alt={offices.imageAlt || 'Global Working kontorer i Alicante'}
                 className="w-full h-[300px] lg:h-[500px] object-cover rounded-panel lg:rounded-r-none"
                 loading="lazy"
+                decoding="async"
               />
             </div>
           </div>

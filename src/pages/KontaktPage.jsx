@@ -11,10 +11,8 @@ export default function KontaktPage() {
       <PageHero
         current={hero.breadcrumb}
         title={hero.h1}
-        titlePath="kontaktHero.h1"
         titleId="kontakt-hero-heading"
         description={hero.description}
-        descriptionPath="kontaktHero.description"
       />
 
       <Kontakt />

@@ -1,7 +1,7 @@
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
-import EditableText from './editable/EditableText'
 import RuleGrid from './ui/RuleGrid'
+import RichText from './ui/RichText'
 
 /**
  * Talentportalen — qué es el portal y qué se hace dentro.
@@ -51,24 +51,12 @@ export default function Talentportalen() {
               La acción principal de toda la página es entrar al portal, así
               que el naranja vive acá y en ningún otro sitio de la pantalla. */}
           <div className="lg:col-span-5">
-            <EditableText
-              as="span"
-              path="talentportalenComp.label"
-              value={c.label}
-              className="gw-label text-primary-600"
-            />
-            <EditableText
-              as="h2"
-              id="talentportalen-heading"
-              path="talentportalenComp.heading"
-              value={c.heading}
-              className="mt-5 text-display-sm font-semibold text-navy"
-            />
-            <EditableText
-              as="p"
-              path="talentportalenComp.description"
+            <span className="gw-label text-primary-600">{c.label}</span>
+            <h2 id="talentportalen-heading" className="mt-5 text-display-sm font-semibold text-navy">
+              {c.heading}
+            </h2>
+            <RichText
               value={c.description}
-              multiline
               className="mt-6 gw-measure text-body text-ink-muted leading-[1.7]"
             />
 
@@ -80,24 +68,14 @@ export default function Talentportalen() {
                 onClick={() => trackEvent('cta_click', { location: 'talentportalen', cta: 'logg_inn' })}
                 className="gw-btn gw-btn-ember"
               >
-                <EditableText
-                  as="span"
-                  path="talentportalenComp.ctaLogin"
-                  value={c.ctaLogin}
-                  className="inline"
-                />
+                <span>{c.ctaLogin}</span>
               </a>
               <a
                 href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'talentportalen', cta: 'kontakt_oss' })}
                 className="gw-btn gw-btn-line"
               >
-                <EditableText
-                  as="span"
-                  path="talentportalenComp.ctaContact"
-                  value={c.ctaContact}
-                  className="inline"
-                />
+                <span>{c.ctaContact}</span>
               </a>
             </div>
           </div>
@@ -122,17 +100,11 @@ export default function Talentportalen() {
                   <span className="block text-primary-600" aria-hidden="true">
                     {benefitIcons[i] || benefitIcons[0]}
                   </span>
-                  <EditableText
-                    as="h3"
-                    path={`talentportalenComp.benefits.${i}.title`}
-                    value={b.title}
-                    className="mt-4 font-heading text-body font-semibold text-navy leading-snug"
-                  />
-                  <EditableText
-                    as="p"
-                    path={`talentportalenComp.benefits.${i}.desc`}
+                  <h3 className="mt-4 font-heading text-body font-semibold text-navy leading-snug">
+                    {b.title}
+                  </h3>
+                  <RichText
                     value={b.desc}
-                    multiline
                     className="mt-2 text-body-sm text-ink-muted leading-relaxed"
                   />
                 </RuleGrid.Cell>

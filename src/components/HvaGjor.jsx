@@ -1,35 +1,13 @@
 import { GraduationCap, ShieldCheck, UsersThree } from '@phosphor-icons/react'
 import { img } from '../assets/images'
 import useContent from '../hooks/useContent'
-import EditableText from './editable/EditableText'
-import EditableImage from './editable/EditableImage'
-import InlineRichText from './editable/InlineRichText'
+import RichText from './ui/RichText'
 
 const serviceIcons = [
   <UsersThree key="i1" size={24} weight="regular" aria-hidden="true" />,
   <GraduationCap key="i2" size={24} weight="regular" aria-hidden="true" />,
   <ShieldCheck key="i3" size={24} weight="regular" aria-hidden="true" />,
 ]
-
-function InlineEditableParagraph({
-  path,
-  value,
-  className,
-  linkClassName,
-  as = 'p',
-  ...rest
-}) {
-  return (
-    <InlineRichText
-      as={as}
-      value={value}
-      className={className}
-      linkClassName={linkClassName}
-      data-content-path={path}
-      {...rest}
-    />
-  )
-}
 
 /**
  * HvaGjor — qué hace Global Working.
@@ -57,28 +35,15 @@ export default function HvaGjor() {
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
 
           <div className="lg:col-span-5">
-            <EditableText
-              as="span"
-              path="hvaGjor.label"
-              value={c.label}
-              className="gw-label text-primary-600"
-            />
-            <EditableText
-              id="hvagjor-heading"
-              as="h2"
-              path="hvaGjor.heading"
-              value={c.heading}
-              className="mt-5 text-display-sm font-semibold text-navy"
-            />
-            <InlineEditableParagraph
-              as="p"
-              path="hvaGjor.description"
+            <span className="gw-label text-primary-600">{c.label}</span>
+            <h2 id="hvagjor-heading" className="mt-5 text-display-sm font-semibold text-navy">{c.heading}</h2>
+            <RichText
               value={c.description}
-              className="mt-6 gw-measure !text-ink-muted text-body leading-[1.65]"
+              className="mt-6 gw-measure text-ink-muted text-body leading-[1.65]"
             />
 
             <a href="/kontakt" className="gw-btn gw-btn-ember mt-9">
-              <EditableText as="span" path="hvaGjor.ctaLabel" value={c.ctaLabel} className="inline" />
+              <span>{c.ctaLabel}</span>
               <svg
                 width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"
@@ -88,12 +53,7 @@ export default function HvaGjor() {
             </a>
 
             {c.ctaNote && (
-              <EditableText
-                as="p"
-                path="hvaGjor.ctaNote"
-                value={c.ctaNote}
-                className="mt-4 font-ui text-[0.875rem] text-ink-soft"
-              />
+              <p className="mt-4 font-ui text-[0.875rem] text-ink-soft">{c.ctaNote}</p>
             )}
           </div>
 
@@ -104,17 +64,12 @@ export default function HvaGjor() {
                   {serviceIcons[i] || serviceIcons[0]}
                 </span>
                 <div className="min-w-0">
-                  <EditableText
-                    as="h3"
-                    path={`hvaGjor.services.${i}.title`}
-                    value={s.title}
-                    className="font-heading text-body-lg font-semibold text-navy leading-snug"
-                  />
-                  <InlineEditableParagraph
-                    as="p"
-                    path={`hvaGjor.services.${i}.description`}
+                  <h3 className="font-heading text-body-lg font-semibold text-navy leading-snug">
+                    {s.title}
+                  </h3>
+                  <RichText
                     value={s.description}
-                    className="mt-2.5 gw-measure !text-ink-muted text-body leading-[1.65]"
+                    className="mt-2.5 gw-measure text-ink-muted text-body leading-[1.65]"
                   />
                 </div>
               </div>
@@ -124,12 +79,12 @@ export default function HvaGjor() {
         </div>
 
         {c.sectionImageUrl && (
-          <EditableImage
-            path="hvaGjor.sectionImageUrl"
+          <img
             src={img(c.sectionImageUrl, 1536)}
             alt={c.sectionImageAlt || ''}
             className="mt-16 lg:mt-20 w-full h-[260px] sm:h-[360px] lg:h-[460px] object-cover rounded-panel"
             loading="lazy"
+            decoding="async"
           />
         )}
       </div>

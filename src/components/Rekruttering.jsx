@@ -1,6 +1,7 @@
 import useContent from '../hooks/useContent'
-import EditableText from './editable/EditableText'
 import RuleGrid from './ui/RuleGrid'
+import RichText from './ui/RichText'
+import MarkdownText from './ui/MarkdownText'
 
 /**
  * Rekruttering — el modelo, como secuencia.
@@ -38,29 +39,15 @@ export default function Rekruttering() {
             una fecha, no un botón. */}
         <div className="grid lg:grid-cols-12 gap-6 lg:gap-12 items-end">
           <div className="lg:col-span-7">
-            <EditableText
-              as="span"
-              path="rekrutteringComp.label"
-              value={c.label}
-              className="gw-label text-primary-600"
-            />
-            <EditableText
-              id="rekruttering-heading"
-              as="h2"
-              path="rekrutteringComp.heading"
-              value={c.heading}
-              className="mt-5 text-display-sm font-semibold text-navy"
-            />
+            <span className="gw-label text-primary-600">{c.label}</span>
+            <h2 id="rekruttering-heading" className="mt-5 text-display-sm font-semibold text-navy">
+              {c.heading}
+            </h2>
           </div>
 
           {c.badge && (
             <div className="lg:col-span-4 lg:col-start-9">
-              <EditableText
-                as="p"
-                path="rekrutteringComp.badge"
-                value={c.badge}
-                className="font-ui text-sm font-semibold text-ink-soft lg:text-right"
-              />
+              <p className="font-ui text-sm font-semibold text-ink-soft lg:text-right">{c.badge}</p>
             </div>
           )}
         </div>
@@ -81,19 +68,13 @@ export default function Rekruttering() {
                   {String(i + 1).padStart(2, '0')}
                 </span>
 
-                <EditableText
-                  as="h3"
-                  path={`rekrutteringComp.steps.${i}.title`}
-                  value={step.title}
-                  className="mt-3 font-heading text-body font-semibold text-navy leading-snug"
-                />
+                <h3 className="mt-3 font-heading text-body font-semibold text-navy leading-snug">
+                  {step.title}
+                </h3>
 
                 {step.description && (
-                  <EditableText
-                    as="p"
-                    path={`rekrutteringComp.steps.${i}.description`}
+                  <RichText
                     value={step.description}
-                    multiline
                     className="mt-2.5 text-body-sm text-ink-muted leading-relaxed"
                   />
                 )}
@@ -108,18 +89,13 @@ export default function Rekruttering() {
             convertirlo en otra tarjeta. */}
         {body.length > 0 && (
           <div className="mt-14 lg:mt-20 lg:pl-8 lg:border-l lg:border-line">
-            <div className="gw-measure text-body text-ink-muted leading-[1.7]">
+            {/* `gw-stack` también afuera: p1, p2 y p3 son campos distintos
+                pero un solo texto, así que entre ellos va el mismo aire que
+                entre párrafos de un mismo campo. Antes el último <p> de cada
+                campo llevaba `mb-0` y el siguiente campo quedaba pegado. */}
+            <div className="gw-stack gw-measure text-body text-ink-muted leading-[1.7]">
               {body.map((key) => (
-                <EditableText
-                  key={key}
-                  as="div"
-                  path={`rekrutteringComp.${key}`}
-                  value={c[key]}
-                  multiline
-                  richText
-                  inputClassName="min-h-[120px]"
-                  className="[&>h2:first-child]:mt-0 [&>p:last-child]:mb-0"
-                />
+                <MarkdownText key={key} value={c[key]} />
               ))}
             </div>
           </div>

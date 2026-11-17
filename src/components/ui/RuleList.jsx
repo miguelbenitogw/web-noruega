@@ -1,5 +1,3 @@
-import EditableText from '../editable/EditableText'
-
 /**
  * RuleList — la lista con filetes.
  *
@@ -9,8 +7,7 @@ import EditableText from '../editable/EditableText'
  * Estaba definida tres veces, palabra por palabra, en `HelsenorskPage`,
  * `LivetSomStudentPage` y `SpanskAlicantePage` — cada agente escribió la suya
  * sin ver las otras. Es un componente y no una clase CSS porque pinta
- * estructura: el `<ul>`, un `<li>` por elemento y el `path` que cada texto
- * necesita para seguir siendo localizable en `publishedContent.js`.
+ * estructura: el `<ul>`, un `<li>` por elemento y el filete de cada uno.
  *
  * `tone` existe por una razón de verdad y no por gusto: sobre `bg-frost` el
  * filete `line` no se ve, así que la lista del panel de «hvorfor» lo lleva en
@@ -22,19 +19,14 @@ const TONES = {
   panel: { top: 'border-t border-primary-200/70', item: 'border-b border-primary-200/70' },
 }
 
-export default function RuleList({ items, basePath, tone = 'line', className = '' }) {
+export default function RuleList({ items, tone = 'line', className = '' }) {
   const rule = TONES[tone] || TONES.line
 
   return (
     <ul className={`${rule.top} ${className}`}>
       {items.map((item, index) => (
-        <li key={`${basePath}-${index}`} className={`${rule.item} py-3.5`}>
-          <EditableText
-            as="span"
-            path={`${basePath}.${index}`}
-            value={item}
-            className="font-ui text-body-sm leading-snug text-ink"
-          />
+        <li key={`${index}-${item}`} className={`${rule.item} py-3.5 font-ui text-body-sm leading-snug text-ink`}>
+          {item}
         </li>
       ))}
     </ul>

@@ -1,6 +1,7 @@
 import useContent from '../hooks/useContent'
 import { IMAGES } from '../assets/images'
-import EditableText from './editable/EditableText'
+import RichText from './ui/RichText'
+import EmailText from './ui/EmailText'
 
 /**
  * Footer
@@ -49,12 +50,10 @@ export default function Footer() {
               height="36"
               loading="lazy"
             />
-            <EditableText
-              as="p"
-              path="footer.description"
+            <RichText
               value={c.description}
-              multiline
               className="text-primary-200 text-body-sm leading-relaxed gw-measure-sm"
+              tone="dark"
             />
             <div className="flex gap-2.5 mt-7">
               {(c.social || []).map((s) => (
@@ -79,12 +78,7 @@ export default function Footer() {
           {Object.entries(links).map(([title, items]) => (
             <div key={title} className="lg:col-span-2">
               <h3 className="font-heading font-semibold text-white text-body-sm mb-4">
-                <EditableText
-                  as="span"
-                  path={`footer.linkHeadings.${title}`}
-                  value={title}
-                  className="inline"
-                />
+                <span>{title}</span>
               </h3>
               {/* Los enlaces del pie medían 21,3 px de alto: la mitad de lo que
                   necesita un dedo. Ahora cada uno es `inline-block` con aire
@@ -92,7 +86,7 @@ export default function Footer() {
                   su línea de texto. El `space-y` baja de 2.5 a 1 porque ese
                   aire ya lo pone el enlace: si no, el pie se estiraba. */}
               <ul className="space-y-1" role="list">
-                {(items || []).map((item, itemIndex) => {
+                {(items || []).map((item) => {
                   const isFunctionalLink = item.href.startsWith('mailto:') || item.href.startsWith('tel:')
                   return (
                     <li key={item.label}>
@@ -102,14 +96,7 @@ export default function Footer() {
                         rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                         target={item.href.startsWith('http') ? '_blank' : undefined}
                       >
-                        {isFunctionalLink ? item.label : (
-                          <EditableText
-                            as="span"
-                            path={`footer.links.${title}.${itemIndex}.label`}
-                            value={item.label}
-                            className="inline"
-                          />
-                        )}
+                        {isFunctionalLink ? <EmailText email={item.label} /> : item.label}
                       </a>
                     </li>
                   )
