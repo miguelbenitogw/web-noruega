@@ -5,7 +5,7 @@ excerpt: "Da Sør-Fron kommune sto i en krevende bemanningssituasjon, valgte de 
 date: "2026-04-21"
 tag: "Intervju"
 readTime: "3 min"
-coverImage: "https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/2026/04/17/9310b14e-9e29-45fb-8ca8-85c672dee960-bilde-sykepleier.jpg"
+coverImage: "/assets/media/og-sykepleier-bilde.jpg"
 featured: true
 status: "published"
 publishAt: "2026-04-21T10:18:23.184+00:00"

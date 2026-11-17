@@ -261,7 +261,7 @@ export default function HomePage() {
                 <div key={`${c.name}-${i}`} className="gw-panel bg-white border-line p-6">
                   {resolveContactPhoto(c) ? (
                     <img
-                      src={resolveContactPhoto(c)}
+                      src={img(resolveContactPhoto(c), 192)}
                       alt={c.name}
                       className="w-16 h-16 rounded-pill object-cover object-top mb-4"
                       loading="lazy"

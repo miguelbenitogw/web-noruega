@@ -51,7 +51,7 @@ function TeamMember({ member, index, basePath }) {
     <div>
       {portrait ? (
         <img
-          src={portrait}
+          src={img(portrait, 640)}
           alt={member.imageAlt || member.name}
           className="w-full aspect-[4/5] object-cover object-top rounded-panel bg-frost"
           loading="lazy"

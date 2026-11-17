@@ -163,7 +163,7 @@ export default function SpanskAlicantePage() {
             {page.testimonialImageUrl && (
               <div className="lg:col-span-4">
                 <img
-                  src={page.testimonialImageUrl}
+                  src={img(page.testimonialImageUrl, 993)}
                   alt={page.testimonialImageAlt || page.testimonialAuthor || ''}
                   className="w-[200px] lg:w-full h-[240px] lg:h-[420px] object-cover object-top rounded-panel"
                   loading="lazy"
@@ -196,7 +196,7 @@ export default function SpanskAlicantePage() {
       {page.beachCollageUrl && (
         <section className="bg-white">
           <img
-            src={page.beachCollageUrl}
+            src={img(page.beachCollageUrl, 2560)}
             alt={page.beachCollageAlt || 'Hverdagen i Alicante'}
             className="w-full h-[280px] sm:h-[360px] lg:h-[480px] object-cover"
             loading="lazy"

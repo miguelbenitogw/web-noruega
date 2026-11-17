@@ -1,4 +1,5 @@
 import { GraduationCap, ShieldCheck, UsersThree } from '@phosphor-icons/react'
+import { img } from '../assets/images'
 import useContent from '../hooks/useContent'
 import EditableText from './editable/EditableText'
 import EditableImage from './editable/EditableImage'
@@ -125,7 +126,7 @@ export default function HvaGjor() {
         {c.sectionImageUrl && (
           <EditableImage
             path="hvaGjor.sectionImageUrl"
-            src={c.sectionImageUrl}
+            src={img(c.sectionImageUrl, 1536)}
             alt={c.sectionImageAlt || ''}
             className="mt-16 lg:mt-20 w-full h-[260px] sm:h-[360px] lg:h-[460px] object-cover rounded-panel"
             loading="lazy"

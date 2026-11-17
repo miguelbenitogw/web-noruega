@@ -5,7 +5,7 @@ excerpt: "Global Working ble startet med et ønske om å gi europeiske helsearbe
 date: "2026-05-26"
 tag: "Intervju"
 readTime: "3 min"
-coverImage: "https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/team-hero.jpg"
+coverImage: "/assets/media/og-default.jpg"
 featured: false
 status: "published"
 publishAt: "2026-05-26T11:13:15.648+00:00"

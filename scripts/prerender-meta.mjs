@@ -6,7 +6,7 @@ const DIST_DIR = path.resolve('dist')
 const INDEX_PATH = path.join(DIST_DIR, 'index.html')
 const NEWS_DIR = path.resolve('src/content/news')
 const SITE_URL = 'https://globalworking.no'
-const DEFAULT_IMAGE = 'https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/og-image.jpg'
+const DEFAULT_IMAGE = 'https://globalworking.no/assets/media/og-default.jpg'
 const SITE_NAME = 'Global Working Norge'
 
 // ── Identidad de la entidad ──────────────────────────────────────────────────
@@ -32,7 +32,7 @@ const buildOrganizationNode = () => ({
   name: SITE_NAME,
   legalName: 'Global Working Norge AS',
   url: SITE_URL,
-  logo: { '@type': 'ImageObject', '@id': `${SITE_URL}/#logo`, url: DEFAULT_IMAGE },
+  logo: { '@type': 'ImageObject', '@id': `${SITE_URL}/#logo`, url: 'https://globalworking.no/assets/media/logo-512.jpg' },
   image: { '@id': `${SITE_URL}/#logo` },
   description: 'Rekruttering og språkopplæring for kvalifiserte fagfolk fra Sør-Europa til det norske arbeidsmarkedet.',
   foundingDate: '2014',
@@ -677,7 +677,11 @@ const injectArticleMeta = (html, article) => {
   const url = `${SITE_URL}${pathname}`
   const title = escapeHtml(article.seoTitle || article.title)
   const description = escapeHtml(article.seoDescription || article.excerpt)
-  const image = article.coverImage || DEFAULT_IMAGE
+  // Una ruta que empieza por / sirve como <img> en cualquier entorno, pero no
+  // como og:image: las redes exigen URL absoluta y descartan la relativa en
+  // silencio. Se guarda relativa en el .md y se absolutiza solo aquí.
+  const rawImage = article.coverImage || DEFAULT_IMAGE
+  const image = rawImage.startsWith('/') ? `${SITE_URL}${rawImage}` : rawImage
   let result = html
 
   result = result.replace(/<title>[^<]*<\/title>/, `<title>${title} | Global Working</title>`)

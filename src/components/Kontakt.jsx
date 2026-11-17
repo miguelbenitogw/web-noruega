@@ -211,7 +211,7 @@ export default function Kontakt() {
                 <div key={contact.name} className="gw-panel bg-white border-line p-6">
                   {resolveContactPhoto(contact) ? (
                     <img
-                      src={resolveContactPhoto(contact)}
+                      src={img(resolveContactPhoto(contact), 192)}
                       alt={contact.name}
                       className="w-16 h-16 rounded-pill object-cover object-top mb-4"
                       loading="lazy"

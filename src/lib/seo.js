@@ -3,7 +3,7 @@ import siteContent from '../data/siteContent.js'
 import publishedContent from '../data/publishedContent.js'
 
 const SITE_URL = 'https://globalworking.no'
-const DEFAULT_IMAGE = 'https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/og-image.jpg'
+const DEFAULT_IMAGE = 'https://globalworking.no/assets/media/og-default.jpg'
 const SITE_NAME = 'Global Working Norge'
 
 // ── Identidad de la entidad ──────────────────────────────────────────────────
@@ -25,7 +25,7 @@ const buildEntityNodes = () => [
     name: SITE_NAME,
     legalName: 'Global Working Norge AS',
     url: SITE_URL,
-    logo: { '@type': 'ImageObject', '@id': LOGO_ID, url: DEFAULT_IMAGE },
+    logo: { '@type': 'ImageObject', '@id': LOGO_ID, url: 'https://globalworking.no/assets/media/logo-512.jpg' },
     image: { '@id': LOGO_ID },
     description: 'Rekruttering og språkopplæring for kvalifiserte fagfolk fra Sør-Europa til det norske arbeidsmarkedet.',
     foundingDate: '2014',

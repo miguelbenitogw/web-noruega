@@ -268,7 +268,7 @@ export default function LivetSomStudentPage() {
                   <div key={contact.name} className="border-b border-line py-6 flex items-start gap-4">
                     {contact.imageUrl && (
                       <img
-                        src={contact.imageUrl}
+                        src={img(contact.imageUrl, 192)}
                         alt={contact.imageAlt || contact.name}
                         className="w-12 h-12 rounded-pill object-cover shrink-0"
                         loading="lazy"

@@ -5,7 +5,7 @@ excerpt: "Hva skal til for å lykkes med sykepleiere fra Sør-Europa? Les hvilke
 date: "2026-04-21"
 tag: "Artikkel"
 readTime: "3 min"
-coverImage: "https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/2026/04/21/62841656-4198-4834-ab2d-eb643ebf9c06-sykepleier-hendergw.png"
+coverImage: "/assets/media/og-sykepleier-hendergw.jpg"
 featured: true
 status: "published"
 publishAt: "2026-04-21T11:33:06.907+00:00"

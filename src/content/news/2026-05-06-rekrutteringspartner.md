@@ -5,7 +5,7 @@ excerpt: "Mange norske kommuner sliter med å rekruttere sykepleiere som ønsker
 date: "2026-05-06"
 tag: "Artikkel"
 readTime: "3 min"
-coverImage: "https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/team-hero.jpg"
+coverImage: "/assets/media/og-default.jpg"
 featured: true
 status: "published"
 publishAt: "2026-05-06T12:31:24.125+00:00"

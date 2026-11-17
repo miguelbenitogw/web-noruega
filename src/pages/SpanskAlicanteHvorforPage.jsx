@@ -115,7 +115,7 @@ export default function SpanskAlicanteHvorforPage() {
               {vision.sidebarImageUrl && (
                 <EditableImage
                   path="spanskAlicanteVision.sidebarImageUrl"
-                  src={vision.sidebarImageUrl}
+                  src={img(vision.sidebarImageUrl, 932)}
                   alt={vision.sidebarImageAlt || 'Gruppe i Alicante'}
                   className="mt-4 w-full h-[260px] object-cover rounded-panel"
                   loading="lazy"

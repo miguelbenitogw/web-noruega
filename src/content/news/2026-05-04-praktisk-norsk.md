@@ -5,7 +5,7 @@ excerpt: "Hos Global Working kombinerer vi strukturert undervisning med ekte sam
 date: "2026-05-04"
 tag: "Artikkel"
 readTime: "3 min"
-coverImage: "https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/spansk-alicante/group-office.jpg"
+coverImage: "/assets/media/og-group-office.jpg"
 featured: false
 status: "published"
 publishAt: "2026-05-04T13:17:31.796+00:00"
