@@ -48,7 +48,7 @@ const DEFAULT_WIDTHS = [640, 1024, 1600]
 const CRITICAL_IMAGES = [
   { slug: 'team-hero', source: 'src/assets/team-hero.jpg' },
   { slug: 'platform-hero', source: 'src/assets/platform-hero.png' },
-  { slug: 'alicante-hero-sunset', source: 'src/assets/alicante/hero-sunset.jpeg' },
+  { slug: 'alicante-hero-sunset-v2', source: 'src/assets/alicante/hero-sunset.jpeg' },
   { slug: 'rekruttering', source: 'src/assets/rekruttering.png' },
 
   // Las dos fotos chicas del mosaico del hero («dos orillas», Hero.jsx).
@@ -64,9 +64,9 @@ const CRITICAL_IMAGES = [
   // Por eso además del par chico se genera un tope grande: lo pide solo quien
   // pasa un `width` explícito a img(); el mosaico usa la constante cruda y se
   // queda en 640.
-  { slug: 'helse-health-team', source: 'src/assets/helse/health-team.jpg', widths: [320, 640, 1440] },
+  { slug: 'helse-health-team-v2', source: 'src/assets/helse/health-team.jpg', widths: [320, 640, 1440] },
   {
-    slug: 'alicante-promenade',
+    slug: 'alicante-promenade-v2',
     source: 'src/assets/alicante/promenade-lifestyle.jpg',
     widths: [320, 640, 1440, 1920],
   },
@@ -102,7 +102,11 @@ const buildCriticalVariants = async () => {
     }
 
     const meta = await sharp(sourcePath).metadata()
-    const widths = widthsFor(meta.width, requestedWidths)
+    // Con EXIF orientation 5-8 la imagen se muestra girada 90 grados, así que
+    // el ancho real es el alto de los píxeles crudos. Usar meta.width a secas
+    // hacía que withoutEnlargement comparase contra un lado que no se ve.
+    const anchoVisible = meta.orientation >= 5 ? meta.height : meta.width
+    const widths = widthsFor(anchoVisible, requestedWidths)
     const variants = []
 
     for (const width of widths) {
@@ -122,6 +126,9 @@ const buildCriticalVariants = async () => {
       }
 
       const info = await sharp(sourcePath)
+        // .rotate() sin argumentos aplica el EXIF y lo consume. Sin esto, sharp
+        // tira la orientación al escribir webp y la foto sale de costado.
+        .rotate()
         .resize({ width, withoutEnlargement: true })
         .webp({ quality: 74, effort: 6, smartSubsample: true })
         .toFile(outPath)
@@ -154,6 +161,7 @@ const convertToWebP = async (inputPath) => {
 
   const inputStat = await stat(inputPath)
   const info = await sharp(inputPath)
+    .rotate()
     .webp({ quality: 80, effort: 6 })
     .toFile(outputPath)
 

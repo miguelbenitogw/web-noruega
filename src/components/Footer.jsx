@@ -58,11 +58,14 @@ export default function Footer() {
             />
             <div className="flex gap-2.5 mt-7">
               {(c.social || []).map((s) => (
+                /* 40 px se quedaba en 42,5 reales y no llega al mínimo táctil
+                   de 44. El círculo crece dos píxeles por lado: nadie lo nota
+                   y el dedo sí. */
                 <a
                   key={s.label}
                   href={s.href}
                   aria-label={s.label}
-                  className="w-10 h-10 border border-white/20 rounded-pill flex items-center justify-center
+                  className="w-11 h-11 border border-white/20 rounded-pill flex items-center justify-center
                              text-white/80 hover:text-white hover:border-white/50 transition-colors duration-200"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -83,14 +86,19 @@ export default function Footer() {
                   className="inline"
                 />
               </h3>
-              <ul className="space-y-2.5" role="list">
+              {/* Los enlaces del pie medían 21,3 px de alto: la mitad de lo que
+                  necesita un dedo. Ahora cada uno es `inline-block` con aire
+                  propio, así que el área pulsable es la del enlace y no la de
+                  su línea de texto. El `space-y` baja de 2.5 a 1 porque ese
+                  aire ya lo pone el enlace: si no, el pie se estiraba. */}
+              <ul className="space-y-1" role="list">
                 {(items || []).map((item, itemIndex) => {
                   const isFunctionalLink = item.href.startsWith('mailto:') || item.href.startsWith('tel:')
                   return (
                     <li key={item.label}>
                       <a
                         href={item.href}
-                        className="font-ui text-primary-200 text-[0.875rem] hover:text-white transition-colors duration-200"
+                        className="inline-block py-1.5 font-ui text-primary-200 text-[0.875rem] hover:text-white transition-colors duration-200"
                         rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                         target={item.href.startsWith('http') ? '_blank' : undefined}
                       >
@@ -115,7 +123,7 @@ export default function Footer() {
           <p>© {new Date().getFullYear()} {c.copyright}</p>
           <div className="flex flex-wrap justify-center gap-x-7 gap-y-2">
             {(c.bottomLinks || []).map((link) => (
-              <a key={link.href} href={link.href} className="hover:text-white transition-colors">
+              <a key={link.href} href={link.href} className="inline-block py-1.5 hover:text-white transition-colors">
                 {link.label}
               </a>
             ))}

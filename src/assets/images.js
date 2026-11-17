@@ -1,18 +1,25 @@
-const SB = 'https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media'
-
 /* ──────────────────────────────────────────────────────────────────────────
-   Imagenes criticas (LCP) empaquetadas localmente
+   Todas las fotos del sitio viven en el propio deploy
    ──────────────────────────────────────────────────────────────────────────
 
-   Supabase Storage sirve este bucket con `Cache-Control: private, no-cache`:
-   se revalida en cada visita. Y encima el hero pesaba 3 MB. Las cuatro
-   imagenes que son candidatas a LCP de su ruta se bajaron a local; el resto
-   del catalogo se queda en Supabase tal cual.
+   Antes el catalogo colgaba de un bucket de Supabase Storage que oficialmente
+   ya no usamos: sin transformaciones de imagen (el `?width=` se ignora y se
+   bajaba el original de 3-5 MB), `Cache-Control: private, no-cache` y un
+   punto unico de fallo fuera de nuestro control. Todo lo que el sitio pinta
+   se empaqueto en `public/assets/media/` como variantes WebP responsive.
 
-   Las variantes las genera `scripts/optimize-images.mjs` (prebuild, sharp)
-   hacia `public/assets/media/`. Se sirven desde `/assets/media/...`, que cae
-   dentro de la regla `/assets/(.*)` de vercel.json y por lo tanto sale con
+   Se sirven desde `/assets/media/...`, que cae dentro de la regla
+   `/assets/(.*)` de vercel.json y por lo tanto sale con
    `public, max-age=31536000, immutable`.
+
+   publishedContent.js sigue guardando las URLs viejas de Supabase (es el
+   texto de produccion): `img()` y `srcSet()` las reconocen por el NOMBRE DE
+   ARCHIVO (CRITICAL_SOURCES) y las traducen a la variante local. Una URL de
+   Supabase que NO figure en esa tabla se devuelve tal cual: si agregas una
+   foto nueva al contenido, agregala aca y genera sus variantes.
+
+   IMPORTANTE: las variantes se generan con `.rotate()` (EXIF). Las fotos de
+   movil (4032x3024 con orientation=6) se veian de costado sin eso.
 
    Nombres ESTABLES (sin hash de Vite) a proposito: el `<link rel="preload"
    as="image" imagesrcset>` del hero esta escrito a mano en index.html y
@@ -27,23 +34,95 @@ const MEDIA = '/assets/media'
 const LOCAL_VARIANTS = {
   'team-hero': [640, 1024, 1600],
   'platform-hero': [640, 1024, 1600],
-  'alicante-hero-sunset': [640, 1024, 1600],
+  'alicante-hero-sunset-v2': [640, 1024, 1600],
   rekruttering: [640, 1024, 1388],
   // Las dos del mosaico del hero: par chico para el mosaico (~130 px) y un
   // tope grande porque las dos se reusan como imagen de seccion a ancho
   // completo. Ver el comentario en scripts/optimize-images.mjs.
-  'helse-health-team': [320, 640, 1440],
-  'alicante-promenade': [320, 640, 1440, 1920],
+  'helse-health-team-v2': [320, 640, 1440],
+  'alicante-promenade-v2': [320, 640, 1440, 1920],
+
+  // Fotos que antes colgaban de Supabase. Los anchos van del nativo hacia
+  // abajo: nunca se escala hacia arriba.
+  'home-metrics-team': [640, 1024],
+  'pablo-ceo': [300],
+  'team-group': [640, 1024, 1440, 1920],
+  'miriam-svendsen': [192, 640],
+  'gro-anette': [192, 640],
+  'alicante-office': [640, 1024, 1440, 1920],
+  oficina: [640, 1024],
+  'alicante-beach-palms': [640, 1024, 1440],
+  'alicante-city-view': [640, 1024, 1440],
+  'alicante-castle-arch': [640, 1024],
+  'helse-nurses': [640, 1024, 1440, 1920],
+  'clase-noruego': [640, 1024],
+  'people-team': [640, 858],
+  'sykepleier-bilde': [640, 1024, 1536],
+  'testimonial-oliver': [480, 993],
+  'alicante-beach-collage': [1024, 1920, 2560],
+  'alicante-group-office': [640, 932],
+  'hvagjor-classroom': [640, 1024, 1536],
+  trappebildet: [682],
+  'livet-helse': [640, 1024],
+  'livet-fellesskap': [640, 1024, 1440, 1920],
+  'livet-undervisning': [640, 1024, 1440, 1920],
+  'spansk-elev': [640, 1080],
+  'spansk-alicante-teaser': [640, 1080],
+  'sykepleier-hendergw': [640, 1024, 1536],
+  'nyhet-vaga': [640, 1024, 1200],
 }
 
 /** Nombre de archivo del original (en Supabase o en src/assets) -> slug local. */
 const CRITICAL_SOURCES = {
   'team-hero.jpg': 'team-hero',
   'platform-hero.png': 'platform-hero',
-  'hero-sunset.jpeg': 'alicante-hero-sunset',
+  // Misma imagen (mismo md5) que platform-hero.png, pero la portada de la
+  // noticia «kandidatportal-lansert» la referencia por Squarespace.
+  'Screenshot+2026-02-26+at+15.58.15.png': 'platform-hero',
+  'hero-sunset.jpeg': 'alicante-hero-sunset-v2',
   'rekruttering.png': 'rekruttering',
-  'health-team.jpg': 'helse-health-team',
-  'promenade-lifestyle.jpg': 'alicante-promenade',
+  'health-team.jpg': 'helse-health-team-v2',
+  'promenade-lifestyle.jpg': 'alicante-promenade-v2',
+
+  'metrics-team.jpg': 'home-metrics-team',
+  'pablo-ceo.webp': 'pablo-ceo',
+  'team-group.webp': 'team-group',
+  'miriam-svendsen.jpg': 'miriam-svendsen',
+  'gro-anette.jpg': 'gro-anette',
+  'alicante-office.webp': 'alicante-office',
+  'oficina.webp': 'oficina',
+  'beach-palms.jpeg': 'alicante-beach-palms',
+  'city-view.jpeg': 'alicante-city-view',
+  'castle-arch.jpeg': 'alicante-castle-arch',
+  'nurses.webp': 'helse-nurses',
+  'clase-noruego.webp': 'clase-noruego',
+  'people-team.png': 'people-team',
+  '9310b14e-9e29-45fb-8ca8-85c672dee960-bilde-sykepleier.jpg': 'sykepleier-bilde',
+  'testimonial-oliver.jpg': 'testimonial-oliver',
+  'beach-collage.jpg': 'alicante-beach-collage',
+  'group-office.jpg': 'alicante-group-office',
+  'classroom-rekruttering.jpg': 'hvagjor-classroom',
+  'e0497e7e-8d0d-4195-83a8-b6b21cb5d67c-trappebildet.png': 'trappebildet',
+  'b1f5e99d-2d1a-4446-80b3-7ca1690a449c-image20260506141055.jpg': 'livet-helse',
+  '8d3592ee-4a1c-4be9-822c-322db675ae1b-image20260506141047.jpg': 'livet-fellesskap',
+  'cef58e85-8adb-489e-a9cb-42cecd251a0a-image20260506141052.jpg': 'livet-undervisning',
+  '7ae916d9-cb56-4e16-bcc5-424f8476a329-elev-spansk-alicante.png': 'spansk-elev',
+  'f82a2917-6c08-415f-bd89-41996cd1e155-spansk-alicante.jpg': 'spansk-alicante-teaser',
+  '62841656-4198-4834-ab2d-eb643ebf9c06-sykepleier-hendergw.png': 'sykepleier-hendergw',
+  '5762bbc0-baba-417c-9fb3-3366f7914102-vaga.jpg': 'nyhet-vaga',
+}
+
+/**
+ * Slugs retirados -> slug vigente. Las variantes `alicante-hero-sunset-*`,
+ * `alicante-promenade-*` y `helse-health-team-*` se generaron sin respetar el
+ * EXIF y salian de costado. Como se sirven con cache `immutable`, corregirlas
+ * en el mismo nombre no alcanza (el navegador del que ya las vio no las vuelve
+ * a pedir en un ano): por eso las buenas se llaman `-v2-<ancho>.webp`.
+ */
+const LEGACY_SLUGS = {
+  'alicante-hero-sunset': 'alicante-hero-sunset-v2',
+  'alicante-promenade': 'alicante-promenade-v2',
+  'helse-health-team': 'helse-health-team-v2',
 }
 
 const variantUrl = (slug, width) => `${MEDIA}/${slug}-${width}.webp`
@@ -62,7 +141,13 @@ const slugFor = (url) => {
   if (CRITICAL_SOURCES[file]) return CRITICAL_SOURCES[file]
 
   const alreadyLocal = /^(.+)-\d+\.webp$/.exec(file)
-  if (alreadyLocal && LOCAL_VARIANTS[alreadyLocal[1]]) return alreadyLocal[1]
+  if (alreadyLocal) {
+    if (LOCAL_VARIANTS[alreadyLocal[1]]) return alreadyLocal[1]
+    // Las variantes viejas (sin -v2) salian GIRADAS 90 grados; se retiraron,
+    // pero publishedContent.js todavia las nombra: se redirigen a la v2.
+    const legacy = LEGACY_SLUGS[alreadyLocal[1]]
+    if (legacy) return legacy
+  }
 
   return null
 }
@@ -80,56 +165,50 @@ export const IMAGES = {
   logoColor:      new URL('./logo-horizontal.png', import.meta.url).href,
 
   // Team / people
-  // teamHero es el LCP de la Home: local, ya no Supabase.
+  // teamHero es el LCP de la Home.
   teamHero:                 variantUrl('team-hero', 1600),
-  homeMetricsTeam:          `${SB}/home/metrics-team.jpg`,
-  ceoPhoto:                 `${SB}/team/pablo-ceo.webp`,
-  teamGroup:                `${SB}/team/team-group.webp`,
-  contactMiriam:            `${SB}/team/miriam-svendsen.jpg`,
-  contactGro:               `${SB}/team/gro-anette.jpg`,
+  homeMetricsTeam:          variantUrl('home-metrics-team', 1024),
+  ceoPhoto:                 variantUrl('pablo-ceo', 300),
+  teamGroup:                variantUrl('team-group', 1440),
+  // 640 y no el tope: los consumidores crudos (retratos de Om oss, avatares)
+  // las pintan entre 64 y 290 px. Para un avatar, img(url, 192) baja a la de 192.
+  contactMiriam:            variantUrl('miriam-svendsen', 640),
+  contactGro:               variantUrl('gro-anette', 640),
 
   // Offices
-  alicanteOffice:           `${SB}/office/alicante-office.webp`,
-  oficina:                  `${SB}/office/oficina.webp`,
+  alicanteOffice:           variantUrl('alicante-office', 1440),
+  oficina:                  variantUrl('oficina', 1024),
 
   // Alicante
-  spanskAlicanteHeroSunset: variantUrl('alicante-hero-sunset', 1600),
-  spanskAlicanteBeachPalms: `${SB}/alicante/beach-palms.jpeg`,
+  spanskAlicanteHeroSunset: variantUrl('alicante-hero-sunset-v2', 1600),
+  spanskAlicanteBeachPalms: variantUrl('alicante-beach-palms', 1440),
   // 640 a proposito, NO el tope: el unico consumidor de la constante cruda
   // (sin pasar por img()) es el mosaico del hero, que la pinta a ~130 px. Las
   // vistas que la usan a ancho completo llaman img(url, 1400|1920) y desde
   // esta misma URL suben a 1440/1920. Si algun dia una vista nueva usa la
   // constante cruda para una imagen grande, tiene que pasarla por img().
-  spanskAlicantePromenade:  variantUrl('alicante-promenade', 640),
-  spanskAlicanteCityView:   `${SB}/alicante/city-view.jpeg`,
-  spanskAlicanteCastleArch: `${SB}/alicante/castle-arch.jpeg`,
+  spanskAlicantePromenade:  variantUrl('alicante-promenade-v2', 640),
+  spanskAlicanteCityView:   variantUrl('alicante-city-view', 1440),
+  spanskAlicanteCastleArch: variantUrl('alicante-castle-arch', 1024),
 
   // Helse
-  enfermeria:               `${SB}/helse/nurses.webp`,
+  enfermeria:               variantUrl('helse-nurses', 1920),
   // 640 a proposito, mismo razonamiento que spanskAlicantePromenade.
-  helseHealthTeam:          variantUrl('helse-health-team', 640),
-  helsesektor:              `${SB}/cdn/helsesektor.png`,
-  helseSituasjon:           `${SB}/2026/04/17/9310b14e-9e29-45fb-8ca8-85c672dee960-bilde-sykepleier.jpg`,
+  helseHealthTeam:          variantUrl('helse-health-team-v2', 640),
+  helseSituasjon:           variantUrl('sykepleier-bilde', 1536),
 
   // Rekruttering / platform
   rekruttering:             variantUrl('rekruttering', 1388),
   platformHero:             variantUrl('platform-hero', 1600),
-  claseNoruego:             `${SB}/clase-noruego.webp`,
+  claseNoruego:             variantUrl('clase-noruego', 1024),
 
-  // People / backgrounds
-  peopleHero:               `${SB}/cdn/people-hero.jpg`,
-  peopleTeam1:              `${SB}/cdn/people-hero.jpg`,
-  peopleTeam2:              `${SB}/people-team.png`,
-  peopleCTA:                `${SB}/cdn/people-cta.jpg`,
+  // CTA
+  peopleTeam2:              variantUrl('people-team', 858),
 
-  // Partner logos (still on CDN — not critical)
-  partner1:      'https://images.squarespace-cdn.com/content/v1/699f19dee84d12556ca836b0/daa93884-fbf5-4659-b78c-124a0ccb6d3c/Screenshot+2026-02-26+at+18.15.19.png',
-  partner2:      'https://images.squarespace-cdn.com/content/v1/699f19dee84d12556ca836b0/54a26273-89d1-48c9-8404-f1dc25e3df48/Screenshot+2026-02-26+at+18.28.39.png',
-  omOss1:        'https://images.squarespace-cdn.com/content/v1/699f19dee84d12556ca836b0/a9bc873b-c7a6-4d48-a550-b69907729127/Screenshot+2026-02-27+at+10.43.30.png',
-  omOss2:        'https://images.squarespace-cdn.com/content/v1/699f19dee84d12556ca836b0/7a7c6e81-e17d-44e5-b62b-0257b043f23e/Screenshot+2026-02-26+at+17.51.02.png',
-  partnersRow1:  'https://images.squarespace-cdn.com/content/v1/699f19dee84d12556ca836b0/daa93884-fbf5-4659-b78c-124a0ccb6d3c/Screenshot+2026-02-26+at+18.15.19.png',
-  partnersRow2:  'https://images.squarespace-cdn.com/content/v1/699f19dee84d12556ca836b0/54a26273-89d1-48c9-8404-f1dc25e3df48/Screenshot+2026-02-26+at+18.28.39.png',
-  empresas:      'https://globalworking.net/wp-content/uploads/2024/10/Empresas-con-las-que-trabajamos_Mesa-de-trabajo-1-1024x89.webp',
+  // Fuera del catalogo (borradas por muertas, ninguna tenia consumidores):
+  // helsesektor, peopleHero, peopleTeam1 (mismos bytes que peopleHero),
+  // peopleCTA (mismos bytes tambien), partner1/2, omOss1/2, partnersRow1/2
+  // y empresas (Squarespace / globalworking.net).
 }
 
 /**

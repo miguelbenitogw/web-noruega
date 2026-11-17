@@ -50,14 +50,18 @@ const DARK_LINK_CLASS =
 function Breadcrumb({ trail, current, currentPath }) {
   return (
     <nav className="mb-7" aria-label="Brødsmuler">
+      {/* Las migas eran enlaces de 20,7 px de alto: por debajo incluso del
+          mínimo de 24 px, y son lo primero que se toca para volver atrás. Con
+          `inline-block py-1` suben a 36,7 sin mover el texto de sitio, porque
+          el `items-center` de la fila reparte el aire nuevo arriba y abajo. */}
       <ol className="flex flex-wrap items-center gap-2 font-ui text-sm text-primary-300">
         <li>
-          <a href="/" className="transition-colors hover:text-white">Hjem</a>
+          <a href="/" className="inline-block py-1 transition-colors hover:text-white">Hjem</a>
         </li>
 
         {trail.map((step) => (
           <Separator key={step.href}>
-            <a href={step.href} className="transition-colors hover:text-white">{step.label}</a>
+            <a href={step.href} className="inline-block py-1 transition-colors hover:text-white">{step.label}</a>
           </Separator>
         ))}
 

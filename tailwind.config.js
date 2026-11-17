@@ -74,7 +74,14 @@ export default {
         ink: {
           DEFAULT: '#0E1A2B', // tinta entintada de navy
           muted:   '#4A5A70', // texto secundario
-          soft:    '#6F7F95', // metadatos
+          // Metadatos. Era #6F7F95 y no llegaba a AA en NINGÚN fondo donde se
+          // usa de verdad: 4,08:1 sobre blanco y 3,70:1 sobre `surface`, con
+          // 4,5:1 exigido. Y no es un color de marca que haya que respetar: es
+          // el gris de la fecha y el cargo, el dato que acompaña. Se entinta
+          // dos pasos más oscuro manteniendo el mismo tiro de azul —sigue
+          // leyéndose como el tono apagado de la familia, no como otro color—
+          // y pasa en los dos fondos: 5,17:1 y 4,69:1.
+          soft:    '#5E6E88', // metadatos
         },
       },
       fontFamily: {

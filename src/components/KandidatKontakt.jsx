@@ -171,7 +171,17 @@ export default function KandidatKontakt() {
       <div className="container-xl">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
 
-          <div className="lg:col-span-5">
+          {/* La columna de la izquierda son tres líneas (235 px) contra un
+              formulario de 752: con `items-start` quedaban 518 px de banda
+              navy vacía al lado del formulario, el 69 % de la fila. Es el
+              mismo problema que la foto vino a tapar en «Vårt tilbud».
+
+              No hace falta inventar nada para resolverlo: el bloque de FAQ ya
+              tenía la respuesta de esta casa —`lg:sticky lg:top-28`—. El
+              título acompaña al formulario mientras se rellena en vez de
+              quedarse arriba mirando al techo, y el hueco desaparece porque
+              deja de haberlo: la columna corta viaja. */}
+          <div className="lg:col-span-5 lg:sticky lg:top-28">
             <span className="gw-label text-white">Kontakt oss</span>
             <h2
               id="kandidat-kontakt-heading"

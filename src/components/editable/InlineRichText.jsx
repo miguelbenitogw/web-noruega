@@ -1,7 +1,15 @@
 import { Fragment, createElement, useMemo } from 'react'
 import { parseInlineLinkTokens } from '../../utils/inlineLinkParser'
 
-const DEFAULT_ROOT_CLASSNAME = 'whitespace-pre-wrap text-gray-700 leading-relaxed'
+/**
+ * `text-gray-700` era el gris por defecto de Tailwind, y el sistema dice con
+ * todas las letras que esos grises no existen en esta marca: el texto
+ * secundario es `ink-muted`, entintado de navy. No se notaba porque todas las
+ * llamadas lo pisan con `!text-ink-muted` —y ese `!` existe justamente porque
+ * el color de acá competía con el de ellas—, pero el día que alguien escriba
+ * un párrafo sin pisarlo, le sale un gris de otra paleta.
+ */
+const DEFAULT_ROOT_CLASSNAME = 'whitespace-pre-wrap text-ink-muted leading-relaxed'
 const DEFAULT_LINK_CLASSNAME = 'text-primary-600 underline decoration-primary-200 underline-offset-2 transition-colors hover:text-primary-700 hover:decoration-primary-400'
 
 const joinClassNames = (...values) => values.filter(Boolean).join(' ')

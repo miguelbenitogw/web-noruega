@@ -32,6 +32,13 @@ import { createElement } from 'react'
  *
  * `as="span"` es para cuando vive dentro de un `<a>`: un enlace no puede
  * contener otro enlace.
+ *
+ * El `py-1.5` no es decorativo. Medido en móvil, este enlace daba 21,3 px de
+ * alto: es el enlace secundario de TODO el sistema —«Les mer», «Se alle
+ * nyheter»— y en una pantalla táctil hay que acertarle a una franja más fina
+ * que el propio dedo. Con el aire vertical pasa de 21,3 a 33,3 px. No llega a
+ * los 44 de AAA a propósito: subirlo hasta ahí descuadraba el ritmo de las
+ * tarjetas donde vive, y 33 ya supera con margen el mínimo exigible.
  */
 export default function TextLink({
   as = 'a',
@@ -42,7 +49,7 @@ export default function TextLink({
   return createElement(
     as,
     {
-      className: 'group inline-flex items-center gap-2 font-ui text-sm font-semibold '
+      className: 'group inline-flex items-center gap-2 py-1.5 font-ui text-sm font-semibold '
         + 'text-primary-600 transition-colors hover:text-primary-700 '
         + `group-hover:text-primary-700 ${className}`,
       ...rest,

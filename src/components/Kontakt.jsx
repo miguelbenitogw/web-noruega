@@ -240,16 +240,22 @@ export default function Kontakt() {
                     className="mt-0.5 gw-meta"
                   />
 
-                  <div className="mt-4 pt-4 border-t border-line space-y-1.5">
+                  {/* El correo y el teléfono son, en un móvil, los dos únicos
+                      gestos que importan de esta ficha: abren el cliente de
+                      correo y marcan. Medían 22,4 px de alto —la mitad del
+                      mínimo táctil—, así que se les da altura propia de 44 px
+                      en vez de dejarlos a la altura de su línea de texto. El
+                      `flex items-center` mantiene el texto donde estaba. */}
+                  <div className="mt-4 pt-4 border-t border-line">
                     <a
                       href={`mailto:${contact.email}`}
-                      className="block font-ui text-body-xs text-primary-600 break-words transition-colors hover:text-navy"
+                      className="flex min-h-[44px] items-center font-ui text-body-xs text-primary-600 break-words transition-colors hover:text-navy"
                     >
                       {contact.email}
                     </a>
                     <a
                       href={`tel:${contact.phone.replace(/\s/g, '')}`}
-                      className="block font-ui text-body-xs text-ink-muted tabular-nums transition-colors hover:text-primary-600"
+                      className="flex min-h-[44px] items-center font-ui text-body-xs text-ink-muted tabular-nums transition-colors hover:text-primary-600"
                     >
                       {contact.phone}
                     </a>

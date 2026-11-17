@@ -223,9 +223,13 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Mobile hamburger */}
+          {/* Mobile hamburger.
+              El icono mide 24 px: con `p-2` el botón quedaba en 41x41 y es el
+              control más importante del móvil. `p-2.5` lo deja en 44x44
+              exactos, y el margen negativo crece igual para que el borde
+              óptico del botón siga alineado con el del contenedor. */}
           <button
-            className={`xl:hidden p-2 -mr-2 transition-colors ${scrolled ? 'text-navy' : 'text-white'}`}
+            className={`xl:hidden p-2.5 -mr-2.5 transition-colors ${scrolled ? 'text-navy' : 'text-white'}`}
             onClick={() => setMenuOpen(v => !v)}
             aria-expanded={menuOpen}
             aria-label={menuOpen ? 'Lukk meny' : 'Åpne meny'}

@@ -318,7 +318,16 @@ export default function VideoCarousel() {
 
         {/* Dots */}
         {n > 1 && (
-          <div className="mt-4 flex items-center justify-center gap-2.5" role="tablist" aria-label="Velg video">
+          /* El punto mide 10 px y así estaba también el botón: 10,6x10,6 px
+             reales de área pulsable, cuando el mínimo táctil es 44. Era el
+             peor objetivo de todo el sitio, y encima en el carrusel, que es
+             justo donde se toca.
+
+             El punto pasa a ser un `<span>` decorativo dentro del botón: lo
+             que se ve sigue midiendo 10 px, pero lo que se pulsa mide 44x44.
+             Por eso desaparece el `gap`, porque la separación ya la dan los
+             propios botones. */
+          <div className="mt-1 flex items-center justify-center" role="tablist" aria-label="Velg video">
             {items.map((item, i) => (
               <button
                 key={item.id}
@@ -327,8 +336,16 @@ export default function VideoCarousel() {
                 aria-selected={i === current}
                 aria-label={item.title || `Video ${i + 1}`}
                 onClick={() => setCurrent(i)}
-                className={`h-2.5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 ${i === current ? 'w-7 bg-primary-600' : 'w-2.5 bg-gray-300 hover:bg-gray-400'}`}
-              />
+                className="group flex h-11 w-11 items-center justify-center rounded-pill focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
+              >
+                {/* El inactivo era `bg-gray-300`, un gris de Tailwind que no
+                    existe en esta marca. `line` es el filete del sistema: el
+                    mismo gris frío que separa en todo el resto del sitio. */}
+                <span
+                  aria-hidden="true"
+                  className={`block h-2.5 rounded-full transition-all duration-300 ${i === current ? 'w-7 bg-primary-600' : 'w-2.5 bg-line group-hover:bg-primary-300'}`}
+                />
+              </button>
             ))}
           </div>
         )}
