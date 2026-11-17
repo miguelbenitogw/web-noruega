@@ -112,6 +112,20 @@ export default function HomePage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-12 lg:mb-16">
             <div className="lg:col-span-6">
+              {/* La columna izquierda solo llevaba etiqueta y titular, y con
+                  `items-end` quedaba un vacío grande encima. La foto es la
+                  clase de noruego: de las cuatro columnas de abajo, la
+                  preparación lingüística es la que de verdad distingue a la
+                  empresa, así que vale más que un retrato de equipo. */}
+              <img
+                src={img(IMAGES.claseNoruego, 900)}
+                alt="Norskundervisning ved Global Workings språkskole i Alicante"
+                className="w-full h-[200px] lg:h-[300px] object-cover rounded-panel mb-10"
+                loading="lazy"
+                decoding="async"
+                width={900}
+                height={600}
+              />
               <EditableText
                 as="span"
                 path="homeServices.label"

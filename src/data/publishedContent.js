@@ -33,7 +33,7 @@ const publishedContent = {
         "q": "Hva koster det å bruke Global Working?"
       },
       {
-        "a": "Vi kombinerer seleksjon, språkforberedelse og tett oppfølging før oppstart. Teamet vårt inkluderer både psykologer og språklærere, og prosessene er ISO-sertifiserte.",
+        "a": "Vi kombinerer seleksjon, språkforberedelse og tett oppfølging før oppstart. Teamet vårt inkluderer både psykologer og språklærere, og prosessene er ISO 9001:2015-sertifiserte av TÜV Nord.",
         "q": "Hvordan sikrer dere kvaliteten på kandidatene?"
       },
       {
@@ -132,7 +132,7 @@ const publishedContent = {
         "title": "Yrkesrettet språkopplæring"
       },
       {
-        "desc": "Vi er ISO-sertifisert for språkundervisning og internasjonal rekruttering i Europa.",
+        "desc": "Vi er ISO 9001:2015-sertifisert av TÜV Nord for språkundervisning og internasjonal rekruttering i Europa.",
         "title": "Kvalitetssikret prosess"
       }
     ],
@@ -208,7 +208,7 @@ const publishedContent = {
             "duration": "9 måneder"
           }
         ],
-        "description": "Kandidatene gjennomfører opptil 600 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.\n\nUndervisningen dekker alt fra dagligdagse samtaler til faglig dokumentasjon og kommunikasjon med pasienter og kollegaer. Kandidatene øver på reelle situasjoner fra norsk helsevesen slik at de er klare for arbeidslivet fra første dag."
+        "description": "Kandidatene gjennomfører opptil 650 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.\n\nUndervisningen dekker alt fra dagligdagse samtaler til faglig dokumentasjon og kommunikasjon med pasienter og kollegaer. Kandidatene øver på reelle situasjoner fra norsk helsevesen slik at de er klare for arbeidslivet fra første dag."
       },
       {
         "title": "Strukturert overgang til jobb",
@@ -255,7 +255,7 @@ const publishedContent = {
       {
         "href": "/om-oss",
         "title": "Om Global Working",
-        "description": "Grunnlagt i 2014, med hovedkontor i Alicante og kontor i Oslo, over 50 ansatte og ISO-sertifisert."
+        "description": "Grunnlagt i 2014, med hovedkontor i Alicante og kontor i Oslo, over 50 ansatte og ISO 9001:2015-sertifisert av TÜV Nord."
       }
     ],
     "description": "Global Working er verdens største språkskole som underviser i norsk utenfor Skandinavia.\n\nVi spesialiserer oss på norsk språk og kulturopplæring for søreuropeiske fagfolk. Samtidig arbeider vi med rekruttering og kobler kandidatene med arbeidsgivere i Norge. \n\nVi følger studentene tett gjennom hele prosessen, fra de første norsktimene til de er trygt i gang med jobb i Norge. \n\n             Vil du få tilgang til det europeiske markedet av arbeidstakere?"

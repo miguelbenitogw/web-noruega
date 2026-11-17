@@ -24,8 +24,11 @@ const markdownModules = import.meta.glob('../content/news/*.md', {
 
 const stripQuotes = (value) => value.replace(/^["']|["']$/g, '').trim()
 
-const parseFrontmatter = (raw) => {
-  const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/)
+const parseFrontmatter = (input) => {
+  // Ver el comentario gemelo en scripts/prerender-meta.mjs: BOM y CRLF son las
+  // dos formas de perder el frontmatter sin que nadie se entere.
+  const raw = input.replace(/^\uFEFF/, '')
+  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/)
   if (!match) {
     return { meta: {}, body: raw.trim() }
   }

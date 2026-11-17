@@ -201,7 +201,7 @@ const ROUTES = {
     description: 'Hvordan rekruttere helsepersonell fra utlandet? Se hele prosessen steg for steg: utvelgelse, 650 timer helsenorsk, autorisasjon og oppfølging frem til første arbeidsdag.',
     keywords: 'hvordan rekruttere helsepersonell, internasjonal rekruttering, rekruttering av sykepleiere, arbeidsinnvandring',
     breadcrumbName: 'Rekrutteringsmodell',
-    bodyExtra: '<h2>Slik fungerer rekrutteringsprosessen</h2><p>Global Workings rekrutteringsmodell er bygd opp i fire faser: identifisering av kandidater, språklig og faglig kvalifisering, dokumenthåndtering og autorisasjon, og til slutt tett oppfølging etter oppstart i Norge. Vi samarbeider med universiteter og fagmiljøer i Spania, Portugal og andre søreuropeiske land for å finne kandidater som matcher norske arbeidsgiveres behov. Alle kandidater gjennomgår norskopplæring til minimum B1-nivå før de starter i jobb.</p>',
+    bodyExtra: '<h2>Slik fungerer rekrutteringsprosessen</h2><p>Global Workings rekrutteringsmodell er bygd opp i fire faser: identifisering av kandidater, språklig og faglig kvalifisering, dokumenthåndtering og autorisasjon, og til slutt tett oppfølging etter oppstart i Norge. Vi samarbeider med universiteter og fagmiljøer i Spania, Portugal og andre søreuropeiske land for å finne kandidater som matcher norske arbeidsgiveres behov. Alle kandidater gjennomgår norskopplæring opp til B2-nivå før de starter i jobb.</p>',
     related: ['/helse', '/spansk-i-alicante/helsenorsk', '/talentportalen', 'news:hvordan-lykkes', 'news:rekrutteringspartner'],
     extras: {
       kind: 'service',
@@ -337,8 +337,11 @@ const ROUTES = {
   },
 }
 
-const parseFrontmatter = (raw) => {
-  const match = raw.match(/^---\n([\s\S]*?)\n---\n?/)
+const parseFrontmatter = (input) => {
+  // Quita el BOM: con BOM el `^---` no casa y el frontmatter se pierde en
+  // silencio, igual que pasaba con CRLF.
+  const raw = input.replace(/^\uFEFF/, '')
+  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/)
   if (!match) return {}
   const data = {}
   for (const line of match[1].split('\n')) {
@@ -756,15 +759,43 @@ const injectArticleMeta = (html, article) => {
 const loadLocalArticles = async () => {
   const files = await readdir(NEWS_DIR)
   const articles = []
+  const skipped = []
   for (const file of files.filter(f => f.endsWith('.md') && !f.startsWith('_'))) {
     const raw = await readFile(path.join(NEWS_DIR, file), 'utf8')
     const meta = parseFrontmatter(raw)
-    if ((meta.status || 'published') !== 'published' || !meta.slug) continue
-    // Extract body (everything after frontmatter) for skeleton prerender
-    const bodyMatch = raw.match(/^---[\s\S]*?---\n?([\s\S]*)/)
+    if ((meta.status || 'published') !== 'published' || !meta.slug) {
+      skipped.push(`${file} (status=${meta.status ?? 'published'}, slug=${meta.slug ?? 'ninguno'})`)
+      continue
+    }
+    // El cuerpo es todo lo que va después del frontmatter. Tolera CRLF por el
+    // mismo motivo que parseFrontmatter.
+    const bodyMatch = raw.match(/^---[\s\S]*?\r?\n---\r?\n?([\s\S]*)/)
     meta.body = bodyMatch ? bodyMatch[1] : ''
     articles.push(meta)
   }
+
+  // Un .md que no produce artículo casi siempre es un frontmatter ilegible, no
+  // una decisión editorial. Pasó de verdad: al hacer checkout en Windows los
+  // .md llegaron con CRLF, parseFrontmatter buscaba un delimitador con LF y
+  // devolvía {} para los diez. El build no falló: imprimió "Articles: 0" entre
+  // treinta líneas de log y generó un sitio sin noticias. Diez URLs vivas se
+  // habrían ido a 404 sin que nadie se enterara en semanas.
+  //
+  // El CRLF ya está arreglado en los parsers. Esto cubre lo que de verdad
+  // falló: que la avería fuese silenciosa.
+  if (articles.length === 0 && skipped.length > 0) {
+    throw new Error(
+      [
+        `prerender: hay ${skipped.length} .md en ${NEWS_DIR} y ninguno produjo un artículo.`,
+        'Lo más probable es que el frontmatter no se esté leyendo.',
+        ...skipped.map(line => `  - ${line}`),
+      ].join('\n'),
+    )
+  }
+  if (skipped.length > 0) {
+    console.log(`  Avisos: ${skipped.length} .md sin publicar: ${skipped.join(', ')}`)
+  }
+
   return articles
 }
 
@@ -890,7 +921,7 @@ const run = async () => {
       '<li><a href="/talentportalen">Talentportalen</a> — Digital plattform der arbeidsgivere ser tilgjengelige kandidater og inviterer til intervju.</li>',
       '</ul>',
       '<h2>Hvorfor Global Working?</h2>',
-      '<p>Siden 2014 har vi hjulpet over 50 norske arbeidsgivere med å rekruttere kvalifiserte fagfolk. Vårt program inkluderer språkopplæring (norsk B1–B2), kulturell forberedelse, dokumenthåndtering og tett oppfølging gjennom hele prosessen — fra første kontakt til oppstart i Norge.</p>',
+      '<p>Siden 2014 har vi hjulpet over 50 norske arbeidsgivere med å rekruttere kvalifiserte fagfolk. Vårt program inkluderer språkopplæring (norsk opp til B2), kulturell forberedelse, dokumenthåndtering og tett oppfølging gjennom hele prosessen — fra første kontakt til oppstart i Norge.</p>',
       '<h2>Kontakt oss</h2>',
       '<p>E-post: kontakt@globalworking.no | Telefon: +47 919 00 649</p>',
       '<p><a href="/kontakt">Ta kontakt for spørsmål om rekruttering og samarbeid</a></p>',

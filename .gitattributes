@@ -1,0 +1,21 @@
+# Finales de línea normalizados a LF en el repositorio.
+#
+# Sin esto, Git convertía a CRLF al hacer checkout en Windows y los artículos
+# dejaban de leerse: `parseFrontmatter` busca `^---\n` tanto en
+# scripts/prerender-meta.mjs como en src/lib/news.js, y con `\r\n` no casa.
+# El build no fallaba, simplemente encontraba cero artículos y seguía — el
+# tipo de avería que no se nota hasta que faltan diez URLs en producción.
+#
+# Los parsers aceptan ahora las dos formas, pero el repositorio se guarda en
+# LF igualmente: una sola forma es más fácil de razonar que dos.
+* text=auto eol=lf
+
+# Binarios: que Git no les toque nada.
+*.webp binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.svg  text eol=lf
+*.ico  binary
+*.woff binary
+*.woff2 binary

@@ -25,10 +25,10 @@ const siteContent = {
     description: 'Vi kobler norske arbeidsgivere med kvalifiserte fagfolk fra Sør-Europa – forberedt med språk, kultur og fagkompetanse.',
     readMoreLabel: 'Les mer',
     sections: [
-      { title: 'Vår rekrutteringsmodell', description: 'Vi finner, forbereder og følger opp fagfolk fra Sør-Europa til trygg oppstart i Norge. Opptil 600 timer norskopplæring.', href: '/vr-rekrutteringsmodell' },
+      { title: 'Vår rekrutteringsmodell', description: 'Vi finner, forbereder og følger opp fagfolk fra Sør-Europa til trygg oppstart i Norge. Opptil 650 timer norskopplæring.', href: '/vr-rekrutteringsmodell' },
       { title: 'Helsesektor', description: 'Norges største leverandør av sykepleiere utenfra Skandinavia. Spesialisert helsefaglig forberedelse siden 2014.', href: '/helse' },
       { title: 'Talentportalen', description: 'Se tilgjengelige kandidater for fast ansettelse direkte i vår nye kandidatportal.', href: '/talentportalen' },
-      { title: 'Om Global Working', description: 'Grunnlagt i 2014. 50+ ansatte. ISO-sertifisert. Hovedkontor i Alicante med kontor i Oslo.', href: '/om-oss' },
+      { title: 'Om Global Working', description: 'Grunnlagt i 2014. 50+ ansatte. ISO 9001:2015-sertifisert av TÜV Nord. Hovedkontor i Alicante med kontor i Oslo.', href: '/om-oss' },
     ],
   },
 
@@ -238,7 +238,7 @@ const siteContent = {
       {
         number: '01',
         title: 'Språk og faglig forberedelse',
-        description: 'Kandidatene gjennomfører opptil 600 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.\n\nUndervisningen dekker alt fra dagligdagse samtaler til faglig dokumentasjon og kommunikasjon med pasienter og kollegaer. Kandidatene øver på reelle situasjoner fra norsk helsevesen slik at de er klare for arbeidslivet fra første dag.',
+        description: 'Kandidatene gjennomfører opptil 650 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.\n\nUndervisningen dekker alt fra dagligdagse samtaler til faglig dokumentasjon og kommunikasjon med pasienter og kollegaer. Kandidatene øver på reelle situasjoner fra norsk helsevesen slik at de er klare for arbeidslivet fra første dag.',
         formats: [
           { label: 'Fysisk i Alicante', duration: '5 måneder' },
           { label: 'Kombinasjon fysisk og nett', duration: '7 måneder' },
@@ -270,7 +270,7 @@ const siteContent = {
     introP1: 'Før kandidatene våre kommer til Norge, gjennomfører de en opplæringsperiode i Alicante med fokus på språk, kultur og forberedelse til arbeid i Norge.',
     introP2: 'Dette er mer enn et kursopphold. Kandidatene går inn i et strukturert pensum med mål for å lære norsk til å bruke språket aktivt i praksis. Samtidig får de en forståelse for hvordan det er å leve og arbeide i Norge.',
     undervisningTitle: 'Undervisningen',
-    undervisningP1: 'Undervisningen i Alicante omfatter 600 timer norsk og er lagt opp som en strukturert og praktisk opplæring. Fokuset er på hvordan språket brukes i arbeidshverdagen. Kandidatene jobber med situasjoner de vil møte i helsetjenester, og utvikler gode ferdigheter i både muntlig og skriftlig kommunikasjon.',
+    undervisningP1: 'Undervisningen i Alicante omfatter 650 timer norsk og er lagt opp som en strukturert og praktisk opplæring. Fokuset er på hvordan språket brukes i arbeidshverdagen. Kandidatene jobber med situasjoner de vil møte i helsetjenester, og utvikler gode ferdigheter i både muntlig og skriftlig kommunikasjon.',
     undervisningP2: 'Dette gir et solid grunnlag for en mer fruktbar overgang til norsk arbeidsliv.',
     undervisningImageUrl: IMAGES.spanskAlicantePromenade,
     undervisningImageAlt: 'Undervisning i Alicante',
@@ -468,7 +468,7 @@ const siteContent = {
     badge: 'Strukturert modell siden 2014',
     steps: [
       { title: 'Rekrutterer kompetansen du trenger', description: 'Vi kartlegger kompetanse, motivasjon og ønsker før kandidatene presenteres for arbeidsgiver.' },
-      { title: 'Språk og faglig forberedelse', description: 'Alle kandidater følger et strukturert løp med opptil 600 timer norsk, bransjeterminologi og arbeidskultur.' },
+      { title: 'Språk og faglig forberedelse', description: 'Alle kandidater følger et strukturert løp med opptil 650 timer norsk, bransjeterminologi og arbeidskultur.' },
       { title: 'Strukturert overgang', description: '1–4 uker etter opplæring gjennomføres intervju med arbeidsgivere, og oppstart og avreisedato avtales.' },
       { title: 'Ekstra oppfølging ved behov', description: 'Ved behov tilrettelegger vi individuelt opplegg med ekstra språktrening før eller etter avreise.' },
     ],
@@ -486,7 +486,7 @@ const siteContent = {
       { value: '600', label: 'timer opplæring (opptil)' },
     ],
     features: [
-      { title: 'Språk og faglig forberedelse før ansettelse', description: 'Kandidatene får opptil 600 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.' },
+      { title: 'Språk og faglig forberedelse før ansettelse', description: 'Kandidatene får opptil 650 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.' },
       { title: 'Tre opplæringsmodeller', description: 'Fysisk i Alicante (5 måneder), kombinasjon fysisk og nett (7 måneder), eller full nettbasert opplæring (9 måneder).' },
       { title: 'Strukturert overgang til arbeidsgiver', description: 'Intervju skjer 1–4 uker etter avsluttet opplæring. Vi koordinerer oppstart og avreisedato med begge parter.' },
       { title: 'Ekstra oppfølging ved behov', description: 'Vi kan tilrettelegge individuell språktrening før og etter avreise for å redusere usikkerhet i oppstarten.' },
@@ -509,14 +509,14 @@ const siteContent = {
     stats: [
       { value: '2014', label: 'Etablert' },
       { value: '50', label: 'Ansatte' },
-      { value: 'ISO', label: 'Sertifisert' },
+      { value: 'ISO 9001', label: 'Sertifisert av TÜV Nord' },
     ],
     locationLabel: 'Alicante',
     locationSub: 'Hovedkontor med kontor i Oslo',
     values: [
       { title: 'Seleksjon med faglig vurdering', desc: '25 % av teamet er psykologer som jobber med seleksjon, vurdering og oppfølging av kandidater.' },
       { title: 'Yrkesrettet språkopplæring', desc: '55 % av teamet er språklærere med spesialisering i yrkesrettet språkopplæring.' },
-      { title: 'Kvalitetssikret prosess', desc: 'Vi er ISO-sertifisert for språkundervisning og internasjonal rekruttering i Europa.' },
+      { title: 'Kvalitetssikret prosess', desc: 'Vi er ISO 9001:2015-sertifisert av TÜV Nord for språkundervisning og internasjonal rekruttering i Europa.' },
     ],
   },
 
@@ -567,10 +567,10 @@ const siteContent = {
     ctaText: 'Fant du ikke svaret? Kontakt oss',
     items: [
       { q: 'Hvor lang tid tar rekrutteringsprosessen?', a: 'Tidslinjen avhenger av valgt opplæringsløp: fysisk (5 måneder), hybrid (7 måneder) eller fullt nettbasert (9 måneder). Intervjuer med arbeidsgiver skjer normalt 1–4 uker etter opplæring.' },
-      { q: 'Hvilket språknivå har kandidatene når de ankommer Norge?', a: 'Kandidatene følger et strukturert løp med opptil 600 undervisningstimer i norsk, bransjespesifikk terminologi og innføring i norsk arbeidskultur. Målet settes ut fra rollekrav, ofte opp mot B2.' },
+      { q: 'Hvilket språknivå har kandidatene når de ankommer Norge?', a: 'Kandidatene følger et strukturert løp med opptil 650 undervisningstimer i norsk, bransjespesifikk terminologi og innføring i norsk arbeidskultur. Målet settes ut fra rollekrav, ofte opp mot B2.' },
       { q: 'Hvilke sektorer dekker dere?', a: 'Vi rekrutterer primært til helse og omsorg, industri og bygg, samt utdanning og barneomsorg. Helsesektoren er vårt spesialfelt, der vi har levert kvalifiserte sykepleiere siden 2015.' },
       { q: 'Hva koster det å bruke Global Working?', a: 'Pris avhenger av behov og omfang. Vi går gjennom modell og priser i et uforpliktende kartleggingsmøte, slik at løsningen tilpasses virksomheten deres.' },
-      { q: 'Hvordan sikrer dere kvaliteten på kandidatene?', a: 'Vi kombinerer seleksjon, språkforberedelse og tett oppfølging før oppstart. Teamet vårt inkluderer både psykologer og språklærere, og prosessene er ISO-sertifiserte.' },
+      { q: 'Hvordan sikrer dere kvaliteten på kandidatene?', a: 'Vi kombinerer seleksjon, språkforberedelse og tett oppfølging før oppstart. Teamet vårt inkluderer både psykologer og språklærere, og prosessene er ISO 9001:2015-sertifiserte av TÜV Nord.' },
       { q: 'Tilbyr dere oppfølging etter ansettelse?', a: 'Ja. Vi følger opp kandidaten og arbeidsgiveren gjennom prøveperioden med ekstra språktimer, støtte med dokumentasjon og jevnlige samtalepunkter for å sikre en vellykket integrering.' },
     ],
   },
