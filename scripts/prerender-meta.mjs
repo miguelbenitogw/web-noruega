@@ -548,9 +548,7 @@ const ROUTES = {
       name: 'Helsenorsk – yrkesrettet norsk for helsesektoren',
       summary: 'Yrkesrettet norskopplæring for sykepleiere og helsefagarbeidere, tilpasset hverdagen i norsk helsetjeneste.',
       teaches: 'Yrkesrettet norsk for helsesektoren: fagterminologi, pasientkommunikasjon og faglig dokumentasjon',
-      // 650 h es lo que dice el título y la descripción de ESTA página. Ojo:
-      // la web dice 600 en otros sitios (ver el informe) — la cifra correcta
-      // la decide el cliente, aquí solo se refleja la de la propia página.
+      // 650 h, confirmado por el cliente. Es la misma cifra en toda la web.
       timeRequired: 'PT650H',
       courseMode: 'blended',
       audienceType: 'Sykepleiere og helsefagarbeidere',

@@ -491,7 +491,7 @@ const siteContent = {
     stats: [
       { value: '10+ år', label: 'erfaring i Norge' },
       { value: '25 000+', label: 'undervisningstimer i norsk' },
-      { value: '600', label: 'timer opplæring (opptil)' },
+      { value: '650', label: 'timer opplæring (opptil)' },
     ],
     features: [
       { title: 'Språk og faglig forberedelse før ansettelse', description: 'Kandidatene får opptil 650 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.' },
