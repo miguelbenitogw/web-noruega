@@ -930,8 +930,12 @@ const injectMeta = (html, pathname, route, articles) => {
     buildBreadcrumbNode(breadcrumbs, url),
     ...extraNodes,
   ])
+  // Los bloques JSON-LD de abajo llevan id="page-schema" a propósito: es el id
+  // que usa src/lib/seo.js al montar la página, que borra ese bloque y pone el
+  // suyo. Sin el id, el estático no se borraba y Google, que ejecuta
+  // JavaScript, veía el grafo entero DOS veces.
   const schemas = `
-    <script type="application/ld+json">${graph}</script>`
+    <script type="application/ld+json" id="page-schema">${graph}</script>`
 
   result = result.replace(
     '<!-- Analytics is initialized from app code only after cookie consent -->',
@@ -1006,7 +1010,7 @@ const injectArticleMeta = (html, article) => {
   ])
 
   const schemas = `
-    <script type="application/ld+json">${graph}</script>`
+    <script type="application/ld+json" id="page-schema">${graph}</script>`
 
   result = result.replace(
     '<!-- Analytics is initialized from app code only after cookie consent -->',
@@ -1318,7 +1322,7 @@ const run = async () => {
     .replace(PRELOAD_END, '')
     .replace(
       '<!-- Analytics is initialized from app code only after cookie consent -->',
-      `<script type="application/ld+json">${homeGraph}</script>\n    <!-- Analytics is initialized from app code only after cookie consent -->`,
+      `<script type="application/ld+json" id="page-schema">${homeGraph}</script>\n    <!-- Analytics is initialized from app code only after cookie consent -->`,
     )
   await writeFile(INDEX_PATH, homeHtml, 'utf8')
 
@@ -1379,7 +1383,10 @@ const run = async () => {
     if (!html.includes(`"@id":"${ORG_ID}"`)) {
       throw new Error(`prerender: ${rel} no declara la entidad ${ORG_ID}.`)
     }
-    const sueltos = (html.match(LEGACY_JSONLD) || []).length
+    // Cuenta cualquier bloque JSON-LD, con o sin atributos. LEGACY_JSONLD solo casa
+    // con los de index.html, que no llevan atributos; el grafo lleva
+    // id="page-schema" y con aquella expresión el contador no lo veía.
+    const sueltos = (html.match(/<script type="application\/ld\+json"[^>]*>/g) || []).length
     if (sueltos !== 1) {
       throw new Error(
         `prerender: ${rel} tiene ${sueltos} bloques JSON-LD y debería tener exactamente 1 (el grafo).`,
