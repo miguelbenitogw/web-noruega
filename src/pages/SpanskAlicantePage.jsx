@@ -37,11 +37,14 @@ export default function SpanskAlicantePage() {
         description={page.heroSubtitle}
         media={(
           <img
+            /* La foto es vertical (1080x1350) en una caja horizontal: centrada
+               solo se veía arena y la coronilla abajo. Se baja el encuadre para
+               que se vea a la persona. */
             src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1400)}
             srcSet={srcSet(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, [640, 1024, 1400])}
             sizes="(max-width: 1024px) 100vw, 50vw"
             alt={page.heroImageAlt || 'Strand og palmer i Alicante'}
-            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
+            className="w-full h-[300px] lg:h-[520px] object-cover object-[50%_82%] rounded-panel lg:rounded-r-none"
             loading="eager"
             decoding="sync"
             width={1400}
@@ -80,10 +83,13 @@ export default function SpanskAlicantePage() {
           de lectura y sin caja alrededor. */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="container-xl">
-          <div className="gw-measure border-t border-line pt-10 lg:pt-12">
+          {/* Centrado: es un relato sin título ni foto al lado, y pegado a la
+              izquierda dejaba media pantalla vacía. Justificado con corte
+              silábico, como los artículos. */}
+          <div className="gw-measure mx-auto border-t border-line pt-10 lg:pt-12">
             <MarkdownText
               value={page.exchangeNote}
-              className="text-body lg:text-body-lg text-ink leading-[1.6]"
+              className="text-body lg:text-body-lg text-ink leading-[1.6] [&_p]:text-justify [&_p]:hyphens-auto"
             />
           </div>
         </div>
