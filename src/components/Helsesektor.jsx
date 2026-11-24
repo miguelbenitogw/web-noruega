@@ -1,7 +1,7 @@
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import RuleGrid from './ui/RuleGrid'
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import RichText from './ui/RichText'
 
 /**
@@ -55,12 +55,15 @@ export default function Helsesektor() {
 
           <div className="lg:col-span-5 order-2 lg:order-1 pb-16 lg:py-24">
             <img
-              src={img(c.imageUrl || IMAGES.enfermeria, 1200)}
-              alt={c.imageAlt || 'Helsepersonell i opplæring gjennom Global Working'}
+              src={img(c.imageUrl || IMAGES.helseEquipoNoruega, 1200)}
+              srcSet={srcSet(c.imageUrl || IMAGES.helseEquipoNoruega)}
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              alt={c.imageAlt || 'Global Working-teamet samlet utendørs i Norge, ved sjøen'}
               className="w-full h-[300px] sm:h-[400px] lg:h-[520px] object-cover rounded-panel"
+              style={{ objectPosition: '42% center' }}
               loading="lazy"
-              width="640"
-              height="520"
+              width="2560"
+              height="1920"
               decoding="async"
             />
           </div>

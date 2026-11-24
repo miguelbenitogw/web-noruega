@@ -7,7 +7,7 @@ import RuleGrid from '../components/ui/RuleGrid'
 import TextLink from '../components/ui/TextLink'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import { UsersThree, Heart, MagnifyingGlass, Buildings } from '@phosphor-icons/react'
 import RichText from '../components/ui/RichText'
 import EmailText from '../components/ui/EmailText'
@@ -101,13 +101,16 @@ export default function HomePage() {
                   abajo, la preparación lingüística es la que de verdad
                   distingue a la empresa, así que vale más que un retrato. */}
               <img
-                src={img(IMAGES.claseNoruego, 900)}
-                alt="Norskundervisning ved Global Workings språkskole i Alicante"
+                src={img(IMAGES.siljePizarra, 1024)}
+                srcSet={srcSet(IMAGES.siljePizarra)}
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                alt="Norsklæreren Silje skriver norske ord på en tavle i klasserommet"
                 className="mt-10 w-full h-[200px] lg:h-[300px] object-cover rounded-panel"
+                style={{ objectPosition: 'center 35%' }}
                 loading="lazy"
                 decoding="async"
-                width={900}
-                height={600}
+                width={2560}
+                height={1704}
               />
             </div>
             {/* El editor viejo partía este texto en una frase por párrafo y

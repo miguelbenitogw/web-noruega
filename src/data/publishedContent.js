@@ -149,7 +149,7 @@ const publishedContent = {
         "role": "CEO & Grunnlegger",
         "hasImage": true,
         "imageAlt": "Pablo Lanza, CEO og grunnlegger av Global Working",
-        "imageUrl": "https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/team/pablo-ceo.webp",
+        "imageUrl": "/assets/media/nc-pablo-lanza-640.webp",
         "initials": "PS"
       },
       {
@@ -267,7 +267,7 @@ const publishedContent = {
   "helsesektorComp": {
     "label": "Tjenester for helseinstitusjoner",
     "heading": "Vi forbereder helsepersonell for den norske helsesektoren",
-    "imageUrl": "https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/2026/04/17/9310b14e-9e29-45fb-8ca8-85c672dee960-bilde-sykepleier.jpg",
+    "imageUrl": "/assets/media/nc-helse-equipo-noruega-1024.webp",
     "description": "Global Working er den største leverandøren av sykepleiere utenfor Skandinavia til Norge. Siden 2014 har vi spesialisert oss på å utdanne og kvalifisere sykepleiere for arbeid i norsk helsesektor."
   },
   "livetSomStudent": {
@@ -322,7 +322,7 @@ const publishedContent = {
   "spanskAlicanteTeaser": {
     "label": "Spansk i Alicante",
     "heading": "Bli samtaleassistent",
-    "imageUrl": "https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/2026/04/20/f82a2917-6c08-415f-bd89-41996cd1e155-spansk-alicante.jpg",
+    "imageUrl": "/assets/media/nc-spansk-clase-bandera-1440.webp",
     "description": "Bli en del av hverdagen hos Global Working i Spania. Du bidrar som samtaleassistent rundt 15 timer i uken og får bolig, sosialt miljø og internasjonal erfaring tilbake."
   },
   "spanskAlicanteVision": {

@@ -70,6 +70,14 @@ const LOCAL_VARIANTS = {
   'spansk-alicante-teaser': [640, 1080],
   'sykepleier-hendergw': [640, 1024, 1536],
   'nyhet-vaga': [640, 1024, 1200],
+
+  // Fotos de Nextcloud (24-11-2026), masters en src/assets/nextcloud/.
+  'nc-helsenorsk-clase': [640, 1024, 1440, 1920, 2560],
+  'nc-silje-pizarra': [640, 1024, 1440],
+  'nc-spansk-clase-bandera': [640, 1024, 1440, 1920],
+  'nc-equipo-completo': [640, 1024, 1440, 1920],
+  'nc-pablo-lanza': [480, 640, 1024],
+  'nc-helse-equipo-noruega': [640, 1024, 1440],
 }
 
 /** Nombre de archivo del original (en Supabase o en src/assets) -> slug local. */
@@ -168,7 +176,6 @@ export const IMAGES = {
   // teamHero es el LCP de la Home.
   teamHero:                 variantUrl('team-hero', 1600),
   homeMetricsTeam:          variantUrl('home-metrics-team', 1024),
-  ceoPhoto:                 variantUrl('pablo-ceo', 300),
   teamGroup:                variantUrl('team-group', 1440),
   // 640 y no el tope: los consumidores crudos (retratos de Om oss, avatares)
   // las pintan entre 64 y 290 px. Para un avatar, img(url, 192) baja a la de 192.
@@ -200,10 +207,16 @@ export const IMAGES = {
   // Rekruttering / platform
   rekruttering:             variantUrl('rekruttering', 1388),
   platformHero:             variantUrl('platform-hero', 1600),
-  claseNoruego:             variantUrl('clase-noruego', 1024),
 
-  // CTA
-  peopleTeam2:              variantUrl('people-team', 858),
+  // Fotos de Nextcloud. Las constantes apuntan al ancho medio; los
+  // componentes pasan por img()/srcSet() y suben hasta el tope.
+  helsenorskClase:          variantUrl('nc-helsenorsk-clase', 1920),
+  siljePizarra:             variantUrl('nc-silje-pizarra', 1024),
+  spanskClaseBandera:       variantUrl('nc-spansk-clase-bandera', 1440),
+  equipoCompleto:           variantUrl('nc-equipo-completo', 1440),
+  pabloLanza:               variantUrl('nc-pablo-lanza', 640),
+  helseEquipoNoruega:       variantUrl('nc-helse-equipo-noruega', 1024),
+
 
   // Fuera del catalogo (borradas por muertas, ninguna tenia consumidores):
   // helsesektor, peopleHero, peopleTeam1 (mismos bytes que peopleHero),

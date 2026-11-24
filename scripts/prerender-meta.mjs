@@ -72,7 +72,7 @@ const buildFounderNode = () => ({
   name: FOUNDER_NAME,
   jobTitle: FOUNDER_TITLE,
   worksFor: ORG_REF,
-  image: 'https://globalworking.no/assets/media/pablo-ceo-300.webp',
+  image: 'https://globalworking.no/assets/media/nc-pablo-lanza-1024.webp',
 })
 
 const buildOrganizationNode = () => ({

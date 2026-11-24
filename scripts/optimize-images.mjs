@@ -70,6 +70,25 @@ const CRITICAL_IMAGES = [
     source: 'src/assets/alicante/promenade-lifestyle.jpg',
     widths: [320, 640, 1440, 1920],
   },
+
+  // Fotos nuevas de Nextcloud (24-11-2026). Los masters (long side 2560, EXIF
+  // aplicado, JPEG q85) viven en src/assets/nextcloud/; los originales de
+  // 3-4 MB NO se commitean. Slugs con prefijo `nc-` y NUEVOS a propósito:
+  // /assets/ sale con cache `immutable` de un año, así que jamás se pisa un
+  // archivo ya servido. Los anchos salen del slot: el mayor cubre ~2x el
+  // ancho pintado a 1440 px de viewport, y withoutEnlargement evita escalar.
+  // Banda a ancho completo de /spansk-i-alicante/helsenorsk (1440-1920 px).
+  { slug: 'nc-helsenorsk-clase', source: 'src/assets/nextcloud/helsenorsk-clase.jpg', widths: [640, 1024, 1440, 1920, 2560] },
+  // «Vårt tilbud» en la Home (~584 px de ancho).
+  { slug: 'nc-silje-pizarra', source: 'src/assets/nextcloud/silje-pizarra.jpg', widths: [640, 1024, 1440] },
+  // Teaser Spansk i Alicante (~740 px, sangra por la izquierda).
+  { slug: 'nc-spansk-clase-bandera', source: 'src/assets/nextcloud/spansk-clase-bandera.jpg', widths: [640, 1024, 1440, 1920] },
+  // CTABanner (~700 px, sangra por la izquierda).
+  { slug: 'nc-equipo-completo', source: 'src/assets/nextcloud/equipo-completo.jpg', widths: [640, 1024, 1440, 1920] },
+  // Retrato de Pablo: se pinta a ~290 px; 1024 también es la imagen del nodo Person.
+  { slug: 'nc-pablo-lanza', source: 'src/assets/nextcloud/pablo-lanza.jpg', widths: [480, 640, 1024] },
+  // /helse, sección «Helsesektor» (~470 px).
+  { slug: 'nc-helse-equipo-noruega', source: 'src/assets/nextcloud/helse-equipo-noruega.jpg', widths: [640, 1024, 1440] },
 ]
 
 const kb = (bytes) => `${(bytes / 1024).toFixed(0)} KB`
@@ -177,6 +196,9 @@ const scanDir = async (dir) => {
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name)
     if (entry.isDirectory()) {
+      // Los masters de Nextcloud solo alimentan las variantes de public/: un
+      // .webp suelto al lado de cada uno sería peso muerto en el repo.
+      if (entry.name === 'nextcloud') continue
       converted += await scanDir(fullPath)
     } else if (entry.isFile()) {
       const result = await convertToWebP(fullPath)
