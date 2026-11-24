@@ -25,10 +25,20 @@ const NORWAY = { '@type': 'Country', name: 'Norway' }
 // internasjonal rekruttering») y el cliente no lo confirmó. Un alcance
 // inventado en un certificado es peor que ninguno: quien firma en una kommune
 // lo puede verificar. Queda la norma y quien la emite. Espejo del prerender.
+// Datos copiados del certificado (CERT_9001_NOR.pdf, Nextcloud de Global
+// Working), publicados con autorización expresa del cliente el 24/11/2026.
+// El alcance es el texto literal del certificado: no se resume ni se adorna,
+// porque un kommune puede pedir el certificado y comparar palabra por palabra.
+// Si el certificado se renueva (caduca el 07/01/2028), hay que actualizar
+// número y fechas aquí y en el espejo (src/lib/seo.js ↔ scripts/prerender-meta.mjs).
 const ISO_CERTIFICATION = {
   '@type': 'Certification',
   name: 'ISO 9001:2015',
-  issuedBy: { '@type': 'Organization', name: 'TÜV Nord' },
+  description: 'Utvelgelse av personell for internasjonal rekruttering. Opplæring i språk og kultur som hjelpemiddel til internasjonal rekruttering.',
+  certificationIdentification: '4410015510134',
+  validFrom: '2025-02-06',
+  expires: '2028-01-07',
+  issuedBy: { '@type': 'Organization', name: 'TÜV NORD CERT GmbH', url: 'https://www.tuev-nord-cert.com' },
 }
 
 // El fundador como entidad. Una empresa con cara, cargo y año de fundación se
