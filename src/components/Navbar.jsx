@@ -139,6 +139,13 @@ export default function Navbar() {
   const navLinks = c.links || []
   const currentPath = useCurrentPath()
   const activeHref = computeActiveHref(currentPath, navLinks)
+  // Los artículos de /nyheter/<slug> abren sobre fondo BLANCO, no sobre la
+  // banda navy del resto de páginas. Con la barra transparente, el logo y los
+  // enlaces blancos quedaban invisibles hasta hacer scroll: lo primero que veía
+  // quien llega desde un enlace compartido era una página sin marca ni menú.
+  // Ahí la barra arranca ya en su estado sólido.
+  const lightTop = /^\/nyheter\/[^/]+\/?$/.test(currentPath)
+  const solid = scrolled || lightTop
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -149,7 +156,7 @@ export default function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        scrolled ? 'bg-white border-b border-line' : 'bg-transparent'
+        solid ? 'bg-white border-b border-line' : 'bg-transparent'
       }`}
     >
       <div className="container-xl">
@@ -157,10 +164,10 @@ export default function Navbar() {
 
           <a href="/" aria-label="Global Working Norge – hjem" className="gw-tap shrink-0">
             <img
-              src={scrolled ? IMAGES.logoColor : IMAGES.logo}
+              src={solid ? IMAGES.logoColor : IMAGES.logo}
               alt="Global Working Norge"
               className="h-8 lg:h-10 w-auto transition-opacity duration-300 object-contain"
-              style={scrolled ? { mixBlendMode: 'multiply' } : undefined}
+              style={solid ? { mixBlendMode: 'multiply' } : undefined}
               width="200"
               height="36"
               loading="eager"
@@ -175,7 +182,7 @@ export default function Navbar() {
                   <DropdownMenu
                     key={link.href}
                     link={link}
-                    scrolled={scrolled}
+                    scrolled={solid}
                     activeHref={activeHref}
                   />
                 )
@@ -187,7 +194,7 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     className={`ml-3 gw-btn whitespace-nowrap min-h-11 px-5 py-2.5 text-sm ${
-                      scrolled ? 'gw-btn-ink' : 'gw-btn-ghost'
+                      solid ? 'gw-btn-ink' : 'gw-btn-ghost'
                     }`}
                   >
                     <span>{link.label}</span>
@@ -198,7 +205,7 @@ export default function Navbar() {
               const active = link.href === activeHref
 
               return (
-                <a key={link.href} href={link.href} className={linkClasses(scrolled, active)}>
+                <a key={link.href} href={link.href} className={linkClasses(solid, active)}>
                   <span>{link.label}</span>
                   <ActiveRule visible={active} />
                 </a>
@@ -212,7 +219,7 @@ export default function Navbar() {
               exactos, y el margen negativo crece igual para que el borde
               óptico del botón siga alineado con el del contenedor. */}
           <button
-            className={`xl:hidden p-2.5 -mr-2.5 transition-colors ${scrolled ? 'text-navy' : 'text-white'}`}
+            className={`xl:hidden p-2.5 -mr-2.5 transition-colors ${solid ? 'text-navy' : 'text-white'}`}
             onClick={() => setMenuOpen(v => !v)}
             aria-expanded={menuOpen}
             aria-label={menuOpen ? 'Lukk meny' : 'Åpne meny'}
