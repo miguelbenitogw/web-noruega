@@ -22,7 +22,7 @@ const siteContent = {
     stats: [
       { value: '2014', label: 'Grunnlagt', animate: false },
       { value: '50+', label: 'Ansatte', animate: true },
-      { value: '2500+', label: 'Kandidater plassert i Norge', animate: true },
+      { value: '2500+', label: 'Kandidater utdannet og formidlet', animate: true },
       { value: '95%', label: 'Retensjonsgrad', animate: true },
     ],
   },
@@ -41,7 +41,7 @@ const siteContent = {
   },
 
   homeStats: [
-    { value: '2500+', label: 'Kandidater plassert i Norge' },
+    { value: '2500+', label: 'Kandidater utdannet og formidlet' },
     { value: '95%', label: 'Retensjonsgrad' },
     { value: '25 000+', label: 'Undervisningstimer i norsk' },
   ],
@@ -394,7 +394,7 @@ const siteContent = {
     description: 'Vårt flerfaglige team av psykologer, språklærere og rekrutteringsspesialister sikrer en helhetlig prosess – fra utvelgelse og opplæring til oppfølging i Norge.',
     videoHeading: 'Bli med rundt på kontoret vårt i Alicante',
     members: [
-      { initials: 'PS', name: 'Pablo Santamarina', role: 'CEO & Grunnlegger', hasImage: true, imageUrl: IMAGES.ceoPhoto, imageAlt: 'Pablo Santamarina' },
+      { initials: 'PL', name: 'Pablo Lanza', role: 'CEO & Grunnlegger', hasImage: true, imageUrl: IMAGES.ceoPhoto, imageAlt: 'Pablo Lanza, CEO og grunnlegger av Global Working' },
       { initials: 'MS', name: 'Miriam Svendsen', role: 'Rekrutteringsansvarlig', hasImage: false, imageUrl: IMAGES.contactMiriam, imageAlt: 'Miriam Svendsen' },
       { initials: 'GA', name: 'Gro Anette Nordskog', role: 'Kandidatoppfølging', hasImage: false, imageUrl: IMAGES.contactGro, imageAlt: 'Gro Anette Nordskog' },
       { initials: 'T', name: 'Teamet', role: '50+ ansatte i Alicante og Oslo', hasImage: true, imageUrl: IMAGES.teamHero, imageAlt: 'Teamet i Global Working' },

@@ -57,7 +57,7 @@ const publishedContent = {
         "animate": true
       },
       {
-        "label": "Kandidater plassert i Norge",
+        "label": "Kandidater utdannet og formidlet",
         "value": "2500+",
         "animate": true
       },
@@ -148,7 +148,7 @@ const publishedContent = {
         "name": "Pablo Lanza",
         "role": "CEO & Grunnlegger",
         "hasImage": true,
-        "imageAlt": "Pablo Santamarina",
+        "imageAlt": "Pablo Lanza, CEO og grunnlegger av Global Working",
         "imageUrl": "https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/team/pablo-ceo.webp",
         "initials": "PS"
       },
