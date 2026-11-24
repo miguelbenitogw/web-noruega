@@ -1,7 +1,7 @@
 import PageEndNav from '../components/PageEndNav'
 import PageHero from '../components/ui/PageHero'
 import RuleList from '../components/ui/RuleList'
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import BodyParagraph from '../components/ui/BodyParagraph'
@@ -169,7 +169,12 @@ export default function HelsenorskPage() {
         {/* El aula, de borde a borde. Sin caja: es el cierre del argumento. */}
         <div className="mt-20 lg:mt-28">
           <img
-            src={img(page.grunnlagImageUrl || IMAGES.claseNoruego, 1920)}
+            src={img(page.grunnlagImageUrl || IMAGES.helsenorskClase, 1920)}
+            srcSet={srcSet(page.grunnlagImageUrl || IMAGES.helsenorskClase)}
+            sizes="100vw"
+            width={2560}
+            height={1704}
+            style={{ objectPosition: 'center 42%' }}
             alt={page.grunnlagImageAlt || 'Helsenorsk undervisning og opplæring'}
             className="w-full h-[280px] sm:h-[360px] lg:h-[460px] object-cover"
             loading="lazy"

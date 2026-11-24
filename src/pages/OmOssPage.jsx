@@ -1,4 +1,4 @@
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import OmOss from '../components/OmOss'
 import FAQ from '../components/FAQ'
 import PageEndNav from '../components/PageEndNav'
@@ -23,13 +23,15 @@ function TeamMember({ member }) {
 
   if (!portrait && normalizedName.includes('miriam')) portrait = miriamPhoto
   else if (!portrait && normalizedName.includes('gro')) portrait = groPhoto
-  else if (!portrait && member.hasImage) portrait = IMAGES.ceoPhoto
+  else if (!portrait && member.hasImage) portrait = IMAGES.pabloLanza
 
   return (
     <div>
       {portrait ? (
         <img
           src={img(portrait, 640)}
+          srcSet={srcSet(portrait)}
+          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
           alt={member.imageAlt || member.name}
           className="w-full aspect-[4/5] object-cover object-top rounded-panel bg-frost"
           loading="lazy"

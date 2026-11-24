@@ -1,5 +1,5 @@
 import spanskAlicanteLogo from '../assets/alicante/spansk-i-alicante-logo.webp'
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import RichText from './ui/RichText'
@@ -26,8 +26,13 @@ export default function SpanskAlicanteTeaser() {
 
           <div className="lg:col-span-6 order-2 lg:order-1 pb-16 lg:py-20 gw-bleed-l">
             <img
-              src={img(teaser.imageUrl || IMAGES.spanskAlicanteHeroSunset, 1400)}
-              alt={teaser.imageAlt || 'Solnedgang ved stranden i Alicante'}
+              src={img(teaser.imageUrl || IMAGES.spanskClaseBandera, 1400)}
+              srcSet={srcSet(teaser.imageUrl || IMAGES.spanskClaseBandera)}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              width={2560}
+              height={1704}
+              style={{ objectPosition: '55% center' }}
+              alt={teaser.imageAlt || 'Klasserom i Alicante med lærer foran en tavle og et spansk flagg på veggen'}
               className="w-full h-[300px] lg:h-[540px] object-cover rounded-panel lg:rounded-l-none"
               loading="lazy"
               decoding="async"

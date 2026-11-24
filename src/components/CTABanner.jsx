@@ -1,4 +1,4 @@
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import RichText from './ui/RichText'
@@ -27,8 +27,12 @@ export default function CTABanner() {
 
           <div className="lg:col-span-6 order-2 lg:order-1 pb-14 lg:py-16 gw-bleed-l">
             <img
-              src={img(c.imageUrl || IMAGES.peopleTeam2, 1600)}
-              alt={c.imageAlt || ''}
+              src={img(c.imageUrl || IMAGES.equipoCompleto, 1600)}
+              srcSet={srcSet(c.imageUrl || IMAGES.equipoCompleto)}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              width={2560}
+              height={1704}
+              alt={c.imageAlt || 'Hele Global Working-teamet samlet til gruppebilde utendørs'}
               className="w-full h-[280px] lg:h-[460px] object-cover object-center rounded-panel lg:rounded-l-none"
               loading="lazy"
               decoding="async"
