@@ -60,7 +60,7 @@ export default function RekrutteringPage() {
               {/* Tres campos, un solo texto: `gw-stack` les da el mismo aire
                   que a los párrafos dentro de un campo (antes `space-y-4`,
                   que no coincidía con la línea en blanco de los datos). */}
-              <div className="mt-6 gw-measure gw-stack text-body text-ink-muted leading-[1.7]">
+              <div className="mt-6 gw-measure gw-stack text-body text-ink-muted leading-[1.6]">
                 <RichText value={collab.p1} />
                 <RichText value={collab.p2} />
                 <RichText value={collab.p3} />
@@ -144,7 +144,7 @@ export default function RekrutteringPage() {
                   </h3>
                   <RichText
                     value={article.excerpt}
-                    className="mt-3 flex-1 text-body text-ink-muted leading-[1.65]"
+                    className="mt-3 flex-1 text-body text-ink-muted leading-[1.6]"
                   />
 
                   <TextLink

@@ -47,7 +47,7 @@ export default function SpanskAlicanteTeaser() {
             </h2>
             <RichText
               value={teaser.description}
-              className="mt-6 text-body text-ink-muted leading-[1.65]"
+              className="mt-6 text-body text-ink-muted leading-[1.6]"
             />
 
             <div className="mt-9 flex flex-col sm:flex-row gap-3.5">

@@ -136,12 +136,19 @@
      contenedor lleva color, tamaño, medida e interlineado; los <p> heredan
      todo y solo reciben el aire entre ellos. Así es imposible que un párrafo
      del mismo bloque salga con otro estilo que el de al lado: no tienen
-     estilo propio. El hueco es `1lh`, una línea de su propio interlineado:
-     escala con el cuerpo (body-sm en tarjetas, body-lg en bajadas) y es
-     exactamente la línea en blanco que dejaba el editor viejo entre
-     párrafos, así que el ritmo de las páginas no cambia. `1em` queda de red
-     para navegadores sin la unidad `lh`. */
-  .gw-stack > * + * { margin-top: 1em; margin-top: 1lh; }
+     estilo propio.
+
+     El hueco era `1lh`: una línea entera en blanco, copia de lo que dejaba el
+     editor viejo de Supabase entre frases sueltas. Con los párrafos ya
+     fusionados en los datos, una línea completa entre dos párrafos de la misma
+     idea los lee como bloques sin relación y la columna parece un montón de
+     frases sueltas. Ahora es `0.7em` (~0,45 de línea con interlineado 1.6):
+     se nota el cambio de párrafo, pero el texto sigue leyéndose de corrido.
+     En `em` y no `lh` para que escale con el cuerpo (body-sm en tarjetas,
+     body-lg en bajadas) sin depender de que el navegador entienda `lh`. Los
+     títulos de MarkdownText se separan aparte con `!mt-8` / `!mt-6`, así que
+     siguen abriendo apartado con claridad. */
+  .gw-stack > * + * { margin-top: 0.7em; }
 
   /* ── Sangrado al borde de la pantalla ─────────────────────────────────
      Saca una imagen fuera de `.container-xl` hasta el borde del viewport.

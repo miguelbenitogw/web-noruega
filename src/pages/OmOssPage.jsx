@@ -84,7 +84,7 @@ export default function OmOssPage() {
             <div className="lg:col-span-5 lg:col-start-8">
               <RichText
                 value={teamSection.description}
-                className="text-ink-muted text-body leading-[1.65]"
+                className="text-ink-muted text-body leading-[1.6]"
               />
             </div>
           </div>
@@ -145,7 +145,7 @@ export default function OmOssPage() {
               </h2>
               <RichText
                 value={offices.description}
-                className="mt-6 text-ink-muted text-body leading-[1.65]"
+                className="mt-6 text-ink-muted text-body leading-[1.6]"
               />
 
               <div className="mt-8 pt-6 border-t border-line">

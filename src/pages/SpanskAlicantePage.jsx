@@ -53,7 +53,7 @@ export default function SpanskAlicantePage() {
             la web. Era la única que lo llevaba en `primary-200`. */}
         <RichText
           value={page.intro}
-          className="mt-5 gw-measure text-body text-primary-100 leading-[1.65]"
+          className="mt-5 gw-measure text-body text-primary-100 leading-[1.6]"
           tone="dark"
         />
 
@@ -83,7 +83,7 @@ export default function SpanskAlicantePage() {
           <div className="gw-measure border-t border-line pt-10 lg:pt-12">
             <MarkdownText
               value={page.exchangeNote}
-              className="text-body lg:text-body-lg text-ink leading-[1.75]"
+              className="text-body lg:text-body-lg text-ink leading-[1.6]"
             />
           </div>
         </div>

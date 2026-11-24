@@ -40,7 +40,7 @@ export default function CTABanner() {
             <h2 className="mt-5 text-display-sm font-semibold !text-white">{c.heading}</h2>
             <RichText
               value={c.description}
-              className="mt-6 text-body text-primary-100 leading-[1.65]"
+              className="mt-6 text-body text-primary-100 leading-[1.6]"
               tone="dark"
             />
 

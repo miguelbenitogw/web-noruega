@@ -93,7 +93,7 @@ export default function Rekruttering() {
                 pero un solo texto, así que entre ellos va el mismo aire que
                 entre párrafos de un mismo campo. Antes el último <p> de cada
                 campo llevaba `mb-0` y el siguiente campo quedaba pegado. */}
-            <div className="gw-stack gw-measure text-body text-ink-muted leading-[1.7]">
+            <div className="gw-stack gw-measure text-body text-ink-muted leading-[1.6]">
               {body.map((key) => (
                 <MarkdownText key={key} value={c[key]} />
               ))}

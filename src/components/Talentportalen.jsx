@@ -57,7 +57,7 @@ export default function Talentportalen() {
             </h2>
             <RichText
               value={c.description}
-              className="mt-6 gw-measure text-body text-ink-muted leading-[1.7]"
+              className="mt-6 gw-measure text-body text-ink-muted leading-[1.6]"
             />
 
             <div className="mt-9 flex flex-col sm:flex-row gap-3.5">

@@ -1265,6 +1265,9 @@ const run = async () => {
       statsHtml,
       section(hs.heading, [
         richTextToHtml(hs.description),
+        // La pregunta final es el enlace a /kontakt de <HomePage />: el mismo
+        // texto y el mismo destino en el HTML estático que en la web.
+        hs.ctaQuestion ? `<p><a href="/kontakt">${esc(hs.ctaQuestion)}</a></p>` : '',
         listOf(hs.sections, (s) => `<h3><a href="${esc(s.href)}">${esc(s.title)}</a></h3>${richTextToHtml(s.description)}`),
       ].join('')),
       section(videos.heading, [

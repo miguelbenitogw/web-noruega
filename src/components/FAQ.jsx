@@ -62,7 +62,7 @@ function AccordionItem({ faq, index, isOpen, onToggle }) {
       >
         <RichText
           value={faq.a}
-          className="pb-6 pr-8 gw-measure text-ink-muted text-body-sm leading-[1.7]"
+          className="pb-6 pr-8 gw-measure text-ink-muted text-body-sm leading-[1.6]"
         />
       </div>
     </div>
@@ -81,7 +81,7 @@ export default function FAQ() {
           <div className="lg:col-span-4 lg:sticky lg:top-28">
             <span className="gw-label text-primary-600">{c.label}</span>
             <h2 id="faq-heading" className="mt-5 text-display-sm font-semibold text-navy">{c.heading}</h2>
-            <RichText value={c.description} className="mt-6 text-body text-ink-muted leading-[1.65]" />
+            <RichText value={c.description} className="mt-6 text-body text-ink-muted leading-[1.6]" />
             <TextLink href="/kontakt" className="mt-8">
               <span>{c.ctaText}</span>
             </TextLink>

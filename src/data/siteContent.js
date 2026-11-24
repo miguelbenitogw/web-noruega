@@ -109,7 +109,7 @@ const siteContent = {
     heroImageUrl: IMAGES.spanskAlicanteBeachPalms,
     heroImageAlt: 'Strand og palmer i Alicante',
     intro: 'Spansk i Alicante er en enkel måte å teste livet i Spania på, med bolig, mennesker og en hverdag allerede på plass. Du bor sammen med 2 til 3 spanske studenter som lærer norsk og bidrar sosialt i miljøet rundt skolen.',
-    exchangeNote: 'Tenk deg en hverdag hvor du våkner opp i Alicante, går ned til en kaffe i sola, og vet at du allerede har et sosialt miljø rundt deg.\n\nSpansk i Alicante er ikke et typisk opphold. Det er en enkel måte å teste livet i Spania på, med bolig, mennesker og en hverdag allerede på plass. Dette er et opphold hvor du bor gratis i Alicante sammen med 2 til 3 spanske studenter som lærer norsk.\n\nHos språkskolen Global Working lærer spanske fagfolk norsk. I bytte mot gratis bolig bidrar du i hverdagen rundt skolen, og har samtaler med våre studenter på norsk.\n\nDu jobber rundt 15 timer i uken, og resten av tiden er din egen. Du kan fylle fritiden din med spansk kurs, deltidsjobb, studier eller bare livet i Alicante. Hvis du ønsker spanskkurs, så hjelper vi deg med å finne det.\n\nDette programmet kan du være en del av fra september til desember eller januar til mai.',
+    exchangeNote: 'Tenk deg en hverdag hvor du våkner opp i Alicante, går ned til en kaffe i sola, og vet at du allerede har et sosialt miljø rundt deg. Spansk i Alicante er ikke et typisk opphold. Det er en enkel måte å teste livet i Spania på, med bolig, mennesker og en hverdag allerede på plass. Dette er et opphold hvor du bor gratis i Alicante sammen med 2 til 3 spanske studenter som lærer norsk.\n\nHos språkskolen Global Working lærer spanske fagfolk norsk. I bytte mot gratis bolig bidrar du i hverdagen rundt skolen, og har samtaler med våre studenter på norsk. Du jobber rundt 15 timer i uken, og resten av tiden er din egen. Du kan fylle fritiden din med spansk kurs, deltidsjobb, studier eller bare livet i Alicante. Hvis du ønsker spanskkurs, så hjelper vi deg med å finne det. Dette programmet kan du være en del av fra september til desember eller januar til mai.',
     roleImageUrl: IMAGES.spanskAlicantePromenade,
     roleImageAlt: 'Sosial hverdag og samtaler i Alicante',
     roleTitle: 'Hva gjør du som samtaleassistent?',
@@ -246,7 +246,7 @@ const siteContent = {
       {
         number: '01',
         title: 'Språk og faglig forberedelse',
-        description: 'Kandidatene gjennomfører opptil 650 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.\n\nUndervisningen dekker alt fra dagligdagse samtaler til faglig dokumentasjon og kommunikasjon med pasienter og kollegaer. Kandidatene øver på reelle situasjoner fra norsk helsevesen slik at de er klare for arbeidslivet fra første dag.',
+        description: 'Kandidatene gjennomfører opptil 650 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner. Undervisningen dekker alt fra dagligdagse samtaler til faglig dokumentasjon og kommunikasjon med pasienter og kollegaer. Kandidatene øver på reelle situasjoner fra norsk helsevesen slik at de er klare for arbeidslivet fra første dag.',
         formats: [
           { label: 'Fysisk i Alicante', duration: '5 måneder' },
           { label: 'Kombinasjon fysisk og nett', duration: '7 måneder' },

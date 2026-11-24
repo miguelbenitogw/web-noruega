@@ -63,7 +63,7 @@ export default function SpanskAlicanteHvorforPage() {
                   <h2 className="text-display-sm font-semibold text-navy break-words">{section.heading}</h2>
                   <MarkdownText
                     value={section.body}
-                    className="mt-7 gw-measure text-body lg:text-[1.125rem] text-ink leading-[1.75]"
+                    className="mt-7 gw-measure text-body lg:text-[1.125rem] text-ink leading-[1.6]"
                   />
                 </div>
               ))}

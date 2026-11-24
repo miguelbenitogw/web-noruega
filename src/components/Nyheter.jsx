@@ -154,7 +154,7 @@ export default function Nyheter() {
 
               <RichText
                 value={featuredExcerpt}
-                className="mt-5 text-body leading-[1.65] text-ink-muted line-clamp-3"
+                className="mt-5 text-body leading-[1.6] text-ink-muted line-clamp-3"
               />
 
               <div className="mt-6 flex items-center gap-3">
