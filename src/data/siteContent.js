@@ -600,7 +600,7 @@ const siteContent = {
 
   footer: {
     description: 'Rekruttering og språkopplæring for kvalifiserte fagfolk til det norske arbeidsmarkedet, med strukturert oppfølging fra første kontakt til oppstart.',
-    copyright: 'Global Working Norge AS. Alle rettigheter forbeholdt.',
+    copyright: 'Global Working Norway AS · Org.nr. 918 941 851. Alle rettigheter forbeholdt.',
     bottomLinks: [
       { label: 'Personvern', href: '/personvern' },
       { label: 'Vilkår', href: '/vilkar' },
@@ -659,7 +659,7 @@ const siteContent = {
     blocks: [
       {
         heading: 'Hvem er behandlingsansvarlig?',
-        body: 'Global Working Norge AS er behandlingsansvarlig for personopplysninger som samles inn via dette nettstedet.',
+        body: 'Global Working Norway AS er behandlingsansvarlig for personopplysninger som samles inn via dette nettstedet.',
       },
       {
         heading: 'Hvilke opplysninger vi behandler',

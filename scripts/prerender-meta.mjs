@@ -85,7 +85,10 @@ const buildOrganizationNode = () => ({
   name: SITE_NAME,
   // `global working` es la consulta que trae el 39 % de los clics.
   alternateName: 'Global Working',
-  legalName: 'Global Working Norge AS',
+  legalName: 'Global Working Norway AS',
+  // Org.nr. verificado en Brønnøysundregistrene (24/11/2026); daglig leder Pablo
+  // Lanza Garcia. Antes el nombre legal decía «Global Working Norge AS», que no existe.
+  identifier: { '@type': 'PropertyValue', propertyID: 'Organisasjonsnummer', value: '918941851' },
   url: SITE_URL,
   logo: { '@type': 'ImageObject', '@id': `${SITE_URL}/#logo`, url: 'https://globalworking.no/assets/media/logo-512.jpg' },
   image: { '@id': `${SITE_URL}/#logo` },
@@ -668,7 +671,7 @@ const buildBodySkeleton = ({ h1, description, breadcrumbs, extraContent }) => {
     : ''
   const footer = FOOTER_LINKS.map(l => `<a href="${l.href}">${l.label}</a>`).join(' ')
 
-  return `<header><a href="/" aria-label="Global Working Norge – hjem">Global Working Norge</a><nav aria-label="Hovedmeny">${nav}</nav></header><main id="main-content">${crumbs}<h1>${h1}</h1><p>${description}</p>${extraContent || ''}</main><footer><p>© ${new Date().getFullYear()} Global Working Norge AS</p><p>E-post: kontakt@globalworking.no | Telefon: +47 919 00 649</p><nav aria-label="Bunntekst">${footer}</nav></footer>`
+  return `<header><a href="/" aria-label="Global Working Norge – hjem">Global Working Norge</a><nav aria-label="Hovedmeny">${nav}</nav></header><main id="main-content">${crumbs}<h1>${h1}</h1><p>${description}</p>${extraContent || ''}</main><footer><p>© ${new Date().getFullYear()} Global Working Norway AS</p><p>E-post: kontakt@globalworking.no | Telefon: +47 919 00 649</p><nav aria-label="Bunntekst">${footer}</nav></footer>`
 }
 
 // `Article`, no `NewsArticle`: eso último es para medios de comunicación.

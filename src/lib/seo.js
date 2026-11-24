@@ -69,7 +69,10 @@ const buildEntityNodes = () => [
     // Search Console: `global working` trae el 39 % de los clics. Es el nombre con
     // el que nos busca la gente, y sin esto el grafo solo conocía «… Norge».
     alternateName: 'Global Working',
-    legalName: 'Global Working Norge AS',
+    legalName: 'Global Working Norway AS',
+    // Org.nr. verificado en Brønnøysundregistrene (24/11/2026); daglig leder Pablo
+    // Lanza Garcia. Antes el nombre legal decía «Global Working Norge AS», que no existe.
+    identifier: { '@type': 'PropertyValue', propertyID: 'Organisasjonsnummer', value: '918941851' },
     url: SITE_URL,
     logo: { '@type': 'ImageObject', '@id': LOGO_ID, url: 'https://globalworking.no/assets/media/logo-512.jpg' },
     image: { '@id': LOGO_ID },
