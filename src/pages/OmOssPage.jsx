@@ -28,7 +28,9 @@ function TeamMember({ member }) {
   // La ficha «Teamet» lleva la foto de grupo, no un retrato: centrada en un 4:5 se
   // queda con la mitad del grupo y parte por el borde a quien caiga justo ahí.
   // Alineada a la izquierda el corte cae sobre la pared, sin cortar caras.
-  const isGroupPhoto = /team-hero/.test(portrait || '')
+  // La foto nueva (el equipo delante de la sede) se centra un poco a la
+  // derecha: ahí está el grueso del grupo y el corte cae entre dos personas.
+  const isGroupPhoto = /team-hero|nc-equipo-sede/.test(portrait || '')
 
   return (
     <div>
@@ -38,7 +40,7 @@ function TeamMember({ member }) {
           srcSet={srcSet(portrait)}
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
           alt={member.imageAlt || member.name}
-          className={`w-full aspect-[4/5] object-cover rounded-panel bg-frost ${isGroupPhoto ? 'object-left-top' : 'object-top'}`}
+          className={`gw-photo w-full aspect-[4/5] ${isGroupPhoto ? 'object-[55%_50%]' : 'object-top'}`}
           loading="lazy"
           decoding="async"
         />
@@ -67,6 +69,7 @@ export default function OmOssPage() {
         current={hero.breadcrumb}
         title={hero.h1}
         titleId="om-oss-hero-heading"
+        trust
         description={hero.description}
       />
 
@@ -111,7 +114,11 @@ export default function OmOssPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="lg:col-span-6">
-              <h2 id="om-oss-video-heading" className="text-display-sm font-semibold text-navy">
+              {/* El titular solo, a escala de display: con el tamaño de sección
+                  quedaba una línea perdida en media pantalla vacía junto al
+                  vídeo. Grande, ocupa la columna como un titular de revista
+                  y hace de pie del vídeo. */}
+              <h2 id="om-oss-video-heading" className="text-display font-semibold text-navy max-w-[14ch]">
                 {teamSection.videoHeading || 'Møt teamet i Global Working'}
               </h2>
             </div>
@@ -167,7 +174,7 @@ export default function OmOssPage() {
               <img
                 src={img(offices.imageUrl || IMAGES.alicanteOffice, 1200)}
                 alt={offices.imageAlt || 'Global Working kontorer i Alicante'}
-                className="w-full h-[300px] lg:h-[500px] object-cover rounded-panel lg:rounded-r-none"
+                className="gw-photo w-full h-[300px] lg:h-[500px] lg:rounded-r-none"
                 loading="lazy"
                 decoding="async"
               />

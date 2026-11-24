@@ -6,7 +6,7 @@ import PageHero from '../components/ui/PageHero'
 import RuleGrid from '../components/ui/RuleGrid'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import RichText from '../components/ui/RichText'
 
 export default function HelsePage() {
@@ -20,6 +20,7 @@ export default function HelsePage() {
         current={hero.breadcrumb}
         title={hero.h1}
         titleId="helse-hero-heading"
+        trust
         titleWidth="20ch"
         description={hero.description}
       />
@@ -132,7 +133,7 @@ export default function HelsePage() {
                 {partnership.p2 ? <RichText value={partnership.p2} tone="dark" /> : null}
               </div>
 
-              <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
+              <div className="mt-9 flex flex-col sm:flex-row sm:flex-wrap gap-3.5">
                 <a
                   href="/kontakt"
                   onClick={() => trackEvent('cta_click', { location: 'helse_partnership', cta: 'kontakt_oss' })}
@@ -150,17 +151,24 @@ export default function HelsePage() {
               </div>
             </div>
 
-            <div className="lg:col-span-6 lg:col-start-7 pb-20 lg:py-28">
+            {/* Era un grupo en la playa sosteniendo la bandera de la empresa:
+                simpático, pero el texto de al lado dice «strukturert opplæring»
+                y la foto decía vacaciones. Ahora es una clase de noruego de
+                verdad, de espaldas al alumnado, con su pie. */}
+            <figure className="lg:col-span-6 lg:col-start-7 pb-20 lg:py-28">
               <img
-                src={img(partnership.imageUrl || IMAGES.rekruttering, 1200)}
-                alt={partnership.imageAlt || 'Global Working rekrutteringsprosessen'}
-                className="w-full h-[280px] sm:h-[380px] lg:h-[460px] object-cover rounded-panel"
+                src={img(partnership.imageUrl || IMAGES.claseNoruegoAula, 1024)}
+                srcSet={srcSet(partnership.imageUrl || IMAGES.claseNoruegoAula)}
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                alt={partnership.imageAlt || 'Kandidater følger en norsktime i et klasserom hos Global Working'}
+                className="gw-photo !outline-white/10 w-full h-[280px] sm:h-[380px] lg:h-[460px] object-[50%_60%]"
                 loading="lazy"
                 width="720"
                 height="460"
                 decoding="async"
               />
-            </div>
+              <figcaption className="gw-caption gw-caption-dark">Norsktime hos Global Working.</figcaption>
+            </figure>
 
           </div>
         </div>

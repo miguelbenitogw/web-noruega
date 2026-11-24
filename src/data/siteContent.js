@@ -10,13 +10,25 @@ import { IMAGES } from '../assets/images.js'
 // que es el volcado del contenido que estaba publicado y que gana en el merge
 // de src/hooks/useContent.js. Si cambias algo y no se ve, miralo ahí.
 const siteContent = {
+  // Credenciales del primer pantallazo (ver src/components/ui/TrustMarks.jsx).
+  // Mismas palabras que la meta description de la portada en src/lib/seo.js.
+  trustMarks: {
+    label: 'Fakta om Global Working',
+    items: [
+      'ISO 9001:2015-sertifisert av TÜV Nord',
+      'Egen språkskole i Alicante',
+      'Kontor i Oslo',
+      'Ikke et vikarbyrå: dere ansetter kandidaten direkte',
+    ],
+  },
   hero: {
     badge: 'Norges ledende rekrutteringspartner',
     h1First: 'Har dere behov for',
     h1Highlight: 'arbeidskraft?',
     description: 'Global Working er verdens største språkskole som underviser i norsk utenfor Skandinavia. Vi spesialiserer oss på norsk språk- og kulturopplæring for søreuropeiske fagfolk, og kobler dem med arbeidsgivere i Norge. Vi følger kandidatene fra første norsktime til trygg oppstart i jobb.',
-    imageUrl: IMAGES.teamHero,
-    imageAlt: 'Global Working-teamet i en lys og profesjonell situasjon',
+    imageUrl: IMAGES.equipoSede,
+    imageAlt: 'Ansatte i Global Working stående og sittende foran hovedkontoret i Alicante',
+    imageCaption: 'Teamet foran hovedkontoret vårt i Alicante.',
     cta1: 'Slik jobber vi',
     cta2: 'Kontakt oss',
     stats: [
@@ -224,8 +236,8 @@ const siteContent = {
     p1: 'Global Working er ikke et bemanningsbyrå. Vi forbereder kandidatene gjennom strukturert opplæring. Deretter ansetter dere kandidaten direkte – uten mellomledd.',
     p2: 'Samarbeidet starter med en uforpliktende kartlegging av ditt behov. Vi presenterer så kvalifiserte kandidater som matcher kravene dere har satt.',
     p3: 'Gjennom vår nye kandidatportal kan arbeidsgivere selv se tilgjengelige kandidater og invitere til intervju.',
-    imageUrl: IMAGES.teamGroup,
-    imageAlt: 'Global Working rekrutteringsmodell',
+    imageUrl: IMAGES.oficinaAbierta,
+    imageAlt: 'Ansatte ved arbeidsplassene sine i kontorlandskapet til Global Working i Alicante',
     cta1: 'Kontakt oss',
     cta2: 'Se kandidatportalen',
   },
@@ -378,8 +390,8 @@ const siteContent = {
     p2: 'Gjennom vår nye kandidatportal kan arbeidsgivere selv se tilgjengelige kandidater og invitere til intervju.',
     cta1: 'Kontakt oss',
     cta2: 'Se kandidatportalen',
-    imageUrl: IMAGES.rekruttering,
-    imageAlt: 'Global Working rekrutteringsprosessen',
+    imageUrl: IMAGES.claseNoruegoAula,
+    imageAlt: 'Kandidater følger en norsktime i et klasserom hos Global Working',
   },
 
   omOssHero: {
@@ -510,8 +522,8 @@ const siteContent = {
     p1: 'Global Working er en spesialisert aktør innen språkopplæring og internasjonal rekruttering i Europa. Vi forbereder kandidater før ansettelse, slik at arbeidsgivere får medarbeidere og grunnlag for varige ansettelser.',
     p2: 'Global Working ble etablert i 2014 med mål om å gjøre det enklere for fagpersoner å bevege seg i det europeiske arbeidsmarkedet. I dag kombinerer vi rekruttering, språkopplæring og tett oppfølging for å sikre forutsigbare og bærekraftige ansettelser.',
     blockquote: { text: 'For oss handler internasjonal rekruttering ikke bare om å fylle en stilling. Det handler om å forberede mennesker grundig, slik at både arbeidsgiver og kandidat får en trygg start og et langsiktig samarbeid.', author: 'Pablo, CEO Global Working' },
-    teamImageUrl: IMAGES.teamGroup,
-    teamImageAlt: 'Global Working-teamet',
+    teamImageUrl: IMAGES.oficinaAbierta,
+    teamImageAlt: 'Ansatte ved arbeidsplassene sine i kontorlandskapet til Global Working i Alicante',
     officeImageUrl: IMAGES.oficina,
     officeImageAlt: 'Global Working-kontor',
     stats: [
@@ -547,8 +559,8 @@ const siteContent = {
     label: 'Gode grunner til å samarbeide med oss',
     heading: 'Kommuner som lykkes med langsiktig rekruttering',
     description: 'Mangel på helsepersonell krever varige løsninger. Vi kombinerer rekruttering, språk og tett oppfølging slik at både arbeidsgiver og kandidat får en trygg start.',
-    imageUrl: IMAGES.teamHero,
-    imageAlt: 'Global Working samarbeid med norske kommuner',
+    imageUrl: IMAGES.equipoSede,
+    imageAlt: 'Ansatte i Global Working stående og sittende foran hovedkontoret i Alicante',
     articleLink: '/om-oss',
     articleLinkLabel: 'Les mer om oss',
     testimonials: [

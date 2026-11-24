@@ -78,6 +78,9 @@ const LOCAL_VARIANTS = {
   'nc-equipo-completo': [640, 1024, 1440, 1920],
   'nc-pablo-lanza': [480, 640, 1024],
   'nc-helse-equipo-noruega': [640, 1024, 1440],
+  'nc-equipo-sede': [640, 1024, 1440, 2048],
+  'nc-oficina-abierta': [640, 1024, 1440],
+  'nc-clase-noruego-aula': [640, 1024, 1440],
 }
 
 /** Nombre de archivo del original (en Supabase o en src/assets) -> slug local. */
@@ -216,6 +219,10 @@ export const IMAGES = {
   equipoCompleto:           variantUrl('nc-equipo-completo', 1440),
   pabloLanza:               variantUrl('nc-pablo-lanza', 640),
   helseEquipoNoruega:       variantUrl('nc-helse-equipo-noruega', 1024),
+  // Rediseño: el equipo delante de la sede de Albufereta es el nuevo LCP de la Home.
+  equipoSede:               variantUrl('nc-equipo-sede', 1024),
+  oficinaAbierta:           variantUrl('nc-oficina-abierta', 1024),
+  claseNoruegoAula:         variantUrl('nc-clase-noruego-aula', 1024),
 
 
   // Fuera del catalogo (borradas por muertas, ninguna tenia consumidores):
@@ -231,11 +238,11 @@ export const IMAGES = {
  * dos variantes distintas.
  */
 export const HOME_HERO_PRELOAD = {
-  href: variantUrl('team-hero', 1024),
-  imageSrcSet: LOCAL_VARIANTS['team-hero']
-    .map((w) => `${variantUrl('team-hero', w)} ${w}w`)
+  href: variantUrl('nc-equipo-sede', 1024),
+  imageSrcSet: LOCAL_VARIANTS['nc-equipo-sede']
+    .map((w) => `${variantUrl('nc-equipo-sede', w)} ${w}w`)
     .join(', '),
-  imageSizes: '(max-width: 640px) 100vw, 33vw',
+  imageSizes: '(max-width: 1023px) 100vw, 40vw',
 }
 
 /**

@@ -89,6 +89,15 @@ const CRITICAL_IMAGES = [
   { slug: 'nc-pablo-lanza', source: 'src/assets/nextcloud/pablo-lanza.jpg', widths: [480, 640, 1024] },
   // /helse, sección «Helsesektor» (~470 px).
   { slug: 'nc-helse-equipo-noruega', source: 'src/assets/nextcloud/helse-equipo-noruega.jpg', widths: [640, 1024, 1440] },
+
+  // Rediseño (24-11-2026). El original del equipo mide 2048 px, así que el tope
+  // es 2048 y no 2560: withoutEnlargement no inventa píxeles.
+  // Hero de la Home (~560 px a 1440, a ancho completo en móvil) y tarjeta «Teamet» de Om oss.
+  { slug: 'nc-equipo-sede', source: 'src/assets/nextcloud/equipo-sede-albufereta.jpg', widths: [640, 1024, 1440, 2048] },
+  // Om oss, «Hvem er Global Working?» (~560 px).
+  { slug: 'nc-oficina-abierta', source: 'src/assets/nextcloud/oficina-abierta-albufereta.jpg', widths: [640, 1024, 1440] },
+  // /helse y /vr-rekrutteringsmodell, banda «Slik samarbeider vi med dere» (~600 px).
+  { slug: 'nc-clase-noruego-aula', source: 'src/assets/nextcloud/clase-noruego-aula.jpg', widths: [640, 1024, 1440] },
 ]
 
 const kb = (bytes) => `${(bytes / 1024).toFixed(0)} KB`
