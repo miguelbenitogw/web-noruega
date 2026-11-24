@@ -132,12 +132,11 @@ export default function NewsArticlePage({ slug }) {
           <div className="mt-10 max-w-measure">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
               <span className="gw-kicker">{effectiveArticle.tag}</span>
-              {/* El único naranja de esta pantalla: el mismo filete corto de
-                  `.gw-label`, que acá no se usa porque el rubro ya hace de
-                  etiqueta. En la portada de noticias este filete va en gris,
-                  porque allá el naranja se lo gasta el `.gw-label` del título
-                  de sección. */}
-              <span className="h-px w-5 bg-cta" aria-hidden="true" />
+              {/* El mismo filete corto de `.gw-label`, que acá no se usa porque
+                  el rubro ya hace de etiqueta. Era naranja; desde que el naranja
+                  quedó reservado a la acción principal, va en el gris de filete,
+                  igual que en la portada de noticias. */}
+              <span className="h-px w-5 bg-line" aria-hidden="true" />
               <span className="gw-meta">
                 <time dateTime={effectiveArticle.date}>{effectiveArticle.dateLabel}</time>
               </span>

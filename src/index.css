@@ -67,6 +67,15 @@
     box-shadow: 0 0 0 3px #fff;
   }
 
+  /* El filete interior de `.gw-photo` también para toda foto con el radio
+     del sistema, sin tener que tocar cada `<img>` de cada página: así las
+     tarjetas de noticias, el artículo y las páginas de Spansk i Alicante
+     ganan el mismo borde que las secciones rediseñadas. */
+  img.rounded-panel {
+    outline: 1px solid rgb(6 42 106 / 0.08);
+    outline-offset: -1px;
+  }
+
   ::selection {
     background-color: #062A6A;
     color: #fff;
