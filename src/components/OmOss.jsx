@@ -38,7 +38,7 @@ export default function OmOss() {
             {/* p1 y p2 son un mismo texto: el segundo iba sin `text-body` (un
                 punto más chico) y con `mt-4`. Ahora el bloque lleva el estilo
                 y los dos párrafos lo heredan. */}
-            <div className="mt-6 gw-stack text-body text-ink-muted leading-[1.65]">
+            <div className="mt-6 gw-stack text-body text-ink-muted leading-[1.6]">
               <RichText value={c.p1} />
               <RichText value={c.p2} />
             </div>

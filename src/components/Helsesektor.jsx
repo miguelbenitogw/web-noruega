@@ -72,7 +72,7 @@ export default function Helsesektor() {
             </h2>
             <RichText
               value={c.description}
-              className="mt-6 gw-measure text-ink-muted text-body leading-[1.65]"
+              className="mt-6 gw-measure text-ink-muted text-body leading-[1.6]"
             />
 
             <a

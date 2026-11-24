@@ -188,7 +188,7 @@ export default function Kontakt() {
             <h2 id="kontakt-heading" className="mt-5 text-display-sm font-semibold text-navy">{c.heading}</h2>
             <RichText
               value={c.description}
-              className="mt-6 text-ink-muted text-body leading-[1.65]"
+              className="mt-6 text-ink-muted text-body leading-[1.6]"
             />
 
             {/* Si la promesa es «hablás con una persona», la persona se ve. */}
@@ -275,7 +275,7 @@ export default function Kontakt() {
                   <h3 className="font-heading text-[1.375rem] font-semibold text-navy">
                     {c.successTitle}
                   </h3>
-                  <p className="mt-3 text-ink-muted leading-[1.65]">{c.successDescription}</p>
+                  <p className="mt-3 text-ink-muted leading-[1.6]">{c.successDescription}</p>
                   <button
                     onClick={reset}
                     type="button"

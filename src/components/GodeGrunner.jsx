@@ -45,7 +45,7 @@ export default function GodeGrunner() {
             </h2>
             <RichText
               value={c.description}
-              className="mt-6 gw-measure text-ink-muted text-body leading-[1.65]"
+              className="mt-6 gw-measure text-ink-muted text-body leading-[1.6]"
             />
             <TextLink href={c.articleLink} className="mt-8">
               <span>{c.articleLinkLabel}</span>
@@ -56,7 +56,7 @@ export default function GodeGrunner() {
             <div className="lg:col-span-6 lg:col-start-7 border-t border-line">
               {testimonials.map((t, i) => (
                 <blockquote key={`${t.author}-${i}`} className="py-7 border-b border-line">
-                  <p className="gw-measure text-ink text-body leading-[1.7]">
+                  <p className="gw-measure text-ink text-body leading-[1.6]">
                     {t.quote ? `«${t.quote}»` : ''}
                   </p>
                   <footer className="mt-3 block font-ui text-[0.875rem] text-ink-soft">{t.author}</footer>

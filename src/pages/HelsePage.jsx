@@ -50,7 +50,7 @@ export default function HelsePage() {
               <div className="lg:col-span-5">
                 <RichText
                   value={phases.description}
-                  className="text-ink-muted text-body leading-[1.65]"
+                  className="text-ink-muted text-body leading-[1.6]"
                 />
               </div>
             ) : null}
@@ -82,7 +82,7 @@ export default function HelsePage() {
                     {/* Antes había un componente propio que partía por `\n\n` a mano:
                         la fase 01 trae dos párrafos. RichText ya lo hace y
                         con el mismo aire que el resto de la web. */}
-                    <RichText value={phase.description} className="text-body text-ink-muted leading-[1.7]" />
+                    <RichText value={phase.description} className="text-body text-ink-muted leading-[1.6]" />
                   </div>
 
                   {phase.formats && (
@@ -127,7 +127,7 @@ export default function HelsePage() {
               {/* p1 y p2 son un mismo texto: el bloque lleva el estilo y los
                   dos lo heredan, con el aire de párrafo de `gw-stack` (antes
                   `mt-4` entre ellos, distinto del resto de la web). */}
-              <div className="mt-6 gw-measure gw-stack text-body text-primary-100 leading-[1.65]">
+              <div className="mt-6 gw-measure gw-stack text-body text-primary-100 leading-[1.6]">
                 <RichText value={partnership.p1} tone="dark" />
                 {partnership.p2 ? <RichText value={partnership.p2} tone="dark" /> : null}
               </div>

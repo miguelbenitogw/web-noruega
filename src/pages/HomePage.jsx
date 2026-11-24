@@ -110,14 +110,31 @@ export default function HomePage() {
                 height={600}
               />
             </div>
-            {/* El texto trae cuatro párrafos separados por líneas en blanco, y
-                el último con espacios delante en los datos. RichText los
-                parte en <p> hermanos y recorta cada uno, así que comparten
-                alineación, medida, color y aire sin excepción. */}
-            <RichText
-              value={hs.description}
-              className="lg:col-span-5 lg:col-start-8 text-body text-ink-muted leading-[1.65]"
-            />
+            {/* El editor viejo partía este texto en una frase por párrafo y
+                dejaba la pregunta final suelta, como una línea más. Ahora el
+                cuerpo es un solo párrafo continuo y la pregunta vive en su
+                propio campo (`ctaQuestion`): se pinta como el enlace a
+                /kontakt, no como texto muerto. Es un TextLink y no un
+                `.gw-btn-ember` a propósito: el botón naranja de esta pantalla
+                ya lo reserva «Vi støtter det norske helsevesenet» más abajo,
+                y el naranja se usa una vez por pantalla.
+                `lg:col-span-6` + `gw-measure`: en 5 columnas la línea quedaba en
+                ~50 caracteres; con 6 y el tope de 38rem llega a ~65. */}
+            <div className="lg:col-span-6 lg:col-start-7">
+              <RichText
+                value={hs.description}
+                className="gw-measure text-body text-ink-muted leading-[1.6]"
+              />
+              {hs.ctaQuestion ? (
+                <TextLink
+                  href="/kontakt"
+                  onClick={() => trackEvent('cta_click', { location: 'landing_summary', cta: '/kontakt' })}
+                  className="mt-4"
+                >
+                  {hs.ctaQuestion}
+                </TextLink>
+              ) : null}
+            </div>
           </div>
 
           <RuleGrid cols="sm2-lg4" className="border-t border-line">
@@ -149,7 +166,7 @@ export default function HomePage() {
               </h2>
               <RichText
                 value={hHealth.description}
-                className="mt-6 text-body text-primary-100 leading-[1.65]"
+                className="mt-6 text-body text-primary-100 leading-[1.6]"
                 tone="dark"
               />
               <a
@@ -193,7 +210,7 @@ export default function HomePage() {
               </h2>
               <RichText
                 value={hContact.description}
-                className="mt-6 text-body text-ink-muted leading-[1.65]"
+                className="mt-6 text-body text-ink-muted leading-[1.6]"
               />
               <a
                 href="/kontakt"

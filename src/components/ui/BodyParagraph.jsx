@@ -26,7 +26,7 @@ export default function BodyParagraph({ value, className = '', tone = 'light' })
     <RichText
       value={value}
       tone={tone}
-      className={`text-body lg:text-[1.125rem] ${color} leading-[1.75] ${className}`}
+      className={`text-body lg:text-[1.125rem] ${color} leading-[1.6] ${className}`}
     />
   )
 }

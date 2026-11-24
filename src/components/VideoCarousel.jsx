@@ -209,7 +209,7 @@ export default function VideoCarousel() {
         <div className="mb-12 gw-measure">
           <span className="gw-label text-primary-600">{c.label}</span>
           <h2 id={headingId} className="mt-5 text-display-sm font-semibold text-navy">{c.heading}</h2>
-          <RichText value={c.description} className="mt-5 text-body leading-[1.65] text-ink-muted" />
+          <RichText value={c.description} className="mt-5 text-body leading-[1.6] text-ink-muted" />
         </div>
 
         <div className="relative">

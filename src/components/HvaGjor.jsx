@@ -39,7 +39,7 @@ export default function HvaGjor() {
             <h2 id="hvagjor-heading" className="mt-5 text-display-sm font-semibold text-navy">{c.heading}</h2>
             <RichText
               value={c.description}
-              className="mt-6 gw-measure text-ink-muted text-body leading-[1.65]"
+              className="mt-6 gw-measure text-ink-muted text-body leading-[1.6]"
             />
 
             <a href="/kontakt" className="gw-btn gw-btn-ember mt-9">
@@ -69,7 +69,7 @@ export default function HvaGjor() {
                   </h3>
                   <RichText
                     value={s.description}
-                    className="mt-2.5 gw-measure text-ink-muted text-body leading-[1.65]"
+                    className="mt-2.5 gw-measure text-ink-muted text-body leading-[1.6]"
                   />
                 </div>
               </div>
