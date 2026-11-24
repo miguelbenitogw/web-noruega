@@ -81,6 +81,7 @@ const LOCAL_VARIANTS = {
   'nc-equipo-sede': [640, 1024, 1440, 2048],
   'nc-oficina-abierta': [640, 1024, 1440],
   'nc-clase-noruego-aula': [640, 1024, 1440],
+  'nc-sede-fachada': [640, 1024, 1440, 1920],
 }
 
 /** Nombre de archivo del original (en Supabase o en src/assets) -> slug local. */
@@ -223,6 +224,7 @@ export const IMAGES = {
   equipoSede:               variantUrl('nc-equipo-sede', 1024),
   oficinaAbierta:           variantUrl('nc-oficina-abierta', 1024),
   claseNoruegoAula:         variantUrl('nc-clase-noruego-aula', 1024),
+  sedeFachada:              variantUrl('nc-sede-fachada', 1440),
 
 
   // Fuera del catalogo (borradas por muertas, ninguna tenia consumidores):

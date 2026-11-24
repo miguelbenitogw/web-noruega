@@ -98,6 +98,10 @@ const CRITICAL_IMAGES = [
   { slug: 'nc-oficina-abierta', source: 'src/assets/nextcloud/oficina-abierta-albufereta.jpg', widths: [640, 1024, 1440] },
   // /helse y /vr-rekrutteringsmodell, banda «Slik samarbeider vi med dere» (~600 px).
   { slug: 'nc-clase-noruego-aula', source: 'src/assets/nextcloud/clase-noruego-aula.jpg', widths: [640, 1024, 1440] },
+  // Fachada de la sede de Albufereta: /kontakt (~490 px) y «Våre kontorer» de Om oss
+  // (~700 px, sangra a la derecha). El master va recortado abajo para dejar fuera
+  // las matrículas de los coches aparcados.
+  { slug: 'nc-sede-fachada', source: 'src/assets/nextcloud/sede-albufereta-fachada.jpg', widths: [640, 1024, 1440, 1920] },
 ]
 
 const kb = (bytes) => `${(bytes / 1024).toFixed(0)} KB`
