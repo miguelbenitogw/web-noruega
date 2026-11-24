@@ -85,59 +85,54 @@ export default function HomePage() {
           arranque de cada línea. */}
       <section className="py-20 lg:py-28 bg-white" aria-labelledby="tilbud-heading">
         <div className="container-xl">
-          {/* `items-start` y no `items-end`: con `items-end` la columna de
-              texto se alineaba con el PIE de la izquierda (foto + titular) y
-              arrancaba ~300 px más abajo que la etiqueta, flotando sin ancla.
-              Ahora las dos columnas arrancan en la misma línea: etiqueta y
-              párrafo a la misma altura, y la foto va debajo del titular, que
-              es donde estaba el hueco. */}
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-12 lg:mb-16">
+          {/* Antes: titular + foto a la izquierda y el texto solo arriba a la
+              derecha, con ~300 px de vacío debajo del párrafo. Ahora el texto
+              entero (etiqueta, titular, entradilla, enlace) es una columna y la
+              foto la otra, con la misma altura: no queda ningún hueco muerto y
+              la lectura baja en Z, de la pregunta a la prueba.
+              El enlace es un TextLink y no un `.gw-btn-ember` a propósito: el
+              botón naranja de la Home ya lo tiene el hero, y el naranja se usa
+              una vez por pantalla. */}
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center mb-14 lg:mb-20">
             <div className="lg:col-span-6">
               <span className="gw-label text-primary-600">{hs.label}</span>
               <h2 id="tilbud-heading" className="mt-5 text-display-sm font-semibold text-navy">
                 {hs.heading}
               </h2>
-              {/* La foto es la clase de noruego: de las cuatro columnas de
-                  abajo, la preparación lingüística es la que de verdad
-                  distingue a la empresa, así que vale más que un retrato. */}
+              <RichText
+                value={hs.description}
+                className="mt-6 gw-measure gw-lede"
+              />
+              {hs.ctaQuestion ? (
+                <TextLink
+                  href="/kontakt"
+                  onClick={() => trackEvent('cta_click', { location: 'landing_summary', cta: '/kontakt' })}
+                  className="mt-5"
+                >
+                  {hs.ctaQuestion}
+                </TextLink>
+              ) : null}
+            </div>
+
+            {/* La foto es la clase de noruego: de las cuatro columnas de
+                abajo, la preparación lingüística es la que de verdad distingue
+                a la empresa, así que vale más que un retrato. El pie dice de
+                quién es el aula: sin él, la foto podría ser de banco de imagen. */}
+            <figure className="lg:col-span-6">
               <img
                 src={img(IMAGES.siljePizarra, 1024)}
                 srcSet={srcSet(IMAGES.siljePizarra)}
-                sizes="(min-width: 1024px) 50vw, 100vw"
+                sizes="(min-width: 1024px) 45vw, 100vw"
                 alt="Norsklæreren Silje skriver norske ord på en tavle i klasserommet"
-                className="mt-10 w-full h-[200px] lg:h-[300px] object-cover rounded-panel"
+                className="gw-photo w-full aspect-[3/2]"
                 style={{ objectPosition: 'center 35%' }}
                 loading="lazy"
                 decoding="async"
                 width={2560}
                 height={1704}
               />
-            </div>
-            {/* El editor viejo partía este texto en una frase por párrafo y
-                dejaba la pregunta final suelta, como una línea más. Ahora el
-                cuerpo es un solo párrafo continuo y la pregunta vive en su
-                propio campo (`ctaQuestion`): se pinta como el enlace a
-                /kontakt, no como texto muerto. Es un TextLink y no un
-                `.gw-btn-ember` a propósito: el botón naranja de esta pantalla
-                ya lo reserva «Vi støtter det norske helsevesenet» más abajo,
-                y el naranja se usa una vez por pantalla.
-                `lg:col-span-6` + `gw-measure`: en 5 columnas la línea quedaba en
-                ~50 caracteres; con 6 y el tope de 38rem llega a ~65. */}
-            <div className="lg:col-span-6 lg:col-start-7">
-              <RichText
-                value={hs.description}
-                className="gw-measure text-body text-ink-muted leading-[1.6]"
-              />
-              {hs.ctaQuestion ? (
-                <TextLink
-                  href="/kontakt"
-                  onClick={() => trackEvent('cta_click', { location: 'landing_summary', cta: '/kontakt' })}
-                  className="mt-4"
-                >
-                  {hs.ctaQuestion}
-                </TextLink>
-              ) : null}
-            </div>
+              <figcaption className="gw-caption">Norskundervisning på vår egen språkskole.</figcaption>
+            </figure>
           </div>
 
           <RuleGrid cols="sm2-lg4" className="border-t border-line">
@@ -229,15 +224,15 @@ export default function HomePage() {
                 <div key={`${c.name}-${i}`} className="gw-panel bg-white border-line p-6">
                   {resolveContactPhoto(c) ? (
                     <img
-                      src={img(resolveContactPhoto(c), 192)}
+                      src={img(resolveContactPhoto(c), 640)}
                       alt={c.name}
-                      className="w-16 h-16 rounded-pill object-cover object-top mb-4"
+                      className="w-24 h-24 rounded-pill object-cover object-top mb-5 ring-1 ring-line"
                       loading="lazy"
-                      width={64}
-                      height={64}
+                      width={96}
+                      height={96}
                     />
                   ) : (
-                    <div className="w-16 h-16 rounded-pill bg-navy flex items-center justify-center mb-4">
+                    <div className="w-24 h-24 rounded-pill bg-navy flex items-center justify-center mb-5">
                       <span className="font-heading font-semibold text-white text-xl">
                         {c.name.charAt(0)}
                       </span>
@@ -245,7 +240,7 @@ export default function HomePage() {
                   )}
 
                   <div className="font-heading font-semibold text-navy">{c.name}</div>
-                  <div className="text-ink-soft text-sm mt-0.5">{c.role}</div>
+                  <div className="gw-meta mt-0.5">{c.role}</div>
 
                   <div className="mt-4 pt-4 border-t border-line space-y-1">
                     <div className="block text-primary-600 text-body-sm"><EmailText email={c.email} /></div>

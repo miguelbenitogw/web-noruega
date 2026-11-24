@@ -1,4 +1,5 @@
 import RichText from './RichText'
+import TrustMarks from './TrustMarks'
 
 /**
  * PageHero — la cabecera navy de las páginas internas.
@@ -26,6 +27,8 @@ import RichText from './RichText'
  *                   de esos enlaces sobre navy es siempre el mismo, así que
  *                   vive acá y no en cada página.
  *  · `media`      — la foto del hero. Si viene, la banda pasa a dos columnas.
+ *  · `trust`      — sin foto, pinta las credenciales (TrustMarks) en la
+ *                   columna derecha. Lo usan las páginas para empleadores.
  *  · `children`   — lo que cuelgue debajo de la bajada (botones, un segundo
  *                   párrafo). Solo lo usa Spansk i Alicante.
  */
@@ -87,6 +90,7 @@ export default function PageHero({
   titleWidth,
   description,
   media,
+  trust = false,
   children,
 }) {
   const body = (
@@ -115,6 +119,33 @@ export default function PageHero({
       {children}
     </>
   )
+
+  if (!media && trust) {
+    // Sin foto, la banda era texto a la izquierda y media pantalla de navy
+    // vacío a la derecha. Ese hueco es justo donde un comprador busca «¿quién
+    // es esta gente?», así que ahí van las credenciales, alineadas al pie del
+    // titular y separadas por un filete vertical: se leen como ficha, no
+    // como un segundo párrafo.
+    return (
+      <section
+        className="bg-navy pt-32 pb-16 lg:pt-40 lg:pb-20"
+        aria-labelledby={titleId}
+      >
+        {/* `grid-cols-1` + `min-w-0`: sin ellos la columna implícita de la
+            rejilla mide lo que mide la palabra más larga del h1, y a 375 px
+            «helseinstitusjoner» en tamaño display empujaba la página 7 px
+            hacia la derecha (scroll horizontal). */}
+        <div className="container-xl grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 lg:items-end">
+          <div className="lg:col-span-8 min-w-0">{body}</div>
+          <TrustMarks
+            tone="dark"
+            stacked
+            className="lg:col-span-4 pt-7 border-t border-white/15 lg:pt-0 lg:border-t-0 lg:pl-8 lg:border-l lg:py-1"
+          />
+        </div>
+      </section>
+    )
+  }
 
   if (!media) {
     return (

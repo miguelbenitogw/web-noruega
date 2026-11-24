@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import emailjs from '@emailjs/browser'
 import { trackEvent } from '../lib/analytics'
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import useContent from '../hooks/useContent'
 import FormField from './ui/FormField'
 import FormAlert from './ui/FormAlert'
@@ -188,7 +188,7 @@ export default function Kontakt() {
             <h2 id="kontakt-heading" className="mt-5 text-display-sm font-semibold text-navy">{c.heading}</h2>
             <RichText
               value={c.description}
-              className="mt-6 text-ink-muted text-body leading-[1.6]"
+              className="mt-6 gw-lede"
             />
 
             {/* Si la promesa es «hablás con una persona», la persona se ve. */}
@@ -197,16 +197,16 @@ export default function Kontakt() {
                 <div key={contact.name} className="gw-panel bg-white border-line p-6">
                   {resolveContactPhoto(contact) ? (
                     <img
-                      src={img(resolveContactPhoto(contact), 192)}
+                      src={img(resolveContactPhoto(contact), 640)}
                       alt={contact.name}
-                      className="w-16 h-16 rounded-pill object-cover object-top mb-4"
+                      className="w-24 h-24 rounded-pill object-cover object-top mb-5 ring-1 ring-line"
                       loading="lazy"
                       decoding="async"
-                      width={64}
-                      height={64}
+                      width={96}
+                      height={96}
                     />
                   ) : (
-                    <div className="w-16 h-16 rounded-pill bg-navy flex items-center justify-center mb-4">
+                    <div className="w-24 h-24 rounded-pill bg-navy flex items-center justify-center mb-5">
                       <span className="font-heading font-semibold text-white text-xl">
                         {contact.name.charAt(0)}
                       </span>
@@ -240,12 +240,17 @@ export default function Kontakt() {
               ))}
             </div>
 
-            {/* La sede: foto entera y la dirección como dato, bajo filete. */}
+            {/* La sede: foto entera y la dirección como dato, bajo filete. La foto
+                era un contrapicado de un edificio cualquiera contra el cielo; ahora
+                es la fachada de la sede de Albufereta, la misma dirección que
+                pone debajo: foto y dato se confirman entre sí. */}
             <div className="mt-10">
               <img
-                src={img(c.imageUrl || IMAGES.alicanteOffice, 1200)}
+                src={img(c.imageUrl || IMAGES.sedeFachada, 1024)}
+                srcSet={srcSet(c.imageUrl || IMAGES.sedeFachada)}
+                sizes="(min-width: 1024px) 34vw, 100vw"
                 alt={c.imageAlt || 'Global Working-kontoret i Alicante'}
-                className="w-full h-56 lg:h-64 object-cover rounded-panel"
+                className="gw-photo w-full aspect-[16/10] object-[40%_60%]"
                 loading="lazy"
                 decoding="async"
               />

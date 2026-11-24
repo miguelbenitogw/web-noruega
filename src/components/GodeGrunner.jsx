@@ -1,4 +1,4 @@
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import useContent from '../hooks/useContent'
 import TextLink from './ui/TextLink'
 import RichText from './ui/RichText'
@@ -26,15 +26,24 @@ export default function GodeGrunner() {
       aria-labelledby="gode-grunner-heading"
     >
       <div className="container-xl">
-        <img
-          src={img(c.imageUrl || IMAGES.rekruttering, 1600)}
-          alt={c.imageAlt || 'Global Working samarbeid med norske kommuner'}
-          className="w-full h-[240px] sm:h-[320px] lg:h-[400px] object-cover object-center rounded-panel"
-          loading="lazy"
-          width="1280"
-          height="400"
-          decoding="async"
-        />
+        {/* La banda es ahora el equipo delante de la sede. Con 400 px de alto
+            el recorte panorámico cortaba las cabezas de la fila de pie; con
+            460 y el foco al 66 % vertical entra el grupo entero y el edificio
+            queda de fondo. El pie la convierte en prueba: es nuestra gente. */}
+        <figure>
+          <img
+            src={img(c.imageUrl || IMAGES.equipoSede, 1440)}
+            srcSet={srcSet(c.imageUrl || IMAGES.equipoSede)}
+            sizes="(min-width: 1280px) 1216px, 100vw"
+            alt={c.imageAlt || 'Ansatte i Global Working foran hovedkontoret i Alicante'}
+            className="gw-photo w-full h-[260px] sm:h-[340px] lg:h-[460px] object-[50%_66%]"
+            loading="lazy"
+            width="1280"
+            height="460"
+            decoding="async"
+          />
+          <figcaption className="gw-caption">Teamet foran hovedkontoret vårt i Alicante.</figcaption>
+        </figure>
 
         <div className="mt-12 lg:mt-16 grid lg:grid-cols-12 gap-10 lg:gap-16">
 
@@ -45,7 +54,7 @@ export default function GodeGrunner() {
             </h2>
             <RichText
               value={c.description}
-              className="mt-6 gw-measure text-ink-muted text-body leading-[1.6]"
+              className="mt-6 gw-measure gw-lede"
             />
             <TextLink href={c.articleLink} className="mt-8">
               <span>{c.articleLinkLabel}</span>
@@ -55,11 +64,14 @@ export default function GodeGrunner() {
           {testimonials.length > 0 && (
             <div className="lg:col-span-6 lg:col-start-7 border-t border-line">
               {testimonials.map((t, i) => (
-                <blockquote key={`${t.author}-${i}`} className="py-7 border-b border-line">
-                  <p className="gw-measure text-ink text-body leading-[1.6]">
+                // Las citas de los kommuner son la prueba más fuerte de la
+                // página: pasan a cuerpo de entradilla y la firma sube a navy
+                // semibold, porque el nombre del kommune ES el dato.
+                <blockquote key={`${t.author}-${i}`} className="py-8 border-b border-line">
+                  <p className="gw-measure text-ink text-body-lg leading-[1.5]">
                     {t.quote ? `«${t.quote}»` : ''}
                   </p>
-                  <footer className="mt-3 block font-ui text-[0.875rem] text-ink-soft">{t.author}</footer>
+                  <footer className="mt-4 block font-ui text-body-xs font-semibold text-navy">{t.author}</footer>
                 </blockquote>
               ))}
             </div>

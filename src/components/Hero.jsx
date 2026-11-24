@@ -5,6 +5,7 @@ import useContent from '../hooks/useContent'
 import { IMAGES, img, srcSet } from '../assets/images'
 import RuleGrid from './ui/RuleGrid'
 import RichText from './ui/RichText'
+import TrustMarks from './ui/TrustMarks'
 
 /**
  * Hero — «To kyster»
@@ -59,9 +60,13 @@ export default function Hero() {
 
           {/* ── Columna de texto ─────────────────────────────────────── */}
           <div className="lg:col-span-7 animate-riseIn">
+            {/* La segunda línea iba sangrada `0.38em`: pensado como gesto,
+                se leía como un espacio de más pegado a mano. Las dos líneas
+                arrancan ahora en el mismo borde que la bajada y los botones,
+                y el bloque entero queda alineado a una sola vertical. */}
             <h1 className="text-display-lg font-semibold text-white">
               <span className="block">{c.h1First}</span>
-              <span className="block lg:pl-[0.38em]">{c.h1Highlight}</span>
+              <span className="block">{c.h1Highlight}</span>
             </h1>
 
             <RichText
@@ -70,7 +75,7 @@ export default function Hero() {
               tone="dark"
             />
 
-            <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
+            <div className="mt-9 flex flex-col sm:flex-row sm:flex-wrap gap-3.5">
               <a
                 href="/vr-rekrutteringsmodell"
                 onClick={() => trackEvent('cta_click', { location: 'hero', cta: 'slik_jobber_vi' })}
@@ -86,63 +91,41 @@ export default function Hero() {
                 <span>{c.cta2}</span>
               </a>
             </div>
+
+            {/* Credenciales justo debajo de la acción: es lo que el comprador
+                de una kommune necesita saber antes de pulsar. Un filete las
+                separa de los botones para que no se lean como un tercer
+                enlace. */}
+            <TrustMarks tone="dark" className="mt-10 pt-7 border-t border-white/15 max-w-[40rem]" />
           </div>
 
-          {/* ── Las dos orillas ──────────────────────────────────────────
-              La imagen grande sale del contenido (`hero.imageUrl`). Las dos
-              pequeñas son de marca, no de contenido: la vida en Alicante y
-              el trabajo en Noruega. En móvil queda solo la principal. */}
-          <div className="lg:col-span-5">
-            <div className="grid grid-cols-12 gap-3">
-              {/* width/height van en 3:2, la proporción real de team-hero
-                  (3088x2056). Antes declaraba 1200x1500 (4:5), que no coincidía
-                  con nada: hoy no salta porque la altura la fija el CSS, pero en
-                  cuanto esa altura desaparezca el salto sería enorme.
-                  Si cambiás `sizes`, cambiá también `imagesizes` en el preload
-                  de index.html, o el navegador se baja dos variantes distintas. */}
-              <div className="col-span-12 sm:col-span-8 animate-settle">
-                <div className="rounded-panel overflow-hidden bg-primary-800">
-                  {/* x al 30%: con el centro por defecto el recorte de 3:2 a retrato partía por la mitad a las personas de los dos bordes del grupo. */}
-                  <img
-                    src={img(c.imageUrl || IMAGES.teamHero, 1200)}
-                    srcSet={srcSet(c.imageUrl || IMAGES.teamHero, [640, 1024, 1200])}
-                    sizes="(max-width: 640px) 100vw, 33vw"
-                    alt={c.imageAlt || 'Global Working Norge – rekruttering av fagfolk'}
-                    className="w-full h-[280px] sm:h-[420px] lg:h-[480px] object-cover object-[30%_50%]"
-                    loading="eager"
-                    fetchPriority="high"
-                    width={1200}
-                    height={800}
-                    decoding="sync"
-                  />
-                </div>
-              </div>
-
-              <div
-                className="hidden sm:flex sm:col-span-4 flex-col gap-3 animate-settle [animation-delay:140ms]"
-                aria-hidden="true"
-              >
-                <div className="rounded-panel overflow-hidden bg-primary-800 flex-1">
-                  <img
-                    src={IMAGES.helseHealthTeam}
-                    alt=""
-                    className="w-full h-full min-h-[120px] object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-                <div className="rounded-panel overflow-hidden bg-primary-800 flex-1">
-                  <img
-                    src={IMAGES.spanskAlicantePromenade}
-                    alt=""
-                    className="w-full h-full min-h-[120px] object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* ── La empresa, en una foto ──────────────────────────────────
+              Antes era un mosaico de tres: el equipo de fiesta haciendo el
+              pulgar arriba, una foto de banco de imagen y un paseo marítimo.
+              Para un empleador público eso dice «agencia joven», no «empresa
+              establecida». Ahora es UNA foto propia, en apaisado y entera:
+              la plantilla delante de la sede de Albufereta, con su pie. El
+              edificio y la cantidad de gente son la prueba; no hace falta
+              repetirla en miniatura.
+              Si cambiás `sizes`, cambiá también `imagesizes` en el preload
+              de index.html y HOME_HERO_PRELOAD, o se bajan dos variantes. */}
+          <figure className="lg:col-span-5 animate-settle">
+            <img
+              src={img(c.imageUrl || IMAGES.equipoSede, 1024)}
+              srcSet={srcSet(c.imageUrl || IMAGES.equipoSede)}
+              sizes="(max-width: 1023px) 100vw, 40vw"
+              alt={c.imageAlt || 'Ansatte i Global Working foran hovedkontoret i Alicante'}
+              className="gw-photo w-full aspect-[4/3] lg:aspect-[5/4] object-[40%_50%] !outline-white/10"
+              loading="eager"
+              fetchPriority="high"
+              width={2048}
+              height={1365}
+              decoding="sync"
+            />
+            {c.imageCaption ? (
+              <figcaption className="gw-caption gw-caption-dark">{c.imageCaption}</figcaption>
+            ) : null}
+          </figure>
         </div>
       </div>
 

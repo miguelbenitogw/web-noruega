@@ -173,7 +173,7 @@ const publishedContent = {
         "role": "50+ ansatte",
         "hasImage": true,
         "imageAlt": "Teamet i Global Working",
-        "imageUrl": "https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/team-hero.jpg",
+        "imageUrl": "/assets/media/nc-equipo-sede-1024.webp",
         "initials": "T"
       }
     ],

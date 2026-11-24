@@ -5,7 +5,7 @@ import PageEndNav from '../components/PageEndNav'
 import PageHero from '../components/ui/PageHero'
 import RuleGrid from '../components/ui/RuleGrid'
 import TextLink from '../components/ui/TextLink'
-import { IMAGES, img } from '../assets/images'
+import { IMAGES, img, srcSet } from '../assets/images'
 import { trackEvent } from '../lib/analytics'
 import useContent from '../hooks/useContent'
 import { useNewsCollection } from '../hooks/useNews'
@@ -37,6 +37,7 @@ export default function RekrutteringPage() {
         current={hero.breadcrumb}
         title={hero.h1}
         titleId="rekruttering-hero-heading"
+        trust
         titleWidth="20ch"
         description={hero.description}
       />
@@ -66,7 +67,7 @@ export default function RekrutteringPage() {
                 <RichText value={collab.p3} />
               </div>
 
-              <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
+              <div className="mt-9 flex flex-col sm:flex-row sm:flex-wrap gap-3.5">
                 <a
                   href="/kontakt"
                   onClick={() => trackEvent('cta_click', { location: 'collaboration_model', cta: 'kontakt_oss' })}
@@ -84,15 +85,21 @@ export default function RekrutteringPage() {
               </div>
             </div>
 
-            <div className="lg:col-span-5 lg:col-start-8">
+            {/* Antes: estudiantes charlando en un banco. Al lado dice
+                «uforpliktende kartlegging» y «vi presenterer kandidater»: la foto
+                enseña dónde se hace ese trabajo, la oficina de Alicante. */}
+            <figure className="lg:col-span-5 lg:col-start-8">
               <img
-                src={img(collab.imageUrl || IMAGES.rekruttering, 900)}
-                alt={collab.imageAlt || 'Global Working rekrutteringsprosessen'}
-                className="w-full h-[280px] lg:h-[460px] object-cover rounded-panel"
+                src={img(collab.imageUrl || IMAGES.oficinaAbierta, 1024)}
+                srcSet={srcSet(collab.imageUrl || IMAGES.oficinaAbierta)}
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                alt={collab.imageAlt || 'Ansatte ved arbeidsplassene sine i kontorlandskapet til Global Working i Alicante'}
+                className="gw-photo w-full h-[280px] lg:h-[460px] object-[60%_50%]"
                 loading="lazy"
                 decoding="async"
               />
-            </div>
+              <figcaption className="gw-caption">Kontorlandskapet på hovedkontoret vårt i Alicante.</figcaption>
+            </figure>
           </div>
         </div>
       </section>

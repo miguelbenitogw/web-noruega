@@ -48,7 +48,7 @@ export default function CTABanner() {
               tone="dark"
             />
 
-            <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
+            <div className="mt-9 flex flex-col sm:flex-row sm:flex-wrap gap-3.5">
               <a
                 href="/kontakt"
                 onClick={() => trackEvent('cta_click', { location: 'cta_banner', cta: 'kontakt_oss_na' })}
