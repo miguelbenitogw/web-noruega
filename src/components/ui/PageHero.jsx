@@ -131,8 +131,12 @@ export default function PageHero({
         className="bg-navy pt-32 pb-16 lg:pt-40 lg:pb-20"
         aria-labelledby={titleId}
       >
-        <div className="container-xl grid lg:grid-cols-12 gap-10 lg:gap-14 lg:items-end">
-          <div className="lg:col-span-8">{body}</div>
+        {/* `grid-cols-1` + `min-w-0`: sin ellos la columna implícita de la
+            rejilla mide lo que mide la palabra más larga del h1, y a 375 px
+            «helseinstitusjoner» en tamaño display empujaba la página 7 px
+            hacia la derecha (scroll horizontal). */}
+        <div className="container-xl grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 lg:items-end">
+          <div className="lg:col-span-8 min-w-0">{body}</div>
           <TrustMarks
             tone="dark"
             stacked
