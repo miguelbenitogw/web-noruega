@@ -74,7 +74,7 @@ export default function Nyheter() {
 
   if (!orderedNews.length && loading) {
     return (
-      <section id="nyheter" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="nyheter-heading">
+      <section id="nyheter" className="scroll-mt-28 py-20 lg:py-28 bg-white" aria-labelledby="nyheter-heading">
         <div className="container-xl">
           <p className="text-ink-muted">{nyheter.loadingLabel}</p>
         </div>
@@ -93,7 +93,7 @@ export default function Nyheter() {
   const briefs = orderedNews.slice(1, 4)
 
   return (
-    <section id="nyheter" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="nyheter-heading">
+    <section id="nyheter" className="scroll-mt-28 py-20 lg:py-28 bg-white" aria-labelledby="nyheter-heading">
       <div className="container-xl">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 pb-8 border-b border-line">
           <div className="max-w-xl">

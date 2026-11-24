@@ -49,7 +49,7 @@ export default function HelsenorskPage() {
       />
 
       {/* ── Intro ─────────────────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-white" aria-labelledby="helsenorsk-intro-heading">
+      <section className="py-20 lg:py-28 bg-white" aria-labelledby="helsenorsk-intro-heading">
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
@@ -70,7 +70,7 @@ export default function HelsenorskPage() {
       </section>
 
       {/* ── Lengua aplicada ───────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-surface" aria-labelledby="helsenorsk-praksis-heading">
+      <section className="py-20 lg:py-28 bg-surface" aria-labelledby="helsenorsk-praksis-heading">
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
@@ -104,7 +104,7 @@ export default function HelsenorskPage() {
               <img
                 src={img(page.situasjonerImageUrl || IMAGES.helseHealthTeam, 1400)}
                 alt={page.situasjonerImageAlt || 'Simulering av helsesituasjoner'}
-                className="w-full h-[300px] lg:h-[520px] object-cover rounded-panel lg:rounded-l-none"
+                className="w-full h-[300px] lg:h-[520px] object-cover object-[28%_50%] rounded-panel lg:rounded-l-none"
                 loading="lazy"
                 decoding="async"
               />
@@ -128,7 +128,7 @@ export default function HelsenorskPage() {
       {/* ── Quién enseña ──────────────────────────────────────────────────
           El argumento de confianza de la página: lo enseñan enfermeras
           españolas que ya trabajaron en Noruega. Se lleva la banda oscura. */}
-      <section className="py-24 lg:py-32 bg-navy-deep" aria-labelledby="helsenorsk-undervisere-heading">
+      <section className="py-20 lg:py-28 bg-navy-deep" aria-labelledby="helsenorsk-undervisere-heading">
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-5">
@@ -148,7 +148,7 @@ export default function HelsenorskPage() {
       </section>
 
       {/* ── Base lingüística ──────────────────────────────────────────────── */}
-      <section className="pt-24 lg:pt-32 bg-white" aria-labelledby="helsenorsk-grunnlag-heading">
+      <section className="pt-20 lg:pt-28 bg-white" aria-labelledby="helsenorsk-grunnlag-heading">
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
@@ -179,7 +179,7 @@ export default function HelsenorskPage() {
       </section>
 
       {/* ── Contacto ──────────────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-surface" aria-labelledby="helsenorsk-cta-heading">
+      <section className="py-20 lg:py-28 bg-surface" aria-labelledby="helsenorsk-cta-heading">
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
 
@@ -223,13 +223,13 @@ export default function HelsenorskPage() {
                       )}
                       <a
                         href={`mailto:${contact.email}`}
-                        className="mt-2.5 block font-ui text-sm text-primary-600 hover:text-primary-700 transition-colors break-words"
+                        className="gw-tap mt-2.5 flex font-ui text-sm text-primary-600 hover:text-primary-700 transition-colors break-words"
                       >
                         {contact.email}
                       </a>
                       <a
                         href={`tel:${contact.phone.replace(/\s/g, '')}`}
-                        className="block font-ui text-sm text-ink-muted hover:text-primary-600 transition-colors"
+                        className="gw-tap flex font-ui text-sm text-ink-muted hover:text-primary-600 transition-colors"
                       >
                         {contact.phone}
                       </a>

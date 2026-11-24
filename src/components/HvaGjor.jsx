@@ -82,7 +82,7 @@ export default function HvaGjor() {
           <img
             src={img(c.sectionImageUrl, 1536)}
             alt={c.sectionImageAlt || ''}
-            className="mt-16 lg:mt-20 w-full h-[260px] sm:h-[360px] lg:h-[460px] object-cover rounded-panel"
+            className="mt-16 lg:mt-20 w-full h-[260px] sm:h-[360px] lg:h-[460px] object-cover object-[center_25%] rounded-panel"
             loading="lazy"
             decoding="async"
           />

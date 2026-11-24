@@ -50,7 +50,7 @@ export default function SpanskAlicanteHvorforPage() {
       {/* ── El argumento ──────────────────────────────────────────────────
           Prosa a la izquierda, apoyo pegajoso a la derecha. Los filetes
           marcan dónde empieza cada idea; no hace falta una tarjeta. */}
-      <section className="py-24 lg:py-32 bg-white">
+      <section className="py-20 lg:py-28 bg-white">
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
 

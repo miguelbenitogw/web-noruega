@@ -29,7 +29,7 @@ export default function CTABanner() {
             <img
               src={img(c.imageUrl || IMAGES.peopleTeam2, 1600)}
               alt={c.imageAlt || ''}
-              className="w-full h-[280px] lg:h-[460px] object-cover object-center rounded-panel lg:rounded-l-none"
+              className="w-full h-[280px] lg:h-[460px] object-cover object-[center_38%] rounded-panel lg:rounded-l-none"
               loading="lazy"
               decoding="async"
             />

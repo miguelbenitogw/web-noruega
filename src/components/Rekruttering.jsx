@@ -37,7 +37,11 @@ export default function Rekruttering() {
             El sello («modelo estructurado desde 2014») deja de ser una
             pastilla de color y pasa a ser un dato al final de la línea: es
             una fecha, no un botón. */}
-        <div className="grid lg:grid-cols-12 gap-6 lg:gap-12 items-end">
+        {/* `items-start` y no `items-end`: con `items-end` el sello caía 179 px
+            por debajo de la etiqueta, pegado al pie del titular y sin nada con
+            que alinearse. Igual que «Vårt tilbud» en la portada: las dos
+            columnas de una cabecera arrancan en la misma línea. */}
+        <div className="grid lg:grid-cols-12 gap-6 lg:gap-12 items-start">
           <div className="lg:col-span-7">
             <span className="gw-label text-primary-600">{c.label}</span>
             <h2 id="rekruttering-heading" className="mt-5 text-display-sm font-semibold text-navy">

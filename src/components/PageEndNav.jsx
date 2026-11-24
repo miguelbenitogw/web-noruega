@@ -25,7 +25,7 @@ export default function PageEndNav({ current }) {
           <div className="flex flex-col gap-7 lg:gap-6">
             <a
               href="/"
-              className="group inline-flex items-center gap-2.5 py-1.5 self-start font-ui text-sm font-semibold text-ink hover:text-primary-600 transition-colors"
+              className="group gw-tap inline-flex items-center gap-2.5 py-1.5 self-start font-ui text-sm font-semibold text-ink hover:text-primary-600 transition-colors"
             >
               <svg
                 width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"

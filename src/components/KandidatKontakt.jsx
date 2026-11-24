@@ -266,7 +266,7 @@ export default function KandidatKontakt() {
                         key={t.key}
                         type="button"
                         onClick={() => setForm(f => ({ ...f, type: t.key }))}
-                        className={`flex-1 rounded-pill py-2.5 font-ui text-sm font-semibold transition-colors duration-200 cursor-pointer ${
+                        className={`flex-1 rounded-pill py-2.5 max-lg:min-h-[44px] font-ui text-sm font-semibold transition-colors duration-200 cursor-pointer ${
                           form.type === t.key
                             ? 'bg-navy text-white'
                             : 'text-ink-muted hover:text-navy'

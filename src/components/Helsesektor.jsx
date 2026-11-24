@@ -57,7 +57,7 @@ export default function Helsesektor() {
             <img
               src={img(c.imageUrl || IMAGES.enfermeria, 1200)}
               alt={c.imageAlt || 'Helsepersonell i opplæring gjennom Global Working'}
-              className="w-full h-[300px] sm:h-[400px] lg:h-[520px] object-cover rounded-panel"
+              className="w-full h-[300px] sm:h-[400px] lg:h-[520px] object-cover object-[28%_50%] rounded-panel"
               loading="lazy"
               width="640"
               height="520"

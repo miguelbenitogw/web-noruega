@@ -55,7 +55,7 @@ export default function TalentportalenPage() {
               href="/tutorial-talent-portal/index.html"
               target="_blank"
               rel="noopener"
-              className="shrink-0 inline-flex items-center gap-2 font-ui text-sm font-semibold text-primary-200 hover:text-white transition-colors"
+              className="gw-tap shrink-0 inline-flex items-center gap-2 font-ui text-sm font-semibold text-primary-200 hover:text-white transition-colors"
             >
               Åpne i fullskjerm
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">

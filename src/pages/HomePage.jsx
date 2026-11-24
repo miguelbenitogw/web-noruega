@@ -182,7 +182,7 @@ export default function HomePage() {
               <img
                 src={img(hHealth.imageUrl || IMAGES.homeMetricsTeam, 1200)}
                 alt={hHealth.imageAlt || 'Global Working team i samarbeid med norske arbeidsgivere'}
-                className="w-full h-[300px] lg:h-[520px] object-cover rounded-panel lg:rounded-r-none"
+                className="w-full h-[300px] lg:h-[520px] object-cover object-[28%_50%] rounded-panel lg:rounded-r-none"
                 loading="lazy"
                 decoding="async"
               />

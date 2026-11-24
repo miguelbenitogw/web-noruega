@@ -155,7 +155,7 @@ export default function Navbar() {
       <div className="container-xl">
         <div className="flex items-center justify-between h-16 xl:h-[4.5rem]">
 
-          <a href="/" aria-label="Global Working Norge – hjem" className="shrink-0">
+          <a href="/" aria-label="Global Working Norge – hjem" className="gw-tap shrink-0">
             <img
               src={scrolled ? IMAGES.logoColor : IMAGES.logo}
               alt="Global Working Norge"

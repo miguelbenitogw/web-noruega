@@ -25,13 +25,18 @@ function TeamMember({ member }) {
   else if (!portrait && normalizedName.includes('gro')) portrait = groPhoto
   else if (!portrait && member.hasImage) portrait = IMAGES.ceoPhoto
 
+  // La ficha «Teamet» lleva la foto de grupo, no un retrato: centrada en un 4:5 se
+  // queda con la mitad del grupo y parte por el borde a quien caiga justo ahí.
+  // Alineada a la izquierda el corte cae sobre la pared, sin cortar caras.
+  const isGroupPhoto = /team-hero/.test(portrait || '')
+
   return (
     <div>
       {portrait ? (
         <img
           src={img(portrait, 640)}
           alt={member.imageAlt || member.name}
-          className="w-full aspect-[4/5] object-cover object-top rounded-panel bg-frost"
+          className={`w-full aspect-[4/5] object-cover rounded-panel bg-frost ${isGroupPhoto ? 'object-left-top' : 'object-top'}`}
           loading="lazy"
           decoding="async"
         />

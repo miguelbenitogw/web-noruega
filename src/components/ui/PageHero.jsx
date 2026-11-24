@@ -50,12 +50,12 @@ function Breadcrumb({ trail, current }) {
           el `items-center` de la fila reparte el aire nuevo arriba y abajo. */}
       <ol className="flex flex-wrap items-center gap-2 font-ui text-sm text-primary-300">
         <li>
-          <a href="/" className="inline-block py-1 transition-colors hover:text-white">Hjem</a>
+          <a href="/" className="gw-tap inline-block py-1 px-1.5 -mx-1.5 transition-colors hover:text-white">Hjem</a>
         </li>
 
         {trail.map((step) => (
           <Separator key={step.href}>
-            <a href={step.href} className="inline-block py-1 transition-colors hover:text-white">{step.label}</a>
+            <a href={step.href} className="gw-tap inline-block py-1 px-1.5 -mx-1.5 transition-colors hover:text-white">{step.label}</a>
           </Separator>
         ))}
 

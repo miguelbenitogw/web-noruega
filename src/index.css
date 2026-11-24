@@ -130,6 +130,17 @@
   .gw-measure    { @apply max-w-measure; }
   .gw-measure-sm { @apply max-w-measure-sm; }
 
+  /* ── Zona táctil ──────────────────────────────────────────────────────
+     Medido a 375 px había enlaces de texto de 21 a 37 px de alto repartidos
+     por todo el sitio (migas, pie, «Les mer», enlaces de contacto). Esta
+     clase les da 44 px de alto SOLO por debajo de lg, donde se usa el dedo;
+     en escritorio no cambia nada y el ritmo de las tarjetas se queda como
+     estaba. `inline-flex` + `items-center` reparte el aire nuevo arriba y
+     abajo, así que el texto no se corre de la línea de su columna. */
+  @media (max-width: 1023px) {
+    .gw-tap { display: inline-flex; align-items: center; min-height: 44px; }
+  }
+
   /* ── Pila de párrafos ─────────────────────────────────────────────────
      Un bloque de texto que viene de los datos con varios párrafos se pinta
      como varios <p> hermanos dentro de un contenedor con esta clase. El

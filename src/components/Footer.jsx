@@ -85,14 +85,14 @@ export default function Footer() {
                   propio, así que el área pulsable es la del enlace y no la de
                   su línea de texto. El `space-y` baja de 2.5 a 1 porque ese
                   aire ya lo pone el enlace: si no, el pie se estiraba. */}
-              <ul className="space-y-1" role="list">
+              <ul className="space-y-1 max-lg:space-y-0" role="list">
                 {(items || []).map((item) => {
                   const isFunctionalLink = item.href.startsWith('mailto:') || item.href.startsWith('tel:')
                   return (
                     <li key={item.label}>
                       <a
                         href={item.href}
-                        className="inline-block py-1.5 font-ui text-primary-200 text-[0.875rem] hover:text-white transition-colors duration-200"
+                        className="gw-tap inline-block py-1.5 font-ui text-primary-200 text-[0.875rem] hover:text-white transition-colors duration-200"
                         rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                         target={item.href.startsWith('http') ? '_blank' : undefined}
                       >
@@ -110,7 +110,7 @@ export default function Footer() {
           <p>© {new Date().getFullYear()} {c.copyright}</p>
           <div className="flex flex-wrap justify-center gap-x-7 gap-y-2">
             {(c.bottomLinks || []).map((link) => (
-              <a key={link.href} href={link.href} className="inline-block py-1.5 hover:text-white transition-colors">
+              <a key={link.href} href={link.href} className="gw-tap inline-block py-1.5 hover:text-white transition-colors">
                 {link.label}
               </a>
             ))}
