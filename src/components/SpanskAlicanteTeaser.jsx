@@ -55,7 +55,7 @@ export default function SpanskAlicanteTeaser() {
               className="mt-6 text-body text-ink-muted leading-[1.6]"
             />
 
-            <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
+            <div className="mt-9 flex flex-col sm:flex-row sm:flex-wrap gap-3.5">
               <a
                 href="/spansk-i-alicante"
                 onClick={() => trackEvent('cta_click', { location: 'landing_spansk_alicante', cta: 'utforsk_spansk_i_alicante' })}

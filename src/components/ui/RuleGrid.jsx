@@ -10,7 +10,7 @@ import { createContext, createElement, useContext } from 'react'
  * mano en cada sitio:
  *
  *   [&:nth-child(even)]:border-l [&:nth-child(n+3)]:border-t
- *   lg:[&:nth-child(n+2)]:border-l lg:[&:nth-child(n+3)]:border-t-0
+ *   [&:nth-child(n+2)]:lg:border-l [&:nth-child(n+3)]:lg:!border-t-0
  *
  * Eso estaba copiado en ocho archivos, y en dos de ellos con las clases en
  * otro orden —lo que hacía imposible ver de un vistazo si eran iguales (lo
@@ -43,37 +43,44 @@ import { createContext, createElement, useContext } from 'react'
    corresponden. Las variantes con dos columnas asumen que la rejilla tiene
    como máximo dos filas, y las de tres, una sola: es lo que hay en la web y
    lo que había antes clase por clase. */
+/* Los resets (`border-t-0`) van con `!`. Tailwind 3 ordena los variantes
+   arbitrarios por selector y no por breakpoint: `[&:nth-child(n+2)]:border-t`
+   salía en el CSS DESPUÉS de `sm:[&:nth-child(2)]:border-t-0`, así que la
+   segunda celda conservaba su filete de arriba en todas las anchuras y la
+   tira de columnas se veía con un escalón de 1 px. Medido: 0,77 px de borde
+   en la celda 2 a 807 y a 1440 px. El `!` hace que el reset gane sin depender
+   del orden del archivo. */
 const LADDERS = {
   // 2 columnas desde móvil, 4 en lg. Tiras de datos (hero, helsesektor).
   'base2-lg4': {
     grid: 'grid grid-cols-2 lg:grid-cols-4',
     cell: '[&:nth-child(even)]:border-l [&:nth-child(n+3)]:border-t '
-        + 'lg:[&:nth-child(n+2)]:border-l lg:[&:nth-child(n+3)]:border-t-0',
+        + '[&:nth-child(n+2)]:lg:border-l [&:nth-child(n+3)]:lg:!border-t-0',
   },
   // Apiladas en móvil, 2 en sm, 4 en lg. Columnas de servicio y de etapas.
   'sm2-lg4': {
     grid: 'grid sm:grid-cols-2 lg:grid-cols-4',
-    cell: '[&:nth-child(n+2)]:border-t sm:[&:nth-child(2)]:border-t-0 '
+    cell: '[&:nth-child(n+2)]:border-t [&:nth-child(2)]:sm:!border-t-0 '
         + '[&:nth-child(even)]:sm:border-l [&:nth-child(n+3)]:sm:border-t '
-        + 'lg:[&:nth-child(n+2)]:border-l lg:[&:nth-child(n+3)]:border-t-0',
+        + '[&:nth-child(n+2)]:lg:border-l [&:nth-child(n+3)]:lg:!border-t-0',
   },
   // Apiladas en móvil, 2 en sm.
   'sm2': {
     grid: 'grid sm:grid-cols-2',
-    cell: '[&:nth-child(n+2)]:border-t sm:[&:nth-child(2)]:border-t-0 '
+    cell: '[&:nth-child(n+2)]:border-t [&:nth-child(2)]:sm:!border-t-0 '
         + '[&:nth-child(even)]:sm:border-l',
   },
   // Apiladas en móvil, 2 en md. Dos noticias, que necesitan más ancho.
   'md2': {
     grid: 'grid md:grid-cols-2',
-    cell: '[&:nth-child(n+2)]:border-t md:[&:nth-child(n+2)]:border-t-0 '
-        + 'md:[&:nth-child(n+2)]:border-l',
+    cell: '[&:nth-child(n+2)]:border-t [&:nth-child(n+2)]:md:!border-t-0 '
+        + '[&:nth-child(n+2)]:md:border-l',
   },
   // Apiladas en móvil, 3 en sm.
   'sm3': {
     grid: 'grid sm:grid-cols-3',
-    cell: '[&:nth-child(n+2)]:border-t sm:[&:nth-child(n+2)]:border-t-0 '
-        + 'sm:[&:nth-child(n+2)]:border-l',
+    cell: '[&:nth-child(n+2)]:border-t [&:nth-child(n+2)]:sm:!border-t-0 '
+        + '[&:nth-child(n+2)]:sm:border-l',
   },
   // 3 columnas desde móvil, en una sola fila. Tira de datos corta.
   'base3': {

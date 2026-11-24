@@ -12,6 +12,7 @@ export default function KontaktPage() {
         current={hero.breadcrumb}
         title={hero.h1}
         titleId="kontakt-hero-heading"
+        trust
         description={hero.description}
       />
 

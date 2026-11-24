@@ -37,6 +37,13 @@
 
   h1 { letter-spacing: -0.035em; }
 
+  /* `balance` reparte el titular en líneas parejas: sin esto un h2 de dos
+     líneas dejaba una palabra huérfana abajo («Working», «helsevesenet») y el
+     bloque parecía cortado por accidente. `pretty` hace lo mismo en el cuerpo
+     con la última línea del párrafo. Navegadores viejos lo ignoran sin romper. */
+  h1, h2, h3 { text-wrap: balance; }
+  p, li, blockquote, figcaption { text-wrap: pretty; }
+
   p { margin: 0; }
 
   /* Interfaz en Poppins: botones, campos y navegación. El serif es para leer,
@@ -49,8 +56,15 @@
     @apply font-ui;
   }
 
+  /* Foco en dos tonos: anillo azul por fuera y un halo blanco que lo separa
+     del elemento. Antes era `ring-primary-700` con offset blanco: sobre las
+     bandas navy (hero, pie, CTA) el anillo azul oscuro desaparecía contra el
+     fondo y quien navega con teclado perdía de vista dónde estaba. Con el halo
+     blanco se ve igual sobre blanco, sobre `surface` y sobre navy. */
   *:focus-visible {
-    @apply outline-none ring-2 ring-primary-700 ring-offset-2;
+    outline: 2px solid #5E96D2;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px #fff;
   }
 
   ::selection {
@@ -70,9 +84,16 @@
   .gw-label {
     @apply inline-flex items-center gap-3 font-ui text-body-xs font-semibold;
   }
+  /* El filete era naranja. Con una etiqueta por sección y un botón naranja
+     en la misma pantalla, el acento salía dos y tres veces por vista y dejaba
+     de señalar nada: el ojo no sabía cuál era LA acción. Ahora el filete toma
+     el color de su etiqueta (azul sobre claro, blanco sobre navy) a media
+     intensidad, y el naranja queda solo para el botón principal. */
   .gw-label::before {
     content: '';
-    @apply block h-[2px] w-7 bg-cta shrink-0;
+    @apply block h-px w-8 shrink-0;
+    background-color: currentColor;
+    opacity: 0.5;
   }
 
   /* ── Cintillo de prensa ───────────────────────────────────────────────
@@ -109,9 +130,20 @@
            rounded-pill px-7 py-3.5 text-body-sm leading-none
            transition-colors duration-200 cursor-pointer;
   }
-  .gw-btn-ember { @apply bg-cta text-white hover:bg-cta-600; }
-  .gw-btn-ink   { @apply bg-navy text-white hover:bg-primary-800; }
-  .gw-btn-ghost { @apply border border-white/35 text-white hover:bg-white/10; }
+  /* `min-h-12`: 48 px de alto en todos los tamaños, el mismo objetivo táctil
+     que el resto del sistema, sin depender del interlineado de la fuente.
+     `active` oscurece un paso más: confirma la pulsación sin moverse. */
+  /* `sm:whitespace-nowrap`: «Utforsk Spansk i Alicante» se partía en dos
+     líneas dentro de la pastilla, que es lo que más delata un botón roto.
+     Las filas de botones llevan `sm:flex-wrap`, así que el que no cabe baja
+     entero a la línea siguiente. En móvil van apilados a ancho completo y
+     ahí sí pueden partir. */
+  .gw-btn { @apply min-h-12 text-center sm:whitespace-nowrap; }
+  .gw-btn-ember { @apply bg-cta text-white hover:bg-cta-600 active:bg-[#9E3719]; }
+  .gw-btn-ink   { @apply bg-navy text-white hover:bg-primary-800 active:bg-navy-deep; }
+  /* El contorno pasa de 35 % a 45 %: sobre navy el de 35 % quedaba en 1,9:1 y
+     el botón secundario del hero se leía como texto suelto. */
+  .gw-btn-ghost { @apply border border-white/45 text-white hover:bg-white/10 hover:border-white/70; }
   /* El fondo blanco es parte del botón, no del sitio donde cae: sin él, sobre
      `bg-surface` el contorno se transparenta y el botón desaparece. Dos de los
      cuatro sitios que lo usan le añadían `bg-white` a mano. */
@@ -124,7 +156,38 @@
     @apply bg-frost rounded-panel border border-transparent
            transition-colors duration-200;
   }
-  .gw-panel-hover:hover { @apply border-primary-200 bg-primary-50; }
+  .gw-panel-hover:hover,
+  .gw-panel-hover:focus-within { @apply border-primary-200 bg-primary-50; }
+
+  /* ── Foto ─────────────────────────────────────────────────────────────
+     Un filete interior de 1 px en navy al 8 %. Las fotos de aula y oficina
+     son de paredes blancas: sobre fondo blanco el borde de la foto se
+     disolvía y la imagen parecía un recorte flotando. El filete se pinta
+     con `outline` hacia dentro, así que no cambia ni un píxel de la caja. */
+  .gw-photo {
+    @apply rounded-panel object-cover bg-frost;
+    outline: 1px solid rgb(6 42 106 / 0.08);
+    outline-offset: -1px;
+  }
+
+  /* ── Pie de foto ──────────────────────────────────────────────────────
+     Una foto propia con su pie («Teamet foran hovedkontoret i Alicante»)
+     es una prueba; la misma foto sin pie es decoración. El pie va en el
+     serif en cursiva, a tamaño de metadato: se lee como el pie de un
+     informe, no como una etiqueta de interfaz, y no compite con el texto. */
+  .gw-caption {
+    @apply mt-3 font-body italic text-body-xs leading-snug text-ink-soft;
+  }
+  .gw-caption-dark { @apply text-primary-200; }
+
+  /* ── Entradilla ───────────────────────────────────────────────────────
+     El primer párrafo bajo un titular de sección. Estaba escrito a mano como
+     `text-body text-ink-muted leading-[1.6]` con variantes; un paso más de
+     cuerpo separa la entrada del texto corrido y le da al titular un
+     escalón intermedio en vez de un salto de 44 a 17 px. */
+  .gw-lede {
+    @apply text-body lg:text-body-lg leading-[1.55] text-ink-muted;
+  }
 
   /* Medida de lectura: el serif pide línea corta. */
   .gw-measure    { @apply max-w-measure; }

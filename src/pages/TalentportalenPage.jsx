@@ -34,6 +34,7 @@ export default function TalentportalenPage() {
         current={hero.breadcrumb}
         title={hero.h1}
         titleId="talentportalen-hero-heading"
+        trust
         titleWidth="18ch"
         description={hero.description}
       />

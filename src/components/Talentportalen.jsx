@@ -60,7 +60,7 @@ export default function Talentportalen() {
               className="mt-6 gw-measure text-body text-ink-muted leading-[1.6]"
             />
 
-            <div className="mt-9 flex flex-col sm:flex-row gap-3.5">
+            <div className="mt-9 flex flex-col sm:flex-row sm:flex-wrap gap-3.5">
               <a
                 href={c.portalUrl}
                 target="_blank"

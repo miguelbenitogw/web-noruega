@@ -186,7 +186,7 @@ export default function Navbar() {
                   <a
                     key={link.href}
                     href={link.href}
-                    className={`ml-3 gw-btn whitespace-nowrap px-5 py-2.5 text-sm ${
+                    className={`ml-3 gw-btn whitespace-nowrap min-h-11 px-5 py-2.5 text-sm ${
                       scrolled ? 'gw-btn-ink' : 'gw-btn-ghost'
                     }`}
                   >
