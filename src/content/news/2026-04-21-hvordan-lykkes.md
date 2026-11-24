@@ -131,6 +131,6 @@ Vågå kommune er et godt eksempel på hvordan internasjonal rekruttering kan bl
 
 For kommuner som vurderer å gå i gang, handler mye om å gjøre de riktige grepene fra start.
 
-Gjennom Global Working får dere kandidater som allerede er språklig og faglig forberedt før oppstart – men det er samspillet med kommunen som avgjør resultatet.
+Gjennom Global Working får dere [kandidater som allerede er språklig og faglig forberedt](/talentportalen) før oppstart – men det er samspillet med kommunen som avgjør resultatet.
 
 Ønsker dere å høre hvordan andre kommuner har jobbet med integrering i praksis, tar vi gjerne en uforpliktende prat.

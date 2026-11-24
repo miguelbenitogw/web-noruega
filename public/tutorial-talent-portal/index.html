@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GlobalWorking Talent Portal – produktomvisning</title>
+<!-- noindex: esto es una pieza que vive dentro del iframe de /talentportalen,
+     no una página. Indexada competía con /talentportalen con un HTML sin texto.
+     `follow` deja que se sigan los enlaces. Sin canonical a propósito:
+     canonical hacia otra URL + noindex son dos señales que se contradicen.
+     El meta robots no afecta al iframe: solo lo leen los buscadores. -->
+<meta name="robots" content="noindex, follow">
 <!--
   =====================================================================
   GlobalWorking Talent Portal – selvspillende produktomvisning

@@ -4,6 +4,10 @@ import PageHero from '../components/ui/PageHero'
 import RuleGrid from '../components/ui/RuleGrid'
 import useContent from '../hooks/useContent'
 import RichText from '../components/ui/RichText'
+// Capítulos y narración del recorrido, extraídos en build del HTML del propio
+// iframe (ver el plugin `talent-tour` en vite.config.js): lo que dice la
+// omvisning es lo que dice el resumen, sin una segunda copia a mano.
+import TOUR_CHAPTERS from 'virtual:talent-tour'
 
 /**
  * Talentportalen
@@ -68,6 +72,31 @@ export default function TalentportalenPage() {
               className="block w-full h-[560px] sm:h-[620px] lg:h-[720px] border-0"
             />
           </div>
+
+          {/* La omvisning en texto. El iframe se anima solo y quien no lo
+              mira entero —o un buscador, que no lo mira nunca— se quedaba sin
+              saber qué hace el portal. Mismos títulos y narración que el
+              recorrido (ver src/lib/talentTour.js). Filetes y no tarjetas:
+              son capítulos de una misma secuencia. */}
+          {TOUR_CHAPTERS.length > 0 && (
+            <ol className="mt-10 lg:mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 border-t border-white/15">
+              {TOUR_CHAPTERS.map((chapter) => (
+                <li key={chapter.number} className="py-7 border-b border-white/15">
+                  <h3 className="font-heading text-body-lg font-semibold text-white leading-snug">
+                    {chapter.title}
+                  </h3>
+                  <dl className="mt-4 space-y-3">
+                    {chapter.steps.map((step) => (
+                      <div key={step.t}>
+                        <dt className="font-ui text-body-sm font-semibold text-primary-100">{step.t}</dt>
+                        <dd className="mt-0.5 text-body-sm text-primary-200 leading-relaxed">{step.d}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </li>
+              ))}
+            </ol>
+          )}
         </div>
       </section>
 

@@ -85,6 +85,9 @@ const normalizeLocalNews = (filePath, rawContent) => {
     featured: meta.featured === 'true',
     status: meta.status || 'published',
     publishAt: meta.publishAt || '',
+    // Fecha de la última edición, si el .md la declara. seo.js la usa como
+    // `dateModified`; sin ella cae a la de publicación.
+    updatedAt: meta.updatedAt || '',
     author: meta.author || 'Global Working',
     seoTitle: meta.seoTitle || title,
     seoDescription: meta.seoDescription || meta.excerpt || '',
