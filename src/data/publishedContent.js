@@ -182,7 +182,7 @@ const publishedContent = {
   "homeHealth": {
     "heading": "Vi støtter det norske helsevesenet",
     "imageUrl": "https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/2026/04/17/9310b14e-9e29-45fb-8ca8-85c672dee960-bilde-sykepleier.jpg",
-    "description": "Global Working den største leverandøren av sykepleiere utenfra Skandinavia til Norge. Vi tilbyr spesielt helserettet undervisning i språktreningen vår. \n\nSiden 2014 har Global Working levert kvalifiserte sykepleiere til norske kommuner og helseforetak."
+    "description": "Global Working den største leverandøren av sykepleiere utenfra Skandinavia til Norge. Vi tilbyr spesielt [helserettet undervisning i språktreningen vår](/spansk-i-alicante/helsenorsk). \n\nSiden 2014 har Global Working levert kvalifiserte sykepleiere til norske kommuner og helseforetak."
   },
   "godeGrunner": {
     "heading": "En partner for faste ansettelser",
@@ -208,7 +208,7 @@ const publishedContent = {
             "duration": "9 måneder"
           }
         ],
-        "description": "Kandidatene gjennomfører opptil 650 undervisningstimer i norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner.\n\nUndervisningen dekker alt fra dagligdagse samtaler til faglig dokumentasjon og kommunikasjon med pasienter og kollegaer. Kandidatene øver på reelle situasjoner fra norsk helsevesen slik at de er klare for arbeidslivet fra første dag."
+        "description": "Kandidatene gjennomfører opptil 650 undervisningstimer i [norsk, helseterminologi og praktisk språkbruk i kliniske situasjoner](/spansk-i-alicante/helsenorsk).\n\nUndervisningen dekker alt fra dagligdagse samtaler til faglig dokumentasjon og kommunikasjon med pasienter og kollegaer. Kandidatene øver på reelle situasjoner fra norsk helsevesen slik at de er klare for arbeidslivet fra første dag."
       },
       {
         "title": "Strukturert overgang til jobb",

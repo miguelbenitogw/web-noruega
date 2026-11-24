@@ -21,12 +21,30 @@ const NORWAY = { '@type': 'Country', name: 'Norway' }
 // La certificación es el dato que más pesa para quien firma en una kommune, y
 // hasta ahora solo existía como texto suelto en /om-oss. Como nodo la puede
 // leer un buscador o un LLM sin tener que interpretar una frase.
+// Sin `about`: ese era el ALCANCE del certificado («Språkundervisning og
+// internasjonal rekruttering») y el cliente no lo confirmó. Un alcance
+// inventado en un certificado es peor que ninguno: quien firma en una kommune
+// lo puede verificar. Queda la norma y quien la emite. Espejo del prerender.
 const ISO_CERTIFICATION = {
   '@type': 'Certification',
   name: 'ISO 9001:2015',
-  about: 'Språkundervisning og internasjonal rekruttering',
   issuedBy: { '@type': 'Organization', name: 'TÜV Nord' },
 }
+
+// El fundador como entidad. Una empresa con cara, cargo y año de fundación se
+// lee como empresa establecida, no como bemanningsbyrå anónimo; y hasta ahora
+// Pablo Lanza no aparecía en ningún grafo. Nombre y foto salen de omOssTeam.
+// Espejo EXACTO de buildFounderNode en scripts/prerender-meta.mjs.
+const FOUNDER_ID = `${SITE_URL}/#pablo-lanza`
+
+const buildFounderNode = () => ({
+  '@type': 'Person',
+  '@id': FOUNDER_ID,
+  name: 'Pablo Lanza',
+  jobTitle: 'CEO og grunnlegger',
+  worksFor: ORG_REF,
+  image: 'https://globalworking.no/assets/media/pablo-ceo-300.webp',
+})
 
 const buildEntityNodes = () => [
   {
@@ -54,6 +72,7 @@ const buildEntityNodes = () => [
       'Norskopplæring for fagfolk',
     ],
     foundingDate: '2014',
+    founder: { '@id': FOUNDER_ID },
     numberOfEmployees: { '@type': 'QuantitativeValue', minValue: 50 },
     areaServed: NORWAY,
     knowsLanguage: ['nb-NO', 'es-ES', 'en'],
@@ -114,6 +133,7 @@ const buildEntityNodes = () => [
     openingHours: 'Mo-Fr 09:00-17:00',
     priceRange: '$$',
   },
+  buildFounderNode(),
 ]
 
 // Nodos por ruta. `EXTRAS` va por `pathname` y es el espejo de la clave
@@ -132,6 +152,16 @@ const EXTRAS = {
     serviceType: 'Rekruttering av helsepersonell',
     summary: 'Vi finner, forbereder og følger opp utenlandske sykepleiere og helsefagarbeidere til norske kommuner og sykehus — med språk, autorisasjon og trygg oppstart.',
     audienceType: 'Norske kommuner, sykehus og sykehjem',
+  },
+  // Talentportalen como servicio: es lo único que ningún competidor tiene, y
+  // sin nodo era una página más. Sin precio ni condiciones de acceso: eso
+  // todavía lo tiene que confirmar el cliente. Espejo del prerender.
+  '/talentportalen': {
+    kind: 'service',
+    name: 'Talentportalen',
+    serviceType: 'Kandidatportal for rekruttering av helsepersonell',
+    summary: 'Talentportalen er vår kandidatportal: se tilgjengelige sykepleiere og helsefagarbeidere med dokumentert norsknivå, og inviter til intervju direkte.',
+    audienceType: 'Norske arbeidsgivere',
   },
   '/spansk-i-alicante/helsenorsk': {
     kind: 'course',
@@ -657,15 +687,14 @@ export function setArticleSEO(article) {
   })
   clearAllDynamicSchemas()
 
-  // `datePublished` siempre; `dateModified` SOLO si hay una fecha de edición real y
-  // distinta. Antes caía a `publishAt`, así que los dos campos salían idénticos en los 10
-  // artículos: eso no es información, es ruido. Un `dateModified` igual al de publicación
-  // no dice "no se ha editado", dice "no sé", y si algún día se edita uno de verdad la
-  // señal ya no vale nada. Ausente, Google asume que no se ha tocado desde que salió, que
-  // es exactamente la verdad: ningún `.md` de `src/content/news/` tiene hoy `updatedAt`.
+  // `dateModified` siempre: el campo `updatedAt` del frontmatter si existe, y si no la
+  // fecha de publicación. Antes se omitía cuando no había edición, pero Google y los LLM
+  // tratan la ausencia como "fecha desconocida", y el plan SEO de 11-2026 lo pide
+  // explícito. Igualarlo a `datePublished` cuando nadie tocó el texto dice la verdad: la
+  // última versión es la publicada. Al editar un artículo, poner `updatedAt` en su .md.
+  // Espejo de buildArticleNode en el prerender.
   const datePublished = article.publishAt || `${article.date}T08:00:00Z`
-  const dateModified =
-    article.updatedAt && article.updatedAt !== datePublished ? article.updatedAt : null
+  const dateModified = article.updatedAt || datePublished
 
   const crumbs = [
     { name: 'Forside', url: SITE_URL },
@@ -701,7 +730,7 @@ export function setArticleSEO(article) {
       headline: article.title,
       description,
       datePublished,
-      ...(dateModified ? { dateModified } : {}),
+      dateModified,
       // `author` y `publisher` apuntan al mismo nodo que el resto del sitio en
       // vez de repetir una Organization anónima por artículo: diez copias
       // sueltas de «Global Working» pueden ser diez empresas distintas para un

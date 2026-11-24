@@ -3,6 +3,8 @@ import path from 'node:path'
 import publishedContent from '../src/data/publishedContent.js'
 import siteContent from '../src/data/siteContent.js'
 import { deepMergeContent } from '../src/lib/contentMappers.js'
+import { escapeHtml as esc, richTextToHtml, markdownTextToHtml, articleToHtml } from '../src/lib/staticHtml.js'
+import { parseTourChapters } from '../src/lib/talentTour.js'
 
 const DIST_DIR = path.resolve('dist')
 const INDEX_PATH = path.join(DIST_DIR, 'index.html')
@@ -38,12 +40,30 @@ const NORWAY = { '@type': 'Country', name: 'Norway' }
 // este grafo los sustituye en el HTML servido (ver stripLegacyJsonLd).
 // La certificación es el dato que más pesa para quien firma en una kommune, y
 // hasta ahora solo existía como texto suelto en /om-oss. Espejo de seo.js.
+// Sin `about` (el alcance del certificado): no está confirmado por el cliente,
+// y un alcance publicado que no coincide con el real es justo lo que un
+// comprador de una kommune puede comprobar.
 const ISO_CERTIFICATION = {
   '@type': 'Certification',
   name: 'ISO 9001:2015',
-  about: 'Språkundervisning og internasjonal rekruttering',
   issuedBy: { '@type': 'Organization', name: 'TÜV Nord' },
 }
+
+// El fundador como entidad, con el `founder` de la Organization apuntando a
+// él. Sin esto Pablo Lanza no existía en ningún grafo ni en ningún HTML
+// estático. La foto es la misma que pinta /om-oss. Espejo de seo.js.
+const FOUNDER_ID = `${SITE_URL}/#pablo-lanza`
+const FOUNDER_NAME = 'Pablo Lanza'
+const FOUNDER_TITLE = 'CEO og grunnlegger'
+
+const buildFounderNode = () => ({
+  '@type': 'Person',
+  '@id': FOUNDER_ID,
+  name: FOUNDER_NAME,
+  jobTitle: FOUNDER_TITLE,
+  worksFor: ORG_REF,
+  image: 'https://globalworking.no/assets/media/pablo-ceo-300.webp',
+})
 
 const buildOrganizationNode = () => ({
   // `Organization`, ya no `EmploymentAgency`: en schema.org ese tipo es la
@@ -68,6 +88,7 @@ const buildOrganizationNode = () => ({
     'Norskopplæring for fagfolk',
   ],
   foundingDate: '2014',
+  founder: { '@id': FOUNDER_ID },
   numberOfEmployees: { '@type': 'QuantitativeValue', minValue: 50 },
   areaServed: NORWAY,
   knowsLanguage: ['nb-NO', 'es-ES', 'en'],
@@ -131,7 +152,7 @@ const buildAlicanteNode = () => ({
 })
 
 /** Nodos de entidad que van en TODAS las rutas. Lo demás apunta a sus `@id`. */
-const entityNodes = () => [buildOrganizationNode(), buildWebSiteNode(), buildAlicanteNode()]
+const entityNodes = () => [buildOrganizationNode(), buildWebSiteNode(), buildAlicanteNode(), buildFounderNode()]
 
 // ── Nodos por ruta ───────────────────────────────────────────────────────────
 // `Service` para lo que se contrata, `Course` para lo que se enseña. El que
@@ -257,6 +278,124 @@ const vikarbyraAnswer = () => {
   return hit ? flattenAnswer(hit.a) : ''
 }
 
+// ── Cuerpo completo de las páginas de servicio ──────────────────────────────
+// Antes el HTML estático de /helse, /vr-rekrutteringsmodell y /talentportalen
+// era UN párrafo escrito a mano (180–280 palabras con la nav). Las fases, las
+// cifras, los pasos y la explicación del modelo solo existían después de
+// JavaScript, o sea nunca para GPTBot, ClaudeBot o PerplexityBot, y para
+// Google solo en la segunda pasada. /vr-rekrutteringsmodell ni siquiera está
+// indexada.
+//
+// Cada sección sale de la MISMA clave de contenido que lee el componente de
+// React, en el mismo orden en que la pinta la página. Nada se escribe acá: si
+// alguien cambia un texto en publishedContent, cambia la web y cambia esto.
+//
+// Lo único que se deja fuera a propósito: los testimonios de GodeGrunner.
+// Nombran kommuner (Åmot, Kautokeino, Trondheim) que el plan SEO de 11-2026
+// marca como «no publicar sin confirmación del cliente». Están en la web
+// hidratada desde antes; no se amplía su alcance a los rastreadores hasta que
+// el cliente los confirme.
+const section = (heading, inner) => (inner ? `<section><h2>${esc(heading)}</h2>${inner}</section>` : '')
+
+const listOf = (items, render, tag = 'ul') => {
+  const lis = (Array.isArray(items) ? items : []).filter(Boolean).map(render).filter(Boolean)
+  return lis.length ? `<${tag}>${lis.map((li) => `<li>${li}</li>`).join('')}</${tag}>` : ''
+}
+
+/** Lo que pinta <PageHero /> debajo del título: su bajada. */
+const heroLead = (key) => richTextToHtml(content[key]?.description)
+
+/** <GodeGrunner />, sin los testimonios (ver arriba). */
+const godeGrunnerHtml = () => {
+  const c = content.godeGrunner || {}
+  const link = c.articleLink && c.articleLinkLabel
+    ? `<p><a href="${esc(c.articleLink)}">${esc(c.articleLinkLabel)}</a></p>`
+    : ''
+  return section(c.heading, `${richTextToHtml(c.description)}${link}`)
+}
+
+const helseSections = () => {
+  const comp = content.helsesektorComp || {}
+  // Mismas cifras y en el mismo orden que <Helsesektor />: stats + grupos.
+  const metrics = [
+    ...(comp.stats || []),
+    ...(comp.groupsValue ? [{ value: comp.groupsValue, label: comp.groupsLabel }] : []),
+  ]
+  const phases = content.helsePhases || {}
+  const partnership = content.helsePartnership || {}
+  return [
+    heroLead('helseHero'),
+    section(comp.heading, [
+      richTextToHtml(comp.description),
+      listOf(metrics, (m) => (m.value ? `${esc(m.value)} ${esc(m.label)}` : '')),
+    ].join('')),
+    section(phases.heading, [
+      richTextToHtml(phases.description),
+      listOf(phases.phases, (p) => [
+        `<h3>${esc(p.title)}</h3>`,
+        richTextToHtml(p.description),
+        listOf(p.formats, (f) => `${esc(f.duration)}: ${esc(f.label)}`),
+      ].join(''), 'ol'),
+    ].join('')),
+    section(partnership.heading, `${richTextToHtml(partnership.p1)}${richTextToHtml(partnership.p2)}`),
+    godeGrunnerHtml(),
+  ].join('')
+}
+
+const rekrutteringSections = () => {
+  const hva = content.hvaGjor || {}
+  const comp = content.rekrutteringComp || {}
+  const collab = content.rekrutteringCollab || {}
+  return [
+    heroLead('rekrutteringHero'),
+    section(hva.heading, [
+      richTextToHtml(hva.description),
+      listOf(hva.services, (s) => `<h3>${esc(s.title)}</h3>${richTextToHtml(s.description)}`),
+    ].join('')),
+    section(comp.heading, [
+      comp.badge ? `<p>${esc(comp.badge)}</p>` : '',
+      listOf(comp.steps, (s) => (s.title ? `${esc(s.title)}${s.description ? `: ${esc(s.description)}` : ''}` : ''), 'ol'),
+      // p1–p3 pasan por <MarkdownText />: traen sus propios ## y listas.
+      ...['p1', 'p2', 'p3'].map((k) => markdownTextToHtml(comp[k])),
+    ].join('')),
+    section(collab.heading, ['p1', 'p2', 'p3'].map((k) => richTextToHtml(collab[k])).join('')),
+    godeGrunnerHtml(),
+  ].join('')
+}
+
+// El recorrido del iframe, leído de su propio HTML (ver src/lib/talentTour.js).
+// Se carga una vez, en run(), antes de generar las rutas.
+let tourChapters = []
+
+const talentportalenSections = () => {
+  const comp = content.talentportalenComp || {}
+  const steps = content.talentportalenSteps || {}
+  const benefits = content.talentportalenBenefits || {}
+  return [
+    heroLead('talentportalenHero'),
+    // El mismo titular que lleva la sección del iframe en TalentportalenPage.
+    section('Se Talent Portal i praksis', listOf(tourChapters, (ch) =>
+      `<h3>${esc(ch.title)}</h3><dl>${ch.steps.map((s) => `<dt>${esc(s.t)}</dt><dd>${esc(s.d)}</dd>`).join('')}</dl>`, 'ol')),
+    section(comp.heading, [
+      richTextToHtml(comp.description),
+      listOf(comp.benefits, (b) => `<h3>${esc(b.title)}</h3>${richTextToHtml(b.desc)}`),
+    ].join('')),
+    section(steps.heading, listOf(steps.steps, (s) => `<h3>${esc(s.title)}</h3>${richTextToHtml(s.desc)}`, 'ol')),
+    section(benefits.heading, listOf(benefits.items, (i) => esc(i))),
+  ].join('')
+}
+
+// /om-oss: la cita del fundador que pinta <OmOss />, firmada con nombre y
+// cargo. Es lo que hace visible a Pablo Lanza en el HTML estático; el nodo
+// `Person` del grafo dice lo mismo para las máquinas.
+const omOssFounderHtml = () => {
+  const quote = content.omOssComp?.blockquote?.text
+  const signature = `${FOUNDER_NAME}, ${FOUNDER_TITLE}`
+  return quote
+    ? `<blockquote><p>${esc(quote)}</p><footer>${esc(signature)}</footer></blockquote>`
+    : `<p>${esc(signature)}</p>`
+}
+
 const ROUTES = {
   '/vr-rekrutteringsmodell': {
     title: 'Slik rekrutterer du helsepersonell fra utlandet | Global Working',
@@ -267,6 +406,7 @@ const ROUTES = {
     // (el artículo de evaluación dice que el mínimo es aprobar el B1) y hablaba de
     // «universiteter» que no aparecen en ningún otro sitio de la web.
     bodyExtra: '<h2>Slik fungerer rekrutteringsprosessen</h2><p>Global Workings rekrutteringsmodell er bygd opp i fire faser: utvelgelse av kandidater, språklig og faglig forberedelse på vår egen språkskole, dokumenthåndtering og autorisasjon, og oppfølging etter oppstart i Norge. Kandidatene kommer hovedsakelig fra Spania, Italia og Frankrike. De får opptil 650 undervisningstimer i norsk, må bestå B1-eksamen og kan nå opp mot B2 når rollen krever det. Opplæringen tar 5 måneder fysisk i Alicante, 7 måneder kombinert eller 9 måneder nettbasert.</p><p>Arbeidsgiveren intervjuer så mange kandidater den ønsker, uten forpliktelse, og ansetter kandidaten direkte. Global Working er ikke et vikarbyrå og har ikke arbeidsgiveransvar.</p>',
+    sections: rekrutteringSections,
     related: ['/helse', '/spansk-i-alicante/helsenorsk', '/talentportalen', 'news:hvordan-lykkes', 'news:rekrutteringspartner'],
     extras: {
       kind: 'service',
@@ -287,6 +427,7 @@ const ROUTES = {
     // habla de la prøveperiode. Los dos casos salen de los artículos de Vågå y
     // Sør-Fron, con sus cifras.
     bodyExtra: '<h2>Rekruttering av helsepersonell til Norge</h2><p>Global Working rekrutterer sykepleiere og helsefagarbeidere fra Sør-Europa til faste stillinger i norske kommuner og helseforetak. Før oppstart får kandidatene opptil 650 timer norsk og helsenorsk på vår egen språkskole i Alicante. Vi hjelper med autorisasjon hos Helsedirektoratet, dokumenter og papirarbeid, og følger opp kandidat og arbeidsgiver gjennom prøveperioden. Kommunen ansetter kandidaten direkte – vi er ikke et vikarbyrå.</p><h2>Kommuner som har gjort det</h2><p>Vågå kommune ansatte seks sykepleiere fra Spania som hadde lært norsk i Alicante; alle seks har i dag fast jobb ved helsehjemmet. I Sør-Fron startet samarbeidet med to sykepleiere og endte med fire sykepleiere og to assistenter.</p>',
+    sections: helseSections,
     related: ['/vr-rekrutteringsmodell', '/spansk-i-alicante/helsenorsk', '/talentportalen', 'news:vaga', 'news:sor-fron-intervju', 'news:hvordan-lykkes', 'news:sommervikarer'],
     extras: {
       kind: 'service',
@@ -317,7 +458,17 @@ const ROUTES = {
     keywords: 'kandidatportal, kandidatportalen, talentportalen, tilgjengelige sykepleiere, rekrutteringsportal',
     breadcrumbName: 'Talentportalen',
     bodyExtra: '<h2>Hvordan Talentportalen fungerer</h2><p>Talentportalen gir norske arbeidsgivere direkte tilgang til forhåndsgodkjente kandidater fra Global Workings nettverk. Du kan filtrere etter fagområde, språknivå og tilgjengelighet, lese kandidatprofiler og invitere til intervju — alt på én plattform. Kandidatene er allerede kvalitetssikret gjennom vår rekrutteringsprosess, noe som gjør at du kan gå fra behov til intervju på kort tid.</p>',
+    sections: talentportalenSections,
     related: ['/helse', '/vr-rekrutteringsmodell', 'news:kandidatportal-lansert'],
+    // Espejo de EXTRAS['/talentportalen'] en seo.js. Sin precio ni condiciones
+    // de acceso: las tiene que confirmar el cliente.
+    extras: {
+      kind: 'service',
+      name: 'Talentportalen',
+      serviceType: 'Kandidatportal for rekruttering av helsepersonell',
+      summary: 'Talentportalen er vår kandidatportal: se tilgjengelige sykepleiere og helsefagarbeidere med dokumentert norsknivå, og inviter til intervju direkte.',
+      audienceType: 'Norske arbeidsgivere',
+    },
   },
   '/om-oss': {
     schemaType: 'AboutPage',
@@ -331,6 +482,7 @@ const ROUTES = {
     // Los porcentajes del equipo y la certificación salen de omOssComp en
     // publishedContent: es lo que pinta /om-oss después de JavaScript.
     bodyExtra: '<h2>Hvem er Global Working?</h2><p>Global Working ble grunnlagt i 2014 og har hovedkontor og egen språkskole i Alicante, Spania, og kontor i Oslo. Vi er over 50 ansatte: 25 % av teamet er psykologer som jobber med seleksjon og oppfølging, og 50 % er språklærere. Prosessene våre er ISO 9001:2015-sertifisert av TÜV Nord for språkundervisning og internasjonal rekruttering.</p><p>Vi er et rekrutteringsselskap, ikke et vikarbyrå: virksomheten som ansetter kandidaten blir arbeidsgiver, og målet er faste, langvarige ansettelser.</p>',
+    sections: omOssFounderHtml,
     related: ['/helse', '/vr-rekrutteringsmodell', 'news:pablo-intervju'],
     // El <FAQ /> de esta página solo existe después de que corra React. Las seis
     // preguntas —incluida «Hva koster det å bruke Global Working?»— son
@@ -525,9 +677,11 @@ const buildArticleNode = (article, url) => ({
   headline: article.title,
   description: article.description,
   datePublished: article.publishAt || `${article.date}T08:00:00Z`,
-  // Sin `dateModified`: antes se emitía igual que datePublished en los diez
-  // artículos, que no dice «no se editó», dice «no lo sé». Ausente, Google
-  // asume que no se ha tocado desde que salió, que es la verdad.
+  // `dateModified` explícito: `updatedAt` del frontmatter si el artículo se
+  // editó, y si no la fecha de publicación (la última versión ES la
+  // publicada). Ausente, buscadores y LLM lo leen como «fecha desconocida».
+  // Al editar un .md, añadirle `updatedAt`. Espejo de setArticleSEO en seo.js.
+  dateModified: article.updatedAt || article.publishAt || `${article.date}T08:00:00Z`,
   // `author` y `publisher` apuntan al MISMO nodo que el resto del sitio, en vez
   // de repetir una Organization anónima por artículo. Antes había diez copias
   // sueltas de «Global Working» que para un buscador podían ser diez empresas.
@@ -777,6 +931,7 @@ const injectMeta = (html, pathname, route, articles) => {
   const h1 = route.title.split(' | ')[0]
   const extraContent = [
     route.bodyExtra || '',
+    route.sections ? route.sections() : '',
     route.newsIndex ? buildNewsIndexBody(articles) : '',
     route.faqBody ? buildFaqBody() : '',
     route.contactsBody ? buildContactsBody() : '',
@@ -850,17 +1005,12 @@ const injectArticleMeta = (html, article) => {
   // Inject body skeleton for article
   const dateLabel = article.date ? `<time datetime="${article.date}">${article.date}</time>` : ''
   const excerptHtml = article.excerpt ? `<p><em>${escapeHtml(article.excerpt)}</em></p>` : ''
-  const bodyText = article.body || ''
-  // Extract first ~500 chars of markdown body as plain text for crawlers
-  const plainBody = bodyText
-    .replace(/^---[\s\S]*?---\n?/, '')
-    .replace(/#{1,6}\s+/g, '')
-    .replace(/\*\*([^*]+)\*\*/g, '$1')
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .replace(/[*_~`]/g, '')
-    .trim()
-    .slice(0, 800)
-  const bodyPreview = plainBody ? `<p>${escapeHtml(plainBody)}</p>` : ''
+  // El artículo ENTERO, con sus ## y ### y sus enlaces (citas de NRK
+  // incluidas). Antes eran los primeros 800 caracteres aplanados a un párrafo:
+  // sor-fron-intervju servía 289 palabras de 1737 y una sola H2, «Les mer».
+  // articleToHtml sigue las mismas reglas que <MarkdownArticle />.
+  const articleHtml = articleToHtml(article.body || '')
+  const bodyPreview = articleHtml ? `<article>${articleHtml}</article>` : ''
   // Los artículos son la prueba (una kommune contando que funcionó) y hasta
   // ahora no devolvían nada: enlazaban a todo por la nav y a nada en concreto.
   // Desde cada uno, enlace a lo que se contrata.
@@ -1022,6 +1172,15 @@ const run = async () => {
   // con ellos, y las páginas enlazan a artículos por su título real.
   const articles = await loadArticles()
 
+  // El resumen de la omvisning sale del HTML del propio recorrido. Si un día
+  // cambia la forma de su diccionario y el parser no encuentra capítulos, se
+  // para el build: publicar /talentportalen sin resumen sería volver al
+  // párrafo suelto sin que nadie se entere.
+  tourChapters = parseTourChapters(await readFile(path.resolve('public/tutorial-talent-portal/index.html'), 'utf8'))
+  if (tourChapters.length === 0) {
+    throw new Error('prerender: no se encontraron capítulos en public/tutorial-talent-portal/index.html (DICT.nb).')
+  }
+
   for (const [pathname, route] of Object.entries(ROUTES)) {
     const routeDir = path.join(DIST_DIR, ...pathname.split('/').filter(Boolean))
     await mkdir(routeDir, { recursive: true })
@@ -1076,24 +1235,41 @@ const run = async () => {
     .map((p) => escapeHtml(p.name))
     .join(' og ')
 
+  // Las secciones de la portada, de las mismas claves que leen HomePage y sus
+  // componentes, en el orden en que se pintan. Antes «Våre tjenester» era una
+  // lista escrita a mano con otras descripciones que las de la web.
+  const hs = content.homeServices || {}
+  const videos = content.homeVideos || {}
+  const hHealth = content.homeHealth || {}
+  const teaser = content.spanskAlicanteTeaser || {}
+  const banner = content.ctaBanner || {}
+  const hContact = content.homeContact || {}
+
   const homeSkeleton = buildBodySkeleton({
     h1: 'Rekruttering av helsepersonell og fagfolk til Norge',
     description: HOME_DESCRIPTION,
     breadcrumbs: null,
     extraContent: [
+      richTextToHtml(content.hero?.description),
       statsHtml,
-      '<h2>Våre tjenester</h2>',
-      '<ul>',
-      '<li><a href="/helse">Rekruttering av sykepleiere til Norge</a> — sykepleiere og helsefagarbeidere fra Sør-Europa, forberedt med helsenorsk og hjelp med autorisasjon.</li>',
-      '<li><a href="/vr-rekrutteringsmodell">Slik rekrutterer vi</a> — utvelgelse, opptil 650 timer norsk, autorisasjon og oppfølging frem til første arbeidsdag.</li>',
-      '<li><a href="/spansk-i-alicante/helsenorsk">Helsenorsk</a> — yrkesrettet norsk for helsepersonell på vår egen språkskole i Alicante.</li>',
-      '<li><a href="/talentportalen">Talentportalen</a> — se tilgjengelige kandidater og inviter til intervju.</li>',
-      '</ul>',
+      section(hs.heading, [
+        richTextToHtml(hs.description),
+        listOf(hs.sections, (s) => `<h3><a href="${esc(s.href)}">${esc(s.title)}</a></h3>${richTextToHtml(s.description)}`),
+      ].join('')),
+      section(videos.heading, [
+        richTextToHtml(videos.description),
+        listOf((videos.items || []).filter((v) => v && v.id), (v) => `<h3>${esc(v.title)}</h3>${richTextToHtml(v.description)}`),
+      ].join('')),
+      // La descripción trae el enlace a helsenorsk (publishedContent.homeHealth).
+      section(hHealth.heading, `${richTextToHtml(hHealth.description)}${hHealth.cta ? `<p><a href="/helse">${esc(hHealth.cta)}</a></p>` : ''}`),
       '<h2>Rekrutteringsselskap, ikke vikarbyrå</h2>',
       vikar ? `<p>${escapeHtml(vikar)}</p>` : '',
       '<p>Global Working ble grunnlagt i 2014 og har hovedkontor og egen språkskole i Alicante, Spania, og kontor i Oslo. Prosessene våre er ISO 9001:2015-sertifisert av TÜV Nord for språkundervisning og internasjonal rekruttering. Kandidatene får opptil 650 timer norskundervisning og må bestå B1-eksamen før oppstart.</p>',
       caseLinks ? `<h2>Kommuner som har gjort det</h2><ul>${caseLinks}</ul>` : '',
-      '<h2>Kontakt oss</h2>',
+      section(teaser.heading, `${richTextToHtml(teaser.description)}${teaser.cta ? `<p><a href="/spansk-i-alicante">${esc(teaser.cta)}</a></p>` : ''}`),
+      section(banner.heading, richTextToHtml(banner.description)),
+      `<h2>${esc(hContact.heading || 'Kontakt oss')}</h2>`,
+      richTextToHtml(hContact.description),
       people ? `<p>Rådgiverne ${people} svarer på spørsmål om rekruttering og samarbeid.</p>` : '',
       '<p>E-post: kontakt@globalworking.no | Telefon: +47 919 00 649</p>',
       '<p><a href="/kontakt">Ta kontakt for en uforpliktende samtale</a></p>',

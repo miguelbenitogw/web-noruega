@@ -50,4 +50,4 @@ Vi har erfaring med denne typen prosesser, noe som betyr færre overraskelser og
 
 For kommuner som sliter med å rekruttere helsepersonell som ønsker å bli over tid, kan Global Working være et godt alternativ. Dere får en sykepleier som er faglig dyktig, snakker norsk og har forberedt seg på å jobbe og leve i Norge. 
 
-Er dere nysgjerrige på hvem som er tilgjengelig? [Ta kontakt med oss.](/kontakt)
+Er dere nysgjerrige på hvem som er tilgjengelig? [Se tilgjengelige kandidater i kandidatportalen](/talentportalen), eller [ta kontakt med oss.](/kontakt)

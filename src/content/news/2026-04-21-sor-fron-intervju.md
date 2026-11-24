@@ -112,7 +112,7 @@ Rekrutteringen har også satt spor utenfor arbeidsplassen.
 
 – Men du må være villig til å satse – både økonomisk og menneskelig. Gjør du det, er dette en løsning som virkelig fungerer.
 
-For kommunen handlet samarbeidet om å finne kvalifiserte sykepleiere som kunne bli værende over tid. For kandidatene handlet det om språk, trygghet og en strukturert vei inn i et nytt liv i Norge. Der har Global Working en sentral rolle, ved å følge kandidatene fra språkopplæring og papirarbeid til oppstart i kommunen.
+For kommunen handlet samarbeidet om å finne kvalifiserte sykepleiere som kunne bli værende over tid. For kandidatene handlet det om språk, trygghet og en strukturert vei inn i et nytt liv i Norge. Der har Global Working en sentral rolle, ved å [følge kandidatene fra språkopplæring og papirarbeid til oppstart i kommunen](/helse).
 
 ### «Da jeg hørte ‘kaku med rauost’, tenkte jeg: dette går ikke»
 
