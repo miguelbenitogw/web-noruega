@@ -5,7 +5,7 @@ excerpt: "«Er det ikke uetisk å hente sykepleiere fra Spania, når Spania selv
 date: "2026-11-23"
 tag: "Artikkel"
 readTime: "3 min"
-coverImage: "/assets/media/og-spania-sykepleiere.jpg"
+coverImage: "/assets/media/og-spania-sykehus.jpg"
 featured: false
 status: "published"
 publishAt: "2026-11-23T08:00:00.000+00:00"
