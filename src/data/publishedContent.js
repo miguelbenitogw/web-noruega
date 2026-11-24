@@ -120,7 +120,7 @@ const publishedContent = {
     "imageUrl": "https://hahqimviirkkzkvmusga.supabase.co/storage/v1/object/public/content-media/2026/04/17/9310b14e-9e29-45fb-8ca8-85c672dee960-bilde-sykepleier.jpg"
   },
   "omOssComp": {
-    "p1": "Global Working er en spesialisert aktør innen språkopplæring og internasjonal rekruttering i Europa. Vi forbereder kandidater før ansettelse, slik at arbeidsgivere får medarbeidere og grunnlag for varige ansettelser. Global Working ble etablert i 2014 med mål om å gjøre det enklere for fagpersoner å bevege seg i det europeiske arbeidsmarkedet. I dag kombinerer vi rekruttering, språkopplæring og tett oppfølging for å sikre forutsigbare og bærekraftige ansettelser.",
+    "p1": "Global Working er en spesialisert aktør innen språkopplæring og internasjonal rekruttering i Europa. Vi forbereder kandidater før ansettelse, slik at arbeidsgivere får medarbeidere og grunnlag for varige ansettelser.",
     "p2": "",
     "values": [
       {

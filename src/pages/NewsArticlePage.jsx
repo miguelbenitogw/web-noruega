@@ -214,7 +214,10 @@ export default function NewsArticlePage({ slug }) {
             </nav>
           )}
 
-          <div className="lg:col-span-8 lg:col-start-1 lg:row-start-1">
+          {/* Con índice, texto (8) + índice (4) llenan el ancho de la foto. Sin
+              índice —artículos sin secciones— las 4 columnas de la derecha
+              quedaban vacías y el texto parecía más corto que la foto. */}
+          <div className={`${sections.length ? 'lg:col-span-8' : 'lg:col-span-12'} lg:col-start-1 lg:row-start-1`}>
             <MarkdownArticle markdown={effectiveArticle.body} />
           </div>
         </div>

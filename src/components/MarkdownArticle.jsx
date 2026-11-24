@@ -31,6 +31,13 @@ const LINK_CLASS = 'text-primary-700 underline decoration-primary-300 decoration
 // Sangría francesa del diálogo. La raya sale al margen izquierdo.
 const DIALOGUE_CLASS = 'pl-[0.85em] [text-indent:-0.85em]'
 
+// Los párrafos de los artículos van justificados (decisión del cliente). Sin
+// corte silábico, justificar abre huecos enormes entre palabras —los «ríos»
+// blancos—, y el noruego tiene palabras compuestas muy largas que lo empeoran.
+// `hyphens-auto` corta por sílabas en noruego porque <html lang="nb">.
+// Solo párrafos: títulos, listas y citas siguen alineados a la izquierda.
+const JUSTIFY_CLASS = 'text-justify hyphens-auto'
+
 const DIALOGUE_RE = /^[–—]\s/
 // Uno o dos dígitos a propósito: así una frase que arranca con un año
 // («2014. El año que…») no se convierte en una lista numerada.
@@ -109,6 +116,7 @@ export default function MarkdownArticle({ markdown }) {
     const className = [
       isLead ? LEAD_CLASS : `${ARTICLE_BODY_MEASURE_CLASS} text-ink`,
       DIALOGUE_RE.test(text) ? DIALOGUE_CLASS : null,
+      JUSTIFY_CLASS,
       'mb-6',
     ].filter(Boolean).join(' ')
 
