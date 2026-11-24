@@ -121,7 +121,7 @@ export default function NewsArticlePage({ slug }) {
         <div className="mx-auto max-w-[56rem]">
           <a
             href="/nyheter#nyheter-arkiv"
-            className="group inline-flex items-center gap-2 font-ui text-body-xs font-semibold text-ink-soft hover:text-navy transition-colors"
+            className="group gw-tap inline-flex items-center gap-2 font-ui text-body-xs font-semibold text-ink-soft hover:text-navy transition-colors"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
               <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -205,7 +205,7 @@ export default function NewsArticlePage({ slug }) {
                     </span>
                     <a
                       href={`#${section.id}`}
-                      className="font-ui text-[0.875rem] leading-snug text-ink-muted hover:text-navy transition-colors"
+                      className="gw-tap font-ui text-[0.875rem] leading-snug text-ink-muted hover:text-navy transition-colors"
                     >
                       {section.title}
                     </a>

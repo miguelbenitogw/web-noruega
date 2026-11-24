@@ -78,7 +78,7 @@ export default function SpanskAlicantePage() {
       {/* ── El relato ─────────────────────────────────────────────────────
           Cinco párrafos corridos: esto se lee, así que va en serif, a medida
           de lectura y sin caja alrededor. */}
-      <section className="py-24 lg:py-32 bg-white">
+      <section className="py-20 lg:py-28 bg-white">
         <div className="container-xl">
           <div className="gw-measure border-t border-line pt-10 lg:pt-12">
             <MarkdownText
@@ -121,7 +121,7 @@ export default function SpanskAlicantePage() {
       </section>
 
       {/* ── Qué recibís / cómo es la semana ─────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-white">
+      <section className="py-20 lg:py-28 bg-white">
         <div className="container-xl">
           <div className="grid lg:grid-cols-2 gap-14 lg:gap-20">
             <div>
@@ -140,7 +140,7 @@ export default function SpanskAlicantePage() {
       {/* ── Testimonio ────────────────────────────────────────────────────
           Antes: tarjeta blanca con sombra sobre un degradado y un icono de
           comillas gigante. Ahora la cita es tipografía y la cara es una foto. */}
-      <section className="py-24 lg:py-32 bg-surface">
+      <section className="py-20 lg:py-28 bg-surface">
         <div className="container-xl">
           <figure className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {page.testimonialImageUrl && (
@@ -174,7 +174,7 @@ export default function SpanskAlicantePage() {
           <img
             src={img(page.beachCollageUrl, 2560)}
             alt={page.beachCollageAlt || 'Hverdagen i Alicante'}
-            className="w-full h-[280px] sm:h-[360px] lg:h-[480px] object-cover"
+            className="w-full h-[280px] sm:h-[360px] lg:h-[480px] object-cover object-[74%_50%]"
             loading="lazy"
             decoding="async"
           />
@@ -182,7 +182,7 @@ export default function SpanskAlicantePage() {
       )}
 
       {/* ── Curso de español / para quién es ────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-white">
+      <section className="py-20 lg:py-28 bg-white">
         <div className="container-xl">
           <div className="grid lg:grid-cols-2 gap-14 lg:gap-20">
             <div>
@@ -221,7 +221,7 @@ export default function SpanskAlicantePage() {
                     href={page.instagramUrl || 'https://www.instagram.com/globalworking'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2 font-ui text-body-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                    className="group gw-tap inline-flex items-center gap-2 font-ui text-body-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                   >
                     <span>{page.socialInstagram}</span>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
@@ -232,7 +232,7 @@ export default function SpanskAlicantePage() {
                     href={page.tiktokUrl || 'https://www.tiktok.com/@globalworking'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2 font-ui text-body-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                    className="group gw-tap inline-flex items-center gap-2 font-ui text-body-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
                   >
                     <span>{page.socialTikTok}</span>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
@@ -263,7 +263,7 @@ export default function SpanskAlicantePage() {
           Acá sí hay secuencia real —interés, charla, encaje, Alicante—, así
           que la numeración dice algo. Cuatro tarjetas con cuadrado azul y
           número en blanco decían «plantilla». */}
-      <section id="spansk-alicante-process" className="scroll-mt-28 py-24 lg:py-32 bg-white" aria-labelledby="spansk-alicante-process-heading">
+      <section id="spansk-alicante-process" className="scroll-mt-28 py-20 lg:py-28 bg-white" aria-labelledby="spansk-alicante-process-heading">
         <div className="container-xl">
           <h2
             id="spansk-alicante-process-heading"

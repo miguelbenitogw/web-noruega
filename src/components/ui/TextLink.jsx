@@ -36,9 +36,10 @@ import { createElement } from 'react'
  * El `py-1.5` no es decorativo. Medido en móvil, este enlace daba 21,3 px de
  * alto: es el enlace secundario de TODO el sistema —«Les mer», «Se alle
  * nyheter»— y en una pantalla táctil hay que acertarle a una franja más fina
- * que el propio dedo. Con el aire vertical pasa de 21,3 a 33,3 px. No llega a
- * los 44 de AAA a propósito: subirlo hasta ahí descuadraba el ritmo de las
- * tarjetas donde vive, y 33 ya supera con margen el mínimo exigible.
+ * que el propio dedo. Con el aire vertical pasa de 21,3 a 33,3 px. En móvil
+ * `.gw-tap` lo sube a 44 px de alto (en escritorio no cambia): el relleno solo
+ * llegaba a 33 y a 375 px seguía por debajo del mínimo táctil. El aire extra se
+ * reparte arriba y abajo, así que el texto no se corre.
  */
 export default function TextLink({
   as = 'a',
@@ -49,7 +50,7 @@ export default function TextLink({
   return createElement(
     as,
     {
-      className: 'group inline-flex items-center gap-2 py-1.5 font-ui text-sm font-semibold '
+      className: 'group gw-tap inline-flex items-center gap-2 py-1.5 font-ui text-sm font-semibold '
         + 'text-primary-600 transition-colors hover:text-primary-700 '
         + `group-hover:text-primary-700 ${className}`,
       ...rest,

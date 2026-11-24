@@ -49,7 +49,7 @@ export default function LivetSomStudentPage() {
       />
 
       {/* ── Intro ─────────────────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-white" aria-labelledby="livet-intro-heading">
+      <section className="py-20 lg:py-28 bg-white" aria-labelledby="livet-intro-heading">
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
@@ -103,7 +103,7 @@ export default function LivetSomStudentPage() {
       </section>
 
       {/* ── Norsk for helsesektoren ───────────────────────────────────────── */}
-      <section className="pt-24 lg:pt-32 bg-white" aria-labelledby="livet-helse-heading">
+      <section className="pt-20 lg:pt-28 bg-white" aria-labelledby="livet-helse-heading">
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
@@ -168,7 +168,7 @@ export default function LivetSomStudentPage() {
               <img
                 src={img(page.samtaleImageUrl || IMAGES.spanskAlicantePromenade, 1400)}
                 alt={page.samtaleImageAlt || 'Samtaleassistenter i Alicante'}
-                className="w-full h-[300px] lg:h-[560px] object-cover rounded-panel lg:rounded-r-none"
+                className="w-full h-[300px] lg:h-[560px] object-cover object-[74%_50%] rounded-panel lg:rounded-r-none"
                 loading="lazy"
                 decoding="async"
               />
@@ -179,7 +179,7 @@ export default function LivetSomStudentPage() {
       </section>
 
       {/* ── Fellesskap og aktiviteter ─────────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-white" aria-labelledby="livet-fellesskap-heading">
+      <section className="py-20 lg:py-28 bg-white" aria-labelledby="livet-fellesskap-heading">
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-4">
@@ -202,7 +202,7 @@ export default function LivetSomStudentPage() {
           <img
             src={img(page.fellesskapImageUrl || IMAGES.spanskAlicanteBeachPalms, 1600)}
             alt={page.fellesskapImageAlt || 'Fellesskap og aktiviteter i Alicante'}
-            className="mt-16 lg:mt-24 w-full h-[280px] lg:h-[440px] object-cover rounded-panel"
+            className="mt-16 lg:mt-24 w-full h-[280px] lg:h-[440px] object-cover object-[center_35%] rounded-panel"
             loading="lazy"
             decoding="async"
           />
@@ -213,7 +213,7 @@ export default function LivetSomStudentPage() {
           Antes: eyebrow en MAYÚSCULAS con tracking, todo centrado y dos
           tarjetas con sombra sobre un degradado. Ahora es un bloque alineado
           a la izquierda, con las personas en filas de filete. */}
-      <section className="py-24 lg:py-32 bg-surface" aria-labelledby="livet-cta-heading">
+      <section className="py-20 lg:py-28 bg-surface" aria-labelledby="livet-cta-heading">
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
 
@@ -254,13 +254,13 @@ export default function LivetSomStudentPage() {
                       )}
                       <a
                         href={`mailto:${contact.email}`}
-                        className="mt-2.5 block font-ui text-sm text-primary-600 hover:text-primary-700 transition-colors break-words"
+                        className="gw-tap mt-2.5 flex font-ui text-sm text-primary-600 hover:text-primary-700 transition-colors break-words"
                       >
                         {contact.email}
                       </a>
                       <a
                         href={`tel:${contact.phone.replace(/\s/g, '')}`}
-                        className="block font-ui text-sm text-ink-muted hover:text-primary-600 transition-colors"
+                        className="gw-tap flex font-ui text-sm text-ink-muted hover:text-primary-600 transition-colors"
                       >
                         {contact.phone}
                       </a>

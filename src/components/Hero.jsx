@@ -102,12 +102,13 @@ export default function Hero() {
                   de index.html, o el navegador se baja dos variantes distintas. */}
               <div className="col-span-12 sm:col-span-8 animate-settle">
                 <div className="rounded-panel overflow-hidden bg-primary-800">
+                  {/* x al 30%: con el centro por defecto el recorte de 3:2 a retrato partía por la mitad a las personas de los dos bordes del grupo. */}
                   <img
                     src={img(c.imageUrl || IMAGES.teamHero, 1200)}
                     srcSet={srcSet(c.imageUrl || IMAGES.teamHero, [640, 1024, 1200])}
                     sizes="(max-width: 640px) 100vw, 33vw"
                     alt={c.imageAlt || 'Global Working Norge – rekruttering av fagfolk'}
-                    className="w-full h-[280px] sm:h-[420px] lg:h-[480px] object-cover object-center"
+                    className="w-full h-[280px] sm:h-[420px] lg:h-[480px] object-cover object-[30%_50%]"
                     loading="eager"
                     fetchPriority="high"
                     width={1200}
