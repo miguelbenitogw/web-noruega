@@ -64,9 +64,12 @@ export default function Hero() {
                 se leía como un espacio de más pegado a mano. Las dos líneas
                 arrancan ahora en el mismo borde que la bajada y los botones,
                 y el bloque entero queda alineado a una sola vertical. */}
+            {/* Una sola frase, no dos bloques. Con un <span className="block"> por
+                línea, el traductor de Chrome trataba cada trozo como frase aparte
+                («¿Necesitas? ¿mano de obra?») y un lector de pantalla podía leerla
+                cortada. El salto lo decide text-wrap: balance. */}
             <h1 className="text-display-lg font-semibold text-white">
-              <span className="block">{c.h1First}</span>
-              <span className="block">{c.h1Highlight}</span>
+              {[c.h1First, c.h1Highlight].filter(Boolean).join(' ')}
             </h1>
 
             <RichText

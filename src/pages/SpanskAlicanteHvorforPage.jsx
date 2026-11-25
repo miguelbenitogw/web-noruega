@@ -38,7 +38,7 @@ export default function SpanskAlicanteHvorforPage() {
           <img
             src={img(vision.imageUrl || IMAGES.spanskAlicanteCastleArch, 1400)}
             alt={vision.imageAlt || 'Historisk arkitektur og stemning i Alicante'}
-            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
+            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel"
             loading="eager"
             width={1400}
             height={520}

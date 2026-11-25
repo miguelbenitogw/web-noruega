@@ -39,7 +39,7 @@ export default function HelsenorskPage() {
           <img
             src={img(page.heroImageUrl || IMAGES.enfermeria, 1400)}
             alt={page.heroImageAlt || 'Helsenorsk undervisning'}
-            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
+            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel"
             loading="eager"
             width={1400}
             height={520}
@@ -100,11 +100,11 @@ export default function HelsenorskPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
-            <div className="lg:col-span-6 order-2 lg:order-1 pb-20 lg:py-28 gw-bleed-l">
+            <div className="lg:col-span-6 order-2 lg:order-1 pb-20 lg:py-28">
               <img
                 src={img(page.situasjonerImageUrl || IMAGES.helseHealthTeam, 1400)}
                 alt={page.situasjonerImageAlt || 'Simulering av helsesituasjoner'}
-                className="w-full h-[300px] lg:h-[520px] object-cover object-[28%_50%] rounded-panel lg:rounded-l-none"
+                className="w-full h-[300px] lg:h-[520px] object-cover object-[28%_50%] rounded-panel"
                 loading="lazy"
                 decoding="async"
               />
@@ -167,16 +167,18 @@ export default function HelsenorskPage() {
         </div>
 
         {/* El aula, de borde a borde. Sin caja: es el cierre del argumento. */}
-        <div className="mt-20 lg:mt-28">
+        {/* Dentro del ancho máximo, como todas las fotos desde el 25/11/2026: a
+            pantalla completa quedaba descompensada frente al texto en monitores anchos. */}
+        <div className="container-xl mt-20 lg:mt-28">
           <img
             src={img(page.grunnlagImageUrl || IMAGES.helsenorskClase, 1920)}
             srcSet={srcSet(page.grunnlagImageUrl || IMAGES.helsenorskClase)}
-            sizes="100vw"
+            sizes="(min-width: 1280px) 1216px, 100vw"
             width={2560}
             height={1704}
             style={{ objectPosition: 'center 42%' }}
             alt={page.grunnlagImageAlt || 'Helsenorsk undervisning og opplæring'}
-            className="w-full h-[280px] sm:h-[360px] lg:h-[460px] object-cover"
+            className="w-full h-[280px] sm:h-[360px] lg:h-[460px] object-cover rounded-panel"
             loading="lazy"
             decoding="async"
           />

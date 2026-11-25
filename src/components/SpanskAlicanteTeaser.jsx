@@ -24,7 +24,7 @@ export default function SpanskAlicanteTeaser() {
       <div className="container-xl">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
-          <div className="lg:col-span-6 order-2 lg:order-1 pb-16 lg:py-20 gw-bleed-l">
+          <div className="lg:col-span-6 order-2 lg:order-1 pb-16 lg:py-20">
             <img
               src={img(teaser.imageUrl || IMAGES.spanskClaseBandera, 1400)}
               srcSet={srcSet(teaser.imageUrl || IMAGES.spanskClaseBandera)}
@@ -33,7 +33,7 @@ export default function SpanskAlicanteTeaser() {
               height={1704}
               style={{ objectPosition: '55% center' }}
               alt={teaser.imageAlt || 'Klasserom i Alicante med lærer foran en tavle og et spansk flagg på veggen'}
-              className="w-full h-[300px] lg:h-[540px] object-cover rounded-panel lg:rounded-l-none"
+              className="w-full h-[300px] lg:h-[540px] object-cover rounded-panel"
               loading="lazy"
               decoding="async"
             />

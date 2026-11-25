@@ -39,7 +39,7 @@ export default function LivetSomStudentPage() {
           <img
             src={img(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, 1400)}
             alt={page.heroImageAlt || 'Studentlivet i Alicante'}
-            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel lg:rounded-r-none"
+            className="w-full h-[300px] lg:h-[520px] object-cover object-center rounded-panel"
             loading="eager"
             width={1400}
             height={520}
@@ -70,11 +70,11 @@ export default function LivetSomStudentPage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
-            <div className="lg:col-span-6 order-2 lg:order-1 pb-20 lg:py-28 gw-bleed-l">
+            <div className="lg:col-span-6 order-2 lg:order-1 pb-20 lg:py-28">
               <img
                 src={img(page.undervisningImageUrl || IMAGES.spanskAlicantePromenade, 1400)}
                 alt={page.undervisningImageAlt || 'Undervisning i Alicante'}
-                className="w-full h-[300px] lg:h-[520px] object-cover rounded-panel lg:rounded-l-none"
+                className="w-full h-[300px] lg:h-[520px] object-cover rounded-panel"
                 loading="lazy"
                 decoding="async"
               />
@@ -128,13 +128,13 @@ export default function LivetSomStudentPage() {
           </div>
         </div>
 
-        {/* La foto cruza la pantalla entera: no es una ilustración dentro de
-            una tarjeta, es el cambio de aire entre dos bloques de lectura. */}
-        <div className="mt-20 lg:mt-28">
+        {/* Dentro del ancho máximo, como todas las fotos desde el 25/11/2026: a
+            pantalla completa quedaba descompensada frente al texto en monitores anchos. */}
+        <div className="container-xl mt-20 lg:mt-28">
           <img
             src={img(page.helseImageUrl || IMAGES.spanskAlicantePromenade, 1920)}
             alt={page.helseImageAlt || 'Helsenorsk undervisning'}
-            className="w-full h-[280px] sm:h-[360px] lg:h-[460px] object-cover"
+            className="w-full h-[280px] sm:h-[360px] lg:h-[460px] object-cover rounded-panel"
             loading="lazy"
             decoding="async"
           />
@@ -164,11 +164,11 @@ export default function LivetSomStudentPage() {
               </TextLink>
             </div>
 
-            <div className="lg:col-span-6 lg:col-start-7 pb-20 lg:py-28 gw-bleed-r">
+            <div className="lg:col-span-6 lg:col-start-7 pb-20 lg:py-28">
               <img
                 src={img(page.samtaleImageUrl || IMAGES.spanskAlicantePromenade, 1400)}
                 alt={page.samtaleImageAlt || 'Samtaleassistenter i Alicante'}
-                className="w-full h-[300px] lg:h-[560px] object-cover object-[74%_50%] rounded-panel lg:rounded-r-none"
+                className="w-full h-[300px] lg:h-[560px] object-cover object-[74%_50%] rounded-panel"
                 loading="lazy"
                 decoding="async"
               />

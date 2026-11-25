@@ -25,7 +25,7 @@ export default function CTABanner() {
       <div className="container-xl">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
-          <div className="lg:col-span-6 order-2 lg:order-1 pb-14 lg:py-16 gw-bleed-l">
+          <div className="lg:col-span-6 order-2 lg:order-1 pb-14 lg:py-16">
             <img
               src={img(c.imageUrl || IMAGES.equipoCompleto, 1600)}
               srcSet={srcSet(c.imageUrl || IMAGES.equipoCompleto)}
@@ -33,7 +33,7 @@ export default function CTABanner() {
               width={2560}
               height={1704}
               alt={c.imageAlt || 'Hele Global Working-teamet samlet til gruppebilde utendørs'}
-              className="w-full h-[280px] lg:h-[460px] object-cover object-center rounded-panel lg:rounded-l-none"
+              className="w-full h-[280px] lg:h-[460px] object-cover object-center rounded-panel"
               loading="lazy"
               decoding="async"
             />

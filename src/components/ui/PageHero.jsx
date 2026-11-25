@@ -163,7 +163,7 @@ export default function PageHero({
       <div className="container-xl">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center pt-32 pb-16 lg:pt-40 lg:pb-20">
           <div className="lg:col-span-6 animate-riseIn">{body}</div>
-          <div className="lg:col-span-6 animate-settle gw-bleed-r">{media}</div>
+          <div className="lg:col-span-6 animate-settle">{media}</div>
         </div>
       </div>
     </section>

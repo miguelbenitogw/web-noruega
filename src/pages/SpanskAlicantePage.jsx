@@ -44,7 +44,7 @@ export default function SpanskAlicantePage() {
             srcSet={srcSet(page.heroImageUrl || IMAGES.spanskAlicanteBeachPalms, [640, 1024, 1400])}
             sizes="(max-width: 1024px) 100vw, 50vw"
             alt={page.heroImageAlt || 'Strand og palmer i Alicante'}
-            className="w-full h-[300px] lg:h-[520px] object-cover object-[50%_82%] rounded-panel lg:rounded-r-none"
+            className="w-full h-[300px] lg:h-[520px] object-cover object-[50%_82%] rounded-panel"
             loading="eager"
             decoding="sync"
             width={1400}
@@ -100,11 +100,11 @@ export default function SpanskAlicantePage() {
         <div className="container-xl">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
-            <div className="lg:col-span-6 order-2 lg:order-1 pb-20 lg:py-28 gw-bleed-l">
+            <div className="lg:col-span-6 order-2 lg:order-1 pb-20 lg:py-28">
               <img
                 src={img(page.roleImageUrl || IMAGES.spanskAlicantePromenade, 1400)}
                 alt={page.roleImageAlt || 'Sosial hverdag og samtaler i Alicante'}
-                className="w-full h-[300px] lg:h-[520px] object-cover rounded-panel lg:rounded-l-none"
+                className="w-full h-[300px] lg:h-[520px] object-cover rounded-panel"
                 loading="lazy"
                 decoding="async"
                 width={1400}
@@ -177,13 +177,17 @@ export default function SpanskAlicantePage() {
           toda la web y no necesita marco. */}
       {page.beachCollageUrl && (
         <section className="bg-white">
-          <img
-            src={img(page.beachCollageUrl, 2560)}
-            alt={page.beachCollageAlt || 'Hverdagen i Alicante'}
-            className="w-full h-[280px] sm:h-[360px] lg:h-[480px] object-cover object-[74%_50%]"
-            loading="lazy"
-            decoding="async"
-          />
+          {/* Dentro del ancho máximo, como todas las fotos desde el 25/11/2026: a
+            pantalla completa quedaba descompensada frente al texto en monitores anchos. */}
+          <div className="container-xl">
+            <img
+              src={img(page.beachCollageUrl, 2560)}
+              alt={page.beachCollageAlt || 'Hverdagen i Alicante'}
+              className="w-full h-[280px] sm:h-[360px] lg:h-[480px] object-cover object-[74%_50%] rounded-panel"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
         </section>
       )}
 
@@ -249,11 +253,11 @@ export default function SpanskAlicantePage() {
               </div>
             </div>
 
-            <div className="lg:col-span-6 lg:col-start-7 pb-20 lg:py-28 gw-bleed-r">
+            <div className="lg:col-span-6 lg:col-start-7 pb-20 lg:py-28">
               <img
                 src={img(page.cityImageUrl || IMAGES.spanskAlicanteCityView, 1400)}
                 alt={page.cityImageAlt || 'Byliv og utsikt i Alicante'}
-                className="w-full h-[300px] lg:h-[560px] object-cover rounded-panel lg:rounded-r-none"
+                className="w-full h-[300px] lg:h-[560px] object-cover rounded-panel"
                 loading="lazy"
                 decoding="async"
                 width={1400}

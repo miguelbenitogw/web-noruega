@@ -176,11 +176,11 @@ export default function HomePage() {
               </a>
             </div>
 
-            <div className="lg:col-span-6 lg:col-start-7 pb-16 lg:py-16 gw-bleed-r">
+            <div className="lg:col-span-6 lg:col-start-7 pb-16 lg:py-16">
               <img
                 src={img(hHealth.imageUrl || IMAGES.homeMetricsTeam, 1200)}
                 alt={hHealth.imageAlt || 'Global Working team i samarbeid med norske arbeidsgivere'}
-                className="w-full h-[300px] lg:h-[520px] object-cover object-[28%_50%] rounded-panel lg:rounded-r-none"
+                className="w-full h-[300px] lg:h-[520px] object-cover object-[28%_50%] rounded-panel"
                 loading="lazy"
                 decoding="async"
               />

@@ -170,13 +170,13 @@ export default function OmOssPage() {
               </div>
             </div>
 
-            <div className="lg:col-span-6 lg:col-start-7 pb-16 lg:py-24 gw-bleed-r">
+            <div className="lg:col-span-6 lg:col-start-7 pb-16 lg:py-24">
               <img
                 src={img(offices.imageUrl || IMAGES.sedeFachada, 1440)}
                 srcSet={srcSet(offices.imageUrl || IMAGES.sedeFachada)}
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 alt={offices.imageAlt || 'Global Working kontorer i Alicante'}
-                className="gw-photo w-full h-[300px] lg:h-[500px] object-[30%_55%] lg:rounded-r-none"
+                className="gw-photo w-full h-[300px] lg:h-[500px] object-[30%_55%]"
                 loading="lazy"
                 decoding="async"
               />

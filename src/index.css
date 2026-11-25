@@ -233,20 +233,11 @@
      siguen abriendo apartado con claridad. */
   .gw-stack > * + * { margin-top: 0.7em; }
 
-  /* ── Sangrado al borde de la pantalla ─────────────────────────────────
-     Saca una imagen fuera de `.container-xl` hasta el borde del viewport.
-     El `+2rem` cancela el padding del contenedor en lg; el `max(0px, …)`
-     evita margen negativo por debajo de 80rem, donde no sobra espacio.
-
-     Estaba copiado literal en trece sitios de ocho archivos: si alguien
-     tocaba el ancho de `.container-xl`, había que corregirlos a mano uno
-     por uno. Ahora el cálculo vive en un solo lugar.
-
-     La sección que lo contenga necesita `overflow-hidden`. */
-  @media (min-width: 1024px) {
-    .gw-bleed-l { margin-left: calc((max(0px, (100vw - 80rem) / 2) + 2rem) * -1); }
-    .gw-bleed-r { margin-right: calc((max(0px, (100vw - 80rem) / 2) + 2rem) * -1); }
-  }
+  /* Aquí vivían .gw-bleed-l/.gw-bleed-r, que sacaban una foto fuera de
+     .container-xl hasta el borde de la pantalla. Se quitaron el 25/11/2026
+     por decisión del cliente: en pantallas anchas la foto quedaba pegada al
+     borde mientras el texto respetaba el ancho máximo, y la sección se veía
+     descompensada. Todo va ahora dentro del ancho máximo. */
 
   /* Círculo de flecha — elemento de marca de las tarjetas de empleo .net */
   .gw-arrow {
