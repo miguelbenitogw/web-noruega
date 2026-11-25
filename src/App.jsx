@@ -24,6 +24,7 @@ const SpanskAlicanteHvorforPage = React.lazy(() => import('./pages/SpanskAlicant
 const LivetSomStudentPage = React.lazy(() => import('./pages/LivetSomStudentPage'))
 const HelsenorskPage = React.lazy(() => import('./pages/HelsenorskPage'))
 const PersonvernPage = React.lazy(() => import('./pages/PersonvernPage'))
+const KvalitetspolicyPage = React.lazy(() => import('./pages/KvalitetspolicyPage'))
 const VilkarPage = React.lazy(() => import('./pages/VilkarPage'))
 const CookiesPage = React.lazy(() => import('./pages/CookiesPage'))
 const NewsArticlePage = React.lazy(() => import('./pages/NewsArticlePage'))
@@ -85,6 +86,7 @@ export default function App() {
       case 'spansk-i-alicante-livet-som-student':  return <LivetSomStudentPage />
       case 'spansk-i-alicante-helsenorsk':         return <HelsenorskPage />
       case 'personvern':                           return <PersonvernPage />
+      case 'kvalitetspolicy':                      return <KvalitetspolicyPage />
       case 'vilkar':                               return <VilkarPage />
       case 'cookies':                              return <CookiesPage />
       default:

@@ -46,6 +46,13 @@ export default function LegalDocument({ content }) {
                     value={block.body}
                     className="mt-3.5 max-w-measure text-body leading-[1.75] text-ink"
                   />
+                  {block.list?.length > 0 && (
+                    <ul className="mt-4 max-w-measure list-disc space-y-2.5 pl-5 text-body leading-[1.75] text-ink marker:text-ink-soft">
+                      {block.list.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             ))}

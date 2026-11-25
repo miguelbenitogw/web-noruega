@@ -616,6 +616,7 @@ const siteContent = {
     copyright: 'Global Working Norway AS · Org.nr. 918 941 851. Alle rettigheter forbeholdt.',
     bottomLinks: [
       { label: 'Personvern', href: '/personvern' },
+      { label: 'Kvalitetspolicy', href: '/kvalitetspolicy' },
       { label: 'Vilkår', href: '/vilkar' },
       { label: 'Informasjonskapsler', href: '/cookies' },
     ],
@@ -636,6 +637,7 @@ const siteContent = {
         { label: 'Om oss', href: '/om-oss' },
         { label: 'Nyheter og Artikler', href: '/nyheter' },
         { label: 'Kontakt', href: '/kontakt' },
+        { label: 'Kvalitetspolicy', href: '/kvalitetspolicy' },
         { label: 'Personvern', href: '/personvern' },
       ],
       Kontakt: [
@@ -689,6 +691,38 @@ const siteContent = {
       {
         heading: 'Dine rettigheter',
         body: 'Du kan be om innsyn, retting, sletting, begrensning eller dataportabilitet, og protestere på behandling der det er relevant.',
+      },
+    ],
+  },
+
+  legalKvalitetspolicy: {
+    breadcrumb: 'Kvalitetspolicy',
+    title: 'Kvalitetspolicy',
+    intro: 'Slik arbeider vi for at kunder og kandidater skal kunne stole på tjenestene våre.',
+    blocks: [
+      {
+        heading: 'Vår forpliktelse',
+        body: 'Global Working forplikter seg til alltid å levere en tjeneste som svarer til kundenes høye forventninger, og til at kandidatene, opplæringen og de faglige tjenestene våre innfrir tilliten kundene viser oss.',
+      },
+      {
+        heading: 'Slik oppfyller vi den',
+        body: 'For å få til dette skal Global Working:',
+        list: [
+          'Ha et styringssystem som holder mål med kundenes krav.',
+          'Sikre at toppledelsen leder an og styrer organisasjonen i dag og fremover.',
+          'Holde en løpende, åpen og god kommunikasjon med kundene på alle nivåer, i tråd med våre forpliktelser om fleksibilitet, hurtighet, presisjon og tilgjengelighet.',
+          'Bygge relasjoner med kundene som er til gjensidig nytte, for å sikre organisasjonens konkurranseevne og lønnsomhet i dag og vekst i fremtiden.',
+          'Gi kandidatene en profesjonell, konfidensiell og objektiv tjeneste, tilby dem muligheter for faglig utvikling og hjelpe dem å bli godt integrert i kundenes organisasjon.',
+          'Tilby samfunnet bærekraftige og varige muligheter for arbeid og utdanning.',
+          'Motivere, involvere og belønne alle medarbeidere for innsatsen deres.',
+          'Godtgjøre selskapets eiere for tilliten, innsatsen og ressursene de har bidratt med.',
+          'Ha et system for kontinuerlig forbedring, slik at organisasjonen lærer av egne resultater og blir stadig bedre.',
+          'Oppfylle alle lovkrav, arbeidsrettslige krav og forskrifter som gjelder for organisasjonen.',
+        ],
+      },
+      {
+        heading: 'Sertifisering',
+        body: 'Kvalitetsstyringssystemet til Global Working Recruitment S.L., morselskapet vårt i Spania, er sertifisert etter ISO 9001:2015 av TÜV NORD CERT. Sertifikatet har nr. 4410015510134 og gjelder fra 6. februar 2025 til 7. januar 2028.\n\nSertifiseringen omfatter utvelgelse av personell for internasjonal rekruttering og opplæring i språk og kultur som hjelpemiddel til internasjonal rekruttering.',
       },
     ],
   },

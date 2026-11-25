@@ -209,6 +209,7 @@ const PAGE_SOURCES = {
   '/spansk-i-alicante/livet-som-student': ['src/pages/LivetSomStudentPage.jsx'],
   '/spansk-i-alicante/helsenorsk': ['src/pages/HelsenorskPage.jsx'],
   '/personvern': ['src/pages/PersonvernPage.jsx'],
+  '/kvalitetspolicy': ['src/pages/KvalitetspolicyPage.jsx'],
   '/vilkar': ['src/pages/VilkarPage.jsx'],
   '/cookies': ['src/pages/CookiesPage.jsx'],
 }
@@ -288,6 +289,7 @@ const run = async () => {
     { pathname: '/spansk-i-alicante/livet-som-student',  changefreq: 'monthly', priority: '0.7' },
     { pathname: '/spansk-i-alicante/helsenorsk',         changefreq: 'monthly', priority: '0.7' },
     { pathname: '/personvern',                           changefreq: 'yearly',  priority: '0.5' },
+    { pathname: '/kvalitetspolicy',                      changefreq: 'yearly',  priority: '0.5' },
     { pathname: '/vilkar',                               changefreq: 'yearly',  priority: '0.5' },
     { pathname: '/cookies',                              changefreq: 'yearly',  priority: '0.5' },
   ].map(({ pathname, changefreq, priority }) => ({

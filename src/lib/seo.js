@@ -432,6 +432,13 @@ const SECTION_SEO = {
     pathname: '/personvern',
     breadcrumbName: 'Personvern',
   },
+  kvalitetspolicy: {
+    title: 'Kvalitetspolicy | Global Working Norge',
+    description:
+      'Kvalitetspolicyen til Global Working: våre forpliktelser overfor kunder og kandidater, og ISO 9001:2015-sertifiseringen fra TÜV NORD CERT.',
+    pathname: '/kvalitetspolicy',
+    breadcrumbName: 'Kvalitetspolicy',
+  },
   vilkar: {
     title: 'Vilkår | Global Working Norge',
     description:

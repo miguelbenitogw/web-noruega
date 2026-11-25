@@ -21,6 +21,7 @@ const ROUTE_DEFINITIONS = {
   '/spansk-i-alicante/livet-som-student': { sectionRoute: 'spansk-i-alicante-livet-som-student' },
   '/spansk-i-alicante/helsenorsk': { sectionRoute: 'spansk-i-alicante-helsenorsk' },
   '/personvern': { sectionRoute: 'personvern' },
+  '/kvalitetspolicy': { sectionRoute: 'kvalitetspolicy' },
   '/vilkar': { sectionRoute: 'vilkar' },
   '/cookies': { sectionRoute: 'cookies' },
 }

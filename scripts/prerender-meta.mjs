@@ -570,6 +570,11 @@ const ROUTES = {
     description: 'Les hvordan Global Working Norge behandler personopplysninger, formål, lagringstid og dine rettigheter.',
     breadcrumbName: 'Personvern',
   },
+  '/kvalitetspolicy': {
+    title: 'Kvalitetspolicy | Global Working Norge',
+    description: 'Kvalitetspolicyen til Global Working: våre forpliktelser overfor kunder og kandidater, og ISO 9001:2015-sertifiseringen fra TÜV NORD CERT.',
+    breadcrumbName: 'Kvalitetspolicy',
+  },
   '/vilkar': {
     title: 'Vilkår | Global Working Norge',
     description: 'Vilkår for bruk av nettstedet og tjenester fra Global Working Norge, inkludert ansvar og kontaktinformasjon.',
@@ -623,6 +628,7 @@ const FOOTER_LINKS = [
   { href: '/kontakt', label: 'Kontakt' },
   { href: '/nyheter', label: 'Nyheter' },
   { href: '/personvern', label: 'Personvern' },
+  { href: '/kvalitetspolicy', label: 'Kvalitetspolicy' },
   { href: '/vilkar', label: 'Vilkår' },
   { href: '/cookies', label: 'Informasjonskapsler' },
 ]
