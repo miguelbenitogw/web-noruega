@@ -1,4 +1,5 @@
 import useContent from '../hooks/useContent'
+import CertificationSeal from './ui/CertificationSeal'
 import { IMAGES } from '../assets/images'
 import RichText from './ui/RichText'
 import EmailText from './ui/EmailText'
@@ -73,6 +74,7 @@ export default function Footer() {
                 </a>
               ))}
             </div>
+            <CertificationSeal tone="dark" className="mt-8" />
           </div>
 
           {Object.entries(links).map(([title, items]) => (
