@@ -303,11 +303,9 @@ const vikarbyraAnswer = () => {
 // React, en el mismo orden en que la pinta la página. Nada se escribe acá: si
 // alguien cambia un texto en publishedContent, cambia la web y cambia esto.
 //
-// Lo único que se deja fuera a propósito: los testimonios de GodeGrunner.
-// Nombran kommuner (Åmot, Kautokeino, Trondheim) que el plan SEO de 11-2026
-// marca como «no publicar sin confirmación del cliente». Están en la web
-// hidratada desde antes; no se amplía su alcance a los rastreadores hasta que
-// el cliente los confirme.
+// Los testimonios de GodeGrunner no se escriben aquí. Los tres que había no
+// eran reales y se quitaron de los datos el 25/11/2026; si vuelven testimonios
+// verificados, que se añadan aquí también.
 const section = (heading, inner) => (inner ? `<section><h2>${esc(heading)}</h2>${inner}</section>` : '')
 
 const listOf = (items, render, tag = 'ul') => {

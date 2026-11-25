@@ -7,11 +7,11 @@ import RichText from './ui/RichText'
  * GodeGrunner — por qué trabajar con nosotros.
  *
  * Antes: imagen en `rounded-3xl shadow-2xl` con un degradado encima, dos
- * columnas y nada más. Y los tres testimonios de kommuner noruegas —Åmot,
- * Kautokeino, Trondheim— estaban en el contenido SIN pintarse. Para un
- * responsable de personal que duda, la frase de otro kommune vale más que
- * cualquier adjetivo nuestro: es la prueba de que el candidato se queda y de
- * que el noruego era de verdad.
+ * columnas y nada más. El bloque de testimonios de kommuner solo se pinta si
+ * hay alguno en los datos. Los tres que había no eran reales y se quitaron el
+ * 25/11/2026: solo deben volver testimonios verificables, con nombre completo,
+ * cargo y permiso del kommune. Un testimonio inventado que un comprador
+ * público descubre destruye justo la confianza que pretendía crear.
  *
  * La imagen pasa a banda ancha arriba (corta el ritmo de columnas de la
  * página) y debajo la cabecera convive con los testimonios en lista.

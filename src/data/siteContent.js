@@ -563,11 +563,12 @@ const siteContent = {
     imageAlt: 'Ansatte i Global Working stående og sittende foran hovedkontoret i Alicante',
     articleLink: '/om-oss',
     articleLinkLabel: 'Les mer om oss',
-    testimonials: [
-      { quote: 'Vi har vært veldig fornøyd med to av våre sykepleiere fra Spania. Språket var mye bedre enn forventet, og de passet godt inn hos oss.', author: 'Karin, Åmot kommune' },
-      { quote: 'Vi fant en god løsning med å la en sykepleier jobbe i helsefagarbeider-stilling til hun var bedre i språket. Tre-fire uker etterpå var hun klar til å jobbe fast som sykepleier hos oss.', author: 'Daniel, Kautokeino kommune' },
-      { quote: 'Vi var veldig glade for å få en sykepleier fra Italia som en del av teamet vårt. Han lærte seg språket fort når han begynte å jobbe.', author: 'Anne, Trondheim kommune' },
-    ],
+    // Aquí había tres testimonios de kommuner («Karin, Åmot kommune»,
+    // «Daniel, Kautokeino kommune», «Anne, Trondheim kommune») que el cliente
+    // confirmó que no eran reales; se quitaron el 25/11/2026. GodeGrunner pinta
+    // el bloque solo si hay alguno: para volver a ponerlo, testimonios reales
+    // con nombre completo, cargo y permiso por escrito para publicarlos.
+    testimonials: [],
   },
 
   ctaBanner: {
