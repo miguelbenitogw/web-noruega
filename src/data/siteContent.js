@@ -342,7 +342,7 @@ const siteContent = {
   helsenorsk: {
     breadcrumb: 'Helsenorsk',
     heroTitle: 'Helsenorsk',
-    heroSubtitle: 'Yrkesrettet norsk for arbeid i helsesektoren. 650 timer med språkopplæring tilpasset hverdagen i norsk helsetjeneste.',
+    heroSubtitle: 'Helsenorsk er yrkesrettet norsk for helsepersonell: fagterminologi og pasientkommunikasjon for jobb i norsk helsetjeneste. Hos oss er det opptil 650 timer på vår egen språkskole i Alicante, undervist av sykepleiere som har jobbet i Norge.',
     heroImageUrl: IMAGES.enfermeria,
     heroImageAlt: 'Helsenorsk undervisning i Alicante',
     introTitle: 'Helsenorsk: yrkesrettet norsk for arbeid i helsesektoren',

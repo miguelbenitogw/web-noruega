@@ -547,9 +547,10 @@ const ROUTES = {
   },
   '/spansk-i-alicante/helsenorsk': {
     // `helsenorsk`: 165 impresiones, posición 10,9, CTR 3,6 %. El título viejo
-    // (71 caracteres) salía cortado. Espejo de seo.js.
+    // (71 caracteres) salía cortado. La descripción es también el primer <p> del
+    // HTML estático: abre definiendo qué es helsenorsk (Semrush, pos. 17). Espejo de seo.js.
     title: 'Helsenorsk – norskkurs for helsepersonell | Global Working',
-    description: 'Helsenorsk ved vår egen språkskole i Alicante: opptil 650 timer norsk, fagterminologi og pasientkommunikasjon – undervist av sykepleiere som har jobbet i Norge.',
+    description: 'Helsenorsk er norsk for helsepersonell: fagterminologi og pasientkommunikasjon. Opptil 650 timer i Alicante, undervist av sykepleiere som har jobbet i Norge.',
     keywords: 'helsenorsk, helsenorsk kurs, norskkurs for helsepersonell, norsk for helsepersonell, norskkurs for helseassistenter, helsenorsk Alicante',
     breadcrumbName: 'Helsenorsk',
     parent: { name: 'Spansk i Alicante', path: '/spansk-i-alicante' },

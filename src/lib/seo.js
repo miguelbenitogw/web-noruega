@@ -418,10 +418,11 @@ const SECTION_SEO = {
     // impresiones, posición 10,9, CTR 3,6 %. El título viejo tenía 71 caracteres y
     // Google lo cortaba. Ahora cabe, y añade `norskkurs for helsepersonell` (pos.
     // 28,8) y `norsk for helsepersonell` (pos. 24,3), que llegan aquí sin título que
-    // las nombre. La descripción dice dónde se enseña y quién enseña.
+    // las nombre. La descripción abre definiendo qué es helsenorsk (Semrush, pos. 17)
+    // y luego dice dónde se enseña y quién enseña.
     title: 'Helsenorsk – norskkurs for helsepersonell | Global Working',
     description:
-      'Helsenorsk ved vår egen språkskole i Alicante: opptil 650 timer norsk, fagterminologi og pasientkommunikasjon – undervist av sykepleiere som har jobbet i Norge.',
+      'Helsenorsk er norsk for helsepersonell: fagterminologi og pasientkommunikasjon. Opptil 650 timer i Alicante, undervist av sykepleiere som har jobbet i Norge.',
     pathname: '/spansk-i-alicante/helsenorsk',
     breadcrumbName: 'Helsenorsk',
     parentSection: 'spansk-i-alicante',
