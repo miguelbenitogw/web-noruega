@@ -77,7 +77,7 @@ Helsedirektoratet anbefaler også at dere [gjennomfører intervjuet på norsk](h
 
 EU/EØS-borgere kan flytte til Norge og begynne å jobbe med en gang, men de må registrere seg hos politiet senest tre måneder etter at de kom. Har den nyansatte ikke registrert seg ennå, må dere gi et ansettelsesbevis eller en arbeidskontrakt med samme informasjon. Arbeidstakeren må registrere seg selv, men dere kan hjelpe til. Det står hos [UDI](https://www.udi.no/ord-og-begreper/arbeidsgivarar-tilsetje-ein-person-som-er-eueos-borgar/).
 
-Til slutt: Legg inn tid i planen. Med 3 måneders saksbehandlingstid lønner det seg at søknaden om autorisasjon sendes i god tid før oppstart.
+Til slutt: Legg inn tid i planen. Med 3 måneders saksbehandlingstid lønner det seg at søknaden om autorisasjon sendes i god tid før oppstart. Rekrutterer dere gjennom Global Working, tar vi oss av dette for dere.
 
 ## Slik jobber Global Working
 
@@ -85,7 +85,7 @@ Global Working er et rekrutteringsselskap, ikke et vikarbyrå. Kommunen ansetter
 
 Kandidatene lærer norsk før de kommer til Norge. De gjennomfører opptil 650 undervisningstimer i norsk, inkludert helsenorsk med fagterminologi og pasientkommunikasjon. Alle kandidater må bestå B1-eksamen. Målet settes ut fra rollen, ofte opp mot B2.
 
-Vi hjelper også med autorisasjon hos Helsedirektoratet og følger opp gjennom prøveperioden. Les mer om [rekruttering av sykepleiere](/helse), eller [ta kontakt](/kontakt) hvis dere vil vite mer.
+Vi tar oss av søknaden om autorisasjon hos Helsedirektoratet som en del av forberedelsene, slik at kommunen slipper å vente på den. Fra kommunen har valgt sykepleier til sykepleieren er på plass, går det fra noen dager til noen få uker. Vi følger også opp gjennom prøveperioden. Les mer om [rekruttering av sykepleiere](/helse), eller [ta kontakt](/kontakt) hvis dere vil vite mer.
 
 ## Ofte stilte spørsmål
 
@@ -104,6 +104,10 @@ Gebyret for søkere utdannet innenfor EU/EØS er 1 665 kroner. Det betales i Alt
 ### Må sykepleieren dokumentere norsk for å få autorisasjon?
 
 Nei, ikke etter Helsedirektoratets dokumentliste for EU/EØS. Men arbeidsgiveren har ansvaret for at norsken er god nok, og Helsedirektoratet anbefaler B2-nivå.
+
+### Hvem søker om autorisasjon når vi rekrutterer gjennom Global Working?
+
+Det gjør vi. Søknaden er en del av forberedelsene våre, så kommunen trenger ikke å følge opp saken hos Helsedirektoratet.
 
 ### Hvordan sjekker vi at sykepleieren har autorisasjon?
 
