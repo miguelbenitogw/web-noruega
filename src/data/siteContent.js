@@ -244,8 +244,8 @@ const siteContent = {
 
   helseHero: {
     breadcrumb: 'Helsesektor',
-    h1: 'Tjenester for helseinstitusjoner',
-    description: 'Vi forbereder helsepersonell for den norske helsesektoren – fra språkopplæring til trygg oppstart i jobb.',
+    h1: 'Rekruttering av helsepersonell',
+    description: 'Vår rekruttering av helsepersonell dekker hele veien – fra utvelgelse og språkopplæring til trygg oppstart i norske kommuner og helseforetak.',
     imageUrl: IMAGES.enfermeria,
     imageAlt: 'Helsepersonell i opplæring gjennom Global Working',
   },
