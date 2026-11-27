@@ -57,8 +57,8 @@ const publishedContent = {
         "animate": true
       },
       {
-        "label": "Kandidater utdannet og formidlet",
-        "value": "2500+",
+        "label": "Sykepleiere som har startet i Norge",
+        "value": "2000+",
         "animate": true
       },
       {
