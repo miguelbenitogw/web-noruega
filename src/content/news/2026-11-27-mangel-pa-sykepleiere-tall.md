@@ -21,7 +21,7 @@ SSB teller 117 335 sysselsatte med sykepleierutdanning i 4. kvartal 2025. Året 
 
 Av disse jobbet 99 343 i helse- og sosialtjenester. Til sammen utgjorde de 90 164 avtalte årsverk i 2025. ([SSB, tabell 07941](https://www.ssb.no/statbank/table/07941/))
 
-Mange jobber deltid. I 2022 hadde sykepleierne en gjennomsnittlig stillingsandel på 91 prosent, og 33 prosent var ansatt i deltidsstillinger. ([SSB, 2023](https://www.ssb.no/helse/helsetjenester/artikler/begrenset-potensial-i-okt-arbeidstid-for-sykepleiere))
+Mange jobber deltid. I 2022 hadde sykepleierne i helse- og omsorgstjenestene en gjennomsnittlig stillingsandel på 91 prosent, og 33 prosent var ansatt i deltidsstillinger. ([SSB, 2023](https://www.ssb.no/helse/helsetjenester/artikler/begrenset-potensial-i-okt-arbeidstid-for-sykepleiere))
 
 ## Hvor stor er mangelen?
 
@@ -41,13 +41,13 @@ Fire av fem kommuner sliter fortsatt. Det er bedre enn for to år siden, men lan
 
 Helsepersonellkommisjonen ba SSB beregne hvor mye arbeidskraft helse og omsorg vil trenge fremover. I 2019 brukte de offentlige helse- og omsorgstjenestene 13 prosent av alle årsverk i norsk økonomi. ([SSB, 2023](https://www.ssb.no/arbeid-og-lonn/sysselsetting/artikler/arbeidsinnsats-i-offentlig-helse-og-omsorg-fremskrivninger-og-historikk))
 
-I flere av SSBs scenarier dobles denne andelen mot 2060. En tredobling kan ikke utelukkes. ([SSB, 2023](https://www.ssb.no/arbeid-og-lonn/sysselsetting/artikler/arbeidsinnsats-i-offentlig-helse-og-omsorg-fremskrivninger-og-historikk))
+I flere av SSBs scenarier vil ønsket bruk av tjenestene kreve en dobling av denne andelen mot 2060. En tredobling kan ikke utelukkes. ([SSB, 2023](https://www.ssb.no/arbeid-og-lonn/sysselsetting/artikler/arbeidsinnsats-i-offentlig-helse-og-omsorg-fremskrivninger-og-historikk))
 
 For sykepleiere spesielt varsler SSB at vi kan mangle over 30 000 årsverk innen 2040. Hovedårsaken er at befolkningen blir eldre og trenger mer helsehjelp. ([SSB, 2023](https://www.ssb.no/helse/helsetjenester/artikler/begrenset-potensial-i-okt-arbeidstid-for-sykepleiere))
 
 ## Hvor mange sykepleiere kommer fra utlandet?
 
-I 2025 var 15 124 innvandrere og ikke-bosatte med sykepleierutdanning i jobb i Norge. I 2015 var tallet 10 336. Av dem jobbet 13 012 i helsetjenester, inkludert pleie og omsorg. ([SSB, tabell 13907](https://www.ssb.no/statbank/table/13907/))
+I 2025 var 15 124 innvandrere og ikke-bosatte med sykepleierutdanning i jobb i Norge. I 2015 var tallet 10 336. Av dem jobbet 13 012 i helsetjenester, inkludert pleie- og omsorgstjenester i institusjon. ([SSB, tabell 13907](https://www.ssb.no/statbank/table/13907/))
 
 Det er nesten 13 prosent av alle sysselsatte med sykepleierutdanning. Det tallet har vi regnet ut selv: 15 124 av 117 335. Blant landene SSB viser egne tall for, er de største gruppene fra Filippinene (1 659), Sverige (1 467) og Polen (999).
 

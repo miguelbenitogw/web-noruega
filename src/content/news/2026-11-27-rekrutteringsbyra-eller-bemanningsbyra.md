@@ -63,7 +63,7 @@ Fafo har undersøkt vikarbruk i sykehus og kommunale helse- og omsorgstjenester 
 - Kommuner og helseforetak brukte 3,4 milliarder kroner på innleie av helsepersonell fra byrå i 2021.
 - I den kommunale helse- og omsorgstjenesten utgjorde byråvikarer anslagsvis 1,8 prosent av lønns- og vikarkostnadene. Bruken er ikke utbredt, men den øker.
 - Nesten én av fire kommuner brukte ikke vikarbyrå i det hele tatt.
-- All vikarbruk samlet, også kommunens egne vikarer, sto for rundt 20 prosent av lønnskostnadene i 2022.
+- All vikarbruk samlet, ikke bare byråvikarer, sto for rundt 20 prosent av lønnskostnadene i helse- og omsorgstjenestene i 2022.
 - Den viktigste årsaken er ledige stillinger og vansker med å rekruttere.
 
 Fafo er også tydelig på at vikarer og byråer har en viktig rolle. De hjelper kommunen å holde bemanningen oppe. Det er bedre enn at faste ansatte tar ekstravakter eller at vakter går underbemannet. Ledere og tillitsvalgte i undersøkelsen mente den ideelle fordelingen er 88 prosent faste ansatte, 11 prosent tilkallingsvikarer og 1 prosent byråvikarer.

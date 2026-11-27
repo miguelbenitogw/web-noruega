@@ -42,7 +42,7 @@ Alle dokumenter må være skannede kopier av originalen i PDF-format. Dokumenter
 
 ### 4. Søknaden sendes i Altinn
 
-Sykepleieren søker autorisasjon i Altinn og betaler et saksbehandlingsgebyr på 1 665 kroner. Søknaden er ikke sendt inn før søkeren har kommet tilbake til Altinn etter betalingen. Etterpå kommer en bekreftelse i Altinn på at Helsedirektoratet har mottatt den, ifølge siden om [hva som skjer etter innsendt søknad](https://www.helsedirektoratet.no/autorisasjon-og-spesialistutdanning/autorisasjon-og-lisens/sok-om-autorisasjon-og-lisens/Gebyr-saksbehandlingstid-vedtak-og-klage).
+Sykepleieren søker autorisasjon i Altinn og betaler et saksbehandlingsgebyr på 1 665 kroner. Søknaden er ikke sendt inn før søkeren har kommet tilbake til Altinn etter betalingen, ifølge [Helsedirektoratets side for sykepleiere fra EU/EØS](https://www.helsedirektoratet.no/autorisasjon-og-spesialistutdanning/autorisasjon-og-lisens/sok-om-autorisasjon-og-lisens?path=27-2). Etterpå kommer en bekreftelse i Altinn på at Helsedirektoratet har mottatt den, ifølge siden om [hva som skjer etter innsendt søknad](https://www.helsedirektoratet.no/autorisasjon-og-spesialistutdanning/autorisasjon-og-lisens/sok-om-autorisasjon-og-lisens/Gebyr-saksbehandlingstid-vedtak-og-klage).
 
 ### 5. Helsedirektoratet behandler søknaden
 
@@ -71,7 +71,7 @@ Før dere ansetter, bør dere kontrollere:
 - dokumentert faglig kompetanse
 - tidligere arbeidserfaring, med referanser
 
-Godkjenningsstatus kan endre seg. Derfor anbefaler Helsedirektoratet å [sjekke HPR ved hver ansettelse](https://www.helsedirektoratet.no/veiledere/ansettelse-av-helsepersonell/arbeidsgivers-ansvar/godkjenning-og-registrering-i-helsepersonellregisteret).
+Godkjenningsstatus kan endre seg. Derfor må arbeidsgiveren ifølge Helsedirektoratet [sjekke at autorisasjonen er gyldig ved hver ansettelse](https://www.helsedirektoratet.no/veiledere/ansettelse-av-helsepersonell/arbeidsgivers-ansvar/godkjenning-og-registrering-i-helsepersonellregisteret).
 
 Helsedirektoratet anbefaler også at dere [gjennomfører intervjuet på norsk](https://www.helsedirektoratet.no/veiledere/ansettelse-av-helsepersonell/arbeidsgivers-ansvar/gjennomforing-av-intervju). Unngå ja- og neispørsmål, og la kandidaten snakke fritt. Skal sykepleieren jobbe med barn eller personer med utviklingshemming, må det leveres [politiattest](https://www.helsedirektoratet.no/veiledere/ansettelse-av-helsepersonell/arbeidsgivers-ansvar/kvalifikasjoner) når loven krever det.
 
