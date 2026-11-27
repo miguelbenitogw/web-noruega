@@ -52,11 +52,11 @@ Et avslag skal være begrunnet. Klagefristen er tre uker etter at vedtaket er mo
 
 ### 6. Autorisasjonen registreres i HPR
 
-Autorisasjon gir fulle rettigheter til å utøve yrket frem til man fyller 80 år. Autorisasjonen vises i Helsepersonellregisteret (HPR), og der finner sykepleieren også HPR-nummeret sitt. [HPR](https://www.helsedirektoratet.no/statistikk-registre-og-rapporter/helsedata-og-helseregistre/helsepersonellregisteret-hpr) er et offentlig register over offentlige godkjenninger gitt til helsepersonell i Norge, og alle kan søke i det.
+Autorisasjonen faller automatisk bort når man fyller 80 år, ifølge [kommentarene til § 48a](https://www.helsedirektoratet.no/rundskriv/helsepersonelloven-med-kommentarer/vilkar-for-autorisasjon-lisens-og-spesialistgodkjenning/-48a.vilkar-for-autorisasjon-etter--48). Godkjenningen vises i Helsepersonellregisteret (HPR), og der finner sykepleieren også HPR-nummeret sitt. [HPR](https://www.helsedirektoratet.no/statistikk-registre-og-rapporter/helsedata-og-helseregistre/helsepersonellregisteret-hpr) er et offentlig register over offentlige godkjenninger gitt til helsepersonell i Norge, og det har et offentlig søk.
 
 ## Hva med norskkravet?
 
-Helsedirektoratets liste over dokumenter for sykepleiere fra EU/EØS inneholder ikke noe språkkrav. Kravet om norsk på nivå B2 er hjemlet i forskriften om tilleggskrav for helsepersonell utdannet utenfor EØS.
+Helsedirektoratets liste over dokumenter for sykepleiere fra EU/EØS inneholder ikke noe språkkrav. Kravet om bestått norskprøve på B2-nivå gjelder [søkere utdannet utenfor EU/EØS](https://www.helsedirektoratet.no/autorisasjon-og-spesialistutdanning/autorisasjon-og-lisens/sok-om-autorisasjon-og-lisens/Tilleggskrav-for-s%C3%B8kere-utdannet-utenfor-EUE%C3%98S), og det er hjemlet i forskriften om tilleggskrav for helsepersonell utdannet utenfor EØS.
 
 Det betyr ikke at språk er uviktig. [Helsedirektoratet anbefaler](https://www.helsedirektoratet.no/veiledere/ansettelse-av-helsepersonell/arbeidsgivers-ansvar/om-helsepersonellets-sprakkompetanse) at alt helsepersonell kan dokumentere norsk på B2-nivå, både skriftlig og muntlig. Det er arbeidsgiverens ansvar at helsepersonell snakker og forstår norsk godt nok til å gi forsvarlig helsehjelp. Arbeidsgiveren kan også stille strengere krav enn B2. For nyansatte kan kravet være at språket er dokumentert før prøvetiden er over.
 

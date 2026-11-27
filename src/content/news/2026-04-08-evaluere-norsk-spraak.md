@@ -50,7 +50,7 @@ Nivåene kommer fra Europarådets felles europeiske rammeverk for språk (CEFR).
 
 Kilde: [Språknivåer, HK-dir](https://prove.hkdir.no/spraknivaer)
 
-Helsedirektoratets krav om bestått norskprøve på B2-nivå for autorisasjon gjelder helsepersonell som er utdannet utenfor EU/EØS, ikke dem som er utdannet i et EU/EØS-land ([Helsedirektoratet: Tilleggskrav for søkere utdannet utenfor EU/EØS](https://www.helsedirektoratet.no/autorisasjon-og-spesialistutdanning/autorisasjon-og-lisens/sok-om-autorisasjon-og-lisens/Tilleggskrav-for-s%C3%B8kere-utdannet-utenfor-EUE%C3%98S)).
+Helsedirektoratets krav om bestått norskprøve på B2-nivå for autorisasjon gjelder helsepersonell som er utdannet utenfor EU/EØS, ikke dem som er utdannet i et EU/EØS-land ([Helsedirektoratet: Tilleggskrav for søkere utdannet utenfor EU/EØS](https://www.helsedirektoratet.no/autorisasjon-og-spesialistutdanning/autorisasjon-og-lisens/sok-om-autorisasjon-og-lisens/Tilleggskrav-for-s%C3%B8kere-utdannet-utenfor-EUE%C3%98S)). For helsepersonell utdannet i EU/EØS anbefaler Helsedirektoratet B2-nivå, både skriftlig og muntlig, men det er arbeidsgiveren som har ansvaret for at norsken er god nok ([Helsedirektoratet: Om helsepersonellets språkkompetanse](https://www.helsedirektoratet.no/veiledere/ansettelse-av-helsepersonell/arbeidsgivers-ansvar/om-helsepersonellets-sprakkompetanse)).
 
 Kandidatene som er en del av Global Working-programmet vil i løpet av den intensive perioden utvikle norskferdigheter fra A1 til B1 nivå, og må bestå B1 eksamen. 
 

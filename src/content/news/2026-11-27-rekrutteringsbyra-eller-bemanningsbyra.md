@@ -42,7 +42,7 @@ Et rekrutteringsbyrå finner og forbereder kandidater. Kommunen ansetter den som
 
 ### Kontinuitet
 
-- Bemanningsbyrå: Personen kan bytte fra vakt til vakt. Fafo fant at mange ulike folk å lede og høyt fravær [gir dårligere kontinuitet i tjenestene](https://www.fafo.no/images/pub/summaries/2023/20852-summary.pdf).
+- Bemanningsbyrå: Personen kan bytte fra vakt til vakt. Fafo fant at når lederne har ansvar for svært mange personer og fraværet er høyt, [går det ut over kontinuiteten i tjenestene](https://www.fafo.no/images/pub/summaries/2023/20852-summary.pdf).
 - Rekruttering: Personen blir en del av den faste bemanningen.
 
 ### Juridisk ansvar

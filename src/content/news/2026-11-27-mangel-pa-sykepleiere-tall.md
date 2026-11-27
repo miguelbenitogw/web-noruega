@@ -49,7 +49,7 @@ For sykepleiere spesielt varsler SSB at vi kan mangle over 30 000 årsverk innen
 
 I 2025 var 15 124 innvandrere og ikke-bosatte med sykepleierutdanning i jobb i Norge. I 2015 var tallet 10 336. Av dem jobbet 13 012 i helsetjenester, inkludert pleie og omsorg. ([SSB, tabell 13907](https://www.ssb.no/statbank/table/13907/))
 
-Det er nesten 13 prosent av alle sysselsatte med sykepleierutdanning. De største gruppene kommer fra Filippinene (1 659), Sverige (1 467) og Polen (999).
+Det er nesten 13 prosent av alle sysselsatte med sykepleierutdanning. Det tallet har vi regnet ut selv: 15 124 av 117 335. Blant landene SSB viser egne tall for, er de største gruppene fra Filippinene (1 659), Sverige (1 467) og Polen (999).
 
 SSB teller etter landbakgrunn, ikke etter hvor utdanningen er tatt. Tallet viser derfor hvor mange som har kommet fra utlandet, ikke nøyaktig hvor mange som er utdannet der.
 
@@ -59,10 +59,10 @@ Norge har ingen uttalt strategi for å rekruttere helsepersonell fra utlandet. N
 
 Kildene peker på flere tiltak:
 
-- **Insentiver.** 68 prosent av kommunene har tatt i bruk insentivordninger, som lønnstillegg og boligtilbud. ([Helsedirektoratet, 2025](https://www.helsedirektoratet.no/rapporter/arsrapport-kompetanseloft-2025-utviklingstrekk-og-status-2024/innsatsomrader-for-baerekraftige-helse-og-omsorgstjenester-copy-2/rekruttering-og-utvikling-i-arsverk))
-- **Større stillinger.** Hvis de rundt 13 000 sykepleierne som jobbet under 70 prosent i 2022 økte til 70 prosent, kan det gi rundt 4 000 ekstra årsverk. SSB påpeker at effekten er begrenset, fordi få jobber ufrivillig deltid. ([SSB, 2023](https://www.ssb.no/helse/helsetjenester/artikler/begrenset-potensial-i-okt-arbeidstid-for-sykepleiere))
-- **Hjelp fra NAV.** NAV kan bistå arbeidsgivere med en rekke virkemidler. ([NAV, 2026](https://www.nav.no/no/nav-og-samfunn/kunnskap/analyser-fra-nav/nyheter/bedriftsundersokelsen-2026-norske-virksomheter-mangler-34-000-personer))
-- **Etisk rekruttering fra utlandet.** Mange sykepleiere i Norge har kommet fra andre land, og WHO-koden gir rammene for hvordan det skal gjøres. ([Helsedirektoratet, 2025](https://www.helsedirektoratet.no/rapporter/arsrapport-kompetanseloft-2025-utviklingstrekk-og-status-2024/innsatsomrader-for-baerekraftige-helse-og-omsorgstjenester-copy-2/rekruttering-og-utvikling-i-arsverk))
+- Insentiver: 68 prosent av kommunene har tatt i bruk insentivordninger, som lønnstillegg og boligtilbud. ([Helsedirektoratet, 2025](https://www.helsedirektoratet.no/rapporter/arsrapport-kompetanseloft-2025-utviklingstrekk-og-status-2024/innsatsomrader-for-baerekraftige-helse-og-omsorgstjenester-copy-2/rekruttering-og-utvikling-i-arsverk))
+- Større stillinger: Hvis de rundt 13 000 sykepleierne som jobbet under 70 prosent i 2022, økte stillingen til 70 prosent, kunne det gi rundt 4 000 ekstra årsverk. SSB påpeker at effekten er begrenset, fordi få jobber ufrivillig deltid. ([SSB, 2023](https://www.ssb.no/helse/helsetjenester/artikler/begrenset-potensial-i-okt-arbeidstid-for-sykepleiere))
+- Hjelp fra NAV: NAV kan bistå arbeidsgivere med en rekke virkemidler. ([NAV, 2026](https://www.nav.no/no/nav-og-samfunn/kunnskap/analyser-fra-nav/nyheter/bedriftsundersokelsen-2026-norske-virksomheter-mangler-34-000-personer))
+- Etisk rekruttering fra utlandet: Mange sykepleiere i Norge har kommet fra andre land, og WHO-koden gir rammene for hvordan det skal gjøres. ([Helsedirektoratet, 2025](https://www.helsedirektoratet.no/rapporter/arsrapport-kompetanseloft-2025-utviklingstrekk-og-status-2024/innsatsomrader-for-baerekraftige-helse-og-omsorgstjenester-copy-2/rekruttering-og-utvikling-i-arsverk))
 
 Det siste er det vi jobber med. Global Working er et rekrutteringsselskap med egen språkskole i Alicante. Vi [rekrutterer sykepleiere fra Sør-Europa](/helse) og lærer dem norsk før oppstart. Kommunen ansetter dem direkte i faste stillinger. Lurer du på om det er etisk å rekruttere fra Spania? Les [Det du ikke visste om Spania og sykepleiere](/nyheter/spania-og-sykepleiere). Vil du vite mer, kan du [ta kontakt med oss](/kontakt).
 
