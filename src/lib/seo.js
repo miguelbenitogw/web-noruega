@@ -320,14 +320,16 @@ const SECTION_SEO = {
   helse: {
     // "Helsesektor" describe el sector, no lo que alguien escribe cuando tiene el problema.
     // Nadie busca "helsesektor" para contratar a nadie.
-    // El título se queda: es la página a la que Google ya manda `rekruttering
-    // sykepleiere` y `rekruttering helsepersonell`. Lo que cambia es la
-    // descripción: 82 impresiones y 0 clics en tres meses. Ahora dice lo que
+    // Google ya manda aquí `rekruttering sykepleiere` y `rekruttering
+    // helsepersonell` (Semrush: posición 20, 170 búsquedas/mes, KD 11). Por eso
+    // «rekruttering av helsepersonell» va en el title, el H1 y el primer párrafo,
+    // sin perder «sykepleiere». La descripción (82 impresiones y 0 clics en tres
+    // meses) arranca con la consulta y dice lo que
     // separa esto de un vikarbyrå (contratación directa) y nombra dos kommuner
     // reales con artículo propio, que es la prueba que busca quien decide.
-    title: 'Rekruttering av sykepleiere til Norge | Global Working',
+    title: 'Rekruttering av helsepersonell og sykepleiere | Global Working',
     description:
-      'Sykepleiere fra Sør-Europa med opptil 650 timer norsk, ansatt direkte hos dere – ikke via vikarbyrå. Slik fikk Vågå og Sør-Fron kommune faste sykepleiere.',
+      'Rekruttering av helsepersonell: sykepleiere med opptil 650 timer norsk, ansatt direkte hos dere – ikke via vikarbyrå. Slik gjorde Vågå og Sør-Fron kommune.',
     pathname: '/helse',
     breadcrumbName: 'Helsesektor',
     keywords: 'rekruttering sykepleiere, rekruttering helsepersonell, utenlandske sykepleiere i Norge, faste sykepleiere kommune, mangel på sykepleiere',
@@ -416,10 +418,11 @@ const SECTION_SEO = {
     // impresiones, posición 10,9, CTR 3,6 %. El título viejo tenía 71 caracteres y
     // Google lo cortaba. Ahora cabe, y añade `norskkurs for helsepersonell` (pos.
     // 28,8) y `norsk for helsepersonell` (pos. 24,3), que llegan aquí sin título que
-    // las nombre. La descripción dice dónde se enseña y quién enseña.
+    // las nombre. La descripción abre definiendo qué es helsenorsk (Semrush, pos. 17)
+    // y luego dice dónde se enseña y quién enseña.
     title: 'Helsenorsk – norskkurs for helsepersonell | Global Working',
     description:
-      'Helsenorsk ved vår egen språkskole i Alicante: opptil 650 timer norsk, fagterminologi og pasientkommunikasjon – undervist av sykepleiere som har jobbet i Norge.',
+      'Helsenorsk er norsk for helsepersonell: fagterminologi og pasientkommunikasjon. Opptil 650 timer i Alicante, undervist av sykepleiere som har jobbet i Norge.',
     pathname: '/spansk-i-alicante/helsenorsk',
     breadcrumbName: 'Helsenorsk',
     parentSection: 'spansk-i-alicante',

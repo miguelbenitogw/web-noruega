@@ -34,7 +34,7 @@ const siteContent = {
     stats: [
       { value: '2014', label: 'Grunnlagt', animate: false },
       { value: '50+', label: 'Ansatte', animate: true },
-      { value: '2500+', label: 'Kandidater utdannet og formidlet', animate: true },
+      { value: '2000+', label: 'Sykepleiere som har startet i Norge', animate: true },
       { value: '95%', label: 'Retensjonsgrad', animate: true },
     ],
   },
@@ -53,7 +53,7 @@ const siteContent = {
   },
 
   homeStats: [
-    { value: '2500+', label: 'Kandidater utdannet og formidlet' },
+    { value: '2000+', label: 'Sykepleiere som har startet i Norge' },
     { value: '95%', label: 'Retensjonsgrad' },
     { value: '25 000+', label: 'Undervisningstimer i norsk' },
   ],
@@ -244,8 +244,8 @@ const siteContent = {
 
   helseHero: {
     breadcrumb: 'Helsesektor',
-    h1: 'Tjenester for helseinstitusjoner',
-    description: 'Vi forbereder helsepersonell for den norske helsesektoren – fra språkopplæring til trygg oppstart i jobb.',
+    h1: 'Rekruttering av helsepersonell',
+    description: 'Vår rekruttering av helsepersonell dekker hele veien – fra utvelgelse og språkopplæring til trygg oppstart i norske kommuner og helseforetak.',
     imageUrl: IMAGES.enfermeria,
     imageAlt: 'Helsepersonell i opplæring gjennom Global Working',
   },
@@ -342,7 +342,7 @@ const siteContent = {
   helsenorsk: {
     breadcrumb: 'Helsenorsk',
     heroTitle: 'Helsenorsk',
-    heroSubtitle: 'Yrkesrettet norsk for arbeid i helsesektoren. 650 timer med språkopplæring tilpasset hverdagen i norsk helsetjeneste.',
+    heroSubtitle: 'Helsenorsk er yrkesrettet norsk for helsepersonell: fagterminologi og pasientkommunikasjon for jobb i norsk helsetjeneste. Hos oss er det opptil 650 timer på vår egen språkskole i Alicante, undervist av sykepleiere som har jobbet i Norge.',
     heroImageUrl: IMAGES.enfermeria,
     heroImageAlt: 'Helsenorsk undervisning i Alicante',
     introTitle: 'Helsenorsk: yrkesrettet norsk for arbeid i helsesektoren',

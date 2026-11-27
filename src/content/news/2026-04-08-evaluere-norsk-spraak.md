@@ -40,6 +40,18 @@ Det er nettopp denne motivasjonen som gjør at språkutviklingen i norsk går ra
 
 Mange kommuner opererer med krav om B1 eller B2 i norsk for å kunne jobbe i helsetjenesten. Dette gir en nyttig indikasjon på språknivå, men sier ikke nødvendigvis alt om kandidatens språkevner. 
 
+Nivåene kommer fra Europarådets felles europeiske rammeverk for språk (CEFR). Kort fortalt betyr de dette:
+
+- A1: Du forstår og bruker kjente, dagligdagse ord og uttrykk, og kan delta i en enkel samtale hvis den andre snakker langsomt og tydelig og hjelper deg.
+- A2: Du kan delta i enkle samtaler om vanlige, praktiske aktiviteter, lese korte og enkle tekster knyttet til arbeidet og skrive korte beskjeder.
+- B1: Du forstår hovedpunktene i klar tale og tekst om kjente emner fra arbeid, skole og fritid, klarer deg i de fleste situasjoner som kan oppstå, og kan kort begrunne meninger og planer.
+- B2: Du forstår hovedinnholdet i komplekse tekster, også faglige drøftinger innenfor eget fagområde, og deltar i samtaler med et relativt spontant og flytende språk.
+- C1: Du forstår lengre, krevende tekster og budskap som ikke er sagt direkte, og kan bruke språket presist til krevende oppgaver som å sammenfatte og videreformidle informasjon.
+
+Kilde: [Språknivåer, HK-dir](https://prove.hkdir.no/spraknivaer)
+
+Helsedirektoratets krav om bestått norskprøve på B2-nivå for autorisasjon gjelder helsepersonell som er utdannet utenfor EU/EØS, ikke dem som er utdannet i et EU/EØS-land ([Helsedirektoratet: Tilleggskrav for søkere utdannet utenfor EU/EØS](https://www.helsedirektoratet.no/autorisasjon-og-spesialistutdanning/autorisasjon-og-lisens/sok-om-autorisasjon-og-lisens/Tilleggskrav-for-s%C3%B8kere-utdannet-utenfor-EUE%C3%98S)). For helsepersonell utdannet i EU/EØS anbefaler Helsedirektoratet B2-nivå, både skriftlig og muntlig, men det er arbeidsgiveren som har ansvaret for at norsken er god nok ([Helsedirektoratet: Om helsepersonellets språkkompetanse](https://www.helsedirektoratet.no/veiledere/ansettelse-av-helsepersonell/arbeidsgivers-ansvar/om-helsepersonellets-sprakkompetanse)).
+
 Kandidatene som er en del av Global Working-programmet vil i løpet av den intensive perioden utvikle norskferdigheter fra A1 til B1 nivå, og må bestå B1 eksamen. 
 
 B1-nivå betyr at man vil forstå hovedinnholdet i klar tale og tekst om kjente emner, og klare seg i de fleste situasjoner som kan oppstå i hverdagen og på jobb. Det betyr at kandidaten har et solid grunnlag for å kommunisere og bli forstått (HK-dir, 2026).

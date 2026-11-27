@@ -429,9 +429,10 @@ const ROUTES = {
   },
   '/helse': {
     // Descripción: 82 impresiones y 0 clics en tres meses. Ahora dice lo que nos
-    // separa de un vikarbyrå y nombra dos kommuner reales. Espejo de seo.js.
-    title: 'Rekruttering av sykepleiere til Norge | Global Working',
-    description: 'Sykepleiere fra Sør-Europa med opptil 650 timer norsk, ansatt direkte hos dere – ikke via vikarbyrå. Slik fikk Vågå og Sør-Fron kommune faste sykepleiere.',
+    // separa de un vikarbyrå y nombra dos kommuner reales. Title y descripción
+    // arrancan con «rekruttering av helsepersonell» (Semrush, pos. 20). Espejo de seo.js.
+    title: 'Rekruttering av helsepersonell og sykepleiere | Global Working',
+    description: 'Rekruttering av helsepersonell: sykepleiere med opptil 650 timer norsk, ansatt direkte hos dere – ikke via vikarbyrå. Slik gjorde Vågå og Sør-Fron kommune.',
     keywords: 'rekruttering sykepleiere, rekruttering helsepersonell, utenlandske sykepleiere i Norge, faste sykepleiere kommune, mangel på sykepleiere',
     breadcrumbName: 'Helsesektor',
     // «tett oppfølging det første året» no lo dice ningún texto publicado: el FAQ
@@ -546,9 +547,10 @@ const ROUTES = {
   },
   '/spansk-i-alicante/helsenorsk': {
     // `helsenorsk`: 165 impresiones, posición 10,9, CTR 3,6 %. El título viejo
-    // (71 caracteres) salía cortado. Espejo de seo.js.
+    // (71 caracteres) salía cortado. La descripción es también el primer <p> del
+    // HTML estático: abre definiendo qué es helsenorsk (Semrush, pos. 17). Espejo de seo.js.
     title: 'Helsenorsk – norskkurs for helsepersonell | Global Working',
-    description: 'Helsenorsk ved vår egen språkskole i Alicante: opptil 650 timer norsk, fagterminologi og pasientkommunikasjon – undervist av sykepleiere som har jobbet i Norge.',
+    description: 'Helsenorsk er norsk for helsepersonell: fagterminologi og pasientkommunikasjon. Opptil 650 timer i Alicante, undervist av sykepleiere som har jobbet i Norge.',
     keywords: 'helsenorsk, helsenorsk kurs, norskkurs for helsepersonell, norsk for helsepersonell, norskkurs for helseassistenter, helsenorsk Alicante',
     breadcrumbName: 'Helsenorsk',
     parent: { name: 'Spansk i Alicante', path: '/spansk-i-alicante' },
